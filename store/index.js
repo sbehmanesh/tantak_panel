@@ -1,5 +1,5 @@
 let app_name = 'پنل ادمین'
-let app_name_bimch = 'پنل ادمین بیمچه'
+let app_name_bimch = 'پنل ادمین تن تاک'
 let logo_bimche = '/image/logo.png'
 
 let time_interval = null
@@ -19,8 +19,8 @@ export const state = () => ({
 
 export const mutations = {
   set_app_name: function (state, data) {
-      app_name = app_name_bimch
-      state.app_name = app_name_bimch
+    app_name = app_name_bimch
+    state.app_name = app_name_bimch
   },
   set_title: function (state, data) {
     if (typeof data != 'string' && data.length == 0) {
@@ -29,7 +29,7 @@ export const mutations = {
     state.page_title = data
   },
   set_logo: function (state, data) {
-      state.logo = logo_bimche
+    state.logo = logo_bimche
   },
   set_server_time: function (state, data) {
     state.server_time = data

@@ -1,5 +1,5 @@
 <template>
-  <div class="light_purple py-3 pr-3 rounded-t-lg mb-1">
+  <div class="page_titel py-3 pr-3 rounded-t-lg mb-1">
     <span class="white--text font_medium pr-14 font_24 white-space_nowrap">
       {{ $store.state.page_title }}
     </span>
@@ -9,3 +9,8 @@
 <script>
 export default {}
 </script>
+<style scoped>
+.page_titel{
+background-color: #fdad00;
+}
+</style>

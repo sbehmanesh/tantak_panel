@@ -23,7 +23,7 @@ export default {
       { rel: 'stylesheet', href: '/css/fonts.css' },
       { rel: 'stylesheet', href: '/css/mobile.css' },
       { rel: 'stylesheet', href: '/css/google_font.css' },
-      { rel: 'icon', type: 'image/x-icon/svg/png', href: '/image/logo.png' }
+      { rel: 'icon', type: 'image/x-icon/svg/png', href: '/favicon.ico' }
     ],
   },
   plugins: [
@@ -50,10 +50,10 @@ export default {
       dark: false,
       themes: {
         dark: {
-          primary: colors.blue.darken2,
+          primary: colors.orange,
           accent: colors.grey.darken3,
-          secondary: colors.blue.darken4,
-          light_purple: colors.blue.darken4,
+          secondary: colors.orange.darken4,
+          light_purple: colors.orange.darken4,
           info: colors.teal.lighten1,
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
@@ -65,7 +65,7 @@ export default {
           accent: '#1A2238',
           success: '#169e1a',
           warning: '#ffbb00',
-          primary: '#EC407A',
+          primary: '#f86101',
           darkpurple: '#2f1753',
           secondary: '#0649dc',
           background: '#EC407A',

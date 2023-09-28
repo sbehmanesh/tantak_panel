@@ -1,8 +1,8 @@
 <template>
   <div class="pa-4">
     <div class="text-left py-2">
-      <amp-button icon="add" text="جدید" color="light_purple" v-if="createUrl" @click="$router.push(createUrl)" />
-      <amp-button icon="add" text="جدید" color="light_purple" v-if="createShowFun" @click="createFun()" />
+      <amp-button icon="add" text="جدید" color="#fdad00" v-if="createUrl" @click="$router.push(createUrl)" />
+      <amp-button icon="add" text="جدید" color="#fdad00" v-if="createShowFun" @click="createFun()" />
 
       <amp-button v-for="btn in extraBtn" :key="btn.id" :color="btn.color" :icon="btn.icon" :text="btn.text" @click="btn.fun()" />
     </div>
@@ -24,7 +24,7 @@
           :local="local"
           :excel="excel"
           :pdf="pdf"
-          class="light_purple"
+          class="header_bg"
           :create-fun="createFun"
           :storeState="storeState"
           :moreTD="moreTD_header"
@@ -1152,5 +1152,8 @@ tfoot > tr > th {
 .bt-tr-mobile > td {
   height: auto !important;
   border-bottom: #c1c1c1 solid 1px !important;
+}
+.header_bg{
+  background-color: #fdad00da;
 }
 </style>

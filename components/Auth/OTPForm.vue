@@ -23,10 +23,11 @@
         text="ورود"
         icon="login"
         type="submit"
-        color="success"
+        color="primary"
         :loading="loading"
         v-if="activeLogin"
         :disabled="!valid || loading"
+        
       />
       <amp-button
         block
@@ -34,7 +35,7 @@
         icon="sms"
         height="40"
         type="submit"
-        color="success"
+        color="primary"
         text="ارسال کد"
         :loading="loading"
         @click="sendCode()"

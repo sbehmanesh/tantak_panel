@@ -4,12 +4,20 @@
       <v-row dense class="h-max">
         <v-col cols="12" class="mb-1">
           <v-row class="d-flex justify-space-between align-center">
-            <v-col cols="12" md="4" :class="is_mobile? 'log_mobile':''" >
-              <div :class=" is_mobile? '': 'py-4'">
-                <img :src="$store.state.logo" width="auto" height="40" />
+            <v-col cols="12" md="4" :class="is_mobile ? 'log_mobile' : ''">
+              <div :class="is_mobile ? '' : 'py-4'">
+                <img :src="$store.state.logo" width="auto" height="60" />
               </div>
             </v-col>
-            <v-col cols="12" md="4" :class="is_mobile? 'd-flex justify-center mt-2':'d-flex justify-center mb-8'">
+            <v-col
+              cols="12"
+              md="4"
+              :class="
+                is_mobile
+                  ? 'd-flex justify-center mt-2'
+                  : 'd-flex justify-center mb-8'
+              "
+            >
               <span class="white--text">امروز {{ dateTime }}</span>
             </v-col>
             <v-col cols="12" md="4" class="d-flex justify-end">
@@ -19,7 +27,13 @@
         </v-col>
         <v-col cols="12">
           <AppBarMenu v-if="$vuetify.breakpoint.mdAndUp" />
-          <v-icon :class="is_mobile? 'mobile_icon': 'absulut'" dark v-else @click="toggleDrawer()">menu</v-icon>
+          <v-icon
+            :class="is_mobile ? 'mobile_icon' : 'absulut'"
+            dark
+            v-else
+            @click="toggleDrawer()"
+            >menu</v-icon
+          >
         </v-col>
       </v-row>
     </v-container>
@@ -27,9 +41,9 @@
 </template>
 
 <script>
-let jmoment = require('jalali-moment')
-import Profile from '@/components/Layout/Profile.vue'
-import AppBarMenu from '@/components/Layout/AppBarMenu.vue'
+let jmoment = require("jalali-moment");
+import Profile from "@/components/Layout/Profile.vue";
+import AppBarMenu from "@/components/Layout/AppBarMenu.vue";
 export default {
   components: { Profile, AppBarMenu },
   props: {
@@ -43,40 +57,38 @@ export default {
   }),
   computed: {
     dateTime() {
-      let date = this.$store.state.server_time
-      if (typeof date == 'string' && date.length > 0) {
-        return jmoment(date).format('jDD jMMMM jYYYY')
+      let date = this.$store.state.server_time;
+      if (typeof date == "string" && date.length > 0) {
+        return jmoment(date).format("jDD jMMMM jYYYY");
       }
-      return ''
+      return "";
     },
     is_mobile() {
-      return !this.$vuetify.breakpoint.mdAndUp
+      return !this.$vuetify.breakpoint.mdAndUp;
     },
   },
   watch: {
     drawer() {
-      this.$emit('input', this.drawer)
+      this.$emit("input", this.drawer);
     },
     value() {
-      this.drawer = this.value
+      this.drawer = this.value;
     },
   },
   methods: {
     toggleDrawer() {
-      this.drawer = !this.drawer
+      this.drawer = !this.drawer;
     },
   },
-}
+};
 </script>
 
 <style scoped>
 .v-app-bar {
-  background-image: radial-gradient(circle at 0px 0px, #333333,#35353500 100%);
+  background-image: radial-gradient(circle at 0 0, #fd8f00e2, #ffc955c8 100%);
 }
-.mobile_icon{
-}
-.log_mobile{
-  position:absolute;
-  top:3px;
+.log_mobile {
+  position: absolute;
+  top: 3px;
 }
 </style>

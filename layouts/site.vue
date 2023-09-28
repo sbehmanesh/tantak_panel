@@ -37,6 +37,6 @@ export default {
   margin: 0;
   padding: 0;
   background: #d4e2ff;
-  background-image: radial-gradient(circle at 0 0, #0c2942,#EC407A 100%);
+  background-image: radial-gradient(circle at 0 0, #ed7d0d,#fdad00 100%);
 }
 </style>

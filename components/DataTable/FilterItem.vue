@@ -2,7 +2,7 @@
   <thead class="">
     <tr class="base_table-header" v-if="headers" test-tag="header">
       <th v-if="!no_refresh " class="text-center" width="50px">
-        <v-btn dark small @click="removeFilter()" elevation="0" color="light_purple">
+        <v-btn dark small @click="removeFilter()" elevation="0" color="bg_filter">
           <v-icon dark> refresh </v-icon>
         </v-btn>
       </th>
@@ -197,7 +197,7 @@
       <th class="text-center" v-if="moreTD"></th>
 
       <th class="center-div pl-2" v-if="filter_show">
-        <v-btn elevation="0" v-if="!no_filter" title="فیلتر" color="light_purple" small @click="getData()">
+        <v-btn elevation="0" v-if="!no_filter" title="فیلتر" color="bg_filter" small @click="getData()">
           <v-icon dark> filter_alt </v-icon>
         </v-btn>
         <v-btn elevation="0" small title="جدید" color="light_purple" v-if="createUrl" @click="$router.push(createUrl)">
@@ -665,5 +665,8 @@ export default {
 }
 .small-input-icon > .v-input__append-outer {
   margin-right: 0 !important;
+}
+.bg_filter{
+  background-color: #ffffff00 !important;
 }
 </style>

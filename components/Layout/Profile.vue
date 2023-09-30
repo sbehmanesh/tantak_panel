@@ -7,7 +7,7 @@
       </div>
     </template>
     <v-card width="250" class="pa-2">
-      <div class="pa-3 darkpurple">
+      <div class="pa-3 primary">
         <v-icon class="pointer" size="22" color="#fff" @click="openSetting()">settings</v-icon>
       </div>
       <div class="d-flex justify-space-between align-center ml-6">

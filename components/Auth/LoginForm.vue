@@ -21,10 +21,19 @@
       background-color="#fff"
       v-model="form.password"
       prepend-inner-icon="lock"
-      cClass="ltr-item small-input"
+      cClass="ltr-item small-input success"
     />
     <div class="px-3 mt-6 mb-4">
-      <amp-button block height="40" text="ورود" icon="login" type="submit" color="success" :loading="loading" :disabled="!valid || loading" />
+      <amp-button
+        block
+        height="40"
+        text="ورود"
+        icon="login"
+        type="submit"
+        color="success"
+        :loading="loading"
+        :disabled="!valid || loading"
+      />
     </div>
   </v-form>
 </template>
@@ -35,27 +44,27 @@ export default {
     valid: false,
     loading: false,
     form: {
-      username: '',
-      password: '',
+      username: "",
+      password: "",
     },
   }),
   methods: {
     submit() {
-      this.loading = true
+      this.loading = true;
       let form = {
         password: this.form.password,
         username: this.$FarsiToEnglishNumber(this.form.username),
-      }
-      this.$reqApi('/auth/login', form)
+      };
+      this.$reqApi("/auth/login", form)
         .then((response) => {
-          this.$store.dispatch('auth/login', response).then((data) => {
-            this.$router.push('/panel')
-          })
+          this.$store.dispatch("auth/login", response).then((data) => {
+            this.$router.push("/panel");
+          });
         })
         .catch((error) => {
-          this.loading = false
-        })
+          this.loading = false;
+        });
     },
   },
-}
+};
 </script>

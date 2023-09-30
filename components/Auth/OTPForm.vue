@@ -27,6 +27,7 @@
         :loading="loading"
         v-if="activeLogin"
         :disabled="!valid || loading"
+        
       />
       <amp-button
         block

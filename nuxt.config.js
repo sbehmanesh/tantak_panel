@@ -32,6 +32,7 @@ export default {
     '~/plugins/helper',
     { src: '~/plugins/other.js', ssr: false },
     { src: '~/plugins/vue-persian-datetime-picker', ssr: false },
+    { src: '~/plugins/leaflet', ssr: false },
   ],
   buildModules: ['@nuxtjs/toast', '@nuxtjs/moment', '@nuxtjs/vuetify'],
   modules: [
@@ -70,7 +71,7 @@ export default {
           secondary: '#0649dc',
           background: '#EC407A',
           light_purple: '#EC407A',
-          btn_color : '#66CDAA',
+          btn_color: '#66CDAA',
         }
       },
     },

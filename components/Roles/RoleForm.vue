@@ -115,6 +115,8 @@ export default {
           this.form.id = this.modelId;
           this.form.name = response.model.name;
           this.setActions(response.model.actions)
+          console.log( 'setAction', response.model.actions)
+          console.log( 'col', response.model)
           this.loader = false;
         })
         .catch(error => {

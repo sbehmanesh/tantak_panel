@@ -10,11 +10,10 @@ export const state = () => ({
   app_name: '',
   logo: logo_bimche,
   page_title: app_name,
-  // file_url: 'http://localhost:8000/',
-  // server_url: 'http://localhost:8000/api/v1',
   file_url: 'https://test-api.tantak.ir/',
   server_url: 'https://test-api.tantak.ir/api/v1',
-  // chat_url: 'http://chat.aramin.ir',
+  file_url: 'http://test-api.tantak.ir/',
+  server_url: 'http://test-api.tantak.ir/api/v1',
 })
 
 export const mutations = {

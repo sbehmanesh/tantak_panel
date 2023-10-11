@@ -75,10 +75,10 @@ export default {
       code: "",
     },
   }),
-  beforeMount(){
-if (this.modelId) {
-  this.loadData()
-}
+  beforeMount() {
+    if (this.modelId) {
+      this.loadData();
+    }
   },
   methods: {
     submit() {
@@ -109,7 +109,7 @@ if (this.modelId) {
         .then(async (response) => {
           this.form.fa_name = response.model.fa_name;
           this.form.en_name = response.model.en_name;
-          // this.form.code = response.model.code;
+          this.form.code = response.model.code;
 
           this.loading = false;
         })

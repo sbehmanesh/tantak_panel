@@ -1,28 +1,36 @@
 
 export const state = () => ({
     roles: [],
+    branch_code: [],
+    region: [],
     actions: [],
-    menu_item:[],
+    menu_item: [],
     user_type: [],
     role_action: [],
     show_user_score: '',
     select_user_role: '',
-    country_division:[],
-    province:[],
-    township:[],
-    district:[],
-    city:[],
-    rural_district:[],
-    village:[],
+    country_division: [],
+    province: [],
+    township: [],
+    district: [],
+    city: [],
+    rural_district: [],
+    village: [],
     public_setting: {},
     site_name: "",
     site_logo: "",
-    type_plate:false,
+    type_plate: false,
 })
 
 export const mutations = {
     set_role: function (state, data) {
         state.roles = data
+    },
+    set_branch: function (state, data) {
+        state.branch_code = data
+    },
+    set_region: function (state, data) {
+        state.region = data
     },
     set_actions: function (state, data) {
         state.actions = data
@@ -36,7 +44,7 @@ export const mutations = {
     set_counter_item: function (state, data) {
         state.conter_item = data
     },
-    set_item_divison: function(state,data){
+    set_item_divison: function (state, data) {
         state.province = data.province
         state.township = data.township
         state.district = data.district
@@ -45,7 +53,7 @@ export const mutations = {
         state.village = data.village
         state.country_division = data
     },
-    set_menu:function(state,data){
+    set_menu: function (state, data) {
         state.menu_item = data
     },
     set_public_setting: function (state, data) {
@@ -57,7 +65,7 @@ export const mutations = {
         }
         state.public_setting = data
     },
-    set_type_plate:function (state, data){
+    set_type_plate: function (state, data) {
         state.type_plate = data
     }
 }
@@ -73,12 +81,14 @@ export const actions = {
             .catch((error) => {
             })
     },
+
     getRoleServer({ commit }) {
         return new Promise((res, rej) => {
             this.$reqApi(`/role`, { row_number: 2000 })
                 .then(async (response) => {
                     let roles = response.model.data.map(x => ({ ...x, text: x.name, value: x.id }))
                     await commit('set_role', roles)
+
                     res(roles)
                 })
                 .catch((error) => { res() })
@@ -97,7 +107,7 @@ export const actions = {
     //             .catch((error) => { res() })
     //     })
     // },
-    getMenuItemServer({commit}, menu){
+    getMenuItemServer({ commit }, menu) {
         commit('set_menu', menu)
     },
     getRoleByActionServer({ commit }, body) {
@@ -125,21 +135,59 @@ export const actions = {
         })
     },
     setCountryDivision({ commit }) {
-        this.$reqApi('/country-division', {row_number:3000}).then((res)=>{
-            let data ={
-                province: res.model.data.filter((x)=> x.level == 'province'),
-                township: res.model.data.filter((x)=> x.level == 'township'),
-                district: res.model.data.filter((x)=> x.level == 'district'),
-                city: res.model.data.filter((x)=> x.level == 'city'),
-                rural_district: res.model.data.filter((x)=> x.level == 'rural_district'),
-                village: res.model.data.filter((x)=> x.level == 'village'),
+        this.$reqApi('/country-division', { row_number: 3000 }).then((res) => {
+            let data = {
+                province: res.model.data.filter((x) => x.level == 'province'),
+                township: res.model.data.filter((x) => x.level == 'township'),
+                district: res.model.data.filter((x) => x.level == 'district'),
+                city: res.model.data.filter((x) => x.level == 'city'),
+                rural_district: res.model.data.filter((x) => x.level == 'rural_district'),
+                village: res.model.data.filter((x) => x.level == 'village'),
             }
             commit('set_item_divison', data)
-        }).catch((err)=>{
+        }).catch((err) => {
             return err
         })
     },
     reloadPlate({ state, commit }, type) {
         commit('set_type_plate', type)
+    },
+    setBranchCod({ commit }, data) {
+        try {
+            return new Promise((res, rej) => {
+                this.$reqApi(`/branch`, { row_number: 2000 })
+                    .then(async (response) => {
+
+                        res(response.model.data)
+                    })
+                    .catch((error) => { res() })
+            })
+                .then(res => {
+                    let branch = res.map(x => ({ ...x, text: [x.branch_code + " - " + x.name], value: x.id }))
+                    commit('set_branch', branch)
+
+                })
+        } catch (error) {
+        }
+
+    },
+    setgetRegion({ commit }, data) {
+        try {
+            return new Promise((res, rej) => {
+                this.$reqApi(`/region`, { row_number: 2000 })
+                    .then(async (response) => {
+
+                        res(response.model.data)
+                    })
+                    .catch((error) => { res() })
+            })
+                .then(res => {
+                    let region = res.map(x => ({ ...x, text: x.fa_name, value: x.id }))
+                    commit('set_region', region)
+
+                })
+        } catch (error) {
+        }
+
     },
 }

@@ -6,6 +6,7 @@ export const state = () => ({
   week_days,
   user_level,
   person_type,
+  status_baranch,
   work_status,
   supervisor_status_items,
   bimehso_aramin,
@@ -15,6 +16,8 @@ export const state = () => ({
   mnue_tree,
   country_division,
   pik,
+  sell_type,
+  is_main_branch,
   company_name,
   menu_type,
   repeatation_cycle
@@ -48,45 +51,61 @@ let mnue_tree = [
         name: "نقش ها",
         access: "*",
         route: "/role"
-      }
+      },
     ]
   },
   {
     id: 6,
-    name: "تنظیمات",
-    children: [
-      {
-        id: 7,
-        name: "تقسیمات کشوری",
-        access: "*",
-        route: "/country-division"
-      },
-      {
-        id:8,
-        name:'تنظیمات',
-        access:'*',
-        route:'/setting/public'
-      },
-      {
-        id:9,
-        name:'فهرست خطاها',
-        access:'*',
-        route:'/monitoring/exception-log'
-      },
-      {
-        id:10,
-        name:'فهرست درخواست ها',
-        access:'*',
-        route:'/monitoring/request-log'
-      },
-      {
-        id:11,
-        name:'ناحیه ها',
-        access:'*',
-        route:'/region'
-      },
-    ]
-  }
+    name: 'ناحیه ها',
+    access: '*',
+    route: '/region'
+  },
+  {
+    id: 7,
+    name: 'شعبات',
+    access: '*',
+    route: '/branches'
+  },
+  // {
+  //   id: 8,
+  //   name: "تقسیمات کشوری",
+  //   access: "*",
+  //   route: "/country-division"
+  // },
+  // {
+  //   id: 6,
+  //   name: "تنظیمات",
+  //   children: [
+
+  //     {
+  //       id: 8,
+  //       name: 'تنظیمات',
+  //       access: '*',
+  //       route: '/setting/public'
+  //     },
+  //     {
+  //       id: 9,
+  //       name: 'فهرست خطاها',
+  //       access: '*',
+  //       route: '/monitoring/exception-log'
+  //     },
+  //     {
+  //       id: 10,
+  //       name: 'فهرست درخواست ها',
+  //       access: '*',
+  //       route: '/monitoring/request-log'
+  //     },
+
+  //   ]
+  // },
+  // {
+  //   id: 13,
+  //   name: 'محصولات',
+  //   children: [
+
+
+  //   ]
+  // }
 ];
 
 let status = [
@@ -117,6 +136,10 @@ let gender = [
   { text: "مرد", value: "مرد" },
   { text: "زن", value: "زن" }
 ];
+let is_main_branch = [
+  { text: "شعبه اصلی", value: 0 },
+  { text: "شعبه فرعی", value: 1 }
+];
 let week_days = [
   { text: "شنبه", value: "saturday" },
   { text: "یکشنبه", value: "sunday" },
@@ -132,6 +155,18 @@ let person_type = [
   { text: "حقیقی", value: "real" },
   { text: "حقوقی", value: "legal" },
   { text: "هیچ کدام", value: "none" }
+];
+let status_baranch = [
+  { text: "فعال", value: "active" },
+  { text: "غیر فعال", value: "inactive" },
+  { text: "پنهان ", value: "hidden" },
+  { text: "معلق ", value: "suspended" }
+];
+let sell_type = [
+  { text: "فروش تکی", value: "sell" },
+  { text: " فروش  عمده", value: "wholesale" },
+  { text: "هردو ", value: "both_sell" },
+  { text: "هیچکدام ", value: "none" },
 ];
 let supervisor_status_items = [
   { text: "دارد", value: true },

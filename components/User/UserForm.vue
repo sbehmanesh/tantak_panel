@@ -3,10 +3,14 @@
     <v-container fluid class="px-8">
       <v-row dense>
         <v-col cols="12" md="3">
-          <amp-input text="نام" v-model="form.first_name" />
+          <amp-input text="نام" v-model="form.first_name" rules="require" />
         </v-col>
         <v-col cols="12" md="3">
-          <amp-input text="نام خانوادگی" v-model="form.last_name" />
+          <amp-input
+            text="نام خانوادگی"
+            v-model="form.last_name"
+            rules="require"
+          />
         </v-col>
         <v-col cols="12" md="3">
           <amp-input
@@ -30,8 +34,25 @@
             text="نقش"
             chips
             multiple
+            rules="require"
             v-model="form.role_id"
             :items="$store.state.setting.roles"
+          />
+        </v-col>
+        <!-- <v-col cols="12" md="3">
+          <amp-select
+            text=" کد شعبه "
+            v-model="form.branch_id"
+            :disabled="cheke"
+            :items="$store.state.setting.branch_code"
+          />
+        </v-col> -->
+        <v-col cols="12" md="3">
+          <UserSelectForm
+            text=" کاربر ناظر"
+            v-model="parent_id"
+            url="user"
+            :role-id="[$store.state.auth.role.admin_id]"
           />
         </v-col>
         <v-col cols="12" md="3">
@@ -66,26 +87,34 @@
           />
         </v-col>
         <v-col cols="12" md="3">
-          <amp-input
-            text="کد پستی"
-            cClass="ltr-item"
-            rules="postCode"
-            v-model="form.address.postal_code"
-          />
-        </v-col>
-        <v-col cols="12" md="3">
           <amp-select
             text="استان"
             v-model="form.province_id"
             :items="province"
           />
         </v-col>
+        <!-- <v-col cols="12" md="3">
+          <amp-select
+            text="ناحیه"
+            v-model="form.region_id"
+            :items="$store.state.setting.region"
+            :disabled="cheke"
+          />
+        </v-col> -->
         <v-col cols="12" md="3">
           <amp-select
             text="شهر"
             v-model="form.address.country_division_id"
             :items="citis"
             :disabled="citis.length > 0 ? false : true"
+          />
+        </v-col>
+        <v-col cols="12" md="3">
+          <amp-input
+            text="کد پستی"
+            cClass="ltr-item"
+            rules="postCode"
+            v-model="form.address.postal_code"
           />
         </v-col>
         <v-col cols="12" md="3">
@@ -96,15 +125,14 @@
         </v-col>
         <v-col cols="12" md="4">
           <amp-textarea
-            text="توضیحات"
-            v-model="form.description"
-          ></amp-textarea>
-        </v-col>
-
-        <v-col cols="12" md="4">
-          <amp-textarea
             text="آدرس"
             v-model="form.address.address"
+          ></amp-textarea>
+        </v-col>
+        <v-col cols="12" md="4">
+          <amp-textarea
+            text="توضیحات"
+            v-model="form.description"
           ></amp-textarea>
         </v-col>
       </v-row>
@@ -139,7 +167,11 @@
 </template>
 
 <script>
+import UserSelectForm from "~/components/User/UserSelectForm.vue";
 export default {
+  components: {
+    UserSelectForm,
+  },
   props: {
     roleId: { default: null },
     modelId: { default: null },
@@ -154,10 +186,13 @@ export default {
     supervisor_status: "",
     supervisor: [],
     sales_manager: [],
+    parent_id: [],
     psychologist: [],
     supervisor_status_items: [],
     province: [],
+    user: [],
     citis: [],
+    cheke: false,
     form: {
       sort: -1,
       username: "",
@@ -165,11 +200,11 @@ export default {
       birth_date: "",
       avatar: "",
       password: "",
-      password: "",
       last_name: "",
       description: "",
       first_name: "",
       person_type: "",
+
       role_id: [],
       address: {
         postal_code: "",
@@ -177,7 +212,6 @@ export default {
         address: "",
       },
       national_code: "",
-      province_id: "",
       status: "active",
     },
   }),
@@ -185,11 +219,14 @@ export default {
     "form.province_id"() {
       this.loadCitis(this.form.province_id);
     },
+    // "form.role_id"(){
+    //   if(this.form.role_id.indexOf("5246f14d-1906-4e34-a412-8fb689d20f23") > -1){
+    //     this.cheke = true;
+    //   }
+
+    // }
   },
   mounted() {
-    if (Boolean(this.roleId)) {
-      this.form.role_id = [this.roleId];
-    }
     if (this.modelId) {
       this.loadData();
     }
@@ -204,8 +241,11 @@ export default {
   },
   methods: {
     submit() {
-      let form = { ...this.form };
       this.loading = true;
+      if (this.parent_id.length > 0) {
+        this.form.parent_id = this.parent_id[0].id;
+      }
+      let form = this.$copyForm(this.form);
       let url = this.createUrl;
       if (this.modelId) {
         url = this.updateUrl;
@@ -229,20 +269,27 @@ export default {
       this.loading = true;
       this.$reqApi(this.showUrl, { id: this.modelId })
         .then(async (response) => {
+          this.form.user_id = response.model.user_id;
+          this.form.role_id = response.model.role_id;
           this.form.id = this.modelId;
           this.form.status = response.model.status;
           this.form.address.address = response.model.address;
           this.form.address.postal_code = response.model.postal_code;
           this.form.username = response.model.username;
           this.form.password = response.model.password;
+          this.form.birth_date = response.model.birth_date;
           this.form.last_name = response.model.last_name;
           this.form.person_type = response.model.person_type;
           this.form.first_name = response.model.first_name;
+          this.form.description = response.model.description;
           this.form.avatar = response.model.avatar;
+          // this.form.region_id = response.model.region_id;
           this.form.parent_id = response.model.parent_id;
-          this.form.province_id = response.model.province_id;
           this.form.national_code = response.model.national_code;
-          console.log("reso : ", response.model.parent_id);
+          // this.form.branch_id = response.model.branch_id;
+          if (response.model.parent) {
+            this.parent_id = [response.model.parent];
+          }
           setTimeout(() => {
             this.form.address.country_division_id =
               response.model.country_division_id;

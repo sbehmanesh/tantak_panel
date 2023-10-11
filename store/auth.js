@@ -61,21 +61,23 @@ export const mutations = {
 }
 
 export const actions = {
-  async nuxtServerInit({ state,commit, dispatch }, redirect = true) {
+  async nuxtServerInit({ state, commit, dispatch }, redirect = true) {
     return new Promise(async (res, rej) => {
       try {
         let token = localStorage.getItem('panel_token')
         let secondary_token = localStorage.getItem('secondary_token')
         if (token) {
           await commit('set_token', { token, secondary_token })
-          await this.$reqApi(`/auth/user`, { getToken: true},{redirect:redirect })
+          await this.$reqApi(`/auth/user`, { getToken: true }, { redirect: redirect })
             .then(async (response) => {
               await dispatch('setAction', response.user)
               await commit('set_user', response.user)
               await dispatch('setRole', response.user)
               await dispatch('setActions')
               // await dispatch('setMenuItem', response.user )
-              // await dispatch('getDivisoin')
+              await dispatch('getDivisoin')
+              await dispatch('getBranchCode')
+              await dispatch('getRegion')
               if (response.Authorization) {
                 await commit('set_token', { token: response.Authorization, secondary_token, update: true })
               }
@@ -110,7 +112,9 @@ export const actions = {
     await dispatch('setRole', user)
     await commit('set_token', { token: Authorization })
     await dispatch('setActions')
-    // await dispatch('getDivisoin')
+    await dispatch('getDivisoin')
+    await dispatch('getBranchCode')
+    await dispatch('getRegion')
     // await dispatch('setMenuItem', user)
   },
   async logout({ dispatch }) {
@@ -155,13 +159,27 @@ export const actions = {
       await commit('set_role', 'other')
     }
   },
-  async setMenuItem({state,dispatch}, data){
-    dispatch('setting/getMenuItemServer', data.menu,{root:true})
+  async setMenuItem({ state, dispatch }, data) {
+    dispatch('setting/getMenuItemServer', data.menu, { root: true })
   },
-  async setActions({dispatch}){
-     dispatch('setting/getActionServer', '',{root:true})
+  async getBranchCode({ state, dispatch }) {
+    try {
+      await dispatch('setting/setBranchCod', {}, { root: true })
+    } catch (error) {
+     
+    }
+  }, 
+  async getRegion({ state, dispatch }) {
+    try {
+      await dispatch('setting/setgetRegion', {}, { root: true })
+    } catch (error) {
+      
+    }
   },
-  async getDivisoin({state,dispatch}){
-    dispatch('setting/setCountryDivision', '', {root:true})
-  }
+  async setActions({ dispatch }) {
+    dispatch('setting/getActionServer', '', { root: true })
+  },
+  async getDivisoin({ state, dispatch }) {
+    dispatch('setting/setCountryDivision', '', { root: true })
+  },
 }

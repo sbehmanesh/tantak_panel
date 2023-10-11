@@ -1,8 +1,8 @@
 <template>
   <div class="pa-4">
     <div class="text-left py-2">
-      <amp-button icon="add" text="جدید" color="#fdad00" v-if="createUrl" @click="$router.push(createUrl)" />
-      <amp-button icon="add" text="جدید" color="#fdad00" v-if="createShowFun" @click="createFun()" />
+      <amp-button icon="add" text="جدید" color="#ff9e00" v-if="createUrl" @click="$router.push(createUrl)" />
+      <amp-button icon="add" text="جدید" color="#ff9e00" v-if="createShowFun" @click="createFun()" />
 
       <amp-button v-for="btn in extraBtn" :key="btn.id" :color="btn.color" :icon="btn.icon" :text="btn.text" @click="btn.fun()" />
     </div>

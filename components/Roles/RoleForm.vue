@@ -74,11 +74,10 @@ export default {
   },
   computed: {
     action() {
-      let items = this.$store.state.setting.actions
-        .filter(x => !(typeof x.action_category_id == "string" && x.action_category_id.length > 20))
+      let items = this.$store.state.setting.actions.filter((x) => x.parent == null)
         .map(item => {
           let childs = this.$store.state.setting.actions.filter(
-            x => x.action_category_id == item.id
+            x => x.parent == item.id
           );
           childs = [item, ...childs];
           return { ...item, childs };

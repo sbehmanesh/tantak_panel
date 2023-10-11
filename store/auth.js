@@ -73,7 +73,7 @@ export const actions = {
               await dispatch('setAction', response.user)
               await commit('set_user', response.user)
               await dispatch('setRole', response.user)
-              // await dispatch('setActions')
+              await dispatch('setActions')
               // await dispatch('setMenuItem', response.user )
               // await dispatch('getDivisoin')
               if (response.Authorization) {
@@ -109,7 +109,7 @@ export const actions = {
     await dispatch('setAction', user)
     await dispatch('setRole', user)
     await commit('set_token', { token: Authorization })
-    // await dispatch('setActions')
+    await dispatch('setActions')
     // await dispatch('getDivisoin')
     // await dispatch('setMenuItem', user)
   },

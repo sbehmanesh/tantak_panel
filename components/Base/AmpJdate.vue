@@ -15,7 +15,7 @@
       :type="type"
       :max="max_end"
       :min="min_end"
-      color="#6A1B9A"
+      color="#fd5a00"
       :simple="simple"
       :format="format"
       v-model="inp_value"

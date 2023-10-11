@@ -3,30 +3,26 @@
     <v-container fluid class="px-8">
       <v-row dense>
         <v-col cols="12" md="3">
-          <amp-input text="نام" rules="require" v-model="form.first_name" />
+          <amp-input text="نام" v-model="form.first_name" />
         </v-col>
         <v-col cols="12" md="3">
-          <amp-input
-            text="نام خانوادگی"
-            rules="require"
-            v-model="form.last_name"
-          />
+          <amp-input text="نام خانوادگی" v-model="form.last_name" />
         </v-col>
         <v-col cols="12" md="3">
           <amp-input
             class="ltr-item"
-            text="شماره همراه"
+            text=" شماره همراه "
             rules="require,phone"
             v-model="form.username"
           />
         </v-col>
         <v-col cols="12" md="3">
           <amp-input
-            type="password"
-            text="رمز عبور"
             class="ltr-item"
-            v-model="form.password"
+            text=" رمز عبور "
+            type="password"
             :rules="modelId ? 'password' : 'require,password'"
+            v-model="form.password"
           />
         </v-col>
         <v-col cols="12" md="3" v-if="!Boolean(roleId)">
@@ -34,7 +30,6 @@
             text="نقش"
             chips
             multiple
-            rules="require"
             v-model="form.role_id"
             :items="$store.state.setting.roles"
           />
@@ -45,6 +40,14 @@
             rules="require"
             v-model="form.status"
             :items="$store.state.static.status"
+          />
+        </v-col>
+        <v-col cols="12" md="3">
+          <amp-select
+            text="نوع شخص"
+            rules="require"
+            v-model="form.person_type"
+            :items="$store.state.static.person_type"
           />
         </v-col>
         <v-col cols="12" md="3">
@@ -64,10 +67,10 @@
         </v-col>
         <v-col cols="12" md="3">
           <amp-input
-            text="پست الکترونیکی"
+            text="کد پستی"
             cClass="ltr-item"
-            rules="email"
-            v-model="form.email"
+            rules="postCode"
+            v-model="form.address.postal_code"
           />
         </v-col>
         <v-col cols="12" md="3">
@@ -80,10 +83,13 @@
         <v-col cols="12" md="3">
           <amp-select
             text="شهر"
-            v-model="form.country_division_id"
+            v-model="form.address.country_division_id"
             :items="citis"
             :disabled="citis.length > 0 ? false : true"
           />
+        </v-col>
+        <v-col cols="12" md="3">
+          <amp-upload-file v-model="form.avatar" />
         </v-col>
         <v-col cols="12" md="12">
           <v-divider></v-divider>
@@ -94,11 +100,12 @@
             v-model="form.description"
           ></amp-textarea>
         </v-col>
+
         <v-col cols="12" md="4">
-          <amp-textarea text="شغل" v-model="form.job"></amp-textarea>
-        </v-col>
-        <v-col cols="12" md="4">
-          <amp-textarea text="آدرس" v-model="form.address"></amp-textarea>
+          <amp-textarea
+            text="آدرس"
+            v-model="form.address.address"
+          ></amp-textarea>
         </v-col>
       </v-row>
 
@@ -139,7 +146,7 @@ export default {
     path: { default: "/user" },
     showUrl: { default: "/user/show" },
     createUrl: { default: "/user/insert" },
-    updateUrl: { default: "/user/update" }
+    updateUrl: { default: "/user/update" },
   },
   data: () => ({
     valid: false,
@@ -154,25 +161,30 @@ export default {
     form: {
       sort: -1,
       username: "",
+      parent_id: "",
+      birth_date: "",
+      avatar: "",
+      password: "",
       password: "",
       last_name: "",
-      first_name: "",
-      role_id: [],
-      birth_date: "",
-      address: "",
-      job: "",
-      email: "",
       description: "",
+      first_name: "",
+      person_type: "",
+      role_id: [],
+      address: {
+        postal_code: "",
+        country_division_id: "",
+        address: "",
+      },
       national_code: "",
       province_id: "",
-      country_division_id: "",
-      status: "active"
-    }
+      status: "active",
+    },
   }),
   watch: {
     "form.province_id"() {
       this.loadCitis(this.form.province_id);
-    }
+    },
   },
   mounted() {
     if (Boolean(this.roleId)) {
@@ -181,11 +193,11 @@ export default {
     if (this.modelId) {
       this.loadData();
     }
-    this.loadState().then(res => {
-      res.filter(x => {
+    this.loadState().then((res) => {
+      res.filter((x) => {
         this.province.push({
           text: x.name,
-          value: x.id
+          value: x.id,
         });
       });
     });
@@ -201,7 +213,7 @@ export default {
       }
       form.username = this.$FarsiToEnglishNumber(form.username);
       this.$reqApi(url, form)
-        .then(response => {
+        .then((response) => {
           if (this.modelId) {
             this.$toast.success("اطلاعات ویرایش شد");
           } else {
@@ -209,36 +221,39 @@ export default {
           }
           this.redirectPage();
         })
-        .catch(error => {
+        .catch((error) => {
           this.loading = false;
         });
     },
     loadData() {
       this.loading = true;
       this.$reqApi(this.showUrl, { id: this.modelId })
-        .then(async response => {
+        .then(async (response) => {
           this.form.id = this.modelId;
-          this.form.job = response.model.job;
-          this.form.email = response.model.email;
           this.form.status = response.model.status;
-          this.form.address = response.model.address;
+          this.form.address.address = response.model.address;
+          this.form.address.postal_code = response.model.postal_code;
           this.form.username = response.model.username;
+          this.form.password = response.model.password;
           this.form.last_name = response.model.last_name;
+          this.form.person_type = response.model.person_type;
           this.form.first_name = response.model.first_name;
-          this.form.description = response.model.description;
-          this.form.birth_date = response.model.birth_date;
+          this.form.avatar = response.model.avatar;
+          this.form.parent_id = response.model.parent_id;
           this.form.province_id = response.model.province_id;
           this.form.national_code = response.model.national_code;
+          console.log("reso : ", response.model.parent_id);
           setTimeout(() => {
-            this.form.country_division_id = response.model.country_division_id;
+            this.form.address.country_division_id =
+              response.model.country_division_id;
           }, 400);
           if (Array.isArray(response.model.roles)) {
-            this.form.role_id = response.model.roles.map(x => x.id);
+            this.form.role_id = response.model.roles.map((x) => x.id);
           }
 
           this.loading = false;
         })
-        .catch(error => {
+        .catch((error) => {
           this.redirectPage();
           this.loading = false;
         });
@@ -248,32 +263,40 @@ export default {
         let filters = {
           level: {
             op: "=",
-            value: "province"
-          }
+            value: "province",
+          },
         };
         this.$reqApi("/country-division", {
           filters: filters,
-          row_number: 3000000
+          row_number: 3000000,
         })
-          .then(res => {
+          .then((res) => {
             response(res.model.data);
           })
-          .catch(err => {
+          .catch((err) => {
             return err;
           });
       });
     },
     loadCitis(id) {
       this.citis = [];
+      let filters = {
+        parent_id: {
+          op: "=",
+          value: id,
+        },
+      };
       if (id) {
-        this.$reqApi("/country-division/get-cities", {
-          id: id,
-          row_number: 300000
-        }).then(res => {
-          res.filter(x => {
+        let data = [];
+        this.$reqApi("/country-division", {
+          filters: filters,
+          row_number: 300000,
+        }).then((res) => {
+          data = res.model.data;
+          data.filter((x) => {
             this.citis.push({
               text: x.name,
-              value: x.id
+              value: x.id,
             });
           });
         });
@@ -285,7 +308,7 @@ export default {
       } else {
         this.$router.push(this.path);
       }
-    }
-  }
+    },
+  },
 };
 </script>

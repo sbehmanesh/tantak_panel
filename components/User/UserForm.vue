@@ -39,22 +39,6 @@
             :items="$store.state.setting.roles"
           />
         </v-col>
-        <!-- <v-col cols="12" md="3">
-          <amp-select
-            text=" کد شعبه "
-            v-model="form.branch_id"
-            :disabled="cheke"
-            :items="$store.state.setting.branch_code"
-          />
-        </v-col> -->
-        <v-col cols="12" md="3">
-          <UserSelectForm
-            text=" کاربر ناظر"
-            v-model="parent_id"
-            url="user"
-            :role-id="[$store.state.auth.role.admin_id]"
-          />
-        </v-col>
         <v-col cols="12" md="3">
           <amp-select
             text="وضعیت"
@@ -87,20 +71,21 @@
           />
         </v-col>
         <v-col cols="12" md="3">
+          <amp-input
+            text="کد پستی"
+            cClass="ltr-item"
+            rules="postCode"
+            v-model="form.address.postal_code"
+          />
+        </v-col>
+        <v-col cols="12" md="3">
           <amp-select
             text="استان"
             v-model="form.province_id"
             :items="province"
           />
         </v-col>
-        <!-- <v-col cols="12" md="3">
-          <amp-select
-            text="ناحیه"
-            v-model="form.region_id"
-            :items="$store.state.setting.region"
-            :disabled="cheke"
-          />
-        </v-col> -->
+
         <v-col cols="12" md="3">
           <amp-select
             text="شهر"
@@ -110,11 +95,28 @@
           />
         </v-col>
         <v-col cols="12" md="3">
-          <amp-input
-            text="کد پستی"
-            cClass="ltr-item"
-            rules="postCode"
-            v-model="form.address.postal_code"
+          <UserSelectForm
+            text=" کاربر ناظر"
+            v-model="parent_id"
+            url="user"
+            :role-id="[$store.state.auth.role.admin_id]"
+            v-if="cheke_user"
+          />
+        </v-col>
+        <v-col cols="12" md="3">
+          <amp-select
+            text="ناحیه"
+            v-model="form.region_id"
+            :items="$store.state.setting.region"
+            v-if="cheke_branch"
+          />
+        </v-col>
+        <v-col cols="12" md="3">
+          <amp-select
+            text=" کد شعبه "
+            v-model="form.branch_id"
+            v-if="cheke_branch"
+            :items="$store.state.setting.branch_code"
           />
         </v-col>
         <v-col cols="12" md="3">
@@ -192,7 +194,6 @@ export default {
     province: [],
     user: [],
     citis: [],
-    cheke: false,
     form: {
       sort: -1,
       username: "",
@@ -202,6 +203,8 @@ export default {
       password: "",
       last_name: "",
       description: "",
+      region_id: "",
+      branch_id: "",
       first_name: "",
       person_type: "",
 
@@ -215,16 +218,46 @@ export default {
       status: "active",
     },
   }),
+  computed: {
+    cheke_branch() {
+      return (
+        this.form.role_id.indexOf(this.$store.state.auth.role.cashier_id) > -1 ||
+        this.form.role_id.indexOf(this.$store.state.auth.role. warehouseman_id) > -1
+      );
+    },
+
+    cheke_user() {
+      return (
+        this.form.role_id.indexOf(this.$store.state.auth.role.cashier_id) > -1 ||
+        this.form.role_id.indexOf(this.$store.state.auth.role.writers_id) >
+          -1 ||
+        this.form.role_id.indexOf(this.$store.state.auth.role. warehouseman_id) > -1 ||
+        this.form.role_id.indexOf(this.$store.state.auth.role.admin_id) > -1
+      );
+    },
+  },
   watch: {
     "form.province_id"() {
       this.loadCitis(this.form.province_id);
     },
-    // "form.role_id"(){
-    //   if(this.form.role_id.indexOf("5246f14d-1906-4e34-a412-8fb689d20f23") > -1){
+    // "form.role_id"() {
+    //   let cashier_id = "38d3025b-ed61-4d0d-815f-31c008eb33fc"; //  صندوق دار
+
+    //   if (
+    //     this.form.role_id.indexOf(cashier_id) > -1 ||
+    //     this.form.role_id.indexOf( warehouseman_id) > -1
+    //   ) {
     //     this.cheke = true;
+    //   } else {
+    //     this.cheke = false;
+    //   }
+    //   if(this.form.role_id.indexOf(user) > -1){
+    //     this.cheke_user = false
+    //   }else{
+    //     this.cheke_user = true
     //   }
 
-    // }
+    // },
   },
   mounted() {
     if (this.modelId) {
@@ -283,10 +316,10 @@ export default {
           this.form.first_name = response.model.first_name;
           this.form.description = response.model.description;
           this.form.avatar = response.model.avatar;
-          // this.form.region_id = response.model.region_id;
+          this.form.region_id = response.model.region_id;
           this.form.parent_id = response.model.parent_id;
           this.form.national_code = response.model.national_code;
-          // this.form.branch_id = response.model.branch_id;
+          this.form.branch_id = response.model.branch_id;
           if (response.model.parent) {
             this.parent_id = [response.model.parent];
           }

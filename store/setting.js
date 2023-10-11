@@ -163,7 +163,15 @@ export const actions = {
                     .catch((error) => { res() })
             })
                 .then(res => {
-                    let branch = res.map(x => ({ ...x, text: [x.branch_code + " - " + x.name], value: x.id }))
+                    let branch = res.map(x => ({
+                        ...x,
+                        text: [
+                            "نام شعبه :" + " " + x.name 
+                            +
+                            " | "
+                            + " کد شعبه : " + " " + x.branch_code
+                        ], value: x.id
+                    }))
                     commit('set_branch', branch)
 
                 })

@@ -1,0 +1,484 @@
+<template>
+  <div>
+    <v-stepper alt-labels v-model="step_number" >
+      <v-stepper-header>
+        <v-divider></v-divider>
+        <v-stepper-step :complete="step_number > 1" editable step="1"> اطلاعات پایه محصول </v-stepper-step>
+        <v-divider></v-divider>
+        <v-stepper-step :complete="step_number > 2" editable step="2"> جزئیات محصول</v-stepper-step>
+        <v-divider></v-divider>
+        <v-stepper-step :complete="step_number > 3" editable step="3"> قیمت گذاری </v-stepper-step>
+        <v-divider></v-divider>
+      </v-stepper-header>
+      <v-stepper-items>
+        <v-stepper-content step="1">
+          <v-form v-model="valid" @submit.prevent="submit()" :disabled="loading">
+            <v-row dense>
+              <v-col cols="12" md="3">
+                <amp-input text="نام محصول" v-model="form.name" rules="require" />
+              </v-col>
+              <v-col cols="12" md="3">
+                <amp-input text="لینک" v-model="form.slug" rules="" />
+              </v-col>
+              <v-col cols="12" md="3">
+                <amp-autocomplete
+                  rules="require"
+                  multiple
+                  text="دسته بندی"
+                  v-model="form.categories"
+                  :items="product_categories"
+                />
+              </v-col>
+              <v-col cols="12" md="3">
+                <amp-input text="کد محصول" v-model="form.code" rules="require" />
+              </v-col>
+              <v-col cols="12" md="3">
+                <amp-select
+                  text="فروش تکی "
+                  rules="require"
+                  v-model="form.has_single_sell"
+                  :items="this.$store.state.static.bool_number_enum"
+                />
+              </v-col>
+              <v-col cols="12" md="3">
+                <amp-select
+                  text="فروش فله/عمده "
+                  rules="require"
+                  v-model="form.has_whole_sell"
+                  :items="this.$store.state.static.bool_number_enum"
+                />
+              </v-col>
+
+              <v-col cols="12" md="3" v-if="form.has_whole_sell == '1'">
+                <amp-select text="یکای فروش (فله/عمده)" rules="require" v-model="form.base_whole_sell_unit" :items="units" />
+              </v-col>
+
+              <v-col cols="12" md="3" v-if="form.has_whole_sell == '1'">
+                <amp-select
+                  text="استفاده در ترکیب ساز"
+                  rules="require"
+                  v-model="form.mixturable"
+                  :items="this.$store.state.static.bool_number_enum"
+                />
+              </v-col>
+
+              <v-col cols="12" md="3" v-if="form.mixturable == '1'">
+                <amp-autocomplete
+                  multiple
+                  text="استفاده در"
+                  rules="require"
+                  v-model="form.mixture_ids"
+                  :items="this.$store.state.static.mixture_types"
+                />
+              </v-col>
+              <v-col cols="12" md="3">
+                <amp-input text="ترتیب نمایش" v-model="form.sort" rules="number" />
+              </v-col>
+              <v-col cols="12" md="3" v-if="form.product_status != 'hidden'">
+                <amp-select
+                  text="وضعیت انتشار"
+                  rules="require"
+                  v-model="form.status"
+                  :items="this.$store.state.static.product_status"
+                />
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="12" md="12" class="text-center">
+                <amp-button large icon="redo" class="my-1" color="error" text="انصراف" @click="redirectPage()" />
+                <amp-button
+                  large
+                  icon="done"
+                  class="my-1"
+                  type="submit"
+                  color="success"
+                  :loading="loading"
+                  :disabled="!valid || loading"
+                  :text="modelId ? 'ذخیره تغییرات' : 'ذخیره و ادامه'"
+                />
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-stepper-content>
+      </v-stepper-items>
+      <v-stepper-items>
+        <v-stepper-content step="2">
+           <v-alert outlined type="warning" prominent border="left" class="text-center" v-if="!modelId">
+                برای فعال شدن بخش جزئیات محصول ، بعد از ورود اطلاعات پایه دکمه ذخیره و ادامه را بزنید.
+              </v-alert>
+          <v-form v-model="valid" @submit.prevent="submit()" :disabled="loading" v-else>
+            <v-row dense>
+              <v-col cols="12" md="4" class="mt-10">
+                <v-row>
+                  <v-col cols="12" md="12">
+                    <v-img max-width="300" max-height="300" :src="$getImage(form.main_picture_path, 'medium')" />
+                  </v-col>
+                  <v-col cols="12" md="12">
+                    <AmpUploadFile v-model="form.main_picture_path" title="تصویر شاخص" />
+                  </v-col>
+                  <v-col cols="12" md="12">
+                    <amp-button
+                      :class="{
+                        'mt-9': $vuetify.breakpoint.mdAndUp,
+                        'mt-2': $vuetify.breakpoint.smAndDown,
+                      }"
+                      height="40"
+                      block
+                      @click="openGalleryDialog()"
+                      text="تنظیم گالری تصاویر"
+                    />
+                  </v-col>
+                </v-row>
+              </v-col>
+              <v-col cols="12" md="8" class="mt-10">
+                <amp-editor v-model="form.excerpt_description" text="توضیحات مختصر" />
+              </v-col>
+              <v-col cols="12" md="12" class="mt-10">
+                <amp-editor v-model="form.description" text="توضیحات کامل محصول" />
+              </v-col>
+              <v-col cols="12" md="5">
+                <AmpJsonInput
+                  textPlaceholder="مثال: کشور ایران"
+                  valuePlaceholder="مثال: محل ساخت"
+                  text="ویژگی ها "
+                  v-model="form.specefics_table"
+                />
+              </v-col>
+              <v-col cols="12" md="2" />
+
+              <v-col cols="12" md="5">
+                <AmpJsonInput
+                  textPlaceholder=" مثال: برای بیماران با احتیاط مصرف شود"
+                  text="موارد منع مصرف "
+                  v-model="form.additional_description"
+                  :showValue="false"
+                />
+              </v-col>
+
+              <v-col cols="12" md="12" class="mt-8">
+                <v-divider />
+              </v-col>
+
+              <v-col cols="12" md="5" class="px-4">
+                <amp-tags v-model="form.keywords" text="برچسب ها" />
+              </v-col>
+
+              <v-col cols="12" md="7">
+                <amp-textarea text="توضیحات سئو" v-model="form.seo_description" :rows="4" />
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="12" md="12" class="text-center">
+                <amp-button large icon="redo" class="my-1" color="error" text="انصراف" @click="redirectPage()" />
+                <amp-button
+                  large
+                  icon="done"
+                  class="my-1"
+                  type="submit"
+                  color="success"
+                  :loading="loading"
+                  :disabled="!valid || loading"
+                  :text="modelId ? 'ذخیره تغییرات' : 'ذخیره و ادامه'"
+                />
+              </v-col>
+              <Gallery :gallery_imgs="form.medias" v-model="gallery_dialog" @insertGallery="insertGallery" />
+            </v-row>
+          </v-form>
+        </v-stepper-content>
+      </v-stepper-items>
+      <v-stepper-items>
+        <v-stepper-content step="3">
+          <v-row>
+            <v-col cols="12">
+              <v-alert outlined type="warning" prominent border="left" class="text-center" v-if="!modelId">
+                برای فعال شدن بخش ویژگی های محصول ، بعد از ورود اطلاعات پایه دکمه ذخیره و ادامه را بزنید.
+              </v-alert>
+              <v-row v-else class="mt-5">
+                <v-tabs v-model="tab" centered icons-and-text>
+                  <v-tab
+                    ><span class="font-weight-medium">تنظیمات فروش تکی</span>
+                    <v-icon class="font_30">shopping_cart</v-icon></v-tab
+                  >
+                  <v-tab>
+                    <span> تنظیمات فروش فله / عمده </span>
+                    <v-icon class="font_30">scale</v-icon>
+                  </v-tab>
+                </v-tabs>
+                <v-col cols="12" v-if="tab == 0 && form.has_single_sell == '1'">
+                  <SingleProductForm @reloadPage="reloadPage()" :product="form" />
+                </v-col>
+                <v-col cols="12" v-if="tab == 0 && form.has_single_sell == '0'">
+                  <v-alert outlined type="warning" prominent border="left" class="text-center">
+                    فروش تکی برای این محصول غیر فعال است
+                  </v-alert>
+                </v-col>
+                <v-col cols="12" v-if="tab == 1 && form.has_whole_sell == '1'">
+                  <WholeProductForm @reloadPage="reloadPage()" :product="form" />
+                </v-col>
+                <v-col cols="12" v-if="tab == 1 && form.has_whole_sell == '0'">
+                  <v-alert outlined type="warning" prominent border="left" class="text-center">
+                    فروش فله برای این محصول غیر فعال است
+                  </v-alert>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+          <v-row v-if="modelId">
+            <v-col cols="12" md="12" class="text-center" >
+              <v-form v-model="valid" @submit.prevent="submit()" :disabled="loading">
+                <amp-button large icon="redo" class="my-1" color="error" text="انصراف" @click="redirectPage()" />
+                <amp-button
+                  large
+                  icon="done"
+                  class="my-1"
+                  type="submit"
+                  color="success"
+                  :loading="loading"
+                  :disabled="!valid || loading"
+                  :text="modelId ? 'ذخیره تغییرات' : 'ذخیره و ادامه'"
+                />
+              </v-form>
+            </v-col>
+          </v-row>
+        </v-stepper-content>
+      </v-stepper-items>
+    </v-stepper>
+  </div>
+</template>
+
+<script>
+import Gallery from '@/components/Product/Gallery.vue'
+import SingleProductForm from '@/components/Product/SingleProductForm.vue'
+import WholeProductForm from '@/components/Product/WholeProductForm.vue'
+import AmpAutocomplete from '../Base/AmpAutocomplete.vue'
+export default {
+  components: { SingleProductForm, WholeProductForm, Gallery, AmpAutocomplete },
+  props: {
+    modelId: { default: null },
+  },
+  data: () => ({
+    step_number: 1,
+
+    valid: false,
+    loading: false,
+    gallery_dialog: false,
+    tab: 0,
+    createUrl: '/product/insert',
+    updateUrl: '/product/update',
+    showUrl: '/product/show',
+    product_categories: [],
+    units: [],
+    mixtureTypes: [],
+    variationTypes: [],
+
+    form: {
+      id: '',
+      name: '',
+      slug: '',
+      code: '',
+      status: 'hidden',
+      has_single_sell: '1',
+      has_whole_sell: '0',
+      mixturable: '0',
+      main_picture_path: '/image/no_image.png',
+      base_whole_sell_unit: '',
+      mixture_ids: [],
+      single_sell_variation_combinations: [],
+      whole_sell_variation_combinations: [],
+      categories: [],
+      keywords: [],
+      medias: [],
+      description: '',
+      seo_description: '',
+      specefics_table: [],
+      additional_description: [],
+      mixture_type: [],
+      sort: 1,
+      excerpt_description: '',
+    },
+  }),
+
+  mounted() {
+    if ('step' in this.$route.query) {
+      this.step_number = this.$route.query.step
+    }
+    if (this.modelId) {
+      this.loadData()
+    }
+    this.getCategories()
+    this.getSettings()
+  },
+  methods: {
+    submit() {
+      let form = this.$copyForm(this.form)
+
+      form['has_single_sell'] = parseInt(form['has_single_sell'])
+      form['has_whole_sell'] = parseInt(form['has_whole_sell'])
+      form['mixturable'] = parseInt(form['mixturable'])
+      if (form.specefics_table) {
+        form.specefics_table = JSON.stringify(form.specefics_table)
+      }
+      if (form.additional_description) {
+        form.additional_description = JSON.stringify(form.additional_description)
+      }
+
+      this.loading = true
+      let url = this.createUrl
+      if (this.modelId) {
+        url = this.updateUrl
+        form['id'] = this.modelId
+
+        if (form.status == 'hidden') {
+          if (this.form.single_sell_variation_combinations.length > 0 || form.whole_sell_variation_combinations.length > 0) {
+            form.status = 'active'
+          }
+        }
+
+        if (this.form.single_sell_variation_combinations.length == 0 && form.whole_sell_variation_combinations.length == 0) {
+          form.status = 'hidden'
+        }
+      }
+      this.$reqApi(url, form)
+        .then((response) => {
+          if (!this.modelId) {
+            this.$toast.success('اطلاعات اولیه محصول مورد نظر شما ثبت شد')
+            this.$router.push('/product/' + response.id+"?step=2")
+            return
+          } else {
+            this.$toast.success('اطلاعات ویرایش شد')
+            if (this.step_number == 3) {
+              this.redirectPage()
+            }
+            this.step_number += 1
+            this.loading = false
+          }
+        })
+        .catch((error) => {
+          this.loading = false
+        })
+    },
+    loadData() {
+      this.loading = true
+      this.$reqApi(this.showUrl, { id: this.modelId })
+        .then(async (response) => {
+          response = response.data
+          this.form['id'] = response.id
+
+          this.form.name = response.name
+          this.form.slug = response.slug
+          this.form.base_whole_sell_unit = response.base_whole_sell_unit
+          for (let i = 0; i < response.categories.length; i++) {
+            this.form.categories.push(response.categories[i].id)
+          }
+          this.form.code = response.code
+          if (response.description) {
+            this.form.description = response.description.description
+            this.form.excerpt_description = response.description.excerpt_description
+            if (response.description.specefics_table) {
+              this.form.specefics_table = JSON.parse(response.description.specefics_table)
+            }
+            if (response.description.additional_description) {
+              this.form.additional_description = JSON.parse(response.description.additional_description)
+            }
+          }
+          this.form.has_single_sell = response.has_single_sell.toString()
+          this.form.has_whole_sell = response.has_whole_sell.toString()
+          for (let i = 0; i < response.keywords.length; i++) {
+            this.form.keywords.push(response.keywords[i].value)
+          }
+          this.form.main_picture_path = response.main_picture_path
+          this.form.single_sell_variation_combinations = response.single_sell_variation_combinations
+          this.form.whole_sell_variation_combinations = response.whole_sell_variation_combinations
+
+          this.form.medias = []
+          for (let i = 0; i < response.medias.length; i++) {
+            this.form.medias.push(response.medias[i].file_path)
+          }
+          this.form.mixturable = response.mixturable.toString()
+
+          for (let i = 0; i < response.mixture_types.length; i++) {
+            this.form.mixture_ids.push(response.mixture_types[i].id)
+          }
+
+          this.form.status = response.status
+          this.form.sort = response.sort
+          this.loading = false
+        })
+        .catch((error) => {
+          this.redirectPage()
+          this.loading = false
+        })
+    },
+    redirectPage() {
+      if (window.history.length > 2) {
+        this.$router.back()
+      } else {
+        this.$router.push(this.path)
+      }
+    },
+    getCategories() {
+      let form = {
+        row_number: 2000,
+      }
+
+      this.$reqApi('/product-category', form)
+        .then((response) => {
+          this.product_categories = response.model.data.map((x) => ({
+            value: x.id,
+            text: x.title,
+          }))
+
+          this.loading = false
+        })
+        .catch((error) => {
+          this.loading = false
+        })
+    },
+
+    reloadPage() {
+      this.loadData()
+    },
+
+    openGalleryDialog() {
+      this.gallery_dialog = !this.gallery_dialog
+    },
+    insertGallery(gallery_array) {
+      this.form.medias = gallery_array
+    },
+
+    getSettings() {
+      this.loading = true
+
+      let form = {
+        row_number: 100,
+        // filters: { key: 'variation_type' },
+        filters: { key: { op: 'in', value: ['variation_type', 'units', 'mixture_type'] } },
+      }
+
+      this.$reqApi('/setting', form)
+        .then((response) => {
+          this.variationTypes = []
+          this.units = []
+          this.mixture_type = []
+          for (let i = 0; i < response.model.data.length; i++) {
+            let x = response.model.data[i]
+            if (x['key'] == 'variation_type') {
+              this.variationTypes.push({ value: x.id, text: x.value })
+            }
+            if (x['key'] == 'units') {
+              this.units.push({ value: x.value, text: x.value })
+            }
+            if (x['key'] == 'mixture_type') {
+              this.mixture_type.push({ value: x.id, text: x.value })
+            }
+          }
+
+          this.loading = false
+        })
+        .catch((error) => {
+          this.loading = false
+        })
+    },
+  },
+}
+</script>

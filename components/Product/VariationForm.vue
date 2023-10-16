@@ -1,0 +1,223 @@
+<template>
+  <v-card class="pa-5">
+    <v-row>
+      <v-col cols="2">
+        <amp-button
+          @click="toggleshowAddVairiation()"
+          large
+          icon="add"
+          color="success"
+          class="my-1 mt-7"
+          :loading="loading"
+          :disabled="loading"
+          text="ویژگی جدید"
+        />
+      </v-col>
+      <template v-if="showAddVairiation">
+        <v-col cols="2">
+          <amp-select text="ویژگی" :items="allVariations" title="ویژگی" v-model="form.variation_type_id" />
+        </v-col>
+        <v-col cols="2"> <amp-input placeholder="مثلا 100 گرمی" text="مقدار ویژگی" v-model="form.value" /> </v-col>
+        <v-col cols="1"> <amp-input text="کد" v-model="form.code" rules="max_2" /> </v-col>
+        <v-col cols="2">
+          <amp-input text="ترتیب " v-model="form.sort" rules="number" />
+        </v-col>
+        <v-col cols="12" md="3" class="text-center mt-8">
+          <amp-button small text="افزودن" color="success" :loading="loading" @click="add()"> </amp-button>
+        </v-col>
+      </template>
+    </v-row>
+
+    <v-row>
+      <v-col cols="12">
+        <amp-title text="ویژگی های محصول"></amp-title>
+      </v-col>
+    </v-row>
+
+    <v-row class="pa-2 mt-1">
+      <v-col cols="12" md="3" class="text-center"> ویژگی </v-col>
+      <v-col cols="12" md="3" class="text-center"> مقدار </v-col>
+      <v-col cols="12" md="2" class="text-center"> کد </v-col>
+      <v-col cols="12" md="1" class="text-center"> ترتیب </v-col>
+      <v-col cols="12" md="3" class="text-center"> عملیات </v-col>
+    </v-row>
+    <v-row v-for="(v, index) in variations" :key="'v' + index" :class="index % 2 == 0 ? 'odd-row' : ''">
+      <v-col cols="12" md="3" class="text-center">
+        {{ v.variation_type }}
+      </v-col>
+      <v-col cols="12" md="3" class="text-center"><amp-input v-model="v.value" /> </v-col>
+      <v-col cols="12" md="2" class="text-center"><amp-input v-model="v.code" /></v-col>
+      <v-col cols="12" md="1" class="text-center"><amp-input v-model="v.sort" rules="number" /> </v-col>
+      <v-col cols="12" md="3" class="text-center">
+        <amp-button small text="به روز رسانی" color="success" :loading="loading" @click="update(index)"> </amp-button>
+        <amp-button small text="حذف" color="error" :loading="loading" @click="deleteDialog(true, index)"> </amp-button>
+      </v-col>
+    </v-row>
+
+    <v-dialog v-model="deleteDiaolog" :width="$vuetify.breakpoint.mdAndUp ? 380 : 470">
+      <v-card class="pa-5">
+        <span class="mb-2 font_xxxl font_bold">ویژگی انتخابی حذف شود؟</span>
+        <v-row class="pa-3">
+          <v-col cols="6">
+            <amp-button text="بله، حذف شود" class="w-max" color="error" @click="deleteItem()" :disabled="loading" />
+          </v-col>
+          <v-col cols="6">
+            <amp-button text="منصرف شدم" color="accent" class="w-max" @click="deleteDialog(false)" :disabled="loading" />
+          </v-col>
+        </v-row>
+      </v-card>
+    </v-dialog>
+  </v-card>
+</template>
+
+<script>
+export default {
+  props: {
+    product_id: { default: null },
+  },
+  data: () => ({
+    valid: false,
+    loading: false,
+    variations: [],
+    allVariations: [],
+    selected_item: '',
+    deleteDiaolog: false,
+    showAddVairiation: false,
+
+    form: {
+      id: '',
+      sort: 1,
+      value: '',
+      variation_type_id: '',
+      product_id: '',
+      code: '',
+    },
+  }),
+
+  mounted() {
+    this.loadData()
+    this.getAllVariations()
+  },
+  methods: {
+    loadData() {
+      this.loading = true
+      this.$reqApi('/product-variation', { filters: { product_id: this.product_id } })
+        .then(async (response) => {
+          this.variations = []
+          response = response.model.data
+          for (let i = 0; response.length; i++) {
+            this.variations.push({
+              id: response[i].id,
+              value: response[i].value,
+              variation_type: response[i].variation_type,
+              product_id: response[i].product_id,
+              sort: response[i].sort,
+              code: response[i].code,
+              variation_type_id: response[i].variation_type_id,
+            })
+          }
+          this.loading = false
+        })
+        .catch((error) => {
+          this.loading = false
+        })
+    },
+    close() {
+      this.$emit('closeVariationForm')
+    },
+    update(index) {
+      this.loading = true
+      let form = this.variations[index]
+      if (!form.value || !form.variation_type || !form.code) {
+        this.$toast.error('لطفا ورودی ها را کنترل کنید.')
+        this.loading = false
+        return
+      }
+      if (form.sort) {
+        form.sort = parseInt(form.sort)
+      }
+
+      this.$reqApi('/product-variation/update', form)
+        .then((response) => {
+          this.$toast.success('اطلاعات ویرایش شد')
+          this.loading = false
+        })
+        .catch((error) => {
+          this.loading = false
+        })
+    },
+    deleteDialog(flag, index) {
+      this.deleteDiaolog = flag
+      this.selected_item = index
+    },
+    deleteItem() {
+      this.loading = true
+      let selected_id = this.variations[this.selected_item].id
+      this.$reqApi('/product-variation/delete', { id: selected_id })
+        .then((response) => {
+          this.$toast.success('ویژگی مد نظر با موفقیت جذف شد.')
+          this.loadData()
+          this.deleteDiaolog = false
+
+          this.loading = false
+        })
+        .catch((error) => {
+          this.loading = false
+        })
+    },
+    getAllVariations() {
+      this.loading = true
+      let form = {
+        row_number: 100,
+        filters: { key: 'variation_type' },
+      }
+
+      this.$reqApi('/setting', form)
+        .then((response) => {
+          this.allVariations = response.model.data.map((x) => ({
+            value: x.id,
+            text: x.value,
+          }))
+          this.loading = false
+        })
+        .catch((error) => {
+          this.loading = false
+        })
+    },
+    toggleshowAddVairiation() {
+      this.showAddVairiation = !this.showAddVairiation
+    },
+    add() {
+      this.loading = true
+      this.form['product_id'] = this.product_id
+      let form = this.$copyForm(this.form)
+      if (!form.value || !form.code || !form.variation_type_id) {
+        this.$toast.error('لطفا مقادیر ورودی رو کنترل کنید.')
+        this.loading = false
+
+        return
+      }
+
+      this.$reqApi('/product-variation/insert', form)
+        .then((response) => {
+          this.$toast.success('ویژگی مد نظر با موفقیت جذف شد.')
+          this.loadData()
+          this.deleteDiaolog = false
+          this.form = {
+            id: '',
+            sort: '',
+            value: '',
+            variation_type_id: '',
+            product_id: '',
+            code: '',
+          }
+          this.showAddVairiation = false
+          this.loading = false
+        })
+        .catch((error) => {
+          this.loading = false
+        })
+    },
+  },
+}
+</script>

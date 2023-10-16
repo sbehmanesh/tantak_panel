@@ -1,14 +1,18 @@
 <template>
-  <SettinLogo :model-id="$route.params.id" />
+  <SettingForm :model-id="model_id" />
 </template>
 
 <script>
-import SettinLogo from '@/components/Setting/SettinLogo.vue'
+import SettingForm from '@/components/Setting/SettingForm.vue'
 export default {
-  components: { SettinLogo },
+  components: { SettingForm },
   data: () => ({
-    title: 'تنظیمات ',
+    title: 'ویرایش تنظیمات',
+    model_id:'',
   }),
+  beforeMount() {
+    this.model_id = this.$route.params.id
+  },
   mounted() {
     this.$store.dispatch('setPageTitle', this.title)
   },

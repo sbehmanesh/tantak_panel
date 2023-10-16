@@ -1,63 +1,65 @@
-let app_name = 'پنل ادمین'
-let app_name_bimch = 'پنل ادمین تن تاک'
-let logo_bimche = '/image/logo.png'
+let app_name = "پنل ادمین";
+let app_name_bimch = "پنل ادمین تن تاک";
+let logo_bimche = "/image/logo.png";
 
-let time_interval = null
+let time_interval = null;
 
 export const state = () => ({
-  live_time: '',
-  server_time: '',
-  app_name: '',
+  live_time: "",
+  server_time: "",
+  app_name: "",
   logo: logo_bimche,
   page_title: app_name,
-  file_url: 'https://test-api.tantak.ir/',
-  server_url: 'https://test-api.tantak.ir/api/v1',
-})
+  file_url: "https://test-api.tantak.ir/",
+  server_url: "https://test-api.tantak.ir/api/v1"
+});
 
 export const mutations = {
   set_app_name: function (state, data) {
-    app_name = app_name_bimch
-    state.app_name = app_name_bimch
+    app_name = app_name_bimch;
+    state.app_name = app_name_bimch;
   },
   set_title: function (state, data) {
-    if (typeof data != 'string' && data.length == 0) {
-      data = app_name
+    if (typeof data != "string" && data.length == 0) {
+      data = app_name;
     }
-    state.page_title = data
+    state.page_title = data;
   },
   set_logo: function (state, data) {
-    state.logo = logo_bimche
+    state.logo = logo_bimche;
   },
   set_server_time: function (state, data) {
-    state.server_time = data
-    let offset = new Date(data).getTime() - Date.now()
+    state.server_time = data;
+    let offset = new Date(data).getTime() - Date.now();
     this.$moment.now = () => {
-      return offset + Date.now()
-    }
+      return offset + Date.now();
+    };
   },
   set_live_time: function (state, data) {
-    state.live_time = data
-  },
-}
+    state.live_time = data;
+  }
+};
 
 export const actions = {
   setPageTitle({ commit }, title) {
-    commit('set_title', title)
+    if (title) {
+      commit("set_title", title);
+    }
   },
   setLogo({ commit }, type) {
-    commit('set_logo', type)
+    commit("set_logo", type);
   },
   setAppName({ commit }, name) {
-    commit('set_app_name', name)
+    commit("set_app_name", name);
   },
   async setServerTime({ commit }, date) {
-    await commit('set_server_time', date)
+    await commit("set_server_time", date);
 
     if (time_interval) {
-      clearInterval(time_interval)
+      clearInterval(time_interval);
     }
     setInterval(() => {
-      commit('set_live_time', this.$moment())
-    }, 1000)
-  },
-}
+      commit("set_live_time", this.$moment());
+    }, 1000);
+  }
+};

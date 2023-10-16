@@ -20,7 +20,8 @@ export const state = () => ({
   is_main_branch,
   company_name,
   menu_type,
-  repeatation_cycle
+  repeatation_cycle,
+  setting_keys
 });
 
 let mnue_tree = [
@@ -51,63 +52,116 @@ let mnue_tree = [
         name: "نقش ها",
         access: "*",
         route: "/role"
-      },
+      }
     ]
   },
   {
     id: 6,
-    name: 'ناحیه ها',
-    access: '*',
-    route: '/region'
+    name: "ناحیه ها",
+    access: "*",
+    route: "/region"
   },
   {
     id: 7,
-    name: 'شعبات',
-    access: '*',
-    route: '/branches'
+    name: "شعبات",
+    access: "*",
+    route: "/branches"
   },
   // {
-  //   id: 8,
-  //   name: "تقسیمات کشوری",
-  //   access: "*",
-  //   route: "/country-division"
-  // },
-  // {
-  //   id: 6,
-  //   name: "تنظیمات",
-  //   children: [
-
-  //     {
-  //       id: 8,
-  //       name: 'تنظیمات',
-  //       access: '*',
-  //       route: '/setting/public'
-  //     },
-  //     {
-  //       id: 9,
-  //       name: 'فهرست خطاها',
-  //       access: '*',
-  //       route: '/monitoring/exception-log'
-  //     },
-  //     {
-  //       id: 10,
-  //       name: 'فهرست درخواست ها',
-  //       access: '*',
-  //       route: '/monitoring/request-log'
-  //     },
-
-  //   ]
-  // },
-  // {
   //   id: 13,
-  //   name: 'محصولات',
+  //   name: "محصولات",
   //   children: [
-
-
+  //     {
+  //       id: 14,
+  //       name: "فهرست محصولات",
+  //       access: "*",
+  //       route: "/product"
+  //     },
+  //     {
+  //       id: 15,
+  //       name: "دسته بندی محصولات",
+  //       access: "*",
+  //       route: "/product/category"
+  //     },
+  //     {
+  //       id: 16,
+  //       name: "به روزرسانی سریع",
+  //       access: "*",
+  //       route: "/product/update-price"
+  //     },
+  //     {
+  //       id: 17,
+  //       access: "*",
+  //       name: "قیمت عمده",
+  //       route: "/product/wholesell-price"
+  //     }
   //   ]
-  // }
+  // },
+  {
+    id: 18,
+    name: "تنظیمات",
+    children: [
+      {
+        id: 19,
+        name: "اسلایدر",
+        access: "*",
+        route: "/setting/slider"
+      },
+      {
+        id: 20,
+        name: "بنرها",
+        access: "*",
+        route: "/setting/main-banner"
+      },
+      {
+        id: 21,
+        name: "تنظیمات عمومی",
+        access: "*",
+        route: "/setting/public/1"
+      },
+      // {
+      //   id: 22,
+      //   name: "ویژگی های محصولات",
+      //   access: "*",
+      //   route: "/setting/variation-type"
+      // },
+      // {
+      //   id: 23,
+      //   name: "روش های ارسال",
+      //   access: "*",
+      //   route: "/setting/delivery-method"
+      // },
+      // {
+      //   id: 24,
+      //   name: "واحد ها",
+      //   access: "*",
+      //   route: "/setting/units"
+      // },
+      // {
+      //   id: 25,
+      //   name: "تنظیمات فروش عمده",
+      //   access: "*",
+      //   route: "/setting/whole-sell"
+      // }
+    ]
+  }
 ];
 
+let setting_keys = [
+  { text: "لوگوی صفحه اصلی", value: "header_logo", type: "image" },
+  { text: "تیتر فوتر", value: "footer_text_title", type: "single_text" },
+  { text: "متن فوتر", value: "footer_text", type: "text" },
+  { text: "شماره تماس", value: "phone", type: "single_text" },
+  { text: "پست الکترونیک", value: "email", type: "single_text" },
+  { text: "آدرس", value: "email", type: "text" },
+  { text: "آدرس آپارات", value: "aparat", type: "single_text" },
+  { text: "آدرس یوتیوب", value: "youtube", type: "single_text" },
+  { text: "آدرس واتس آپ", value: "whatsup", type: "single_text" },
+  { text: "آدرس پینترست", value: "pinterest", type: "single_text" },
+  { text: "آدرس فیس بوک", value: "facebook", type: "single_text" },
+  { text: "آدرس اینستاگرام ", value: "instagram", type: "single_text" },
+  { text: "اسلایدر اصلی", value: "main_slider", type: "image" }
+];
 let status = [
   { text: "فعال", value: "active" },
   { text: "غیر فعال", value: "hidden" }
@@ -166,7 +220,7 @@ let sell_type = [
   { text: "فروش تکی", value: "sell" },
   { text: " فروش  عمده", value: "wholesale" },
   { text: "هردو ", value: "both_sell" },
-  { text: "هیچکدام ", value: "none" },
+  { text: "هیچکدام ", value: "none" }
 ];
 let supervisor_status_items = [
   { text: "دارد", value: true },

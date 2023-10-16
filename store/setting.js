@@ -72,7 +72,7 @@ export const mutations = {
 
 export const actions = {
     getPublicSetting({ commit }) {
-        this.$reqApi('/setting/main', { filters: { key: 'main_setting' } })
+        this.$reqApi('/setting', { filters: { key: 'main_setting' } })
             .then(async (response) => {
                 if (response.model.data.length != 0) {
                     await commit('set_public_setting', response.model.data[0])

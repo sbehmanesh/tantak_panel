@@ -1,15 +1,16 @@
 <template>
   <div>
     <BaseTable
-      ref="baseTable"
-      url="/category"
-      :headers="headers"
+      excel
+      url="/product"
       v-model="selected_item"
       :extraBtn="extraBtn"
+      :headers="headers"
       :BTNactions="btn_actions"
-      autoDelete="/category/delete"
-      autoUpdate="/product/category"
-      createUrl="/product/category/insert"
+      autoDelete="/product/delete"
+      autoUpdate="/product"
+      ref="baseTable"
+      createUrl="/product/insert"
     >
     </BaseTable>
 
@@ -43,13 +44,13 @@ export default {
   data: () => ({
     headers: [],
     btn_actions: [],
-    title: 'دسته بندی محصولات',
     selected_item: [],
     removeDialog: false,
     loading: false,
     time: 3,
     timeInterval: null,
     extraBtn: [],
+    title: 'فهرست محصولات',
   }),
   beforeMount() {
     this.$store.dispatch('setPageTitle', this.title)
@@ -62,31 +63,34 @@ export default {
         disableSort: true,
         filterable: false,
       },
-      { title: ' ', value: 'main_pic_path', type: 'image', disableSort: 'true', filterable: false, size: 'small' },
-      { text: 'نام دسته بندی', value: 'title', disableSort: 'true', filterable: false },
-      {
-        text: 'والد',
-        value: 'sort',
-        disableSort: 'true',
-        filterable: false,
-        value: (body) => {
-          if (body.parent_cateogry) {
-            return body.parent_cateogry.title
-          }
-          return '-'
-        },
-      },
-      { text: 'تعداد محصولات', value: 'products_count', disableSort: 'true', filterable: false },
+      { title: ' ', value: 'main_picture_path', type: 'image', disableSort: 'true', filterable: false, size: 'small' },
+      { text: 'نام محصول', value: 'name' },
       { text: 'ترتیب نمایش', value: 'sort', disableSort: 'true', filterable: false },
-    ]
-
-    this.btn_actions = [
       {
-        color: 'primary',
-        text: 'مشاهده محصولات',
-        fun: (body) => {
-          this.$router.push('/product/category/products/' + body.id + '?name=' + body.title)
-        },
+        text: 'فروش تکی',
+        value: 'has_single_sell',
+        filterType: 'select',
+        items: this.$store.state.static.bool_num_enum,
+      },
+      {
+        text: 'فروش فله/عمده',
+        value: 'has_whole_sell',
+        filterType: 'select',
+        items: this.$store.state.static.bool_num_enum,
+      },
+      {
+        text: 'دمنوش ساز',
+        value: 'mixturable',
+        filterType: 'select',
+        items: this.$store.state.static.bool_num_enum,
+      },
+      { text: 'بازدید', value: 'visit_count', disableSort: 'true', filterable: false },
+
+      {
+        text: 'وضعیت',
+        value: 'status',
+        filterType: 'select',
+        items: this.$store.state.static.product_status,
       },
     ]
 
@@ -120,7 +124,7 @@ export default {
     removeRecords() {
       this.loading = true
       for (let i = 0; i < this.selected_item.length; i++) {
-        this.$reqApi('/product-category/delete', { id: this.selected_item[i] })
+        this.$reqApi('/product/delete', { id: this.selected_item[i] })
           .then(async (response) => {
             if (i == this.selected_item.length - 1) {
               this.loading = false

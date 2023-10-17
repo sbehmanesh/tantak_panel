@@ -78,7 +78,6 @@ export default {
       { text: "نام", value: "first_name" },
       { text: "نام خانوادگی", value: "last_name" },
       { text: "نام کاربری", filterCol: "username", value: "username" },
-      { text: "نام کاربری", filterCol: "username", value: "username" },
       { text: "کد ملی", filterCol: "national_code", value: "national_code" },
       {
         filterable: false,

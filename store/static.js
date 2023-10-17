@@ -21,7 +21,9 @@ export const state = () => ({
   company_name,
   menu_type,
   repeatation_cycle,
-  setting_keys
+  setting_keys,
+  status_contact_form,
+  ownership_type
 });
 
 let mnue_tree = [
@@ -144,6 +146,24 @@ let mnue_tree = [
       //   route: "/setting/whole-sell"
       // }
     ]
+  },
+  {
+    id:26,
+    name:'فرم ها',
+    children:[
+      {
+        id:27,
+        name:'تماس با ما',
+        access:"*",
+        route:'/forms/contact-us-form'
+      },
+      {
+        id:28,
+        name:'درخواست فرم نمایندگی',
+        access:'*',
+        route:'/forms/representation-request-form'
+      }
+    ]
   }
 ];
 
@@ -171,6 +191,16 @@ let work_status = [
   { text: "مشغول به کار", value: "active" },
   { text: "مرخصی", value: "inactive" }
 ];
+
+let status_contact_form=[
+  {text:'انتظار',value:'pending'},
+  {text:'بررسی شده',value:'reviewed'},
+]
+
+let ownership_type=[
+  {text:'مالک',value:'owner'},
+  {text:'اجاره',value:'leasehold'},
+]
 
 let user_level = [
   { text: "نوع یک", value: "type1" },

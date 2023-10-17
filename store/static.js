@@ -149,7 +149,7 @@ let mnue_tree = [
   },
   {
     id:26,
-    name:'فرم ها',
+    name:'فرم های دریافتی',
     children:[
       {
         id:27,

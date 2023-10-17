@@ -48,7 +48,7 @@ export default {
     this.btn_actions = [
       {
         color: "primary",
-        icon: "edit",
+        icon: "visibility",
         text: "",
         fun: body => {
           if (body.id) {

@@ -63,7 +63,7 @@ export default {
         disableSort: true,
         filterable: false,
       },
-      { title: ' ', value: 'main_picture_path', type: 'image', disableSort: 'true', filterable: false, size: 'small' },
+      { title: ' ', value: 'main_image', type: 'image', disableSort: 'true', filterable: false, size: 'small' },
       { text: 'نام محصول', value: 'name' },
       { text: 'ترتیب نمایش', value: 'sort', disableSort: 'true', filterable: false },
       // {
@@ -84,11 +84,16 @@ export default {
       //   filterType: 'select',
       //   items: this.$store.state.static.bool_num_enum,
       // },
-      { text: 'بازدید', value: 'visit_count', disableSort: 'true', filterable: false },
+      { text:'بارکد', value:'barcode'},
+      { text:'قیمت پایه' , value:'base_price'},
+      { text:'قیمت پایه فروش عمده',value:'base_wholesale_price'},
+      { text: 'بازدید', value: 'view', disableSort: 'true', filterable: false },
+      { text: 'لایک', value: 'like', disableSort: 'true', filterable: false },
+      { text: 'ستاره', value: 'star', disableSort: 'true', filterable: false },
 
       {
         text: 'وضعیت',
-        value: 'status',
+        value: 'publish_status',
         filterType: 'select',
         items: this.$store.state.static.product_status,
       },

@@ -41,8 +41,6 @@ export default {
 
   mounted() {
     this.$store.dispatch('setPageTitle', this.title)
-    console.log(this.$store.state.setting.roles, 'role')
-
     this.headers = [
       {
         text: 'نام نقش',

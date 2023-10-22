@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import CategoryForm from '@/components/Product/CategoryForm'
+import CategoryForm from '@/components/Product/CategoryForm.vue'
 export default {
   components: { CategoryForm },
   data: () => ({

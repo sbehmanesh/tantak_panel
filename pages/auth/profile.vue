@@ -96,8 +96,6 @@ export default {
           this.user_id = response.user.id;
           this.form.avatar = response.user.avatar;
           this.form.password = response.user.password;
-          console.log(this.form.password);
-          console.log(response.user);
           this.form.last_name = response.user.last_name;
           this.form.first_name = response.user.first_name;
           this.loading = false;

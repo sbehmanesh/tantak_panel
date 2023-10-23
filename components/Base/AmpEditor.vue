@@ -11,7 +11,7 @@
       :starRight="starRight"
       v-if="text && showLable"
     />
-    <trumbowyg :config="config" v-model="inp_value" ref="editor" />
+    <trumbowyg :config="config" v-model="inp_value"  ref="editor" />
   </div>
 </template>
 
@@ -55,17 +55,18 @@ export default {
   data: () => ({
     ruleItem: [],
     inpRules: {},
+    model_value:'',
     inp_value: "",
     required: false,
     end_render: false,
     config: {
-      lang: "fa",
       btns: [
         ["viewHTML"],
         ["undo", "redo"],
         ["strong", "em", "del", "fontsize"],
         ["emoji", "foreColor", "backColor"],
         ["superscript", "subscript"],
+        ['historyUndo', 'historyRedo'],
         ["link"],
         ["insertImage"],
         ["justifyRight", "justifyLeft", "justifyCenter", "justifyFull"],
@@ -82,7 +83,7 @@ export default {
     },
     inp_value() {
       this.$emit("input", this.inp_value);
-    }
+    },
   },
   mounted() {
     this.setRules();
@@ -110,9 +111,20 @@ export default {
       } else if (typeof this.rules == "function") {
         this.ruleItem.push(this.rules);
       }
-    }
+    },
   }
 };
 </script>
 
-<style></style>
+<style scoped >
+.trumbowyg_container{
+  display: none;
+  z-index: -1;
+}
+.trumbowyg-button-pane {
+  z-index: 0;
+}
+.trumbowyg-editor-visible{
+  z-index: 11
+}
+</style>

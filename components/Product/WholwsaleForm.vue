@@ -21,7 +21,7 @@
           />
         </v-col>
         <v-col cols="12" md="3">
-          <amp-input text="مقدار" v-model="form.count" rules="require" />
+          <amp-input text="مقدار" v-model="form.count" rules="require,number" :isNumber='true' />
         </v-col>
         <v-col cols="12" md="3">
           <amp-select
@@ -30,8 +30,13 @@
             v-model="form.status"
           />
         </v-col>
-        <v-col cols="12" md="12">
-          <amp-select :items=[] text="محصول" v-model="form.product" rules="require" />
+        <v-col cols="12" md="3">
+          <amp-select
+            :items="productItem"
+            text="محصول"
+            v-model="form.product"
+            rules="require"
+          />
         </v-col>
       </v-row>
 
@@ -72,25 +77,25 @@ export default {
   data: () => ({
     valid: false,
     loading: false,
-    createUrl: "/complaint-form/insert",
-    updateUrl: "/complaint-form/update",
-    showUrl: "/complaint-form/show",
+    createUrl: "/shop/wholesale-form/insert",
+    updateUrl: "/wholesale-form/update",
+    showUrl: "/wholesale-form/show",
     categories: [],
-
+    productItem: [],
     form: {
       first_name: "",
       last_name: "",
       phone_number: "",
       product: "",
-      count:'',
+      count: "",
       status: "pending"
     }
   }),
-
   mounted() {
     if (this.modelId) {
       this.loadData();
     }
+    this.setProductItems();
   },
   methods: {
     submit() {
@@ -124,8 +129,8 @@ export default {
           this.form.last_name = res.last_name;
           this.form.status = res.status;
           this.form.phone_number = res.phone_number;
-          this.form.product = res.product
-          this.form.count = res.count
+          this.form.product = res.product;
+          this.form.count = res.count;
           this.loading = false;
         })
         .catch(error => {
@@ -139,6 +144,22 @@ export default {
       } else {
         this.$router.push(this.path);
       }
+    },
+    setProductItems() {
+      let product = [];
+      this.$reqApi("/product")
+        .then(res => {
+          res.model.data.map(x => {
+            product.push({
+              text: x.name,
+              value: x.id
+            });
+          });
+        })
+        .catch(err => {
+          return err;
+        });
+        this.productItem = product
     }
   }
 };

@@ -65,7 +65,7 @@
                 />
               </v-col>
               <v-col cols="12" md="12">
-                <SelectCategory v-model="form.category_ids"  /> 
+                <SelectCategory v-model="form.category_ids" />
               </v-col>
             </v-row>
             <v-row>
@@ -238,7 +238,7 @@
                     <v-icon class="font_30">shopping_cart</v-icon></v-tab
                   >
                   <v-tab>
-                    <span> تنظیمات فروش فله / عمده </span>
+                    <span> تنظیمات فروش عمده </span>
                     <v-icon class="font_30">scale</v-icon>
                   </v-tab>
                 </v-tabs>
@@ -307,9 +307,15 @@ import Gallery from "@/components/Product/Gallery.vue";
 import SingleProductForm from "@/components/Product/SingleProductForm.vue";
 import WholeProductForm from "@/components/Product/WholeProductForm.vue";
 import AmpAutocomplete from "../Base/AmpAutocomplete.vue";
-import SelectCategory from '@/components/Product/SelectCategory.vue'
+import SelectCategory from "@/components/Product/SelectCategory.vue";
 export default {
-  components: { SingleProductForm, WholeProductForm, Gallery, AmpAutocomplete ,SelectCategory},
+  components: {
+    SingleProductForm,
+    WholeProductForm,
+    Gallery,
+    AmpAutocomplete,
+    SelectCategory
+  },
   props: {
     modelId: { default: null }
   },
@@ -423,46 +429,48 @@ export default {
       this.loading = true;
       this.$reqApi(this.showUrl, { id: this.modelId })
         .then(async response => {
-          response = response.data;
-          this.form["id"] = response.id;
-          this.form.publish_status = response.publish_status;
-          this.form.name = response.name;
-          this.form.slug = response.slug;
-          this.form.base_price = response.base_price;
-          this.form.base_wholesale_price = response.base_wholesale_price;
-          for (let i = 0; i < response.categories.length; i++) {
-            this.form.category_ids.push(response.categories[i].id);
-          }
-          this.form.code = response.code;
-          if (response.description) {
-            this.form.description = response.description.description;
-            this.form.excerpt_description =
-              response.description.excerpt_description;
-            if (response.description.specefics_table) {
-              this.form.specefics_table = JSON.parse(
-                response.description.specefics_table
-              );
+          try {
+            response = response.model;
+            this.form["id"] = response.id;
+            this.form.publish_status = response.publish_status;
+            this.form.name = response.name;
+            this.form.slug = response.slug;
+            this.form.base_price = response.base_price;
+            this.form.base_wholesale_price = response.base_wholesale_price;
+            for (let i = 0; i < response.categories.length; i++) {
+              this.form.category_ids.push(response.categories[i].id);
             }
-            if (response.description.additional_description) {
-              this.form.additional_description = JSON.parse(
-                response.description.additional_description
-              );
+            this.form.code = response.code;
+            if (response.description) {
+              this.form.description = response.description.description;
+              this.form.excerpt_description =
+                response.description.excerpt_description;
+              if (response.description.specefics_table) {
+                this.form.specefics_table = JSON.parse(
+                  response.description.specefics_table
+                );
+              }
+              if (response.description.additional_description) {
+                this.form.additional_description = JSON.parse(
+                  response.description.additional_description
+                );
+              }
             }
-          }
-          this.form.has_single_sell = response.has_single_sell.toString();
-          this.form.has_whole_sell = response.has_whole_sell.toString();
-          for (let i = 0; i < response.keywords.length; i++) {
-            this.form.keywords.push(response.keywords[i].value);
-          }
-          this.form.main_image = response.main_image;
-          this.form.single_sell_variation_combinations =
-            response.single_sell_variation_combinations;
-          this.form.whole_sell_variation_combinations =
-            response.whole_sell_variation_combinations;
+            for (let i = 0; i < response.keywords.length; i++) {
+              this.form.keywords.push(response.keywords[i].value);
+            }
+            this.form.main_image = response.main_image;
+            this.form.single_sell_variation_combinations =
+              response.single_sell_variation_combinations;
+            this.form.whole_sell_variation_combinations =
+              response.whole_sell_variation_combinations;
 
-          this.form.medias = [];
-          this.form.sort = response.sort;
-          this.loading = false;
+            this.form.medias = [];
+            this.form.sort = response.sort;
+            this.loading = false;
+          } catch (error) {
+            console.log(error);
+          }
         })
         .catch(error => {
           this.redirectPage();

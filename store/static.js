@@ -103,7 +103,7 @@ let mnue_tree = [
       {
         id: 30,
         access: "*",
-        name: "فروش عمده",
+        name: "فرم های دریافتی فروش عمده",
         route: "/product/wholesale-form"
       }
     ]

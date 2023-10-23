@@ -91,7 +91,12 @@ export default {
     url: "/category",
     selected_category: [],
     id_selected_category: [],
-    filters: {},
+    filters: {
+      parent_id:{
+        op:'=',
+        value : null
+      }
+    },
     valid: false,
     loading: false,
     createUrl: "/product-variation/insert",
@@ -183,89 +188,13 @@ export default {
     id_selected_category() {
       this.$emit("input", this.id_selected_category);
       if (this.id_selected_category.length > 0) {
-        this.url = "/product-variation";
         this.filters = {
-          category_id: {
+          parent_id: {
             op: "=",
-            value:
-              this.id_selected_category[this.id_selected_category.length - 1]
+            value:this.id_selected_category[this.id_selected_category.length - 1]
           }
         };
-        console.log(this.id_selected_category)
-        this.headers = [];
-        this.headers = [
-          {
-            text: "مقدار",
-            value: "variation_type",
-            value: body => {
-              return body.variation_type.value;
-            },
-            filterable: false
-          },
-          {
-            text: "مقدار",
-            value: "value",
-            disableSort: "true",
-            filterable: false
-          },
-          {
-            text: "بارکد",
-            value: "barcode",
-            disableSort: "true",
-            filterable: false
-          },
-          {
-            text: "ترتیب نمایش",
-            value: "sort",
-            disableSort: "true",
-            filterable: false
-          }
-        ];
       } else {
-        this.url = "/category";
-        this.headers = [];
-        this.headers = [
-          {
-            text: "زمان ثبت",
-            filterType: "date",
-            filterCol: "created_at",
-            value: body => {
-              if (body.created_at) {
-                return this.$toJalali(body.created_at);
-              }
-              return "";
-            }
-          },
-          { text: "نام", value: "name", filterable: false },
-          {
-            text: "لینک",
-            value: "slug",
-            disableSort: "true",
-            filterable: false
-          },
-          {
-            text: "تعداد محصول",
-            value: "products_count"
-          },
-          {
-            text: "تعداد ویژگی",
-            value: "product_variations_count"
-          },
-          {
-            text: "بارکد",
-            value: "barcode"
-          },
-          {
-            text: "سطح",
-            value: "level"
-          },
-          {
-            text: "ترتیب نمایش",
-            value: "sort",
-            disableSort: "true",
-            filterable: false
-          }
-        ];
         this.filters = {};
       }
     }
@@ -290,11 +219,11 @@ export default {
         .then(response => {
           if (!this.modelId) {
             this.$toast.success(
-              "The desired feature has been successfully added."
+              "ویژگی مورد نظر با موفقیت اضافه شد."
             );
           } else {
             this.$toast.success(
-              "The property in question has been edited successfully."
+              "ویژگی مورد نظر با موفقیت ویرایش شد."
             );
           }
           this.$refs.variations.getDataFromApi();

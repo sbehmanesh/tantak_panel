@@ -192,9 +192,9 @@ let status = [
 ];
 
 let product_status = [
-  { text: "انتشار آنلاین", value: "published_online" },
-  { text: "انتشار در محل", value: "published_inplace" },
-  { text: "انتشار آنلاین و در محل", value: "published_everywhere" },
+  { text: "فروش آنلاین", value: "published_online" },
+  { text: "فروش در محل", value: "published_inplace" },
+  { text: "فروش آنلاین و درمحل", value: "published_everywhere" },
   { text: "پیش نویس", value: "draft" },
 ];
 

@@ -13,15 +13,13 @@
                   v-if="selected_category.length == 0"
                   class="d-flex flex-column"
                 >
-                  <v-icon class="mx-3 warning--text">info</v-icon>
-                  <span> دسته بندی های اصلی نمی توانند به عنوان دسته بندی یک محصول انتخاب شوند </span>
                   <span class="grey--text font_13">
                     <v-icon class="mx-3 warning--text">ads_click</v-icon>
                       برای مشاهده زیر مجموعه هر دسته بندی روی آن کلیک کنید
                     </span
                   >
                 </v-card-title>
-                <v-card-text v-else>
+                <v-card-text v-if="selected_category.length > 0">
                   <v-row>
                     <v-col cols="12" md="10">
                       <span
@@ -140,17 +138,6 @@ export default {
       }
     ];
     this.headers = [
-      {
-        text: "زمان ثبت",
-        filterType: "date",
-        filterCol: "created_at",
-        value: body => {
-          if (body.created_at) {
-            return this.$toJalali(body.created_at);
-          }
-          return "";
-        }
-      },
       { text: "نام", value: "name", filterable: false },
       {
         text: "لینک",
@@ -174,12 +161,6 @@ export default {
         text: "سطح",
         value: "level"
       },
-      {
-        text: "ترتیب نمایش",
-        value: "sort",
-        disableSort: "true",
-        filterable: false
-      }
     ];
   },
   mounted() {

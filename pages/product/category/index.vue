@@ -92,18 +92,18 @@ export default {
         text: "بارکد",
         value: "barcode"
       },
-      {
-        text: "والد",
-        value: "sort",
-        disableSort: "true",
-        filterable: false,
-        value: body => {
-          if (body.parent_cateogry) {
-            return body.parent_cateogry.title;
-          }
-          return "-";
-        }
-      },
+      // {
+      //   text: "والد",
+      //   value: "sort",
+      //   disableSort: "true",
+      //   filterable: false,
+      //   value: body => {
+      //     if (body.parent_cateogry) {
+      //       return body.parent_cateogry.title;
+      //     }
+      //     return "-";
+      //   }
+      // },
       {
         text: "تعداد محصولات",
         value: "products_count",

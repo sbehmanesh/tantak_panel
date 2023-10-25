@@ -86,7 +86,7 @@ export default {
       // },
       { text:'بارکد', value:'barcode'},
       { text:'قیمت پایه' , value:'base_price'},
-      { text:'قیمت پایه فروش عمده',value:'base_wholesale_price'},
+      { text:'قیمت فروش عمده',value:'base_wholesale_price'},
       { text: 'بازدید', value: 'view', disableSort: 'true', filterable: false },
       { text: 'لایک', value: 'like', disableSort: 'true', filterable: false },
       { text: 'ستاره', value: 'star', disableSort: 'true', filterable: false },

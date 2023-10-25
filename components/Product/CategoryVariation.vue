@@ -18,7 +18,7 @@
             :items="product_categories"
           />
         </v-col> -->
-        <v-col cols="12" md="3">
+        <!-- <v-col cols="12" md="3">
           <amp-autocomplete
             :disabled="form.category_id.length < 0"
             rules="require"
@@ -26,7 +26,7 @@
             v-model="form.product_id"
             :items="products"
           />
-        </v-col>
+        </v-col> -->
         <v-col cols="12" md="3">
           <amp-input text="مقدار" v-model="form.value" />
         </v-col>
@@ -36,9 +36,9 @@
         <v-col cols="3">
           <amp-input text="ترتیب نمایش " v-model="form.sort" rules="number" />
         </v-col>
-        <v-col cols="12" md="3">
+        <!-- <v-col cols="12" md="3">
           <amp-upload-file v-model="images" :multiple="true" />
-        </v-col>
+        </v-col> -->
       </v-row>
 
       <v-row dense>

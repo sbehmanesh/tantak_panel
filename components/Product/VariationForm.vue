@@ -1,7 +1,7 @@
 <template>
   <v-card class="pa-5">
     <v-row>
-      <v-col cols="2">
+      <!-- <v-col cols="2">
         <amp-button
           @click="toggleshowAddVairiation()"
           large
@@ -12,7 +12,7 @@
           :disabled="loading"
           text="ویژگی جدید"
         />
-      </v-col>
+      </v-col> -->
       <template v-if="showAddVairiation">
         <v-col cols="12" md="3">
           <amp-select
@@ -43,7 +43,12 @@
           <amp-input text="مقدار" v-model="form.value" />
         </v-col>
         <v-col cols="3">
-          <amp-input text="بارکد" is-number v-model="form.barcode" rules="max_4" />
+          <amp-input
+            text="بارکد"
+            is-number
+            v-model="form.barcode"
+            rules="max_4"
+          />
         </v-col>
         <v-col cols="2">
           <amp-input text="ترتیب " v-model="form.sort" rules="number" />
@@ -62,11 +67,34 @@
           </amp-button>
         </v-col>
       </template>
+      <v-col cols="12" md="12">
+        <v-dialog width="500" v-model="dialog.show">
+          <v-card v-if="dialog.show" class="pa-5" fullscreen>
+            <div class="ltr-item">
+
+            </div>
+            <div class="text-center mt-4">
+              <v-divider />
+              <amp-button
+                large
+                text="بستن"
+                icon="close"
+                class="mt-4"
+                color="success"
+                @click="closeDialog()"
+              />
+            </div>
+          </v-card>
+        </v-dialog>
+      </v-col>
     </v-row>
 
     <v-row>
       <v-col cols="12">
-        <amp-title class='d-flex align-center' text="ویژگی های محصول"></amp-title>
+        <amp-title
+          class="d-flex align-center"
+          text="ویژگی های محصول"
+        ></amp-title>
       </v-col>
     </v-row>
 
@@ -75,24 +103,30 @@
       <v-col cols="12" md="3" class="text-center"> مقدار </v-col>
       <!-- <v-col cols="12" md="2" class="text-center"> بارکد </v-col> -->
       <v-col cols="12" md="1" class="text-center"> ترتیب </v-col>
+      <v-col cols="12" md="2" class="text-center"> گالری</v-col>
       <v-col cols="12" md="3" class="text-center"> عملیات </v-col>
     </v-row>
     <v-row
       v-for="(v, index) in variations"
       :key="'v' + index"
       :class="index % 2 == 0 ? 'odd-row' : ''"
-    > 
+    >
       <v-col cols="12" md="3" class="text-center">
         {{ v.variation_type.value }}
       </v-col>
       <v-col cols="12" md="3" class="text-center"
-        ><amp-input  v-model="v.value"  />
-      </v-col> 
+        ><amp-input v-model="v.value" />
+      </v-col>
       <!-- <v-col cols="12" md="2" class="text-center"
         ><amp-input v-model="v.barcode"
       /></v-col> -->
       <v-col cols="12" md="1" class="text-center"
         ><amp-input v-model="v.sort" rules="number" />
+      </v-col>
+      <v-col cols="12" md="2" class="d-flex justify-center">
+        <v-btn color="primary" @click="openGallry()"
+          ><v-icon>image</v-icon></v-btn
+        >
       </v-col>
       <v-col cols="12" md="3" class="text-center">
         <amp-button
@@ -158,6 +192,7 @@ export default {
     selected_item: "",
     deleteDiaolog: false,
     showAddVairiation: false,
+    dialog: { items: null, show: true },
     product_categories: [],
     products: [],
     images: [],
@@ -230,7 +265,7 @@ export default {
     update(index) {
       this.loading = true;
       let form = this.variations[index];
-      if (!form.value || !form.variation_type ) {
+      if (!form.value || !form.variation_type) {
         this.$toast.error("لطفا ورودی ها را کنترل کنید.");
         this.loading = false;
         return;
@@ -358,7 +393,17 @@ export default {
         .catch(error => {
           this.loading = false;
         });
+    },
+    openGallry() {
+      console.log("is call");
+      this.dialog.show = true;
     }
   }
 };
 </script>
+<style>
+.senced_dialog {
+  position: relative;
+  z-index: 300;
+}
+</style>

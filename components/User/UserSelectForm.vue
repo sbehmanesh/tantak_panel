@@ -17,7 +17,7 @@
     <v-dialog
       fullscreen
       hide-overlay
-      v-model="user_dialog"
+      v-model="dialog.show"
       transition="dialog-bottom-transition"
     >
       <v-toolbar dark color="secondary">

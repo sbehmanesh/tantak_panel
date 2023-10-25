@@ -350,7 +350,7 @@ export default {
       name: "",
       slug: "",
       code: "",
-      barcode:'',
+      barcode: "",
       publish_status: "draft",
       has_single_sell: "1",
       has_whole_sell: "0",
@@ -402,61 +402,57 @@ export default {
   },
   methods: {
     submit() {
-      if (this.category_ids.length < 1) {
-        this.$toast.error("دسته بندی انتخابی درست نمی باشد");
-      } else {
-        let form = this.$copyForm(this.form);
+      let form = this.$copyForm(this.form);
 
-        form["has_single_sell"] = parseInt(form["has_single_sell"]);
-        form["has_whole_sell"] = parseInt(form["has_whole_sell"]);
-        form["mixturable"] = parseInt(form["mixturable"]);
-        // if (form.additional_description) {
-        //   form.additional_description = JSON.stringify(
-        //     form.additional_description
-        //   );
+      form["has_single_sell"] = parseInt(form["has_single_sell"]);
+      form["has_whole_sell"] = parseInt(form["has_whole_sell"]);
+      form["mixturable"] = parseInt(form["mixturable"]);
+      // if (form.additional_description) {
+      //   form.additional_description = JSON.stringify(
+      //     form.additional_description
+      //   );
+      // }
+
+      this.loading = true;
+      let url = this.createUrl;
+      if (this.modelId) {
+        url = this.updateUrl;
+        form["id"] = this.modelId;
+
+        // if (form.status == "hidden") {
+        //   if (
+        //     this.form.single_sell_variation_combinations.length > 0 ||
+        //     form.whole_sell_variation_combinations.length > 0
+        //   ) {
+        //     form.status = "active";
+        //   }
         // }
 
-        this.loading = true;
-        let url = this.createUrl;
-        if (this.modelId) {
-          url = this.updateUrl;
-          form["id"] = this.modelId;
-
-          // if (form.status == "hidden") {
-          //   if (
-          //     this.form.single_sell_variation_combinations.length > 0 ||
-          //     form.whole_sell_variation_combinations.length > 0
-          //   ) {
-          //     form.status = "active";
-          //   }
-          // }
-
-          // if (
-          //   this.form.single_sell_variation_combinations.length == 0 &&
-          //   form.whole_sell_variation_combinations.length == 0
-          // ) {
-          //   form.status = "hidden";
-          // }
-        }
-        this.$reqApi(url, form)
-          .then(response => {
-            if (!this.modelId) {
-              this.$toast.success("اطلاعات اولیه محصول مورد نظر شما ثبت شد");
-              this.$router.push("/product/" + response.id + "?step=2");
-              return;
-            } else {
-              this.$toast.success("اطلاعات ویرایش شد");
-              if (this.step_number == 3) {
-                this.redirectPage();
-              }
-              this.step_number += 1;
-              this.loading = false;
-            }
-          })
-          .catch(error => {
-            this.loading = false;
-          });
+        // if (
+        //   this.form.single_sell_variation_combinations.length == 0 &&
+        //   form.whole_sell_variation_combinations.length == 0
+        // ) {
+        //   form.status = "hidden";
+        // }
       }
+      this.$reqApi(url, form)
+        .then(response => {
+          if (!this.modelId) {
+            this.$toast.success("اطلاعات اولیه محصول مورد نظر شما ثبت شد");
+            this.$router.push("/product/" + response.id + "?step=2");
+            return;
+          } else {
+            this.$toast.success("اطلاعات ویرایش شد");
+            if (this.step_number == 3) {
+              this.redirectPage();
+            }
+            this.step_number += 1;
+            this.loading = false;
+          }
+        })
+        .catch(error => {
+          this.loading = false;
+        });
     },
     loadData() {
       this.loading = true;
@@ -470,7 +466,7 @@ export default {
             this.form.slug = response.slug;
             this.form.base_price = response.base_price;
             this.form.base_wholesale_price = response.base_wholesale_price;
-            this.form.barcode = response.barcode
+            this.form.barcode = response.barcode;
             this.form.product_variation_combinations =
               response.product_variation_combinations;
             for (let i = 0; i < response.categories.length; i++) {

@@ -156,7 +156,7 @@
               </v-col>
               <v-col cols="12" md="8" class="mt-10">
                 <v-card class="pa-4 elevation-6">
-                  <amp-editor
+                  <AmpEditor
                     v-model="form.product_infos.summerized_description"
                     text="توضیحات مختصر"
                   />
@@ -164,7 +164,7 @@
               </v-col>
               <v-col cols="12" md="12" class="mt-10">
                 <v-card class="pa-5 elevation-0 my-3">
-                  <amp-editor
+                  <AmpEditor
                     v-model="form.product_infos.description"
                     text="توضیحات کامل محصول"
                   />

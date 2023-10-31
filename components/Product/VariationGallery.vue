@@ -28,6 +28,7 @@
               width="200"
               height="200"
               :src="$getImage(item)"
+              @click='removeImage(item)'
             />
           </v-col>
         </v-row>
@@ -56,7 +57,7 @@ export default {
   beforeMount() {
     if (this.items) {
       this.items.map(x => {
-        this.items_gallry.push(x);
+        this.items_gallry.push(x.path);
       });
     }
   },
@@ -74,6 +75,19 @@ export default {
       });
       this.$emit("SeGallry", [alt_image , this.index]);
     }
-  }
+  },
+  methods: {
+    removeImage(id){
+      let clone_gallry = []
+
+      this.items_gallry.filter((x)=> {
+        if(x != id){
+          clone_gallry.push(x)
+        }
+      })
+      this.items_gallry = clone_gallry
+      this.path_items = []
+    }
+  },
 };
 </script>

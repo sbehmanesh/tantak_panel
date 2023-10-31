@@ -59,7 +59,6 @@ export default {
     end_render: false,
     config: {
       lang: 'fa',
-
       btns: [
         ['viewHTML'],
         ['undo', 'redo'],

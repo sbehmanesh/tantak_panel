@@ -66,7 +66,6 @@
         <amp-input is-price v-model="sv.price"> </amp-input
       ></v-col>
       <v-col cols="12" md="2" class="text-center">
-        {{Test(sv)}}
         <span >{{ sv.barcode }}</span>
         <!-- <span >|{{ sv.barcode }} | </span>
         <span >{{ sv.barcode }}</span> -->
@@ -180,10 +179,6 @@ export default {
 
   mounted() {},
   methods: {
-    Test(test){
-      console.log(test)
-      console.log(this.product)
-    },
     submit() {
       let form = this.$copyForm(this.form);
 

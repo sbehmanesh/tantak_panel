@@ -9,28 +9,29 @@
         <v-col cols="12" md="5">
           <amp-input text="لینک" v-model="form.value.link" class="ltr-item" />
         </v-col>
-
+        <v-col cols="12" md="2">
+          <amp-input text="آلت" v-model="form.value.title" />
+        </v-col>
         <v-col cols="12" md="1">
           <amp-input text="ترتیب" v-model="form.value.sort" class="ltr-item" />
         </v-col>
-
-        <v-row>
-          <v-col cols="12" md="6">
-            <v-alert dense class="mt-10" type="info"
-              >سایز پیشنهادی 1520*685 پیکسل</v-alert
-            >
-
-            <AmpUploadFile v-model="form.value.image" title="انتخاب تصویر" />
-          </v-col>
-          <v-col cols="12" md="6">
-            <v-img
-              contain
-              width="300"
-              height="100"
-              :src="$getImage(form.value.image)"
-            />
-          </v-col>
-        </v-row>
+      </v-row>
+      <v-row>
+        <v-col cols="12" md="6">
+          <v-alert dense class="mt-10" type="info"
+            >سایز پیشنهادی 1520*685 پیکسل</v-alert
+          >
+          <AmpUploadFile v-model="form.value.image" title="انتخاب تصویر" />
+        </v-col>
+        <v-col cols="12" md="6" class="center-div">
+          <v-img
+            class="rounded elevation-10"
+            contain
+            width="350"
+            height="220"
+            :src="$getImage(form.value.image)"
+          />
+        </v-col>
       </v-row>
 
       <v-row dense class="mt-10">

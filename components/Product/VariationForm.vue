@@ -79,7 +79,8 @@
                   <div>
                     <VariationGallery
                       @SeGallry="submitGallry"
-                      :index="gallery_diaolog.item"
+                      :index="gallery_diaolog.item.index"
+                      :items='gallery_diaolog.item.items'
                     />
                   </div>
                   <div class="text-center mt-4">
@@ -275,7 +276,6 @@ export default {
               variation_type_id: response[i].variation_type_id,
               images: response[i].product_images
             });
-            console.log(response)
           }
           this.loading = false;
         })
@@ -421,9 +421,11 @@ export default {
     },
     GalleryDialog(open, value, index) {
       if (open) {
-        console.log(value)
         this.gallery_diaolog.show = true;
-        this.gallery_diaolog.item = index;
+        this.gallery_diaolog.item = {
+          index : index,
+          items : value.images
+        };
       } else {
         this.gallery_diaolog.show = false;
         this.gallery_diaolog.item = null;

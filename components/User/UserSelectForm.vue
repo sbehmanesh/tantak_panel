@@ -10,14 +10,12 @@
       @click:append="openDialog()"
     />
     <div v-if="clear">
-      <v-btn small @click="emptyInpValue()" class="elevation-0 white mt-2"
-        ><v-icon>close</v-icon></v-btn
-      >
+      <v-btn small @click="emptyInpValue()" class="elevation-0 white mt-2"><v-icon>close</v-icon></v-btn>
     </div>
     <v-dialog
       fullscreen
       hide-overlay
-      v-model="dialog.show"
+      v-model="user_dialog"
       transition="dialog-bottom-transition"
     >
       <v-toolbar dark color="secondary">

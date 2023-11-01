@@ -181,7 +181,7 @@ export default {
           re.map(x => {
             this.all_variations.push({
               text: x.value,
-              value: x.variation_type_id
+              value: x.id
             });
           });
           this.loading = false;

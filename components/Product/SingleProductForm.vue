@@ -172,6 +172,11 @@ export default {
   }),
 
   mounted() {},
+  watch: {
+    product(){
+      console.log(this.product)
+    }
+  },
   methods: {
     submit() {
       let form = this.$copyForm(this.form);

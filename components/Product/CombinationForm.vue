@@ -17,21 +17,21 @@
                 <amp-select
                   v-if="index == 0"
                   :text="v.text.value"
-                  :items="variatoins_items"
+                  :items="v.items"
                   v-model="form.variation_1_id"
                   rules="require"
                 />
                 <amp-select
                   v-if="index == 1"
                   :text="v.text.value"
-                  :items="variatoins_items"
+                  :items="v.items"
                   v-model="form.variation_2_id"
                   rules="require"
                 />
                 <amp-select
                   v-if="index == 2"
                   :text="v.text.value"
-                  :items="variatoins_items"
+                  :items="v.items"
                   v-model="form.variation_3_id"
                   rules="require"
                 />
@@ -157,31 +157,31 @@ export default {
         filters: { product_id: this.product_id }
       })
         .then(async response => {
-          this.variations = [];
+          // this.variations = [];
           let re = response.model.data;
-          for (let i = 0; i < re.length; i++) {
-            if (!this.variations_ids.includes(re[i].variation_type_id)) {
-              let items = [];
-              this.variations_ids.push(re[i].variation_type_id);
-              for (let j = 0; j < re.length; j++) {
-                if (re[j].variation_type_id == re[i].variation_type_id) {
-                  items.push({
-                    text: re[j].value,
-                    value: re[j].id
-                  });
-                }
-              }
-              this.variations.push({
-                text: re[i].variation_type,
-                value: re[i].variation_type_id,
-                items: items
-              });
-            }
-          }
+          // for (let i = 0; i < re.length; i++) {
+          //   if (!this.variations_ids.includes(re[i].variation_type_id)) {
+          //     let items = [];
+          //     this.variations_ids.push(re[i].variation_type_id);
+          //     for (let j = 0; j < re.length; j++) {
+          //       if (re[j].variation_type_id == re[i].variation_type_id) {
+          //         items.push({
+          //           text: re[j].value,
+          //           value: re[j].id
+          //         });
+          //       }
+          //     }
+          //     this.variations.push({
+          //       text: re[i].variation_type,
+          //       value: re[i].variation_type_id,
+          //       items: items
+          //     });
+          //   }
+          // }
           re.map(x => {
             this.all_variations.push({
               text: x.value,
-              value: x.id
+              value: x.variation_type_id
             });
           });
           this.loading = false;
@@ -226,31 +226,46 @@ export default {
           this.loading = false;
         });
     },
-    loadVariationItems() {
-      this.$reqApi("/product-variation", { row_number: 30000 })
-        .then(res => {
-          let response = res.model.data;
-          let items = [];
-          response.map(x => {
-            items.push({
-              text: x.value,
-              value: x.id
-            });
-          });
-          this.variatoins_items = items;
+    loadVariationItems(value) {
+      this.loading = true;
+      this.$reqApi("/product-variation")
+        .then(async response => {
+          let re = response.model.data;
+          for (let i = 0; i < re.length; i++) {
+            if (!this.variations_ids.includes(re[i].variation_type_id)) {
+              let items = [];
+              this.variations_ids.push(re[i].variation_type_id);
+              for (let j = 0; j < re.length; j++) {
+                if (re[j].variation_type_id == re[i].variation_type_id) {
+                  items.push({
+                    text: re[j].value,
+                    value: re[j].id
+                  });
+                }
+              }
+              this.variations.push({
+                text: re[i].variation_type,
+                value: re[i].variation_type_id,
+                items: items
+              });
+            }
+          }
+          this.loading = false;
         })
-        .catch(err => {
-          return err;
+        .catch(error => {
+          this.loading = false;
         });
     },
     checkVariatoin(id) {
       let hvae_variation = false;
       this.all_variations.forEach(element => {
-        if (id == element.value) {
+        if (element.value == id) {
           hvae_variation = true;
-          this.createNewVariation(id);
         }
       });
+      if (hvae_variation == false) {
+        this.createNewVariation(id);
+      }
       // for (let index = 0; index < this.all_variations.length; index++) {
       //   const element = this.all_variations[index];
       //   if(id == element.value){
@@ -268,8 +283,8 @@ export default {
       let form = {
         variation_type_id: id,
         product_id: this.product_id,
-        value: 0,
-        barcode: 0
+        value: '0',
+        barcode: '0'
       };
       this.$reqApi("/product-variation/insert", form)
         .then(res => {

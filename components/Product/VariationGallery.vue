@@ -28,7 +28,7 @@
               width="200"
               height="200"
               :src="$getImage(item)"
-              @click='removeImage(item)'
+              @dblclick='removeImage(item)'
             />
           </v-col>
         </v-row>

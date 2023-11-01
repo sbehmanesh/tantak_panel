@@ -18,10 +18,8 @@
       </v-row>
       <v-row>
         <v-col cols="12" md="6">
-          <v-alert dense class="mt-10" type="info"
-            >سایز پیشنهادی 1520*685 پیکسل</v-alert
-          >
-          <AmpUploadFile v-model="form.value.image" title="انتخاب تصویر" />
+          <v-alert dense class="mt-10" type="info">سایز پیشنهادی 1520*685 پیکسل</v-alert>
+          <AmpUploadFile v-model="form.value.image" title="انتخاب تصویر" :reSize='true' /> 
         </v-col>
         <v-col cols="12" md="6" class="center-div">
           <v-img

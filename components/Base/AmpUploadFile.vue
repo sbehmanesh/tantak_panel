@@ -98,6 +98,7 @@ export default {
     checkAcceptType: { default: 'image/*' },
     multiple: { type: Boolean, default: false },
     value: { type: String | Array, require: true },
+    reSize:{type:Boolean , default:false}
   },
   data: () => ({
     loading: false,
@@ -143,6 +144,7 @@ export default {
       }
       let formData = new FormData()
       formData.append('file', files[0])
+      formData.append('not_resize', this.reSize)
       this.$reqApi('/upload/insert', formData, config)
         .then((response) => {
           this.updateItem(item.id, 100, true, response.path)

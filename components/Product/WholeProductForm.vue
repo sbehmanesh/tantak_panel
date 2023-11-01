@@ -20,19 +20,21 @@
     </v-row>
 
     <v-row class="pa-2 mt-10">
-      <v-col cols="12" md="2" class="text-center"> نوع محصول </v-col>
+      <!-- <v-col cols="12" md="2" class="text-center"> نوع محصول </v-col> -->
       <v-col cols="12" md="1" class="text-center"> قیمت به تومان</v-col>
-      <v-col cols="12" md="2" class="text-center"> بارکد </v-col>
+      <v-col cols="12" md="1" class="text-center"> بارکد </v-col>
       <v-col cols="12" md="1" class="text-center"> بارکد کامل </v-col>
 
-      <v-col cols="12" md="2" class="text-center">
-        حداقل قابل سفارش
+      <v-col cols="12" md="1" class="text-center">
+        حداقل
         {{ product.base_whole_sell_unit }}
       </v-col>
-      <v-col cols="12" md="2" class="text-center">
-        حداکثر قابل سفارش
+      <v-col cols="12" md="1" class="text-center">
+        حداکثر
         {{ product.base_whole_sell_unit }}
       </v-col>
+      <v-col cols="12" md="1" class="text-center"> تخفیف </v-col>
+      <v-col cols="12" md="1" class="text-center"> ترتیب نمایش </v-col>
     </v-row>
 
     <v-col cols="12" v-if="product.product_variation_combinations.length == 0">
@@ -53,7 +55,7 @@
       :key="'svh' + index"
       :class="index % 2 == 0 ? 'odd-row' : ''"
     >
-      <v-col cols="12" md="2" class="text-center">
+      <!-- <v-col cols="12" md="2" class="text-center">
         <span v-if="sv.variation1">
           {{ sv.variation1.variation_type.value }} {{ sv.variation1.value }}
         </span>
@@ -63,24 +65,30 @@
         <span v-if="sv.variation3">
           / {{ sv.variation3.variation_type.value }} {{ sv.variation3.value }}
         </span>
-      </v-col>
+      </v-col> -->
       <v-col cols="12" md="1" class="text-center">
         <amp-input is-price v-model="sv.price"> </amp-input
       ></v-col>
-      <v-col cols="12" md="2" class="text-center">
-        <span>{{ sv.barcode }}</span>
+      <v-col cols="12" md="1" class="text-center">
+        <amp-input is-number v-model="sv.barcode"></amp-input>
         <!-- <span >|{{ sv.barcode }} | </span>
         <span >{{ sv.barcode }}</span> -->
       </v-col>
-      <v-col cols="12" md="1">
-        {{ sv.full_barcode }}
+      <v-col cols="12" md="1" class="text-center mt-3">
+        <span>{{ sv.full_barcode }} </span>
       </v-col>
-      <v-col cols="12" md="2" class="text-center"
-        ><amp-input is-number v-model="sv.minimum"></amp-input
-      ></v-col>
-      <v-col cols="12" md="2" class="text-center"
+      <v-col cols="12" md="1" class="text-center">
+        <amp-input is-number v-model="sv.minimum"></amp-input>
+      </v-col>
+      <v-col cols="12" md="1" class="text-center"
         ><amp-input is-number v-model="sv.maximum"></amp-input
       ></v-col>
+      <v-col cols="12" md="1" class="text-center">
+        <amp-input is-number v-model="sv.discount"></amp-input>
+      </v-col>
+      <v-col cols="12" md="1" class="text-center">
+        <amp-input is-number v-model="sv.sort"></amp-input>
+      </v-col>
       <v-col cols="12" md="2" class="text-center">
         <amp-button
           small
@@ -210,11 +218,7 @@ export default {
     update(index) {
       this.loading = true;
       let form = this.product.product_variation_combinations[index];
-      if (
-        !form.price ||
-        (!form.max && form.max != 0) ||
-        (!form.min && form.min != 0)
-      ) {
+      if (!form.price && !form.barcode) {
         this.$toast.error("لطفا ورودی ها را کنترل کنید.");
         this.loading = false;
         return;

@@ -5,23 +5,27 @@
         <CombinationForm
           :product_id="product.id"
           @closeAddCombination="closeAddCombination()"
-          @reloadVaritoinsForm='reloadVriations()'
+          @reloadVaritoinsForm="reloadVriations()"
         />
       </v-col>
       <v-col cols="12" md="12">
         <VariationForm
           :product_id="product.id"
           @closeVariationForm="closeVariationForm()"
-          ref='variationsFormSingleSeal'
+          ref="variationsFormSingleSeal"
         />
       </v-col>
     </v-row>
 
     <v-row class="pa-2 mt-10">
-      <v-col cols="12" md="2" class="text-center"> محصول </v-col>
+      <!-- <v-col cols="12" md="2" class="text-center"> محصول </v-col> -->
       <v-col cols="12" md="1" class="text-center"> قیمت به تومان</v-col>
       <!-- <v-col cols="12" md="1" class="text-center"> قیمت با تخفیف </v-col> -->
       <v-col cols="12" md="1" class="text-center"> بارکد </v-col>
+      <v-col cols="12" md="2" class="text-center"> بارکد کامل </v-col>
+      <v-col cols="12" md="1" class="text-center"> تخفیف </v-col>
+      <v-col cols="12" md="1" class="text-center"> حداقل </v-col>
+      <v-col cols="12" md="1" class="text-center"> حداکثر </v-col>
       <v-col cols="12" md="1" class="text-center"> ترتیب نمایش </v-col>
       <!-- <v-col cols="12" md="1" class="text-center"> موجودی </v-col>
       <v-col cols="12" md="3" class="text-center"> عملیات </v-col> -->
@@ -46,28 +50,52 @@
       :key="'sv' + index"
       :class="index % 2 == 0 ? 'odd-row' : ''"
     >
-      <v-col cols="12" md="2" class="text-center mt-3">
+      <!-- <v-col cols="12" md="2" class="text-center mt-3">
         <span v-if="sv.variation_1_id && sv.variation_1_id.variation_type">
-          {{ sv.variation_1_id.variation_type.value }} {{ sv.variation_1_id.value }}
+          {{ sv.variation_1_id.variation_type.value }}
+          {{ sv.variation_1_id.value }}
         </span>
         <span v-if="sv.variation_2_id && sv.variation_2_id.variation_type">
-          | {{ sv.variation_2_id.variation_type.value }} {{ sv.variation_2_id.value }}
+          | {{ sv.variation_2_id.variation_type.value }}
+          {{ sv.variation_2_id.value }}
         </span>
         <span v-if="sv.variation_3_id && sv.variation_3_id.variation_type">
-          | {{ sv.variation_3_id.variation_type.value }} {{ sv.variation_3_id.value }}
+          | {{ sv.variation_3_id.variation_type.value }}
+          {{ sv.variation_3_id.value }}
         </span>
-      </v-col>
+      </v-col> -->
       <v-col cols="12" md="1" class="text-center">
-        <amp-input is-price v-model="sv.price"
-      /></v-col>
+        <amp-input is-price v-model="sv.price" />
+      </v-col>
       <!-- <v-col cols="12" md="1" class="text-center"> <amp-input is-price v-model="sv.discounted_price" /></v-col> -->
-      <v-col cols="12" md="1" class="text-center mt-3">
-        <span >{{ sv.barcode }}  </span>
+      <v-col cols="12" md="1" class="text-center ">
+        <amp-input is-price v-model="sv.barcode" />
+        <!-- <span v-if="sv.variation_2_id">{{ sv.variation_2_id.barcode }} | </span>
+        <span v-if="sv.variation_3_id">{{ sv.variation_3_id.barcode }} </span> -->
+      </v-col>
+      <v-col cols="12" md="2" class="text-center mt-3">
+        <span>{{ sv.full_barcode }} </span>
         <!-- <span v-if="sv.variation_2_id">{{ sv.variation_2_id.barcode }} | </span>
         <span v-if="sv.variation_3_id">{{ sv.variation_3_id.barcode }} </span> -->
       </v-col>
       <v-col cols="12" md="1" class="text-center mt-3">
-         <span >{{ sv.sort }} </span>
+        <amp-input is-price v-model="sv.discount" />
+        <!-- <span v-if="sv.variation_2_id">{{ sv.variation_2_id.barcode }} | </span>
+        <span v-if="sv.variation_3_id">{{ sv.variation_3_id.barcode }} </span> -->
+      </v-col>
+      <v-col cols="12" md="1" class="text-center mt-3">
+        <amp-input is-price v-model="sv.maximum" />
+        <!-- <span v-if="sv.variation_2_id">{{ sv.variation_2_id.barcode }} | </span>
+        <span v-if="sv.variation_3_id">{{ sv.variation_3_id.barcode }} </span> -->
+      </v-col>
+      <v-col cols="12" md="1" class="text-center mt-3">
+        <amp-input is-price v-model="sv.minimum" />
+        <!-- <span v-if="sv.variation_2_id">{{ sv.variation_2_id.barcode }} | </span>
+        <span v-if="sv.variation_3_id">{{ sv.variation_3_id.barcode }} </span> -->
+      </v-col>
+
+      <v-col cols="12" md="1" class="text-center mt-3">
+        <span>{{ sv.sort }} </span>
         <!-- <span v-if="sv.variation_2_id">|{{ sv.sort }} | </span>
         <span v-if="sv.variation_3_id">{{ sv.sort }} </span>  -->
       </v-col>
@@ -172,11 +200,6 @@ export default {
   }),
 
   mounted() {},
-  watch: {
-    product(){
-      console.log(this.product)
-    }
-  },
   methods: {
     submit() {
       let form = this.$copyForm(this.form);
@@ -206,7 +229,7 @@ export default {
     update(index) {
       this.loading = true;
       let form = this.product.product_variation_combinations[index];
-      if (!form.price || (!form.max && form.max != 0)) {
+      if (!form.price && !form.barcode) {
         this.$toast.error("لطفا ورودی ها را کنترل کنید.");
         this.loading = false;
         return;
@@ -225,8 +248,8 @@ export default {
       this.deleteDiaolog = flag;
       this.selected_item = index;
     },
-    reloadVriations(){
-      this.$refs.variationsFormSingleSeal.loadData()
+    reloadVriations() {
+      this.$refs.variationsFormSingleSeal.loadData();
     },
     deleteItem() {
       this.loading = true;
@@ -237,7 +260,6 @@ export default {
           this.$toast.success("ویژگی مد نظر با موفقیت حذف شد.");
           this.$emit("reloadPage");
           this.deleteDiaolog = false;
-
           this.loading = false;
         })
         .catch(error => {

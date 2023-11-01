@@ -222,7 +222,6 @@ export default {
   }),
 
   mounted() {
-    this.loadData();
     this.getCategories();
     this.getAllVariations();
     this.getProducts();
@@ -244,9 +243,15 @@ export default {
       }
     }
   },
+  watch: {
+    product_id(){
+      if(this.product_id){
+        this.loadData()
+      }
+    }
+  },
   methods: {
     loadData() {
-      console.log('load data vratistion form is call')
       this.loading = true;
       this.$reqApi("/product-variation", {
         filters: { product_id: this.product_id }

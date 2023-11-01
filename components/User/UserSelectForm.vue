@@ -10,9 +10,7 @@
       @click:append="openDialog()"
     />
     <div v-if="clear">
-      <v-btn small @click="emptyInpValue()" class="elevation-0 white mt-2"
-        ><v-icon>close</v-icon></v-btn
-      >
+      <v-btn small @click="emptyInpValue()" class="elevation-0 white mt-2"><v-icon>close</v-icon></v-btn>
     </div>
     <v-dialog
       fullscreen

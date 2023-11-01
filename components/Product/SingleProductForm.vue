@@ -1,28 +1,16 @@
 <template>
   <div>
     <v-row>
-      <v-col cols="2">
-        <amp-button
-          large
-          icon="list"
-          @click="showVariationList()"
-          class="my-1"
-          color="success"
-          :loading="loading"
-          :disabled="loading"
-          text="ویژگی ها"
+      <v-col cols="12" md="12">
+        <CombinationForm
+          :product_id="product.id"
+          @closeAddCombination="closeAddCombination()"
         />
       </v-col>
-      <v-col cols="2">
-        <amp-button
-          @click="showAddCombination()"
-          large
-          icon="add"
-          color="success"
-          class="my-1"
-          :loading="loading"
-          :disabled="loading"
-          text="ترکیب جدید"
+      <v-col cols="12" md="12">
+        <VariationForm
+          :product_id="product.id"
+          @closeVariationForm="closeVariationForm()"
         />
       </v-col>
     </v-row>
@@ -57,14 +45,14 @@
       :class="index % 2 == 0 ? 'odd-row' : ''"
     >
       <v-col cols="12" md="2" class="text-center mt-3">
-        <span v-if="sv.variation1 && sv.variation1.variation_type">
-          {{ sv.variation1.variation_type.value }} {{ sv.variation1.value }}
+        <span v-if="sv.variation_1_id && sv.variation_1_id.variation_type">
+          {{ sv.variation_1_id.variation_type.value }} {{ sv.variation_1_id.value }}
         </span>
-        <span v-if="sv.variation2 && sv.variation2.variation_type">
-          | {{ sv.variation2.variation_type.value }} {{ sv.variation2.value }}
+        <span v-if="sv.variation_2_id && sv.variation_2_id.variation_type">
+          | {{ sv.variation_2_id.variation_type.value }} {{ sv.variation_2_id.value }}
         </span>
-        <span v-if="sv.variation3 && sv.variation3.variation_type">
-          | {{ sv.variation3.variation_type.value }} {{ sv.variation3.value }}
+        <span v-if="sv.variation_3_id && sv.variation_3_id.variation_type">
+          | {{ sv.variation_3_id.variation_type.value }} {{ sv.variation_3_id.value }}
         </span>
       </v-col>
       <v-col cols="12" md="1" class="text-center">
@@ -72,14 +60,14 @@
       /></v-col>
       <!-- <v-col cols="12" md="1" class="text-center"> <amp-input is-price v-model="sv.discounted_price" /></v-col> -->
       <v-col cols="12" md="1" class="text-center mt-3">
-        <span v-if="sv.variation1">{{ sv.variation1.barcode }} | </span>
-        <span v-if="sv.variation2">{{ sv.variation2.barcode }} | </span>
-        <span v-if="sv.variation3">{{ sv.variation3.barcode }} </span>
+        <span >{{ sv.barcode }}  </span>
+        <!-- <span v-if="sv.variation_2_id">{{ sv.variation_2_id.barcode }} | </span>
+        <span v-if="sv.variation_3_id">{{ sv.variation_3_id.barcode }} </span> -->
       </v-col>
       <v-col cols="12" md="1" class="text-center mt-3">
-        <span v-if="sv.variation1">{{ sv.variation1.sort }}  </span>
-        <span v-if="sv.variation2">|{{ sv.variation2.sort }} | </span>
-        <span v-if="sv.variation3">{{ sv.variation3.sort }} </span>
+         <span >{{ sv.sort }} </span>
+        <!-- <span v-if="sv.variation_2_id">|{{ sv.sort }} | </span>
+        <span v-if="sv.variation_3_id">{{ sv.sort }} </span>  -->
       </v-col>
       <!-- <v-col cols="12" md="1" class="text-center"><amp-input  is-number  v-model="sv.max"></amp-input></v-col>
       <v-col cols="12" md="1" class="text-center"><amp-input  is-number v-model="sv.weight"></amp-input></v-col> -->
@@ -130,26 +118,6 @@
           </v-col>
         </v-row>
       </v-card>
-    </v-dialog>
-
-    <v-dialog
-      v-model="variationDiaolog.show"
-      :width="$vuetify.breakpoint.mdAndUp ? 1300 : 800"
-    >
-      <VariationForm
-        :product_id="product.id"
-        @closeVariationForm="closeVariationForm()"
-      />
-    </v-dialog>
-
-    <v-dialog
-      v-model="addCombinationDiaolog.show"
-      :width="$vuetify.breakpoint.mdAndUp ? 1300 : 800"
-    >
-      <CombinationForm
-        :product_id="product.id"
-        @closeAddCombination="closeAddCombination()"
-      />
     </v-dialog>
   </div>
 </template>

@@ -1,28 +1,18 @@
 <template>
   <div>
     <v-row>
-      <v-col cols="2">
-        <amp-button
-          large
-          icon="list"
-          @click="showVariationList()"
-          class="my-1"
-          color="success"
-          :loading="loading"
-          :disabled="loading"
-          text="ویژگی ها"
+      <v-col cols="12" md="12">
+        <CombinationForm
+          type="whole_sell"
+          sellType="wholesale"
+          :product_id="product.id"
+          @closeAddCombination="closeAddCombination()"
         />
       </v-col>
-      <v-col cols="2">
-        <amp-button
-          @click="showAddCombination()"
-          large
-          icon="add"
-          color="success"
-          class="my-1"
-          :loading="loading"
-          :disabled="loading"
-          text="ترکیب جدید"
+      <v-col cols="12" md="12">
+        <VariationForm
+          :product_id="product.id"
+          @closeVariationForm="closeVariationForm()"
         />
       </v-col>
     </v-row>
@@ -76,9 +66,9 @@
         <amp-input is-price v-model="sv.price"> </amp-input
       ></v-col>
       <v-col cols="12" md="2" class="text-center">
-        <span v-if="sv.variation1">{{ sv.variation1.barcode }}</span>
-        <span v-if="sv.variation2">{{ sv.variation2.barcode }}</span>
-        <span v-if="sv.variation3">{{ sv.variation3.barcode }}</span>
+        <span >{{ sv.barcode }}</span>
+        <!-- <span >|{{ sv.barcode }} | </span>
+        <span >{{ sv.barcode }}</span> -->
       </v-col>
       <v-col cols="12" md="1">
         {{ sv.full_barcode }}
@@ -136,28 +126,6 @@
           </v-col>
         </v-row>
       </v-card>
-    </v-dialog>
-
-    <v-dialog
-      v-model="variationDiaolog.show"
-      :width="$vuetify.breakpoint.mdAndUp ? 1300 : 800"
-    >
-      <VariationForm
-        :product_id="product.id"
-        @closeVariationForm="closeVariationForm()"
-      />
-    </v-dialog>
-
-    <v-dialog
-      v-model="addCombinationDiaolog.show"
-      :width="$vuetify.breakpoint.mdAndUp ? 1300 : 800"
-    >
-      <CombinationForm
-        type="whole_sell"
-        sellType="wholesale"
-        :product_id="product.id"
-        @closeAddCombination="closeAddCombination()"
-      />
     </v-dialog>
   </div>
 </template>

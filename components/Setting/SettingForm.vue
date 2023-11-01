@@ -21,13 +21,22 @@
         <v-col cols="12" md="12" class="mt-10">
           <v-row>
             <v-col cols="12" md='4' >
-              <amp-input text="تلفن تماس" :is-number='true' v-model="form.value.phone" />
+              <amp-input text="تلفن پشتیبانی"  cClass="ltr-item"  v-model="form.value.phone" />
             </v-col>
             <v-col cols="12" md='4' >
-              <amp-input text="پست الکترونیک"  cClass='ltr-item' rules="email" v-model="form.value.email" />
+              <amp-input text="تلفن روابط عمومی و تبلیغات"  cClass="ltr-item" v-model="form.value.advertising" />
             </v-col>
             <v-col cols="12" md='4' >
-              <amp-input text="آدرس" v-model="form.value.address" />
+              <amp-input text="پست الکترونیک"  cClass='ltr-item' v-model="form.value.email" />
+            </v-col> 
+            <v-col cols="12" md='4' >
+              <amp-input text="کد پستی"  cClass='ltr-item' v-model="form.value.postal_code" />
+            </v-col>
+            <v-col cols="12" md='4' >
+              <amp-input text="آدرس دفتر مرکزی" v-model="form.value.address" />
+            </v-col>
+            <v-col cols="12" md='4' >
+              <amp-input text="آدرس خدمات پس از فروش" v-model="form.value.addres_after_sales_service" />
             </v-col>
           </v-row>
         </v-col>
@@ -112,9 +121,12 @@ export default {
         logo: '',
         footer_text: '',
         phone: '',
+        advertising:'',
+        postal_code:'',
         email: '',
         address: '',
         instagram: '',
+        addres_after_sales_service:'',
         facebook: '',
         pintrest: '',
         whatsup: '',

@@ -123,6 +123,16 @@ export default {
       {
         text: "کد پستی",
         value: "postal_code"
+      },
+      {
+        text: "نام شهر",
+        disableSort: "true",
+        filterable: false,
+        value: body => {
+          if (body.country_division) {
+            return body.country_division.name;
+          }
+        }
       }
     ];
   },

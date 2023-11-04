@@ -66,10 +66,6 @@ export default {
     this.$store.dispatch("setPageTitle", this.title);
     this.filters = {
       category_id: this.$route.params.variation_category_id,
-      price_dependant: {
-        op: "=",
-        value: true
-      }
     };
     this.headers = [
       {

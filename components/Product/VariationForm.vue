@@ -1,11 +1,11 @@
 <template>
   <v-card class="pa-1 ma-0 elevation-0">
-    <v-expansion-panels variant="popout" class="my-4">
+    <v-expansion-panels variant="popout" class="my-4 elevation-5">
       <v-expansion-panel>
-        <v-expansion-panel-header expand-icon="webhook">
+        <v-expansion-panel-header expand-icon="webhook" class="primary lighten-4">
           ویژگی ها
         </v-expansion-panel-header>
-        <v-expansion-panel-content>
+        <v-expansion-panel-content class="primary lighten-5 ">
           <v-row>
             <template v-if="showAddVairiation">
               <v-col cols="12" md="3">

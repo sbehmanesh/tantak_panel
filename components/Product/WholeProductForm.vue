@@ -8,6 +8,7 @@
           :product_id="product.id"
           @closeAddCombination="closeAddCombination()"
           @reloadVaritoinsForm="reloadVriations()"
+          :dataItems="product.category_ids"
         />
       </v-col>
       <v-col cols="12" md="12">
@@ -15,12 +16,13 @@
           :product_id="product.id"
           @closeVariationForm="closeVariationForm()"
           ref="wholeSealeForm"
+          :dataItems="product.category_ids"
         />
       </v-col>
     </v-row>
 
     <v-row class="pa-2 mt-10">
-      <!-- <v-col cols="12" md="2" class="text-center"> نوع محصول </v-col> -->
+      <v-col cols="12" md="2" class="text-center"> نوع محصول </v-col>
       <v-col cols="12" md="1" class="text-center"> قیمت به تومان</v-col>
       <v-col cols="12" md="1" class="text-center"> بارکد </v-col>
       <v-col cols="12" md="1" class="text-center"> بارکد کامل </v-col>
@@ -55,17 +57,13 @@
       :key="'svh' + index"
       :class="index % 2 == 0 ? 'odd-row' : ''"
     >
-      <!-- <v-col cols="12" md="2" class="text-center">
+      <v-col cols="12" md="2" class="text-center mt-3">
         <span v-if="sv.variation1">
-          {{ sv.variation1.variation_type.value }} {{ sv.variation1.value }}
+          {{ sv.variation1.value }}
         </span>
-        <span v-if="sv.variation2">
-          / {{ sv.variation2.variation_type.value }} {{ sv.variation2.value }}
-        </span>
-        <span v-if="sv.variation3">
-          / {{ sv.variation3.variation_type.value }} {{ sv.variation3.value }}
-        </span>
-      </v-col> -->
+        <span v-if="sv.variation2"> / {{ sv.variation2.value }} </span>
+        <span v-if="sv.variation3"> / {{ sv.variation3.value }} </span>
+      </v-col>
       <v-col cols="12" md="1" class="text-center">
         <amp-input is-price v-model="sv.price"> </amp-input
       ></v-col>
@@ -218,6 +216,13 @@ export default {
     update(index) {
       this.loading = true;
       let form = this.product.product_variation_combinations[index];
+      form.minimum =
+        +this.product.product_variation_combinations[index].minimum;
+      form.maximum =
+        +this.product.product_variation_combinations[index].maximum;
+      form.price = +this.product.product_variation_combinations[index].price;
+      form.discount =
+        +this.product.product_variation_combinations[index].discount;
       if (!form.price && !form.barcode) {
         this.$toast.error("لطفا ورودی ها را کنترل کنید.");
         this.loading = false;
@@ -246,7 +251,7 @@ export default {
         this.product.product_variation_combinations[this.selected_item].id;
       this.$reqApi("/product-variation-combination/delete", { id: selected_id })
         .then(response => {
-          this.$toast.success("ویژگی مد نظر با موفقیت جذف شد.");
+          this.$toast.success("ویژگی مد نظر با موفقیت جذف شد");
           this.$emit("reloadPage");
           this.deleteDiaolog = false;
 

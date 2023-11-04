@@ -6,6 +6,7 @@
           :product_id="product.id"
           @closeAddCombination="closeAddCombination()"
           @reloadVaritoinsForm="reloadVriations()"
+          :dataItems="product.category_ids"
         />
       </v-col>
       <v-col cols="12" md="12">
@@ -13,12 +14,14 @@
           :product_id="product.id"
           @closeVariationForm="closeVariationForm()"
           ref="variationsFormSingleSeal"
+          :dataItems="product.category_ids"
         />
+
       </v-col>
     </v-row>
 
     <v-row class="pa-2 mt-10">
-      <!-- <v-col cols="12" md="2" class="text-center"> محصول </v-col> -->
+      <v-col cols="12" md="2" class="text-center"> محصول </v-col>
       <v-col cols="12" md="1" class="text-center"> قیمت به تومان</v-col>
       <!-- <v-col cols="12" md="1" class="text-center"> قیمت با تخفیف </v-col> -->
       <v-col cols="12" md="1" class="text-center"> بارکد </v-col>
@@ -50,30 +53,23 @@
       :key="'sv' + index"
       :class="index % 2 == 0 ? 'odd-row' : ''"
     >
-      <!-- <v-col cols="12" md="2" class="text-center mt-3">
-        <span v-if="sv.variation_1_id && sv.variation_1_id.variation_type">
-          {{ sv.variation_1_id.variation_type.value }}
-          {{ sv.variation_1_id.value }}
+      <v-col cols="12" md="2" class="text-center mt-3">
+        <span v-if="sv.variation1">
+          {{ sv.variation1.value }}
         </span>
-        <span v-if="sv.variation_2_id && sv.variation_2_id.variation_type">
-          | {{ sv.variation_2_id.variation_type.value }}
-          {{ sv.variation_2_id.value }}
-        </span>
-        <span v-if="sv.variation_3_id && sv.variation_3_id.variation_type">
-          | {{ sv.variation_3_id.variation_type.value }}
-          {{ sv.variation_3_id.value }}
-        </span>
-      </v-col> -->
-      <v-col cols="12" md="1" class="text-center">
+        <span v-if="sv.variation2"> / {{ sv.variation2.value }} </span>
+        <span v-if="sv.variation3"> / {{ sv.variation3.value }} </span>
+      </v-col>
+      <v-col cols="12" md="1" class="text-center mt-3">
         <amp-input is-price v-model="sv.price" />
       </v-col>
       <!-- <v-col cols="12" md="1" class="text-center"> <amp-input is-price v-model="sv.discounted_price" /></v-col> -->
-      <v-col cols="12" md="1" class="text-center ">
+      <v-col cols="12" md="1" class="text-center mt-3">
         <amp-input is-price v-model="sv.barcode" />
         <!-- <span v-if="sv.variation_2_id">{{ sv.variation_2_id.barcode }} | </span>
         <span v-if="sv.variation_3_id">{{ sv.variation_3_id.barcode }} </span> -->
       </v-col>
-      <v-col cols="12" md="2" class="text-center mt-3">
+      <v-col cols="12" md="2" class="text-center mt-5">
         <span>{{ sv.full_barcode }} </span>
         <!-- <span v-if="sv.variation_2_id">{{ sv.variation_2_id.barcode }} | </span>
         <span v-if="sv.variation_3_id">{{ sv.variation_3_id.barcode }} </span> -->
@@ -101,7 +97,7 @@
       </v-col>
       <!-- <v-col cols="12" md="1" class="text-center"><amp-input  is-number  v-model="sv.max"></amp-input></v-col>
       <v-col cols="12" md="1" class="text-center"><amp-input  is-number v-model="sv.weight"></amp-input></v-col> -->
-      <v-col cols="12" md="3" class="text-center">
+      <v-col cols="12" md="2" class="text-center mt-3">
         <amp-button
           small
           text="به روز رسانی"
@@ -229,6 +225,13 @@ export default {
     update(index) {
       this.loading = true;
       let form = this.product.product_variation_combinations[index];
+      form.minimum =
+        +this.product.product_variation_combinations[index].minimum;
+      form.maximum =
+        +this.product.product_variation_combinations[index].maximum;
+      form.price = +this.product.product_variation_combinations[index].price;
+      form.discount =
+        +this.product.product_variation_combinations[index].discount;
       if (!form.price && !form.barcode) {
         this.$toast.error("لطفا ورودی ها را کنترل کنید.");
         this.loading = false;
@@ -257,7 +260,7 @@ export default {
         this.product.product_variation_combinations[this.selected_item].id;
       this.$reqApi("/product-variation-combination/delete", { id: selected_id })
         .then(response => {
-          this.$toast.success("ویژگی مد نظر با موفقیت حذف شد.");
+          this.$toast.success("ویژگی مد نظر با موفقیت حذف شد");
           this.$emit("reloadPage");
           this.deleteDiaolog = false;
           this.loading = false;

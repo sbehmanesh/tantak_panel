@@ -37,22 +37,23 @@
               <v-col cols="12" md="3">
                 <amp-input
                   text="قیمت  پایه"
-                  is-number
-                  rules="require,number"
+                  is-price
+                  rules="require"
                   v-model="form.base_price"
                 />
               </v-col>
               <v-col cols="12" md="3">
                 <amp-input
-                  is-number
+                  is-price
                   text="قیمت عمده فروشی پایه"
-                  rules="require,number"
+                  rules="require"
                   v-model="form.base_wholesale_price"
                 />
               </v-col>
               <v-col cols="12" md="3">
                 <amp-input
                   text="بارکد"
+                  is-number
                   v-model="form.barcode"
                   rules="number,max_10"
                 />

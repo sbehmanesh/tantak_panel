@@ -1,11 +1,11 @@
 <template>
   <div>
-    <v-expansion-panels class="px-4" focusable>
+    <v-expansion-panels variant="popout" class="my-4 elevation-5">
       <v-expansion-panel>
-        <v-expansion-panel-header expand-icon="category">
+        <v-expansion-panel-header expand-icon="category" class="primary lighten-4">
           انتخاب دسته بندی
         </v-expansion-panel-header>
-        <v-expansion-panel-content>
+        <v-expansion-panel-content class="primary lighten-5">
           <v-row>
             <v-col cols="12" md="12">
               <v-card class="mt-5 mx-2 pa-3">

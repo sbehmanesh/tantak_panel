@@ -1,11 +1,11 @@
 <template>
   <v-card class="pa-1 ma-0 elevation-0">
-    <v-expansion-panels variant="popout" class="my-4">
-      <v-expansion-panel>
-        <v-expansion-panel-header expand-icon="precision_manufacturing">
+    <v-expansion-panels variant="popout" class="my-4 elevation-5" >
+      <v-expansion-panel >
+        <v-expansion-panel-header expand-icon="precision_manufacturing" class="primary lighten-4">
           ترکیب جدید
         </v-expansion-panel-header>
-        <v-expansion-panel-content>
+        <v-expansion-panel-content class="primary lighten-5" >
           <v-form v-model="valid" @submit.prevent="submit()" v-if="!loading">
             <v-row>
               <v-col cols="12">
@@ -112,7 +112,8 @@ export default {
     product_id: { default: null },
     type: { default: "single_sell" },
     sellType: { default: "single" },
-    categoryID: { default: "" }
+    categoryID: { default: "" },
+    dataItems: { default: "" },
   },
   data: () => ({
     valid: false,
@@ -140,37 +141,36 @@ export default {
       type: "",
       product_id: "",
       is_default: 0,
-      sell_type: "single"
-    }
+      sell_type: "single",
+    },
   }),
-  watch: {
-    product_id() {
-      if (this.product_id) {
-        this.loadData();
+  mounted() {
+    this.form.sell_type = this.sellType;
+  },
+  watch:{
+    dataItems(){
+      if(this.dataItems){
+        this.loadVariationItems()
       }
     }
-  },
-  mounted() {
-    this.loadVariationItems();
-    this.form.sell_type = this.sellType;
   },
   methods: {
     loadData() {
       this.loading = true;
       this.$reqApi("/product-variation", {
-        filters: { product_id: this.$route.params.id }
+        filters: { product_id: this.$route.params.id },
       })
-        .then(async response => {
+        .then(async (response) => {
           let re = response.model.data;
-          re.map(x => {
+          re.map((x) => {
             this.all_variations.push({
               text: x.value,
-              value: x.id
+              value: x.id,
             });
           });
           this.loading = false;
         })
-        .catch(error => {
+        .catch((error) => {
           this.loading = false;
         });
     },
@@ -194,7 +194,7 @@ export default {
       if (form.variation_1_id && form.variation_2_id && form.variation_3_id) {
         setTimeout(() => {
           this.$reqApi("/product-variation-combination/insert", form)
-            .then(response => {
+            .then((response) => {
               this.$toast.success("اطلاعات ثبت شد");
               this.$emit("closeAddCombination");
               this.$emit("reloadVaritoinsForm");
@@ -214,10 +214,10 @@ export default {
                 min: "",
                 max: "",
                 type: "",
-                product_id: ""
+                product_id: "",
               };
             })
-            .catch(error => {
+            .catch((error) => {
               this.loading = false;
             });
         }, 600);
@@ -226,46 +226,54 @@ export default {
       }
     },
     loadVariationItems(value) {
-      this.loading = true;
-      this.$reqApi("/product-variation")
-        .then(async response => {
-          let re = response.model.data;
-          for (let i = 0; i < re.length; i++) {
-            if (!this.variations_ids.includes(re[i].variation_type_id)) {
-              let items = [];
-              this.variations_ids.push(re[i].variation_type_id);
-              for (let j = 0; j < re.length; j++) {
-                if (re[j].variation_type_id == re[i].variation_type_id) {
-                  items.push({
-                    text: re[j].value,
-                    value: re[j].id
-                  });
+      if (this.dataItems) {
+        this.loading = true;
+        let filters = {
+          category_id: {
+            op: "between",
+            value: this.dataItems,
+          },
+        };
+        this.$reqApi("/product-variation", { filters: filters })
+          .then(async (response) => {
+            let re = response.model.data;
+            for (let i = 0; i < re.length; i++) {
+              if (!this.variations_ids.includes(re[i].variation_type_id)) {
+                let items = [];
+                this.variations_ids.push(re[i].variation_type_id);
+                for (let j = 0; j < re.length; j++) {
+                  if (re[j].variation_type_id == re[i].variation_type_id) {
+                    items.push({
+                      text: re[j].value,
+                      value: re[j].id,
+                    });
+                  }
                 }
+                this.variations.push({
+                  text: re[i].variation_type,
+                  value: re[i].variation_type_id,
+                  items: items,
+                });
               }
-              this.variations.push({
-                text: re[i].variation_type,
-                value: re[i].variation_type_id,
-                items: items
-              });
             }
-          }
-          this.loading = false;
-        })
-        .catch(error => {
-          this.loading = false;
-        });
+            this.loading = false;
+          })
+          .catch((error) => {
+            this.loading = false;
+          });
+      }
     },
     checkVariatoin(id, count) {
       let hvae_variation = false;
       let ids = id;
-      this.all_variations.forEach(element => {
+      this.all_variations.forEach((element) => {
         if (element.value == id) {
           hvae_variation = true;
         }
       });
 
       if (hvae_variation == false) {
-        this.createNewVariation(id, count).then(res => {
+        this.createNewVariation(id, count).then((res) => {
           if (res) {
             ids = res;
           }
@@ -276,21 +284,21 @@ export default {
     setVariationId(v, count, id) {
       if (count == 1) {
         this.variation_id1 = v.value;
-        v.items.map(x => {
+        v.items.map((x) => {
           if (x.value == id) {
             this.variation_value1 = x.text;
           }
         });
       } else if (count == 2) {
         this.variation_id2 = v.value;
-        v.items.map(x => {
+        v.items.map((x) => {
           if (x.value == id) {
             this.variation_value2 = x.text;
           }
         });
       } else if (count == 3) {
         this.variation_id3 = v.value;
-        v.items.map(x => {
+        v.items.map((x) => {
           if (x.value == id) {
             this.variation_value3 = x.text;
           }
@@ -298,7 +306,7 @@ export default {
       }
     },
     createNewVariation(id, count) {
-      return new Promise(response => {
+      return new Promise((response) => {
         let variations_id = "";
         let value = "";
         if (count == 1) {
@@ -314,17 +322,17 @@ export default {
         let form = {
           variation_type_id: variations_id,
           product_id: this.product_id,
-          value: value
+          value: value,
         };
         this.$reqApi("/product-variation/insert", form)
-          .then(res => {
+          .then((res) => {
             response(res.id);
           })
-          .catch(err => {
+          .catch((err) => {
             return err;
           });
       });
-    }
-  }
+    },
+  },
 };
 </script>

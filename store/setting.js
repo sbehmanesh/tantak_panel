@@ -20,6 +20,7 @@ export const state = () => ({
     site_name: "",
     site_logo: "",
     type_plate: false,
+    barnds:[],
 })
 
 export const mutations = {
@@ -67,6 +68,9 @@ export const mutations = {
     },
     set_type_plate: function (state, data) {
         state.type_plate = data
+    },
+    set_brand:function (state,data) {
+        state.barnds = data
     }
 }
 
@@ -198,4 +202,18 @@ export const actions = {
         }
 
     },
+    setBrand({commit}){
+        this.$reqApi('/brand',{row_number:40009}).then((res)=>{
+            let items = []
+            res.model.data.map((x)=>{
+               items.push({
+                text:x.name,
+                value:x.id
+               })
+            })
+            commit('set_brand',items)
+        }).catch((err)=>{
+            return err
+        })
+    }
 }

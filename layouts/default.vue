@@ -29,9 +29,10 @@ export default {
   }),
   beforeMount() {
     this.checkAuth();
+    this.$store.dispatch('setting/setBrand')
   },
   head() {
-    this.checkDomain();
+    this.checkDomain(); 
     return {
       title: this.title
     };

@@ -74,6 +74,14 @@
                   :items="this.$store.state.static.product_status"
                 />
               </v-col>
+              <v-col cols="12" md="3">
+                <amp-select
+                  text="برند"
+                  rules=""
+                  v-model="form.brand_id   "
+                  :items="this.$store.state.setting.barnds"
+                />
+              </v-col>
               <v-col cols="12" md="12">
                 <SelectCategory
                   v-model="form.category_ids"
@@ -361,6 +369,7 @@ export default {
       product_variation_combinations: [],
       base_price: "",
       main_image: "/image/no_image.png",
+      brand_id:'',
       base_wholesale_price: "",
       category_ids: [],
       tags: [],
@@ -468,6 +477,7 @@ export default {
             this.form.base_price = response.base_price;
             this.form.base_wholesale_price = response.base_wholesale_price;
             this.form.barcode = response.barcode;
+            this.form.brand_id = response.brand_id   
             this.form.product_variation_combinations =
               response.product_variation_combinations;
             for (let i = 0; i < response.categories.length; i++) {

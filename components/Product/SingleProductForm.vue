@@ -194,10 +194,6 @@ export default {
       sort: 1
     }
   }),
-
-  mounted() {
-    console.log(this.product)
-  },
   methods: {
     submit() {
       let form = this.$copyForm(this.form);

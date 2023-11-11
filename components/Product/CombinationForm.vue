@@ -237,7 +237,6 @@ export default {
         this.$reqApi("/product-variation", { filters: filters })
           .then(async (response) => {
             let re = response.model.data;
-            console.log(re)
             for (let i = 0; i < re.length; i++) {
               if (!this.variations_ids.includes(re[i].variation_type_id)) {
                 let items = [];

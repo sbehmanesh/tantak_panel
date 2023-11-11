@@ -90,6 +90,12 @@ let mnue_tree = [
         route: "/product/category"
       },
       {
+        id:40,
+        name:'برند ها',
+        access:'*',
+        route:'/product/brand'
+      },
+      {
         id: 30,
         access: "*",
         name: "فرم های دریافتی فروش عمده",

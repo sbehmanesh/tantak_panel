@@ -68,7 +68,7 @@
         <amp-input is-price v-model="sv.price"> </amp-input
       ></v-col>
       <v-col cols="12" md="1" class="text-center">
-        <amp-input is-number v-model="sv.barcode"></amp-input>
+        <span>{{ sv.barcode }} </span>
         <!-- <span >|{{ sv.barcode }} | </span>
         <span >{{ sv.barcode }}</span> -->
       </v-col>

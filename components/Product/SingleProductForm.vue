@@ -65,7 +65,8 @@
       </v-col>
       <!-- <v-col cols="12" md="1" class="text-center"> <amp-input is-price v-model="sv.discounted_price" /></v-col> -->
       <v-col cols="12" md="1" class="text-center mt-3">
-        <amp-input is-price v-model="sv.barcode" />
+        <!-- <amp-input is-price v-model="sv.barcode" /> -->
+        <span>{{ sv.barcode }} </span>
         <!-- <span v-if="sv.variation_2_id">{{ sv.variation_2_id.barcode }} | </span>
         <span v-if="sv.variation_3_id">{{ sv.variation_3_id.barcode }} </span> -->
       </v-col>

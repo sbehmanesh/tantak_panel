@@ -54,6 +54,7 @@
                 <amp-input
                   text="بارکد"
                   is-number
+                  :disabled="modelId? true : false"
                   v-model="form.barcode"
                   rules="number,max_10"
                 />

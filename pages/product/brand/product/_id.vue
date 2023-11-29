@@ -44,7 +44,6 @@ export default {
         filterable: false,
       },
       { text: "نام محصول", value: "name" },
-      { text: "واحد فروش عمده", value: "wholesale_unit" },
       {
         text: "ترتیب نمایش",
         value: "sort",

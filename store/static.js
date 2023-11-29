@@ -44,19 +44,19 @@ let mnue_tree = [
       {
         id: 3,
         name: "کاربران",
-        access: "*",
+        access: "user/index",
         route: "/user/list"
       },
       {
         id: 4,
         name: "براساس نقش",
-        access: "*",
+        access: "user/index",
         route: "/user"
       },
       {
         id: 5,
         name: "نقش ها",
-        access: "*",
+        access: "role/index",
         route: "/role"
       }
     ]
@@ -64,13 +64,13 @@ let mnue_tree = [
   {
     id: 6,
     name: "ناحیه ها",
-    access: "*",
+    access: "region/index",
     route: "/region"
   },
   {
     id: 7,
     name: "شعبات",
-    access: "*",
+    access: "branch/index",
     route: "/branches"
   },
   {
@@ -80,28 +80,34 @@ let mnue_tree = [
       {
         id: 14,
         name: "فهرست محصولات",
-        access: "*",
+        access: "product/index",
         route: "/product"
       },
       {
         id: 15,
         name: "دسته بندی محصولات",
-        access: "*",
+        access: "category/index",
         route: "/product/category"
       },
       {
         id:40,
         name:'برند ها',
-        access:'*',
+        access:'brand/index',
         route:'/product/brand'
       },
       {
         id: 30,
-        access: "*",
+        access: "wholesale_form/index",
         name: "فرم های دریافتی فروش عمده",
         route: "/product/wholesale-form"
       }
     ]
+  },
+  {
+    id:31,
+    name:'موجودی انبار',
+    access:"*",
+    route:'/stock'
   },
   {
     id: 18,
@@ -110,43 +116,43 @@ let mnue_tree = [
       {
         id: 19,
         name: "اسلایدر",
-        access: "*",
+        access: "setting/index",
         route: "/setting/slider"
       },
       {
         id: 20,
         name: "بنرها",
-        access: "*",
+        access: "setting/index",
         route: "/setting/main-banner"
       },
       {
         id: 21,
         name: "تنظیمات عمومی",
-        access: "*",
+        access: "setting/index",
         route: "/setting/public/1"
       },
       {
         id: 22,
         name: "ویژگی های محصولات",
-        access: "*",
+        access: "setting/index",
         route: "/setting/variation-type"
       },
       {
         id: 23,
         name: "روش های ارسال",
-        access: "*",
+        access: "setting/index",
         route: "/setting/delivery-method"
       },
       {
         id: 24,
         name: "واحد ها",
-        access: "*",
+        access: "setting/index",
         route: "/setting/units"
       },
       {
         id: 25,
         name: "تنظیمات فروش عمده",
-        access: "*",
+        access: "setting/index",
         route: "/setting/whole-sell"
       }
     ]
@@ -158,19 +164,19 @@ let mnue_tree = [
       {
         id: 27,
         name: "تماس با ما",
-        access: "*",
+        access: "contact_us_form/index",
         route: "/forms/contact-us-form"
       },
       {
         id: 28,
         name: "درخواست فرم نمایندگی",
-        access: "*",
+        access: "representation_request_form/index",
         route: "/forms/representation-request-form"
       },
       {
         id: 29,
         name: "شکایات",
-        access: "*",
+        access: "complaint_form/index",
         route: "/forms/complaint"
       }
     ]

@@ -88,28 +88,26 @@ export default {
   },
   mounted() {},
   watch: {
-    "updateeDiaolog.item"() {
+    "updateeDiaolog.show"() {
       if (this.updateeDiaolog.item) {
-        if (this.modelId) {
-          this.loadData(this.updateeDiaolog.item, this.modelId);
-        } else {
-          this.loadData(this.updateeDiaolog.item, null);
-        }
+        this.loadData(this.updateeDiaolog.item);
+      } else {
+        this.loadData(this.updateeDiaolog.item);
       }
     },
   },
   methods: {
     submit() {
       this.loading = true;
-      let warehouseStocks = this.form.filter((x)=>{
-        return x.stock > 0
-      })
+      let warehouseStocks = this.form.filter((x) => {
+        return x.stock > 0;
+      });
       this.$reqApi("/warehouse-stock/save-stocks", {
         warehouseStocks: warehouseStocks,
       })
         .then((res) => {
-          this.showUpdateDialog()
-          this.$emit('reloadTable')
+          this.showUpdateDialog();
+          this.$emit("reloadTable");
           this.loading = false;
           return res;
         })
@@ -138,37 +136,39 @@ export default {
       this.updateeDiaolog.item = null;
     },
     loadData(data, model_id) {
-      let url = "/warehouse-stock/list-product-variation-combination";
-      let form = {
-        row_number: 4000,
-        branch_id: data.branch_id,
-        product_id: data.product_id,
-      };
-      if(model_id){
-        url = 'warehouse-stock/show-stock'
-        form={
-          id:model_id
+      if (data) {
+        let url = "/warehouse-stock/list-product-variation-combination";
+        let form = {
+          row_number: 4000,
+          branch_id: data.branch_id,
+          product_id: data.product_id,
+        };
+        if (model_id) {
+          url = "warehouse-stock/show-stock";
+          form = {
+            id: model_id,
+          };
         }
-      }
 
-      this.loading = true;
-      this.$reqApi(url, form)
-        .then((res) => {
-          res.model.data.map((x) => {
-            this.form.push({
-              varcomb_id: x.id,
-              branch_id: data.branch_id,
-              stock: x.stock,
-              saved_stock: x.stock,
-              title: `${x.variation1.value} , ${x.variation2.value} , ${x.variation3.value} | ${x.full_barcode}`,
+        this.loading = true;
+        this.$reqApi(url, form)
+          .then((res) => {
+            res.model.data.map((x) => {
+              this.form.push({
+                varcomb_id: x.id,
+                branch_id: this.updateeDiaolog.item.branch_id,
+                stock: x.stock,
+                saved_stock: x.stock,
+                title: `${x.variation1.value} , ${x.variation2.value} , ${x.variation3.value} | ${x.full_barcode}`,
+              });
             });
+            this.loading = false;
+          })
+          .catch((err) => {
+            this.loading = false;
+            return err;
           });
-          this.loading = false;
-        })
-        .catch((err) => {
-          this.loading = false;
-          return err;
-        });
+      }
     },
   },
 };

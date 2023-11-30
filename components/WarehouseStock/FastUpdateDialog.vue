@@ -30,7 +30,7 @@
           </v-col>
           <v-col cols="6">
             <amp-button
-              text="به روزرسانی"
+              text="تایید"
               class="w-max"
               color="success"
               type="submit"
@@ -83,7 +83,6 @@ export default {
       this.loading = true;
       if (this.updateeDiaolog.update) {
         try {
-          console.log(this.updateeDiaolog.item)
           this.form.id = this.updateeDiaolog.item.item.id;
           this.form.varcomb_id = this.updateeDiaolog.item.item.product_variation_combination.id;
           this.form.branch_id = this.updateeDiaolog.item.branch_id.branch_id;

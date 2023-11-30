@@ -187,7 +187,6 @@ export default {
               item: body,
               branch_id: this.rootBody,
             };
-            console.log(body)
             this.dialog_items.update = true;
           }
         },
@@ -204,7 +203,7 @@ export default {
     },
     setDialogStock() {
       this.save_dialog.show = true;
-      this.save_dialog.item = null;
+      this.save_dialog.item = this.rootBody;
     },
     emptyDialog(){
       this.dialog_items.show = false
@@ -212,6 +211,7 @@ export default {
     },
     reloadListVariation() {
       if (this.$refs.ListVariation && this.$refs.ListStock) {
+        this.tab = 1
         this.$refs.ListVariation.getDataFromApi();
         this.$refs.ListStock.getDataFromApi();
       }

@@ -104,6 +104,13 @@ export default ({ redirect, store, $toast }, inject) => {
     }
     return true
   })
+  inject('checkAccess',(access)=>{
+    if(store.state.auth.action.indexOf(access)>-1){
+      return true
+    }else{
+      return false
+    }
+  })
   inject('stringToRegex', (str) => {
     const main = str.match(/\/(.+)\/.*/)[1]
     const options = str.match(/\/.+\/(.*)/)[1]

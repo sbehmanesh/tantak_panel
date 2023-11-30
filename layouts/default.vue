@@ -25,16 +25,30 @@ export default {
   data: () => ({
     title: "",
     drawer: false,
-    show_body: false
+    show_body: false,
   }),
   beforeMount() {
     this.checkAuth();
-    this.$store.dispatch('setting/setBrand')
+    if (this.$checkAccess("brand/index")) {
+      this.$store.dispatch("setting/setBrand");
+    }
+    if (this.$checkAccess("country_division/index")) {
+      this.$store.dispatch("setting/setCountryDivision");
+    }
+    if (this.$checkAccess("branch/index")) {
+      this.$store.dispatch("setting/setBranchCod");
+    }
+    if (this.$checkAccess("region/index")) {
+      this.$store.dispatch("setting/setgetRegion");
+    }
+    if(this.$checkAccess('action/index')){
+      this.$store.dispatch('setting/getActionServer')
+    }
   },
   head() {
-    this.checkDomain(); 
+    this.checkDomain();
     return {
-      title: this.title
+      title: this.title,
     };
   },
 
@@ -66,8 +80,8 @@ export default {
       link.href = this.$store.state.chat_url + "/#/messages";
       link.target = "_blanck";
       link.click();
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

@@ -7,7 +7,7 @@
         v-model="form.product_id"
       ></amp-autocomplete>
     </v-col>
-    <v-col cols="12" md="4" v-if="checkAdmin" >
+    <v-col cols="12" md="4" v-if="checkRootAccess">
       <amp-autocomplete
         text="انتخاب شعبه"
         :items="branch_items"
@@ -30,15 +30,24 @@ export default {
   },
   mounted() {
     this.loadProduct();
-    this.loadBranch();
   },
   watch: {
     "form.branch_id"() {
       this.$emit("setFilter", this.form);
     },
     "form.product_id"() {
-      if(this.checkAdmin == false){
+      if (!this.checkRootAccess) {
         this.$emit("setFilter", this.form);
+      }
+    },
+  },
+  computed: {
+    checkRootAccess() {
+      if (this.$checkAccess("warehouse_stock/root")) {
+        this.loadBranch();
+        return true;
+      } else {
+        return false;
       }
     },
   },
@@ -71,14 +80,6 @@ export default {
           return err;
         });
     },
-    checkAdmin(){
-        this.$store.state.auth.user.roles.map((x)=>{
-            if(x.id == this.$store.state.auth.role.admin_id){
-                return true
-            }
-        })
-        return false
-    }
   },
 };
 </script>

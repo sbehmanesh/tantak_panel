@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="updateeDiaolog.show" width="1500">
+  <v-dialog persistent v-model="updateeDiaolog.show" width="1500">
     <v-card class="pa-5" v-if="!loading">
       <v-card-title class="center-div">
         <span class="mb-2 font_xxxl font_bold">افزودن موجودی</span>

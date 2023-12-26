@@ -109,30 +109,30 @@ let mnue_tree = [
     access: "product/index",
     route: "/stock",
   },
-  {
-    id: 50,
-    name: "مرکز فروش تلفنی",
-    children: [
-      {
-        id: 51,
-        access: "*",
-        name: "ورود اکسل",
-        route: "/call-center/import",
-      },
-      {
-        id: 52,
-        access: "*",
-        name: "لیست کارکنان",
-        route: "/call-center/list",
-      },
-      {
-        id: 53,
-        access: "call_center/index",
-        name: "پیام های دریافتی",
-        route: "/call-center/message",
-      },
-    ],
-  },
+  // {
+  //   id: 50,
+  //   name: "مرکز فروش تلفنی",
+  //   children: [
+  //     {
+  //       id: 51,
+  //       access: "*",
+  //       name: "ورود اکسل",
+  //       route: "/call-center/import",
+  //     },
+  //     {
+  //       id: 52,
+  //       access: "*",
+  //       name: "لیست کارکنان",
+  //       route: "/call-center/list",
+  //     },
+  //     {
+  //       id: 53,
+  //       access: "call_center/index",
+  //       name: "پیام های دریافتی",
+  //       route: "/call-center/message",
+  //     },
+  //   ],
+  // },
   {
     id: 18,
     name: "تنظیمات",

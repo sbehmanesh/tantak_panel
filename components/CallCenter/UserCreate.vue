@@ -131,6 +131,7 @@ export default {
         .then((res) => {
           this.$toast.success("کار بر با موفقیت ثبت شد");
           this.loading = false;
+          this.$emit('realodList')
           this.empty();
         })
         .catch((err) => {

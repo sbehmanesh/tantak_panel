@@ -31,6 +31,7 @@
           <UserCreate
             :url="insert_superviser"
             title="ایجاد سوپروایزر"
+            @realodList="reloadList"
             icon="account_circle"
           />
         </v-col>
@@ -38,12 +39,13 @@
           <UserCreate
             :url="insert_operator"
             title="ایجاد اپراتور"
+            @realodList="reloadList"
             icon="account_circle"
           />
         </v-col>
       </v-col>
       <v-col cols="12" md="12">
-        <BaseTable :headers="headers" :url="url" />
+        <BaseTable :headers="headers" :url="url" ref="UserlIstref" />
       </v-col>
     </v-col>
   </v-row>
@@ -141,6 +143,11 @@ export default {
       this.$checkRole(this.$store.state.auth.role.admin_call_center_id)
     ) {
       this.url = this.superviser_url;
+    }
+  },
+  methods: {
+    reloadList(){
+      this.$refs.UserlIstref.getDataFromApi()
     }
   },
 };

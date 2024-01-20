@@ -46,7 +46,7 @@ export default {
           this.$store.dispatch("setting/setgetRegion");
         }
         if (this.$checkRole("action/index")) {
-          this.$store.dispatch('setting/getActions')
+          this.$store.dispatch("setting/getActions");
         }
       }
     },
@@ -61,7 +61,9 @@ export default {
   methods: {
     showBody() {
       this.show_body = true;
+
       setTimeout(() => {
+        // this.$store.dispatch("setting/setgetRegion", {}, { root: true });
         document.getElementById("landing-parent").style.display = "none";
       }, 1000);
     },

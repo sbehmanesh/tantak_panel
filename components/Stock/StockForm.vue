@@ -56,7 +56,7 @@ export default {
   },
   methods: {
     loadProduct() {
-      this.$reqApi("/product", { row_number: 5000000 })
+      this.$reqApi("/product/low-search", { row_number: 30000 })
         .then((res) => {
           res.model.data.map((x) => {
             this.items_product.push({
@@ -72,7 +72,7 @@ export default {
         });
     },
     loadBranch() {
-      this.$reqApi("/branch", { row_number: 5000000 })
+      this.$reqApi("/branch", { row_number: 50000 })
         .then((res) => {
           res.model.data.map((x) => {
             this.branch_items.push({

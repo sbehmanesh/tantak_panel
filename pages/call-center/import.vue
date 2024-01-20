@@ -1,8 +1,9 @@
 <template>
   <v-row>
     <v-col cols="12" md="12" class="d-flex justify-center" v-if="url">
-      <v-card min-width="700" class="elevation-0" >
+      <v-card min-width="700" class="elevation-0">
         <ImportExcel :url="url" backurl="/" />
+
       </v-card>
     </v-col>
   </v-row>
@@ -19,7 +20,8 @@ export default {
   }),
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);
-    this.url = 'recived-message/import-excel'
+    this.url = "recived-message/import-excel";
   },
+
 };
 </script>

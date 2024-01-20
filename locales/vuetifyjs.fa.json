@@ -40,6 +40,11 @@
   "calendar": {
     "moreEvents": "{0} بیشتر"
   },
+  "input": {
+    "prependAction": "دکمه قبلی",
+    "appendAction": "فعالیت",
+    "clear": "پاک کردن"
+  },
   "pagination": {
     "ariaLabel": {
       "wrapper": "لفافه",

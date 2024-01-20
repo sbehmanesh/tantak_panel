@@ -170,6 +170,17 @@ export default {
     };
   },
   beforeMount() {
+    this.headers = [
+      {
+        text: "تاریخ ثبت",
+        filterType: "date",
+        filterCol: "created_at",
+        parentClass: "ltr-item text-center",
+        value: (body) => {
+          console.log(body);
+          this.$toJalali(body.created_at)},
+      },
+    ];
     this.$store.dispatch("setPageTitle", this.title);
     if (this.$checkRole(this.$store.state.auth.role.superviser_id)) {
       this.is_superviser = true;

@@ -15,6 +15,13 @@
             <v-icon class="mx-2">call_received</v-icon></v-btn
           >
         </v-col>
+        <div class="mr-2">
+          <v-btn title="مشاهده و بارگیری" icon @click="open">
+            <v-icon size="30"> download </v-icon>
+          </v-btn>
+          <br />
+          <span style="font-size: 11px">فایل نمونه</span>
+        </div>
       </v-row>
 
       <v-row dense>
@@ -74,7 +81,9 @@ export default {
       this.$reqApi(this.url, form_data)
         .then((response) => {
           this.$toast.success("اطلاعات ثبت شد");
-          this.$toast.success(`تعداد ${response.data.new_messages_added} پیام اضافه شد`)
+          this.$toast.success(
+            `تعداد ${response.data.new_messages_added} پیام اضافه شد`
+          );
           this.loading = false;
         })
         .catch((error) => {
@@ -92,6 +101,11 @@ export default {
           this.loading = false;
           return err;
         });
+    },
+    open() {
+      window.open(
+        "https://test-api.tantak.ir/example/RecivedMessagesFromKavenegar.xlsx"
+      );
     },
   },
 };

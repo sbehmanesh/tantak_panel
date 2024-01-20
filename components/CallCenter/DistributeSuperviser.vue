@@ -99,6 +99,7 @@ export default {
       this.$reqApi(this.url, this.form)
         .then((res) => {
           this.$toast.success("عملیات با موفقیت انجام شد");
+          this.loading = false;
         })
         .catch((err) => {
           return err;

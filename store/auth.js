@@ -179,11 +179,11 @@ export const actions = {
       await dispatch("setting/setBranchCod", {}, { root: true });
     } catch (error) {}
   },
-  async getRegion({ state, dispatch }) {
-    try {
-      await dispatch("setting/setgetRegion", {}, { root: true });
-    } catch (error) {}
-  },
+  // async getRegion({ state, dispatch }) {
+  //   try {
+  //     await dispatch("setting/setgetRegion", {}, { root: true });
+  //   } catch (error) {}
+  // },
   // async setAction({ dispatch }) {
   //   dispatch("setting/getActionServer", "", { root: true });
   // },

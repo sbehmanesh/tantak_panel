@@ -72,8 +72,23 @@ export default {
         },
       },
       {
-        text: " آدرس",
-        value: "address",
+        filterable: false,
+        text: "آدرس",
+        filterCol: "descriptions",
+        type: "tooltip",
+        function: (body) => {
+          if (body.address) {
+            return body.address;
+          }
+        },
+        value: (body) => {
+          if (typeof body.address == "string") {
+            if (body.address.length < 25) {
+              return body.address;
+            }
+            return body.address.slice(0, 25) + "...";
+          }
+        },
       },
     ];
     // this.btn_actions = [

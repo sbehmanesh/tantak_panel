@@ -68,7 +68,7 @@ export default {
         items: this.$store.state.static.status_contact_form
       },
       {
-        text: "نوع مالیکت",
+        text: "نوع مالکیت",
         filterType: "select",
         value: "ownership_type",
         items: this.$store.state.static.ownership_type

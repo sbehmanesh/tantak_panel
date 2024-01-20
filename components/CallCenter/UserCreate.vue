@@ -15,21 +15,13 @@
                 class="rounded-0 pa-2 d-flex flex-column"
               >
                 <v-row class="ma-2">
-                  <v-col cols="12" md="6">
-                    <amp-input
-                      text="نام"
-                      v-model="form.first_name"
-                      rules="require"
-                    />
+                  <v-col cols="12" md="4">
+                    <amp-input text="نام" v-model="form.first_name" />
                   </v-col>
-                  <v-col cols="12" md="6">
-                    <amp-input
-                      text="نام خانوادگی"
-                      v-model="form.last_name"
-                      rules="require"
-                    />
+                  <v-col cols="12" md="4">
+                    <amp-input text="نام خانوادگی" v-model="form.last_name" />
                   </v-col>
-                  <v-col cols="12" md="6">
+                  <v-col cols="12" md="4">
                     <amp-input
                       text="شماره تماس"
                       class="ltr-item"
@@ -37,7 +29,7 @@
                       rules="require,phone"
                     />
                   </v-col>
-                  <v-col cols="12" md="6">
+                  <v-col cols="12" md="4">
                     <amp-input
                       text="رمز عبور"
                       class="ltr-item"
@@ -45,7 +37,7 @@
                       rules="require,password"
                     />
                   </v-col>
-                  <v-col cols="12" md="3">
+                  <v-col cols="12" md="4">
                     <amp-select
                       text="نوع شخص"
                       rules="require"
@@ -53,13 +45,34 @@
                       :items="$store.state.static.person_type"
                     />
                   </v-col>
-                  <v-col cols="12" md="3">
+                  <v-col cols="12" md="4">
                     <amp-select
                       text="وضعیت"
                       rules="require"
                       v-model="form.status"
                       :items="$store.state.static.status"
                     />
+                  </v-col>
+                  <v-col cols="12" md="6">
+                    <amp-jdate
+                      text="تاریخ تولد"
+                      :is-number="true"
+                      v-model="form.birth_date"
+                    />
+                  </v-col>
+                  <v-col cols="12" md="6">
+                    <amp-input
+                      text="کد ملی"
+                      rules="nationalCode"
+                      :is-number="true"
+                      v-model="form.national_code"
+                    />
+                  </v-col>
+                  <v-col cols="12" md="12">
+                    <amp-textarea
+                      text="توضیحات"
+                      v-model="form.description"
+                    ></amp-textarea>
                   </v-col>
                 </v-row>
                 <v-row class="ma-1 d-flex justify-center">
@@ -96,7 +109,7 @@ export default {
   props: {
     title: {
       type: String,
-    }, 
+    },
     icon: {
       type: String,
     },
@@ -121,6 +134,9 @@ export default {
         last_name: "",
         person_type: "real",
         status: "active",
+        birth_date: "",
+        description: "",
+        national_code: "",
       },
     };
   },
@@ -131,7 +147,7 @@ export default {
         .then((res) => {
           this.$toast.success("کار بر با موفقیت ثبت شد");
           this.loading = false;
-          this.$emit('realodList')
+          this.$emit("realodList");
           this.empty();
         })
         .catch((err) => {

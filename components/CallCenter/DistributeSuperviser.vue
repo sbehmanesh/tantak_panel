@@ -26,16 +26,17 @@
                   </v-col>
                   <v-col cols="12" md="6">
                     <amp-input
+                      cClass="ltr-item"
                       text="تعداد پیام"
                       v-model="form.message_count"
-                      rules="require"
+                      rules="require,number"
                     />
                   </v-col>
                 </v-row>
                 <v-row class="ma-1 d-flex justify-center">
                   <amp-button
                     text="پاک سازی"
-                    icon="redo"
+                    icon="delete"
                     @click="empty"
                     color="error"
                     class="ma-1"
@@ -99,9 +100,12 @@ export default {
       this.$reqApi(this.url, this.form)
         .then((res) => {
           this.$toast.success("عملیات با موفقیت انجام شد");
+          this.clearVModel();
+          console.log("submit");
           this.loading = false;
         })
         .catch((err) => {
+          this.loading = false;
           return err;
         });
     },
@@ -113,6 +117,7 @@ export default {
         this.loading = false;
       }, 500);
     },
+
   },
 };
 </script>

@@ -60,8 +60,14 @@
               <div v-if="!$vuetify.breakpoint.mdAndUp">{{ header.text }}:</div>
               <v-spacer v-if="!$vuetify.breakpoint.mdAndUp" />
               <div v-if="header.type == 'checkbox'">
-                <v-checkbox color="primary" :value="data.item.id" v-model="selectedItem" class="small-input center-checkbox" />
-              </div>
+                  <v-checkbox
+                    v-if="header.show_box ? header.show_box(data.item) : true"
+                    color="success"
+                    :value="data.item.id"
+                    v-model="selectedItem"
+                    class="small-input center-checkbox"
+                  />
+                </div>
               <div v-else-if="header.type == 'phone'">
                 <span>
                   <span v-html="data.item[header.value]" test-tag="string_type" class="font_l"> </span>
@@ -76,21 +82,27 @@
           </td>
           <td v-if="btn_actions.length > 0">
             <v-skeleton-loader type="image" height="20px" v-if="loading" />
-            <template v-else v-for="(btn, index) in btn_actions">
+            <template  v-else v-for="(btn, index) in btn_actions">
               <v-btn
                 dark
+                rounded
+                raised
+                outlined
+                elevation="2"
                 x-small
                 depressed
                 :title="btn.text"
                 :color="btn.color"
                 :key="index + btn.text"
-                :class="['py-4', 'ma-1']"
+                :class="['py-3', 'ma-1', 'pa-2']"
                 @click="btn.fun(data.item)"
                 v-if="btn.show_fun(data.item)"
                 :disabled="btn.disab_fun(data.item)"
               >
-                <span>{{ btn.text }}</span>
-                <v-icon v-if="btn.icon" class="mr-1 font_16">{{ btn.icon }}</v-icon>
+                <span style="font-size: 13px">{{ btn.text }}</span>
+                <v-icon v-if="btn.icon" class="mr-1" size="14">{{
+                  btn.icon
+                }}</v-icon>
               </v-btn>
             </template>
           </td>

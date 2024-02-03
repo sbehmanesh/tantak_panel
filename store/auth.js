@@ -9,14 +9,17 @@ export const state = () => ({
     is_user: false,
     is_other: true,
     is_admin: false,
+    is_supervasier:false,
+    is_operator:false,
+    is_adming_call_center_id:false,
     cashier_id: "38d3025b-ed61-4d0d-815f-31c008eb33fc", //  صندوق دار
     user_id: "5246f14d-1905-4e34-a412-8fb689d20f23",
     warehouseman_id: "1deb3b9b-a4bb-46cd-8c20-592767aa1d22", //انبار گردان
     writers_id: "79b26146-1c0b-4562-b968-21d0e8b5a575",
     admin_id: "791d1b02-3610-4177-9051-eb7ae6b72def",
     admin_call_center_id: "495c61df-0a45-4d3d-9153-8fc614c65361",
-    superviser_id: "64bd8978-c182-4177-afb0-5bc21bc18155",
-    oprator_id: "a58e90bb-31f6-4243-9cd8-47e6561e3507",
+    superviser_id: "9154bce8-a24c-4841-8d00-77bedf0ae90e",
+    oprator_id: "b531a124-cc96-405b-aaab-3b5cc9526de2",
   },
 });
 

@@ -26,6 +26,7 @@ export const state = () => ({
   ownership_type,
   product_status,
   branch_status,
+  message_status,
   sell_status,
   bool_number_enum,
 });
@@ -115,19 +116,37 @@ let mnue_tree = [
     children: [
       {
         id: 51,
-        access: "call_center/index",
+        access: "recived_message/insert",
         name: "ورود اکسل",
         route: "/call-center/import",
       },
       {
         id: 52,
-        access: "call_center/index",
+        access: (state) => {
+          if (state.auth) {
+            if (
+              state.auth.action.indexOf('call_center/index-superviser-messages') > -1 ||
+              state.auth.action.indexOf('recived_message/index') > -1) {
+
+              return true
+            }
+          }
+        },
         name: "لیست کارکنان",
         route: "/call-center/list",
       },
       {
         id: 53,
-        access: "*",
+        access: (state) => {
+          if (state.auth) {
+            if (state.auth.action.indexOf('call_center/index-operator-messages') > -1 ||
+              state.auth.action.indexOf('call_center/index-superviser-messages') > -1 ||
+              state.auth.action.indexOf('recived_message/index') > -1) {
+
+              return true
+            }
+          }
+        },
         name: "پیام های دریافتی",
         route: "/call-center/message",
       },
@@ -267,6 +286,14 @@ let branch_status = [
   { text: "غیر فعال", value: "inactive" },
   { text: "پنهان", value: "hidden" },
   { text: "معلق", value: "suspended" },
+];
+let message_status = [
+  { text: "جدید", value: "new" },
+  { text: "معوقه", value: "delayed" },
+  { text: "تایید شده", value: "confirmed" },
+  { text: "تماس مجدد", value: "call_back" },
+  { text: "پرداخت شده", value: "withdrawal" },
+  { text: "لغو شده", value: "canceled" },
 ];
 
 let bool_en = [

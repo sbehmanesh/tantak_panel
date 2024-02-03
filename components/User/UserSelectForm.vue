@@ -10,7 +10,9 @@
       @click:append="openDialog()"
     />
     <div v-if="clear">
-      <v-btn small @click="emptyInpValue()" class="elevation-0 white mt-2"><v-icon>close</v-icon></v-btn>
+      <v-btn small @click="emptyInpValue()" class="elevation-0 white mt-2"
+        ><v-icon>close</v-icon></v-btn
+      >
     </div>
     <v-dialog
       fullscreen
@@ -32,7 +34,7 @@
           :show-url="url"
           v-model="items"
           @closeDialog="closeDialog()"
-          :rootBody="root_body"
+          :rootBody="rootBody"
         />
       </v-card>
     </v-dialog>
@@ -40,7 +42,7 @@
 </template>
 
 <script>
-import UserSelect from "~/components/User/UserSelect";
+import UserSelect from "~/components/User/UserSelect.vue";
 export default {
   components: { UserSelect },
   props: {
@@ -51,6 +53,7 @@ export default {
     text: { require: false, default: "انتخاب کاربر" },
     url: { require: false, default: "/user/searchByRole" },
     clear: { require: false, default: false },
+    rootBody: { require: false, type: Object },
     notIn: { require: false, default: false },
   },
   data: () => ({
@@ -85,7 +88,9 @@ export default {
     items() {
       this.$emit("input", this.items);
       this.$emit("getData", this.items);
-      this.inp_value_name = this.items.map((x) => `${x.first_name} ${x.last_name}`).join(' | ')
+      this.inp_value_name = this.items
+        .map((x) => `${x.first_name} ${x.last_name}`)
+        .join(" | ");
     },
   },
   beforeMount() {

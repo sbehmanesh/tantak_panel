@@ -30,7 +30,7 @@
         <v-col cols="12" md="6" v-if="is_admin" class="mt-2">
           <UserCreate
             :url="insert_superviser"
-            title="ایجاد سوپروایزر"
+            title="ایجاد مرکز تماس"
             @realodList="reloadList"
             icon="account_circle"
           />

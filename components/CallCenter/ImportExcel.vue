@@ -4,7 +4,7 @@
       <v-row dense class="d-flex align-center">
         <v-col cols="12" md="6">
           <amp-labale :text="text" />
-          <v-file-input dense outlined accept=".xlsx" v-model="form.file" />
+          <v-file-input dense outlined :accept="accept" v-model="form.file" />
         </v-col>
         <v-col cols="12" md="6" class="d-flex justify-center">
           <v-btn
@@ -62,6 +62,7 @@ export default {
   },
   data: () => ({
     valid: false,
+    accept: [".xlsx", ".xls"],
     loading: false,
     form: {
       file: null,

@@ -77,7 +77,7 @@ let mnue_tree = [
   {
     id: 200,
     name: "فروش تجمیعی",
-    access: "*",
+    access: "collective_sell/index",
     route: "/collective-sell",
   },
   {

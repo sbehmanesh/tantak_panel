@@ -10,9 +10,10 @@
         </v-col>
         <v-col cols="12" md="3">
           <amp-input
+          
             class="ltr-item"
             text=" شماره همراه "
-            rules="phone"
+            rules="phone,require"
             v-model="form.username"
           />
         </v-col>

@@ -12,6 +12,7 @@
         <v-col cols="12" md="3">
           <amp-input
             is-price
+            cClass="ltr-item"
             text="هزینه پایه به تومان"
             v-model="form.value.base"
             rules="require"
@@ -41,6 +42,7 @@
             :help_text="help_text"
             is-number
             is-price
+            cClass="ltr-item"
             text="حداقل قیمت برای ارسال رایگان تومان"
             v-model="form.value.send_free_threshold"
             rules="require"

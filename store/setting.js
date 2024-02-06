@@ -157,7 +157,7 @@ export const actions = {
     });
   },
   setCountryDivision({ commit }) {
-    this.$reqApi("/country-division", { row_number: 3000 })
+    this.$reqApi("/shop/country-division", { row_number: 3000 })
       .then((res) => {
         let data = {
           province: res.model.data.filter((x) => x.level == "province"),

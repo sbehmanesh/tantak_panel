@@ -82,22 +82,22 @@
             v-model="form.address.postal_code"
           />
         </v-col> -->
-        <v-col cols="12" md="3">
+        <!-- <v-col cols="12" md="3">
           <amp-autocomplete
             text="استان"
             v-model="form.province_id"
             :items="province"
           />
-        </v-col>
+        </v-col> -->
 
-        <v-col cols="12" md="3">
+        <!-- <v-col cols="12" md="3">
           <amp-autocomplete
             text="شهر"
             v-model="form.address.country_division_id"
             :items="citis"
             :disabled="citis.length > 0 ? false : true"
           />
-        </v-col>
+        </v-col> -->
         <v-col cols="12" md="3" v-if="cheke_branch">
           <UserSelectForm
             text=" کاربر ناظر"
@@ -173,7 +173,7 @@
 import UserSelectForm from "~/components/User/UserSelectForm.vue";
 export default {
   components: {
-    UserSelectForm
+    UserSelectForm,
   },
   props: {
     roleId: { default: null },
@@ -181,7 +181,7 @@ export default {
     path: { default: "/user" },
     showUrl: { default: "/user/show" },
     createUrl: { default: "/user/insert" },
-    updateUrl: { default: "/user/update" }
+    updateUrl: { default: "/user/update" },
   },
   data: () => ({
     valid: false,
@@ -198,7 +198,6 @@ export default {
     form: {
       sort: -1,
       username: "",
-      province_id: "",
       parent_id: "",
       birth_date: "",
       avatar: "",
@@ -211,14 +210,10 @@ export default {
       person_type: "",
       email: "",
       role_id: [],
-      address: {
-        postal_code: "",
-        country_division_id: "",
-        address: ""
-      },
+
       national_code: "",
-      status: "active"
-    }
+      status: "active",
+    },
   }),
   computed: {
     cheke_branch() {
@@ -243,43 +238,43 @@ export default {
           -1 ||
         this.form.role_id.indexOf(this.$store.state.auth.role.admin_id) > -1
       );
-    }
+    },
   },
-  watch: {
-    "form.province_id"() {
-      this.loadCitis(this.form.province_id);
-    }
-    // "form.role_id"() {
-    //   let cashier_id = "38d3025b-ed61-4d0d-815f-31c008eb33fc"; //  صندوق دار
+  // watch: {
+  //   "form.province_id"() {
+  //     this.loadCitis(this.form.province_id);
+  //   },
+  //   // "form.role_id"() {
+  //   //   let cashier_id = "38d3025b-ed61-4d0d-815f-31c008eb33fc"; //  صندوق دار
 
-    //   if (
-    //     this.form.role_id.indexOf(cashier_id) > -1 ||
-    //     this.form.role_id.indexOf( warehouseman_id) > -1
-    //   ) {
-    //     this.cheke = true;
-    //   } else {
-    //     this.cheke = false;
-    //   }
-    //   if(this.form.role_id.indexOf(user) > -1){
-    //     this.cheke_user = false
-    //   }else{
-    //     this.cheke_user = true
-    //   }
+  //   //   if (
+  //   //     this.form.role_id.indexOf(cashier_id) > -1 ||
+  //   //     this.form.role_id.indexOf( warehouseman_id) > -1
+  //   //   ) {
+  //   //     this.cheke = true;
+  //   //   } else {
+  //   //     this.cheke = false;
+  //   //   }
+  //   //   if(this.form.role_id.indexOf(user) > -1){
+  //   //     this.cheke_user = false
+  //   //   }else{
+  //   //     this.cheke_user = true
+  //   //   }
 
-    // },
-  },
+  //   // },
+  // },
   mounted() {
     if (this.modelId) {
       this.loadData();
     }
-    this.loadState().then(res => {
-      res.filter(x => {
-        this.province.push({
-          text: x.name,
-          value: x.id
-        });
-      });
-    });
+    // this.loadState().then((res) => {
+    //   res.filter((x) => {
+    //     this.province.push({
+    //       text: x.name,
+    //       value: x.id,
+    //     });
+    //   });
+    // });
   },
   methods: {
     submit() {
@@ -295,7 +290,7 @@ export default {
       }
       form.username = this.$FarsiToEnglishNumber(form.username);
       this.$reqApi(url, form)
-        .then(response => {
+        .then((response) => {
           if (this.modelId) {
             this.$toast.success("اطلاعات ویرایش شد");
           } else {
@@ -303,20 +298,18 @@ export default {
           }
           this.redirectPage();
         })
-        .catch(error => {
+        .catch((error) => {
           this.loading = false;
         });
     },
     loadData() {
       this.loading = true;
       this.$reqApi(this.showUrl, { id: this.modelId })
-        .then(async response => {
+        .then(async (response) => {
           this.form.user_id = response.model.user_id;
           this.form.role_id = response.model.role_id;
           this.form.id = this.modelId;
           this.form.status = response.model.status;
-          this.form.address.address = response.model.address;
-          this.form.address.postal_code = response.model.postal_code;
           this.form.username = response.model.username;
           this.form.password = response.model.password;
           this.form.birth_date = response.model.birth_date;
@@ -338,77 +331,75 @@ export default {
           //   this.form.address.country_division_id =
           //     response.model.addresses[response.model.addresses.length -1].country_division_id;
           // }, 400);
-          if (response.model.addresses.length > 0) {
-            this.filterProvince(
-              response.model.addresses[0].country_division_id
-            );
-          }
+
           if (Array.isArray(response.model.roles)) {
-            this.form.role_id = response.model.roles.map(x => x.id);
+            this.form.role_id = response.model.roles.map((x) => x.id);
           }
 
           this.loading = false;
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
           this.redirectPage();
           this.loading = false;
         });
     },
-    loadState() {
-      return new Promise((response, rej) => {
-        let filters = {
-          level: {
-            op: "=",
-            value: "province"
-          }
-        };
-        this.$reqApi("/country-division", {
-          filters: filters,
-          row_number: 3000000
-        })
-          .then(res => {
-            response(res.model.data);
-          })
-          .catch(err => {
-            return err;
-          });
-      });
-    },
-    filterProvince(id) {
-      return new Promise((res, rej) => {
-        let filter = {
-          id: id
-        };
-        this.$reqApi("/country-division", { filters: filter }).then(res => {
-          if (res.model.data) {
-            this.form.province_id = res.model.data[0].cd2_id;
-            setTimeout(() => {
-              this.form.address.country_division_id = res.model.data[0].id;
-            }, 500);
-          }
-        });
-      });
-    },
+    // loadState() {
+    //   return new Promise((response, rej) => {
+    //     let filters = {
+    //       level: {
+    //         op: "=",
+    //         value: "province",
+    //       },
+    //     };
+    //     this.$reqApi("/shop/country-division", {
+    //       filters: filters,
+    //       row_number: 3000000,
+    //     })
+    //       .then((res) => {
+    //         response(res.model.data);
+    //       })
+    //       .catch((err) => {
+    //         return err;
+    //       });
+    //   });
+    // },
+    // filterProvince(id) {
+    //   return new Promise((res, rej) => {
+    //     let filter = {
+    //       id: id,
+    //     };
+    //     this.$reqApi("/shop/country-division", { filters: filter }).then(
+    //       (res) => {
+    //         if (res.model.data) {
+    //           this.form.province_id = res.model.data[0].cd2_id;
+    //           setTimeout(() => {
+    //             this.form.address.country_division_id = res.model.data[0].id;
+    //           }, 500);
+    //         }
+    //       }
+    //     );
+    //   });
+    // },
     loadCitis(id) {
       this.citis = [];
       let filters = {
         parent_id: {
           op: "=",
-          value: id
-        }
+          value: id,
+        },
       };
       if (id) {
         let data = [];
-        this.$reqApi("/country-division", {
+        this.$reqApi("/shop/country-division", {
           filters: filters,
-          row_number: 300000
-        }).then(res => {
+          row_number: 300000,
+        }).then((res) => {
           data = res.model.data;
-          data.filter(x => {
+          data.filter((x) => {
             this.citis.push({
               text: x.name,
-              value: x.id
+              value: x.id,
             });
           });
         });
@@ -420,7 +411,7 @@ export default {
       } else {
         this.$router.push(this.path);
       }
-    }
-  }
+    },
+  },
 };
 </script>

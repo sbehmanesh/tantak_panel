@@ -232,7 +232,7 @@ export default {
             value: "province"
           }
         };
-        this.$reqApi("/country-division", {
+        this.$reqApi("/shop/country-division", {
           filters: filters,
           row_number: 3000000
         })
@@ -249,7 +249,7 @@ export default {
         let filter = {
           id: id
         };
-        this.$reqApi("/country-division", { filters: filter }).then(res => {
+        this.$reqApi("/shop/country-division", { filters: filter }).then(res => {
           if (res.model.data) {
             this.form.province_id = res.model.data[0].cd2_id;
             setTimeout(() => {
@@ -269,7 +269,7 @@ export default {
       };
       if (id) {
         let data = [];
-        this.$reqApi("/country-division", {
+        this.$reqApi("/shop/country-division", {
           filters: filters,
           row_number: 300000
         }).then(res => {

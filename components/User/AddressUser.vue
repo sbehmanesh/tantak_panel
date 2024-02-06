@@ -1,15 +1,15 @@
 <template>
-  <v-row>
-    <v-col cols="12" md="12">
-      <v-card class="pa-3 ma-5">
+  <v-row class="d-flex justify-center mt-4">
+    <v-col cols="12" md="6">
+      <v-card class="primary lighten-5 pa-3">
         <v-form
           v-model="valid"
           @submit.prevent="submit()"
-          :disabled="loader"
+          :disabled="loading"
           class="rounded-0 pa-2 d-flex flex-column"
         >
           <v-row class="ma-2">
-            <v-col cols="12" md="3">
+            <v-col cols="12" md="4">
               <amp-input
                 text="کد پستی"
                 is-number
@@ -17,16 +17,18 @@
                 rules="postCode"
               ></amp-input>
             </v-col>
-            <v-col cols="12" md="3">
+            <v-col cols="12" md="4">
               <amp-autocomplete
+                rules="require"
                 text="استان"
                 v-model="form.province_id"
                 :items="province"
               />
             </v-col>
 
-            <v-col cols="12" md="3">
+            <v-col cols="12" md="4">
               <amp-autocomplete
+                rules="require"
                 text="شهر"
                 v-model="form.country_division_id"
                 :items="citis"
@@ -49,8 +51,9 @@
               :text="form.id.length > 0 ? 'ویرایش' : 'افزودن'"
               type="submit"
               icon="done"
+              :disabled="!valid || loading"
               class="ma-1"
-              :loading="loader"
+              :loading="loading"
             ></amp-button>
           </v-row>
         </v-form>
@@ -75,15 +78,16 @@ import BaseTable from "~/components/DataTable/BaseTable";
 export default {
   components: { BaseTable },
   props: {
-    modelId: { default: null }
+    modelId: { default: null },
   },
   data() {
     return {
       filters: {},
       headers: [],
       btn_ations: [],
-      valid: true,
+      valid: false,
       loader: false,
+      loading: false,
       province: [],
       citis: [],
       edit_id: "",
@@ -93,47 +97,48 @@ export default {
         province_id: "",
         address: "",
         id: "",
-        country_division_id: ","
-      }
+        country_division_id: ",",
+      },
     };
   },
   beforeMount() {
     (this.filters = {
       user_id: {
         op: "=",
-        value: this.modelId
-      }
+        value: this.modelId,
+      },
     }),
       (this.btn_ations = [
         {
-          color: "success",
+          color: "info",
+          text: "ویرایش",
           icon: "edit",
-          fun: body => {
+          fun: (body) => {
             if (body.id) {
               this.edit_id = body.id;
             }
-          }
-        }
+          },
+        },
       ]);
     this.headers = [
       {
         text: "آدرس",
-        value: "address"
+        value: "address",
       },
       {
         text: "کد پستی",
-        value: "postal_code"
+        value: "postal_code",
       },
       {
         text: "نام شهر",
         disableSort: "true",
         filterable: false,
-        value: body => {
+        value: (body) => {
           if (body.country_division) {
             return body.country_division.name;
           }
-        }
-      }
+        },
+      },
     ];
   },
   watch: {
@@ -144,14 +149,14 @@ export default {
       if (this.edit_id) {
         this.loadData(this.edit_id);
       }
-    }
+    },
   },
   mounted() {
-    this.loadState().then(res => {
-      res.filter(x => {
+    this.loadState().then((res) => {
+      res.filter((x) => {
         this.province.push({
           text: x.name,
-          value: x.id
+          value: x.id,
         });
       });
     });
@@ -168,12 +173,12 @@ export default {
       }
       form["user_id"] = this.$route.params.id;
       this.$reqApi(url, form)
-        .then(res => {
+        .then((res) => {
           this.emptyForm();
           this.$refs.addressBaseTable.getDataFromApi();
           this.loader = false;
         })
-        .catch(err => {
+        .catch((err) => {
           this.loader = false;
           return err;
         });
@@ -182,7 +187,7 @@ export default {
       if (id) {
         this.loader = true;
         this.$reqApi("/address/show", { id: id })
-          .then(res => {
+          .then((res) => {
             this.form.postal_code = res.model.postal_code;
             this.form.address = res.model.address;
             this.form.id = res.model.id;
@@ -190,7 +195,7 @@ export default {
             this.filterProvince(res.model.country_division_id);
             this.loader = false;
           })
-          .catch(err => {
+          .catch((err) => {
             this.loader = false;
             return err;
           });
@@ -201,17 +206,17 @@ export default {
         let filters = {
           level: {
             op: "=",
-            value: "province"
-          }
+            value: "province",
+          },
         };
-        this.$reqApi("/country-division", {
+        this.$reqApi("/shop/country-division", {
           filters: filters,
-          row_number: 3000000
+          row_number: 3000000,
         })
-          .then(res => {
+          .then((res) => {
             response(res.model.data);
           })
-          .catch(err => {
+          .catch((err) => {
             return err;
           });
       });
@@ -219,10 +224,10 @@ export default {
     filterProvince(id) {
       return new Promise((res, rej) => {
         let filter = {
-          id: id
+          id: id,
         };
-        this.$reqApi("/country-division", { filters: filter })
-          .then(res => {
+        this.$reqApi("/shop/country-division", { filters: filter })
+          .then((res) => {
             if (res.model.data) {
               this.form.province_id = res.model.data[0].cd2_id;
               setTimeout(() => {
@@ -230,7 +235,7 @@ export default {
               }, 500);
             }
           })
-          .catch(err => {
+          .catch((err) => {
             return err;
           });
       });
@@ -240,25 +245,25 @@ export default {
       let filters = {
         parent_id: {
           op: "=",
-          value: id
-        }
+          value: id,
+        },
       };
       if (id) {
         let data = [];
-        this.$reqApi("/country-division", {
+        this.$reqApi("/shop/country-division", {
           filters: filters,
-          row_number: 300000
+          row_number: 300000,
         })
-          .then(res => {
+          .then((res) => {
             data = res.model.data;
-            data.filter(x => {
+            data.filter((x) => {
               this.citis.push({
                 text: x.name,
-                value: x.id
+                value: x.id,
               });
             });
           })
-          .catch(err => {
+          .catch((err) => {
             return err;
           });
       }
@@ -270,7 +275,7 @@ export default {
       this.form.postal_code = "";
       this.form.address = "";
       this.edit_id = "";
-    }
-  }
+    },
+  },
 };
 </script>

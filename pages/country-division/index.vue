@@ -15,7 +15,7 @@
     </v-col>
     <v-col cols="12" md="12">
       <BaseTable
-        url="country-division"
+        url="/shop/country-division"
         :headers="headers"
         :filters="filters"
         createUrl="/country-division/insert"

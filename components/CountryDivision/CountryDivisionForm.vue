@@ -145,7 +145,7 @@ export default {
     },
     loadState() {
       return new Promise((response, rej) => {
-        this.$reqApi("/country-division", { row_number: 3000000 })
+        this.$reqApi("/shop/country-division", { row_number: 3000000 })
           .then(res => {
             response(res.model.data);
           })

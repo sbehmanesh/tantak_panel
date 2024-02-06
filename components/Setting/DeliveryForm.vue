@@ -3,10 +3,27 @@
     <v-container fluid class="px-8">
       <v-row dense>
         <v-col cols="12" md="3">
-          <amp-input text="عنوان روش ارسال" v-model="form.value.title" rules="require" />
+          <amp-input
+            text="عنوان روش ارسال"
+            v-model="form.value.title"
+            rules="require"
+          />
         </v-col>
         <v-col cols="12" md="3">
-          <amp-input is-price text="هزینه پایه به تومان" v-model="form.value.base" rules="require" />
+          <amp-input
+            is-price
+            text="هزینه پایه به تومان"
+            v-model="form.value.base"
+            rules="require"
+          />
+        </v-col>
+        <v-col cols="12" md="3">
+          <amp-input
+            cClass="ltr-item"
+            text="هزینه برای هر کیلوگرم"
+            v-model="form.value.ratio"
+            rules="require"
+          />
         </v-col>
 
         <v-col cols="12" md="3">
@@ -14,7 +31,7 @@
             help_text="با انتخاب این گزینه هزینه ارسال محاسبه می شود اما به سبد خرید کاربر اضافه نخواهد شد"
             text="پرداخت در محل"
             rules="require"
-            v-model="form.value.pay_at_delivery"
+            v-model="form.value.payatdelivery"
             :items="this.$store.state.static.bool_number_enum"
           />
         </v-col>
@@ -36,7 +53,14 @@
           <v-divider />
         </v-col>
         <v-col cols="12" md="12" class="text-center">
-          <amp-button large icon="redo" class="my-1" color="error" text="انصراف" @click="redirectPage()" />
+          <amp-button
+            large
+            icon="redo"
+            class="my-1"
+            color="error"
+            text="انصراف"
+            @click="redirectPage()"
+          />
           <amp-button
             large
             icon="done"
@@ -61,81 +85,79 @@ export default {
   data: () => ({
     valid: false,
     loading: false,
-    createUrl: '/setting/insert',
-    updateUrl: '/setting/update',
-    showUrl: '/setting/show',
+    createUrl: "/setting/insert",
+    updateUrl: "/setting/update",
+    showUrl: "/setting/show",
     help_text:
-      'اگر می خواهید در صورتی که مجموع سبد خرید کاربر از یک قیمت بیشتر شد ارسال رایگان باشد، مبلغ سبد را اینجا وارد کنید، در غیر این صورت مقدار را روی 0 تنظیم کنید.',
+      "اگر می خواهید در صورتی که مجموع سبد خرید کاربر از یک قیمت بیشتر شد ارسال رایگان باشد، مبلغ سبد را اینجا وارد کنید، در غیر این صورت مقدار را روی 0 تنظیم کنید.",
     settings: [],
     selected: {},
     form: {
-      id: '',
-      key: 'delivery_method',
+      id: "",
+      key: "delivery_method",
       value: {
-        title: '',
-        base: '', // ==> هزینه پایه بر حسب تومان
-        ratio: '', //==> هزینه برای هر کیلوگرم اضافه
+        title: "",
+        payatdelivery: "",
+        base: "", // ==> هزینه پایه بر حسب تومان
+        ratio: "", //==> هزینه برای هر کیلوگرم اضافه
+        send_free_threshold: "0",
       },
-      landing_page_needed: 1,
-      send_free_threshold: '0',
-      pay_at_delivery: '0',
     },
   }),
 
   beforeMount() {},
   mounted() {
     if (this.modelId) {
-      this.loadData()
+      this.loadData();
     }
   },
 
   methods: {
     submit() {
-      let form = { ...this.form }
-      this.loading = true
-      let url = this.createUrl
+      let form = { ...this.form };
+      this.loading = true;
+      let url = this.createUrl;
       if (this.modelId) {
-        url = this.updateUrl
-        form['id'] = this.modelId
+        url = this.updateUrl;
+        form["id"] = this.modelId;
       }
-      form.value = JSON.stringify(form.value)
+      form.value = JSON.stringify(form.value);
 
       this.$reqApi(url, form)
         .then((response) => {
           if (!this.modelId) {
-            this.$toast.success('اطلاعات ثبت شد')
+            this.$toast.success("اطلاعات ثبت شد");
           } else {
-            this.$toast.success('اطلاعات ویرایش شد')
+            this.$toast.success("اطلاعات ویرایش شد");
           }
-          this.redirectPage()
+          this.redirectPage();
         })
         .catch((error) => {
-          this.loading = false
-        })
+          this.loading = false;
+        });
     },
     loadData() {
-      this.loading = true
+      this.loading = true;
       this.$reqApi(this.showUrl, { id: this.modelId })
         .then(async (response) => {
-          response = response.model
-          this.form['id'] = response.id
-          this.form.key = response.key
-          this.form.value = JSON.parse(response.value)
-          this.form.landing_page_needed = response.landing_page_needed
-          this.loading = false
+          response = response.model;
+          this.form["id"] = response.id;
+          this.form.key = response.key;
+          this.form.value = JSON.parse(response.value);
+          this.loading = false;
         })
         .catch((error) => {
-          this.redirectPage()
-          this.loading = false
-        })
+          this.redirectPage();
+          this.loading = false;
+        });
     },
     redirectPage() {
       if (window.history.length > 2) {
-        this.$router.back()
+        this.$router.back();
       } else {
-        this.$router.push(this.path)
+        this.$router.push(this.path);
       }
     },
   },
-}
+};
 </script>

@@ -156,6 +156,12 @@ let mnue_tree = [
         name: "پیام های دریافتی",
         route: "/call-center/message",
       },
+      {
+        id: 3001,
+        name: "همه پیام ها",
+        access: "recived_message/root",
+        route: "/call-center/all-message",
+      },
     ],
   },
   {

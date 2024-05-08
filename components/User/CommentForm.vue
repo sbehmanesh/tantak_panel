@@ -2,8 +2,8 @@
   <div>
     <v-dialog
       persistent
-      v-model="dialog_change_status.show"
-      :model-id="dialog_change_status.items"
+      v-model="commentDialog.show"
+      :model-id="commentDialog.items"
       width="800"
     >
       <v-card>
@@ -61,6 +61,7 @@
                     rules="require"
                     text="زمان مراجع بعدی"
                     v-model="form.document[0].end_at"
+                    :max="now"
                   />
                 </v-col>
                 <v-col cols="12" md="12">
@@ -127,7 +128,7 @@
 <script>
 export default {
   props: {
-    dialog_change_status: {
+    commentDialog: {
       require: false,
       default: false,
     },
@@ -158,12 +159,11 @@ export default {
       this.loading = true;
       this.form.message_id = this.messageInfo.id;
       let form = { ...this.form };
-      let url = "/message/change-status";
+      let url = "/call-center/change-status";
       this.$reqApi(url, form)
         .then((res) => {
           this.loading = false;
           this.relod();
-          this.closeDialog();
         })
         .catch((err) => {
           this.loading = false;
@@ -186,8 +186,8 @@ export default {
         });
     },
     closeDialog() {
-      this.dialog_change_status.show = false;
-      this.dialog_change_status.items = null;
+      this.commentDialog.show = false;
+      this.commentDialog.items = null;
     },
     relod() {
       this.$emit("relod");

@@ -17,21 +17,24 @@
     </div>
     <UserForm v-if="tab == 'edit'" :model-id="$route.params.id" />
     <AddressUser v-if="tab == 'address'" :model-id='$route.params.id' />
+    <Comment v-if="tab == 'comment'" :model-id='$route.params.id' />
   </div>
 </template>
 
 <script>
 import UserForm from "@/components/User/UserForm.vue";
 import AddressUser from '@/components/User/AddressUser.vue'
+import Comment from '@/components/User/Comment.vue'
 export default {
-  components: { UserForm , AddressUser},
+  components: { UserForm , AddressUser , Comment},
   data: () => ({
     tab: "edit",
     items: [
       { text: "ویرایش اطلاعات", value: "edit" },
-      { text: 'آدرس', value:'address'}
+      { text: 'آدرس', value:'address'},
+      { text: 'نظرات در مورد کاربر', value:'comment'}
       ],
-    title: "ثبت کاربر جدید"
+    title: "ویرایش کاربر"
   }),
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);

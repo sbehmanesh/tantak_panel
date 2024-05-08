@@ -78,12 +78,12 @@
           />
         </v-col>
         <!-- <v-col cols="12" md="6" v-if="is_admin" class="mt-2">
-          <UserCreate
-            :url="insert_superviser"
-            title="ایجاد سوپروایزر"
-            icon="account_circle"
-          />
-        </v-col> -->
+            <UserCreate
+              :url="insert_superviser"
+              title="ایجاد سوپروایزر"
+              icon="account_circle"
+            />
+          </v-col> -->
         <v-col cols="12" md="6">
           <v-row class="pa-5 center-div">
             <v-col cols="12" md="3" class="ma-2" v-if="is_superviser">
@@ -207,6 +207,7 @@
         ref="refMessage"
       />
     </v-col>
+
     <ChangeStatus
       v-if="dialog_change_status.show"
       :dialog_change_status="dialog_change_status"
@@ -218,7 +219,6 @@
       v-if="dialog_customer.show"
       :DialogCustomer="dialog_customer"
       :customer="customer"
-  
     />
     <DialogFile
       v-if="dialog_file.show"

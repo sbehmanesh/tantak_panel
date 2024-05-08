@@ -7,6 +7,7 @@ export const state = () => ({
   user_level,
   person_type,
   status_baranch,
+  status_message,
   work_status,
   supervisor_status_items,
   bimehso_aramin,
@@ -29,6 +30,8 @@ export const state = () => ({
   message_status,
   sell_status,
   bool_number_enum,
+  step_message,
+  type_send,
 });
 
 let mnue_tree = [
@@ -73,7 +76,7 @@ let mnue_tree = [
     name: "شعبات",
     access: "branch/index",
     route: "/branches",
-  }, 
+  },
   {
     id: 200,
     name: "فروش تجمیعی",
@@ -143,25 +146,11 @@ let mnue_tree = [
       },
       {
         id: 53,
-        access: (state) => {
-          if (state.auth) {
-            if (state.auth.action.indexOf('call_center/index-operator-messages') > -1 ||
-              state.auth.action.indexOf('call_center/index-superviser-messages') > -1 ||
-              state.auth.action.indexOf('recived_message/index') > -1) {
-
-              return true
-            }
-          }
-        },
+        access: "messages/index",
         name: "پیام های دریافتی",
-        route: "/call-center/message",
+        route: "/new-call-center",
       },
-      {
-        id: 3001,
-        name: "همه پیام ها",
-        access: "recived_message/root",
-        route: "/call-center/all-message",
-      },
+
     ],
   },
   {
@@ -253,9 +242,35 @@ let setting_keys = [
   { text: "آدرس اینستاگرام ", value: "instagram", type: "single_text" },
   { text: "اسلایدر اصلی", value: "main_slider", type: "image" },
 ];
+let type_send = [
+  { text: "ترخیص خودکار", value: "auto" },
+  { text: "دستی", value: "multi" },
+  { text: "بر اساس سابقه فروش", value: "sale" },
+];
+
 let status = [
   { text: "فعال", value: "active" },
   { text: "غیر فعال", value: "hidden" },
+];
+let status_message = [
+  { text: "ثبت اولیه", value: "init" },
+  { text: "برگشت", value: "regect" },
+  { text: "انجام شده", value: "done" },
+  { text: "در حال برسی", value: "pending" },
+  { text: "معوقه", value: "delayed" },
+  { text: "تماس مجدد", value: "call_back" },
+  { text: "پرداخت شده", value: "withdrawal" },
+  { text: "لغو شده", value: "reject" },
+];
+let step_message = [
+  { text: "ثیت اولیه", value: "init" },
+  { text: "بسته شده", value: "close" },
+  { text: "از مدیر به مرکز تماس", value: "manager_to_supervisor" },
+  { text: "از مرکز تماس به مدیر", value: "supervisor_to_manager" },
+  { text: "از مرکز تماس به فروشنده", value: "supervisor_to_operator" },
+  { text: "از فروشنده به مرکز تماس", value: "operator_to_supervisor" },
+  { text: "انجام شده", value: "done" },
+
 ];
 
 let product_status = [
@@ -300,12 +315,11 @@ let branch_status = [
   { text: "معلق", value: "suspended" },
 ];
 let message_status = [
-  { text: "جدید", value: "new" },
   { text: "معوقه", value: "delayed" },
-  { text: "تایید شده", value: "confirmed" },
+  { text: "تایید شده", value: "done" },
   { text: "تماس مجدد", value: "call_back" },
   { text: "پرداخت شده", value: "withdrawal" },
-  { text: "لغو شده", value: "canceled" },
+  { text: "لغو شده", value: "reject" },
 ];
 
 let bool_en = [

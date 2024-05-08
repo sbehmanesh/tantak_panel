@@ -79,10 +79,7 @@
 <script>
 export default {
   props: {
-    url: {
-      type: String,
-      require: true,
-    },
+
     backurl: {
       type: String,
     },
@@ -122,7 +119,7 @@ export default {
 
         return;
       } else {
-        this.$reqApi(this.url, form_data)
+        this.$reqApi("/message/import-excel", form_data)
           .then((response) => {
             this.loading = false;
             this.$toast.success("اطلاعات ثبت شد");
@@ -137,7 +134,7 @@ export default {
     },
     reciveCaveNgar() {
       this.loading_recive = true;
-      this.$reqApi("/recived-message/get-all-message")
+      this.$reqApi("/message/get-all-message")
         .then((res) => {
           if (res.message_count == 0) {
             this.$toast.info(" ! پیامی برای دریافت وجود ندارد ");

@@ -16,16 +16,16 @@ export default {
   },
   beforeMount() {
     (this.btn_actions = [
-      {
-        color: "green",
-        icon: "group",
-        text: "لیست اپراتور ها",
-        fun: (body) => {
-          this.dialog_oprator_list.show = true;
-          this.show_list = body.id;
-          this.name_superviser = body.first_name + " " + body.last_name;
-        },
-      },
+      // {
+      //   color: "green",
+      //   icon: "group",
+      //   text: "لیست اپراتور ها",
+      //   fun: (body) => {
+      //     this.dialog_oprator_list.show = true;
+      //     this.show_list = body.id;
+      //     this.name_superviser = body?.first_name + " " + body?.last_name;
+      //   },
+      // },
     ]),
       (this.btn_actions_super = [
         {
@@ -58,14 +58,14 @@ export default {
             }
           },
         },
-        {
-          text: "نام خانوادگی",
-          value: (body) => {
-            if (body.user) {
-              return body.user.last_name ? body.user.last_name : "--";
-            }
-          },
-        },
+        // {
+        //   text: "نام خانوادگی",
+        //   value: (body) => {
+        //     if (body.user) {
+        //       return body.user.last_name ? body.user.last_name : "--";
+        //     }
+        //   },
+        // },
         {
           text: "شماره همراه",
           value: (body) => {
@@ -112,7 +112,7 @@ export default {
         {
           text: "نام خانوادگی",
           value: (body) => {
-            if (body.user) {
+            if (body.superviser) {
               return body.superviser.last_name ? body.superviser.last_name : "--";
             }
           },
@@ -127,14 +127,17 @@ export default {
             }
           },
         },
-        {
-          text: "نام خانوادگی",
-          value: (body) => {
-            if (body.user) {
-              return body.operator.last_name ? body.operator.last_name : "--";
-            }
-          },
-        },
+        // {
+        //   text: "نام خانوادگی",
+        //   value: (body) => {
+        //     if (body.user) {
+        //       if(body.operator.last_name ){
+
+        //         return body.operator.last_name ? body.operator.last_name : "--";
+        //       }
+        //     }
+        //   },
+        // },
 
       ]);
     this.headers_superviser = [
@@ -146,7 +149,7 @@ export default {
         filterable: false,
       },
       { text: "نام", value: "first_name" },
-      { text: "نام خانوادگی", value: "last_name" },
+      // { text: "نام خانوادگی", value: "last_name" },
       { text: "نام کاربری", filterCol: "username", value: "username" },
       { text: "کد ملی", filterCol: "national_code", value: "national_code" },
 
@@ -162,18 +165,18 @@ export default {
           }
         },
       },
-      {
-        text: "نام خانوادگی",
-        value: (body) => {
-          if (body.parent) {
-            if (body.parent.last_name) {
-              return body.parent.last_name;
-            } else {
-              return "--";
-            }
-          }
-        },
-      },
+      // {
+      //   text: "نام خانوادگی",
+      //   value: (body) => {
+      //     if (body.parent) {
+      //       if (body.parent.last_name) {
+      //         return body.parent.last_name;
+      //       } else {
+      //         return "--";
+      //       }
+      //     }
+      //   },
+      // },
     ];
     if (this.$checkRole(this.$store.state.auth.role.superviser_id)) {
       this.is_superviser = true;

@@ -61,7 +61,6 @@
                     rules="require"
                     text="زمان مراجع بعدی"
                     v-model="form.document[0].end_at"
-                    :max="now"
                   />
                 </v-col>
                 <v-col cols="12" md="12">
@@ -159,11 +158,12 @@ export default {
       this.loading = true;
       this.form.message_id = this.messageInfo.id;
       let form = { ...this.form };
-      let url = "/call-center/change-status";
+      let url = "/message/change-status";
       this.$reqApi(url, form)
         .then((res) => {
           this.loading = false;
           this.relod();
+          this.closeDialog();
         })
         .catch((err) => {
           this.loading = false;

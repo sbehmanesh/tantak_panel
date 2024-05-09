@@ -4,7 +4,7 @@
       persistent
       v-model="dialog_change_status.show"
       :model-id="dialog_change_status.items"
-      width="800"
+      width="900"
     >
       <v-card>
         <v-toolbar color="primary" dark>
@@ -21,7 +21,7 @@
             <v-tab>
               <span>
                 <v-icon size="15"> fact_check </v-icon>
-                تعیین وضعیت
+        برسی پیام
               </span>
             </v-tab>
             <v-tab>
@@ -40,8 +40,8 @@
               :disabled="loading"
               class="rounded-0 pa-8 d-flex flex-column"
             >
-              <v-row class="ma-2">
-                <v-col cols="12" md="6">
+              <v-row class="ma-1 d-flex justify-center">
+                <v-col cols="12" md="4">
                   <amp-select
                     text="وضعیت"
                     v-model="form.status"
@@ -49,12 +49,12 @@
                     rules="require"
                   />
                 </v-col>
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="4">
                   <AmpUploadFile title="بارگذاری فایل" v-model="form.document[0].img" />
                 </v-col>
                 <v-col
                   cols="12"
-                  md="12"
+                  md="4"
                   v-if="form.status == 'delayed' || form.status == 'call_back'"
                 >
                   <amp-jdate

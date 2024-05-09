@@ -149,7 +149,7 @@ export default {
         });
     },
     open() {
-      window.open("https://test-api.tantak.ir/example/RecivedMessagesFromKavenegar.xlsx");
+      window.open("https://test-api.tantak.ir/example/message.xlsx");
     },
   },
 };

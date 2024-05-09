@@ -163,6 +163,12 @@ let mnue_tree = [
         access: "setting/index",
         route: "/setting/slider",
       },
+       {
+        id: 1009,
+        name: "فرم نظر سنجی",
+        access: "comment_questions/index",
+        route: "/setting/comment-questions",
+      },
       {
         id: 20,
         name: "بنرها",

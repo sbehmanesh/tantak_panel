@@ -1,19 +1,16 @@
 <template>
   <div>
-
-
-    <v-stepper vertical v-model="e1">
+    <v-stepper vertical v-model="e1" class="grey lighten-4">
       <v-stepper-step :complete="e1 > 1" step="1">
         <span>
-          برسی روند ارجاع
-          <small class="pt-1"> نوع تخصیص پیام را انتخاب کنید </small>
+          تعیین روند ارجاع
+          <small class="pt-1"> نوع تخصیص یا مرحله پیام  را انتخاب کنید </small>
         </span>
       </v-stepper-step>
-
       <v-stepper-content step="1">
         <v-form v-model="valid_step1">
           <v-row class="d-flex justify-center">
-            <v-col cols="4" v-if="is_superviser || is_oprator">
+            <v-col cols="5" v-if="is_superviser || is_oprator">
               <amp-autocomplete
                 rules="require"
                 v-model="step_ref"
@@ -21,7 +18,7 @@
                 text="انتخاب مرحله"
               />
             </v-col>
-            <v-col cols="4" v-if="Boolean(show_type_send)">
+            <v-col cols="5" v-if="Boolean(show_type_send)">
               <amp-select
                 rules="require"
                 v-model="type_send"
@@ -31,12 +28,22 @@
             </v-col>
 
             <v-spacer></v-spacer>
-            <v-col cols="4" class="mt-8">
-              <v-btn color="primary" @click="e1 = 2" :disabled="!valid_step1">
-                بعدی
-              </v-btn>
-              <v-btn color="info"> انصراف </v-btn>
-            </v-col>
+
+            <v-btn
+              class="mt-10 ml-4"
+              color="primary"
+              @click="e1 = 2"
+              :disabled="!valid_step1"
+            >
+              بعدی
+            </v-btn>
+            <v-btn
+              class="mt-10 ml-4"
+              color="info"
+              @click="clearAll()"
+            >
+              انصراف
+            </v-btn>
           </v-row>
         </v-form>
       </v-stepper-content>
@@ -53,13 +60,15 @@
       <v-stepper-content step="2" v-if="Boolean(check_steps || !chek_number_step)">
         <v-col cols="12">
           <v-row>
-            <span>
-              <v-icon size="15"> mail </v-icon>
+            <span class="primary--text font_15">
+              <v-icon size="15" color="primary"> mail </v-icon>
               تعداد پیام انتخاب شده : {{ selected_item.length }}
             </span>
             <v-spacer></v-spacer>
             <v-col cols="12" md="4" v-if="!Boolean(back_ref)">
-              <v-btn color="primary" @click="e1 = 3"> بعدی </v-btn>
+              <v-btn color="primary" :disabled="selected_item.length < 1" @click="e1 = 3">
+                بعدی
+              </v-btn>
 
               <v-btn color="info" @click="e1 = 1"> برگشت </v-btn>
             </v-col>
@@ -92,7 +101,10 @@
           <v-spacer></v-spacer>
           <div class="mt-10 mx-5">
             <v-btn color="primary" @click="submit()"> تایید </v-btn>
-            <v-btn color="info" @click="e1 = 2"> برگشت </v-btn>
+            <v-btn color="info" v-if="Boolean(chek_number_step)" @click="e1 = 1">
+              برگشت
+            </v-btn>
+            <v-btn color="info" v-else @click="e1 = 2"> برگشت </v-btn>
           </div>
         </v-row>
       </v-stepper-content>
@@ -145,8 +157,8 @@ export default {
     if (this.$checkRole(this.$store.state.auth.role.superviser_id)) {
       this.is_superviser = true;
       this.step_items = [
-        { text: "از مرکز تماس به مدیر (مرجوع کردن)", value: "supervisor_to_manager" },
-        { text: "از مرکز تماس به فروشنده", value: "supervisor_to_operator" },
+        { text: "ارجاع به مدیر (مرجوع کردن)", value: "supervisor_to_manager" },
+        { text: "  ارجاع به فروشنده", value: "supervisor_to_operator" },
       ];
       this.url_list = this.oprator_list;
       this.titel_list = "انتخاب فروشنده";
@@ -159,10 +171,13 @@ export default {
     if (this.$checkRole(this.$store.state.auth.role.oprator_id)) {
       this.is_oprator = true;
       this.step_items = [
-        { text: "از فروشنده به مرکز تماس (مرجوع کردن)", value: "operator_to_supervisor" },
+        { text: "ارجاع  به مرکز تماس (مرجوع کردن)", value: "operator_to_supervisor" },
       ];
     }
-    if (this.$checkRole(this.$store.state.auth.role.admin_id)) {
+    if (
+      this.$checkRole(this.$store.state.auth.role.admin_id) ||
+      this.$checkRole(this.$store.state.auth.role.admin_call_center_id)
+    ) {
       this.is_admin_call_center = true;
       this.url_list = this.superviser_list;
       this.select_type_send = [
@@ -176,7 +191,6 @@ export default {
   methods: {
     submit() {
       this.loading = true;
-      console.log(this.user);
       let form = {};
       let step = "";
       let role_user = "";
@@ -209,7 +223,6 @@ export default {
       if (this.selected_item.length > 0) {
         form["message_ids"] = this.selected_item;
       }
-      console.log(form);
 
       this.$reqApi("/message/refer", form)
         .then((response) => {
@@ -230,13 +243,37 @@ export default {
     relod() {
       this.$emit("relod");
     },
+    clearAll(){
+      this.step_ref =""
+      this.type_send =""
+      this.$emit("clearBox", true);
+    }
   },
   watch: {
-    step() {
-      if (Boolean(this.is_superviser)) {
+    type_send() {
+      if (
+        Boolean(this.is_superviser) &&
+       (this.step_ref == "supervisor_to_operator" ||this.step_ref == "operator_to_supervisor" ) &&
+        this.type_send == "multi"
+      ) {
+        this.$emit("setHeaders", true);
       }
-      if (Boolean(this.is_oprator)) {
+      if (this.type_send == "close" || this.type_send == "multi") {
+        this.$emit("setHeaders", true);
+      } else {
+        this.$emit("setHeaders", false);
       }
+    },
+    step_ref() {
+      if (
+        this.step_ref == "supervisor_to_manager" ||
+        this.step_ref == "operator_to_supervisor"
+      ) {
+        this.$emit("setHeaders", true);
+      } else {
+        this.$emit("setHeaders", false);
+      }
+
     },
   },
   computed: {
@@ -248,7 +285,7 @@ export default {
       ) {
         check = true;
       }
-      if (this.is_superviser &&  (this.type_send == "auto" || this.type_send == "sale" )) {
+      if (this.is_superviser && (this.type_send == "auto" || this.type_send == "sale")) {
         check = true;
       }
       return check;
@@ -271,7 +308,10 @@ export default {
         show_step = true;
       }
       if (this.is_superviser) {
-        if (this.step_ref == "supervisor_to_operator" && this.type_send == "multi") {
+        if (
+          (this.step_ref == "supervisor_to_operator" && this.type_send == "multi") ||
+          this.step_ref == "supervisor_to_manager"
+        ) {
           show_step = true;
         }
       }

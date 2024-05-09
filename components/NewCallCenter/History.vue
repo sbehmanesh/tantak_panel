@@ -81,8 +81,8 @@ export default {
             return body.to_personnel.first_name
               ? body.to_personnel.first_name + " " + body.to_personnel.last_name
               : "--";
-          }else{
-            return "--"
+          } else {
+            return "--";
           }
         },
       },
@@ -99,8 +99,17 @@ export default {
         filterType: "select",
         items: this.$store.state.static.step_message,
       },
-
-
+      {
+        text: "نوع تخصیص",
+        value: "step",
+        filterType: "select",
+        items: [
+            { text: "تخصیص خودکار", value: "auto" },
+            { text: "دستی", value: "multi" },
+            { text: "بر اساس سابقه فروش", value: "sale" },
+            { text: "بستن", value: "close" },
+          ],
+      },
     ];
   },
   methods: {

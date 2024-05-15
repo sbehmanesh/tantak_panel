@@ -110,6 +110,11 @@ let mnue_tree = [
         access: "wholesale_form/index",
         name: "فرم های دریافتی فروش عمده",
         route: "/product/wholesale-form",
+      },      {
+        id: 222,
+        access: "wholesale_form/index",
+        name: "خرید حضوری",
+        route: "/product/buy-person",
       },
     ],
   },

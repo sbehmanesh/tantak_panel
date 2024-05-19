@@ -3,20 +3,17 @@
     <v-col cols="12" md="12">
       <v-stepper v-model="e1">
         <v-row class="d-flex justify-center">
-          <v-col cols="8">
+          <v-col cols="10" class="mt-4">
             <v-stepper-header>
               <v-stepper-step :complete="e1 > 1" step="1"> انتخاب کاربر </v-stepper-step>
 
               <v-divider></v-divider>
 
-              <v-stepper-step :complete="e1 > 2" step="2"> انتخاب محصول </v-stepper-step>
+              <v-stepper-step :complete="e1 > 2" step="2"> سبد خرید </v-stepper-step>
 
               <v-divider></v-divider>
 
-              <v-stepper-step step="3"> نمایش سبد خرید </v-stepper-step>
-              <v-divider></v-divider>
-
-              <v-stepper-step step="4">پرداخت</v-stepper-step>
+              <v-stepper-step :complete="e1 > 3" step="3"> مشاهده فاکتور </v-stepper-step>
             </v-stepper-header>
           </v-col>
         </v-row>
@@ -24,7 +21,7 @@
         <v-stepper-items>
           <v-stepper-content step="1">
             <v-row class="d-flex justify-center mb-8">
-              <v-col md="3" cols="8" class="text-center">
+              <v-col md="3" cols="8" class="ma-0 pa-0 text-center">
                 <v-tabs v-model="tab" centered icons-and-text>
                   <v-tab>
                     <h1>
@@ -48,6 +45,7 @@
                 <v-row class="d-flex justify-center">
                   <v-col cols="12" md="6">
                     <UserSelectForm
+                      v-if="tab == 0"
                       text="انتخاب کاربر"
                       v-model="user"
                       url="/user"
@@ -78,19 +76,6 @@
                         v-model="username"
                       />
                     </v-col>
-                    <v-col cols="12" md="1" class="mt-8">
-                      <amp-button
-                        icon="add_circle"
-                        height="40"
-                        @click="addUser(tab, true)"
-                        color="primary "
-                        text="تایید "
-                        :loading="loading"
-                        :disabled="
-                          tab == 0 ? !user[0] || loading : loading || !valid_add_user
-                        "
-                      />
-                    </v-col>
                   </v-row>
                 </v-form>
               </v-tab-item>
@@ -98,70 +83,168 @@
 
             <v-col cols="12" class="text-center mt-10">
               <amp-button
+                v-if="tab == 1"
+                icon="add_circle"
+                height="40"
+                @click="addUser(tab, true)"
+                color="primary "
+                text="افزودن "
+                :loading="loading"
+                :disabled="tab == 0 ? !user[0] || loading : loading || !valid_add_user"
+              />
+              <amp-button
+                v-if="(tab == 1 && show_btn_nex) || tab == 0"
                 icon="arrow_circle_left"
                 height="40"
                 @click="addUser(tab, false)"
                 color="info darken-3"
                 text="بعدی"
-                :loading="loading"
                 :disabled="tab == 0 ? !user[0] || loading : loading || !valid_add_user"
               />
             </v-col>
           </v-stepper-content>
 
           <v-stepper-content step="2">
-            <v-form v-model="valid_add_user">
-              <v-row class="d-flex justify-center mt-10">
-                <v-col cols="12" md="7">
-                  <v-autocomplete
-                    prepend-inner-icon="shopping_basket"
-                    v-model="product_varcomb_id"
-                    :items="products"
-                    outlined
-                    dense
-                    label="جستو جوی سریع محصول"
-                    placeholder="نام محصول مورد نظر را وارد کنید ..."
-                  />
-                </v-col>
-              </v-row>
-            </v-form>
-            <v-row class="text-center my-10 d-flex justify-center">
+            <Basket
+              ref="have_item"
+              @next_step="goToStep($event)"
+              @backStep="backStep()"
+              :UserId="user_id"
+              @list="showBtn($event)"
+            />
+
+            <v-row class="my-4 d-flex justify-center" v-if="show_btn">
               <amp-button
-                class="ma-2"
                 icon="arrow_circle_right"
                 height="40"
                 @click="e1 = 1"
+                class="ma-1"
                 color="red darken-2"
-                text="برگشت"
-                :loading="loading"
-                :disabled="tab == 0 ? !user[0] || loading : loading || !valid_add_user"
+                text="برگشت "
               />
               <amp-button
-                class="ma-2"
+                icon="verified"
+                height="40"
+                @click="save = true"
+                color="success darken-2 "
+                class="ma-1"
+                text="ثبت سبد خرید "
+                :loading="loading"
+                :disabled="loading"
+              />
+              <amp-button
+                v-if="next_btn"
                 icon="arrow_circle_left"
                 height="40"
-                @click="e1 = 2"
-                color="info darken-3"
-                text="بعدی"
+                @click="e1 = 3"
+                color="info darken-3 "
+                class="ma-1"
+                text="بعدی "
                 :loading="loading"
-                :disabled="tab == 0 ? !user[0] || loading : loading || !valid_add_user"
+                :disabled="loading || !save"
               />
             </v-row>
           </v-stepper-content>
 
           <v-stepper-content step="3">
-            <v-card class="mb-12" color="grey lighten-1" height="200px"></v-card>
+            <v-row
+              v-if="factor_list.user && !loading_factor"
+              class="d-flex justify-center my-10"
+            >
+              <v-col cols="12" md="6">
+                <v-row class="d-flex justify-center">
+                  <v-col cols="12" class="box-items text-center">
+                    نام کاربر :
+                    {{ factor_list.user.first_name }}
+                    {{ factor_list.user.last_name }}
+                  </v-col>
+                  <v-col cols="6" class="box-items text-center">
+                    شماره همراه :
+                    {{ factor_list.user.username }}
+                  </v-col>
 
-            <v-btn color="primary" @click="e1 = 4"> Continue </v-btn>
+                  <v-col cols="6" class="box-items text-center">
+                    مجموع وزن :
+                    {{ factor_list.total_weight }}
+                    <small> گرم </small>
+                  </v-col>
+                  <v-col cols="6" class="box-items text-center">
+                    مجموع قیمت :
+                    {{ $price(factor_list.price) }}
+                    <small> ریال </small>
+                  </v-col>
+                  <v-col cols="6" class="box-items text-center">
+                    تخفیف :
+                    {{ $price(factor_list.products_discount) }}
+                    <small> ریال </small>
+                  </v-col>
+                  <v-col cols="12" class="box-items text-center">
+                    شماره فاکتور :
+                    {{ factor_list.factor_number }}</v-col
+                  >
+                </v-row>
+              </v-col>
+            </v-row>
+            <v-row class="d-flex justify-center" v-if="loading_factor">
+              <v-col cols="8">
+                <v-row class="d-flex justify-center" v-if="loading_factor">
+                  <v-col cols="12">
+                    <v-skeleton-loader class="mx-auto" type="text"></v-skeleton-loader>
+                  </v-col>
+                  <v-col cols="6">
+                    <v-skeleton-loader class="mx-auto" type="text"></v-skeleton-loader
+                  ></v-col>
+                  <v-col cols="6">
+                    <v-skeleton-loader class="mx-auto" type="text"></v-skeleton-loader
+                  ></v-col>
+                  <v-col cols="6">
+                    <v-skeleton-loader class="mx-auto" type="text"></v-skeleton-loader
+                  ></v-col>
+                  <v-col cols="6">
+                    <v-skeleton-loader class="mx-auto" type="text"></v-skeleton-loader
+                  ></v-col>
+                  <v-col cols="12">
+                    <v-skeleton-loader class="mx-auto" type="text"></v-skeleton-loader
+                  ></v-col>
+                </v-row>
+              </v-col>
+            </v-row>
 
-            <v-btn text> Cancel </v-btn>
-          </v-stepper-content>
-          <v-stepper-content step="4">
-            <v-card class="mb-12" color="grey lighten-1" height="200px"></v-card>
-
-            <v-btn color="primary" @click="e1 = 1"> Continue </v-btn>
-
-            <v-btn text> Cancel </v-btn>
+            <v-form v-model="valid_pay">
+              <v-row class="d-flex justify-center">
+                <v-col cols="12" md="3">
+                  <amp-select
+                    text="نوع پرداخت"
+                    rules="require"
+                    v-model="kind_set"
+                    :items="kind_set_item"
+                  />
+                </v-col>
+                <v-col cols="12" v-if="kind_set == 'cardToCard'" md="3">
+                  <AmpUploadFile title="بارگذاری رسید" v-model="receipt_img" multiple />
+                </v-col>
+              </v-row>
+            </v-form>
+            <v-row class="my-4 d-flex justify-center">
+              <amp-button
+                icon="arrow_circle_right"
+                height="40"
+                @click="e1 = 2"
+                class="ma-1"
+                color="red darken-3"
+                text="برگشت "
+              />
+              <amp-button
+                icon="credit_card"
+                height="40"
+                @click="pay()"
+                color="info  "
+                class="ma-1"
+                text="پرداخت "
+                :loading="loading"
+                :disabled="loading || !valid_pay"
+              />
+            </v-row>
           </v-stepper-content>
         </v-stepper-items>
       </v-stepper>
@@ -170,30 +253,53 @@
 </template>
 
 <script>
-import BaseTable from "~/components/DataTable/BaseTable";
 import UserSelectForm from "@/components/User/UserSelectForm";
+import Basket from "@/components/Product/Basket.vue";
 export default {
-  components: { BaseTable, UserSelectForm },
+  components: { UserSelectForm, Basket },
   data: () => ({
     e1: 1,
+    attrs: {
+      class: "mb-6",
+      boilerplate: true,
+      elevation: 2,
+    },
+    kind_set_item: [
+      { text: "کارت به کارت", value: "cardToCard" },
+      { text: "ارسال لینک", value: "send_pay_link" },
+    ],
+    number: 1,
     valid_add_user: true,
+    valid_pay: true,
+    show_btn: false,
+    show_btn_nex: false,
+    load_list: true,
     loading: false,
+    next_btn: false,
+    save: false,
+    loading_factor: false,
     tab: null,
     user: [],
     products: [],
+    list_basket: {},
+    factor_list: {},
+    main_image: "",
     first_name: "",
     last_name: "",
     username: "",
     user_id: "",
+    receipt_img: "",
+    kind_set: "",
     product_varcomb_id: "",
+    length_item: "",
     title: "ثبت خرید",
     basket_form: {
       user_id: "",
     },
+    dialog_add_product: { show: false, items: null },
   }),
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);
-    this.loadProduct();
   },
 
   watch: {
@@ -203,56 +309,21 @@ export default {
         (this.last_name = ""),
         (this.username = "");
     },
-    product_varcomb_id() {
-      if (Boolean(this.product_varcomb_id)) {
-        this.loadInfoProduct();
+    user_id() {
+      this.$refs.have_item.cleareBasket();
+    },
+    save() {
+      if (Boolean(this.save)) {
+        this.$refs.have_item.saveBasket();
+      
+        this.loadFactor();
+        this.e1 = 3;
       }
     },
   },
   methods: {
-    loadProduct() {
-      this.loading = true;
-      this.$reqApi("/product/list-by-personnel")
-        .then((response) => {
-          let items = [];
-          for (let index = 0; index < response.model.data.length; index++) {
-            const x = response.model.data[index];
-            items.push({
-              text: x.name,
-              value: x.id,
-            });
-          }
-          this.products = items;
-          this.loading = false;
-        })
-        .catch((error) => {
-          this.loading = false;
-        });
-      this.loading = false;
-    },
-    loadInfoProduct() {
-      this.loading = true;
-      this.$reqApi("/product/list-by-personnel")
-        .then((response) => {
-          let items = [];
-          for (let index = 0; index < response.model.data.length; index++) {
-            const x = response.model.data[index];
-            items.push({
-              text: x.name,
-              value: x.id,
-            });
-          }
-          this.products = items;
-          this.loading = false;
-        })
-        .catch((error) => {
-          this.loading = false;
-        });
-      this.loading = false;
-    },
     addUser(tab, add) {
       this.loading = true;
-      console.log(add);
       if (tab == 1 && Boolean(add)) {
         let form = {};
         form["first_name"] = this.first_name;
@@ -263,20 +334,89 @@ export default {
             this.user_id = response.id;
             this.$toast.success("کاربر با موفقیت ایجاد شد ");
             this.loading = false;
+            this.show_btn_nex = true;
           })
           .catch((error) => {
             this.loading = false;
           });
+          if (!Boolean(this.show_btn_nex)) {
+            this.e1 = 2;
+          }
       } else if (tab == 0) {
         this.user_id = this.user[0].id;
       }
       if (!Boolean(add)) {
         this.e1 = 2;
       }
-    
+
       this.loading = false;
       this.basket_form.user_id = this.user_id;
+    },
+
+    pay() {
+      this.loading = true;
+      let form = {};
+      form["user_id"] = this.user_id;
+      if (this.kind_set == "cardToCard") {
+        form["receipt_img"] = this.receipt_img;
+      }
+
+      form["kind_set"] = this.kind_set;
+      this.$reqApi("basket/manual-pay", form)
+        .then((response) => {
+          this.$toast.success("پرداخت با مو فقیت انجام شد");
+          this.loading = false;
+          this.e1 = 1;
+        })
+        .catch((error) => {
+          this.loading = false;
+        });
+      this.loading = false;
+    },
+    showBtn(event) {
+      this.show_btn = event;
+      this.save = false;
+    },
+    loadFactor() {
+      this.loading_factor = true;
+      
+      let info_basket = {};
+      this.$reqApi("basket/list-personnel", { user_id: this.user_id })
+        .then((response) => {
+          info_basket = {
+            discount: response.model.data[0].discount,
+            factor_number: response.model.data[0].factor_number,
+            products_discount: response.model.data[0].products_discount,
+            total_weight: response.model.data[0].total_weight,
+            price: response.model.data[0].price,
+            user: response.model.data[0].user,
+          };
+          this.factor_list = info_basket;
+
+          this.loading_factor = false;
+          
+
+          this.next_btn = true;
+        })
+        .catch((error) => {
+          this.loading_factor = false;
+        });
+    },
+    backStep() {
+      this.e1 = 1;
     },
   },
 };
 </script>
+<style scoped>
+.box-basket {
+  border: 3px dotted #00000059;
+}
+.box-items {
+  border: 0.001cm solid #00000031;
+}
+.size-img {
+  width: 100%;
+  height: 100%;
+}
+</style>

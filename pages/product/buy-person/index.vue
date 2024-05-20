@@ -398,10 +398,10 @@ export default {
             user: response.model.data[0].user,
           };
           this.factor_list = info_basket;
-          if(!Boolean(this.next_btn)){
-            this.e1 = 3;
-          }
+       
+          
           this.next_btn = true;
+          this.e1 = 3;
           this.loading_factor = false;
     
         })

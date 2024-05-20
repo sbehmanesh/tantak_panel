@@ -221,7 +221,7 @@
                   />
                 </v-col>
                 <v-col cols="12" v-if="kind_set == 'cardToCard'" md="3">
-                  <AmpUploadFile title="بارگذاری رسید" v-model="receipt_img" multiple />
+                  <AmpUploadFile title="بارگذاری رسید" v-model="receipt_img"  />
                 </v-col>
               </v-row>
             </v-form>
@@ -358,7 +358,14 @@ export default {
       let form = {};
       form["user_id"] = this.user_id;
       if (this.kind_set == "cardToCard") {
-        form["receipt_img"] = this.receipt_img;
+        if(!Boolean(this.receipt_img)){
+this.$toast.error("بارگذاری رسید اجباریست")
+this.loading = false;
+return
+        }else{
+
+          form["receipt_img"] = this.receipt_img;
+        }
       }
 
       form["kind_set"] = this.kind_set;

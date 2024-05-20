@@ -28,14 +28,15 @@
             </v-col>
 
             <v-spacer></v-spacer>
-
+            <v-btn     :disabled="!valid_step1" class="mt-10 ml-4" v-if="Boolean(back_ref) && Boolean(check_steps)" color="primary" @click="submit()"> تایید </v-btn>
             <v-btn
+            v-else
               class="mt-10 ml-4"
               color="primary"
               @click="e1 = 2"
               :disabled="!valid_step1"
             >
-              بعدی
+             بعدی
             </v-btn>
             <v-btn
               class="mt-10 ml-4"
@@ -65,7 +66,7 @@
               تعداد پیام انتخاب شده : {{ selected_item.length }}
             </span>
             <v-spacer></v-spacer>
-            <v-col cols="12" md="4" v-if="!Boolean(back_ref)">
+            <v-col cols="12" md="4" v-if="!Boolean(back_ref) ">
               <v-btn color="primary" :disabled="selected_item.length < 1" @click="e1 = 3">
                 بعدی
               </v-btn>
@@ -80,14 +81,14 @@
           </v-row>
         </v-col>
       </v-stepper-content>
-      <v-stepper-step v-if="!Boolean(back_ref)" :step="chek_number_step ? 2 : 3">
+      <v-stepper-step v-if="!Boolean(back_ref) ||Boolean(check_steps)" :step="chek_number_step ? 2 : 3">
         انتخاب مرکز تماس
         <small class="pt-1">
           مرکز تماسی را که قصد تخصیص به آن را دارید , انتخاب کنید
         </small>
       </v-stepper-step>
 
-      <v-stepper-content :step="chek_number_step ? 2 : 3" v-if="!Boolean(back_ref)">
+      <v-stepper-content :step="chek_number_step ? 2 : 3" v-if="!Boolean(back_ref) || Boolean(check_steps)">
         <v-row>
           <v-col cols="12" md="6">
             <UserSelectForm
@@ -208,15 +209,15 @@ export default {
       }
       ///////////////////////////////////////////////////////////      // //////////////////////////////////////////////////////////////
       if (Boolean(this.is_superviser)) {
-        if (this.step_ref == "supervisor_to_operator") {
+        if (this.step_ref == "supervisor_to_operator" && (this.type_send=="multi" || this.type_send=="auto")) {
           form["operator_id"] = this.user[0].id;
-          form["type_send"] = this.type_send;
         }
 
         form["step"] = this.step_ref;
+        form["type_send"] = this.type_send;
       }
       ///////////////////////////////////////////////////////////
-      if (this.is_oprator) {
+      if (Boolean(this.is_oprator)) {
         form["step"] = this.step_ref;
       }
       /////////////////////////////////////////////////////////

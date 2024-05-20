@@ -307,7 +307,7 @@ export default {
       } else {
         item.number--;
       }
-
+      this.$emit("list", true);
       this.loading = false;
     },
     saveBasket() {

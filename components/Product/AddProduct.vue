@@ -217,7 +217,7 @@ export default {
     sumb_price: "",
     product_name: "",
     product_varcomb_id: "",
-    final_id_product: "",
+
     selected_product: {},
   }),
   beforeMount() {
@@ -226,6 +226,9 @@ export default {
   watch: {
     product_varcomb_id() {
       let id = "";
+      this.var_id_1 =""
+      this.var_id_2 =""
+      this.var_id_3 =""
       id = this.product_varcomb_id;
       if (Boolean(id)) {
         this.loadInfoProduct(id);
@@ -257,6 +260,7 @@ export default {
     },
     valid_variations() {
       if (Boolean(this.valid_variations)) {
+        let product = {}
         this.all_variatons_product.filter((f) => {
           if (Boolean(this.step_var_3)) {
             if (
@@ -264,25 +268,25 @@ export default {
               this.var_id_2 == f.variation_2_id &&
               this.var_id_3 == f.variation_3_id
             ) {
-              this.selected_product = f;
-              this.final_id_product = f.id;
-              return;
+              product = f
+       
+              
             }
           }
-          if (Boolean(this.step_var_2)) {
+          if (Boolean(this.step_var_2) && !Boolean(this.step_var_3) ) {
             if (this.var_id_1 == f.variation_3_id && this.var_id_2 == f.variation_2_id) {
-              this.selected_product = f;
-              this.final_id_product = f.id;
-              return;
+              product = f
+            
             }
           }
-          if (Boolean(this.step_var_1)) {
+          if (Boolean(this.step_var_1)&&!Boolean(this.step_var_2)&&!Boolean(this.step_var_3)) {
             if (this.var_id_1 == f.variation_1_id) {
-              this.selected_product = f;
-              this.final_id_product = f.id;
-              return;
+          
+              product = f
+          
             }
           }
+          this.selected_product = product;
         });
       }
     },
@@ -428,12 +432,16 @@ export default {
       this.$emit("relod");
     },
     addBasket() {
-      this.$emit("add", {
-        id: this.final_id_product,
+      let product= {}
+      product =      {
+        id: this.selected_product.id,
         name: this.product_name,
         product: this.selected_product,
         number: this.number,
-      });
+      }
+      this.$emit("add", product
+
+    );
       this.closeDialog();
     },
   },

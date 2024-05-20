@@ -111,6 +111,7 @@
               @backStep="backStep()"
               :UserId="user_id"
               @list="showBtn($event)"
+              @chek_save="changeNumber($event)"
             />
 
             <v-row class="my-4 d-flex justify-center" v-if="show_btn">
@@ -129,7 +130,7 @@
                 color="success darken-2 "
                 class="ma-1"
                 text="ثبت سبد خرید "
-                :loading="loading"
+                :loading="loading_factor"
                 :disabled="loading"
               />
               <amp-button
@@ -221,7 +222,7 @@
                   />
                 </v-col>
                 <v-col cols="12" v-if="kind_set == 'cardToCard'" md="3">
-                  <AmpUploadFile title="بارگذاری رسید" v-model="receipt_img"  />
+                  <AmpUploadFile title="بارگذاری رسید" v-model="receipt_img" />
                 </v-col>
               </v-row>
             </v-form>
@@ -315,9 +316,8 @@ export default {
     save() {
       if (Boolean(this.save)) {
         this.$refs.have_item.saveBasket();
-      
+
         this.loadFactor();
-        this.e1 = 3;
       }
     },
   },
@@ -339,9 +339,9 @@ export default {
           .catch((error) => {
             this.loading = false;
           });
-          if (!Boolean(this.show_btn_nex)) {
-            this.e1 = 2;
-          }
+        if (!Boolean(this.show_btn_nex)) {
+          this.e1 = 2;
+        }
       } else if (tab == 0) {
         this.user_id = this.user[0].id;
       }
@@ -358,12 +358,11 @@ export default {
       let form = {};
       form["user_id"] = this.user_id;
       if (this.kind_set == "cardToCard") {
-        if(!Boolean(this.receipt_img)){
-this.$toast.error("بارگذاری رسید اجباریست")
-this.loading = false;
-return
-        }else{
-
+        if (!Boolean(this.receipt_img)) {
+          this.$toast.error("بارگذاری رسید اجباریست");
+          this.loading = false;
+          return;
+        } else {
           form["receipt_img"] = this.receipt_img;
         }
       }
@@ -386,7 +385,7 @@ return
     },
     loadFactor() {
       this.loading_factor = true;
-      
+
       let info_basket = {};
       this.$reqApi("basket/list-personnel", { user_id: this.user_id })
         .then((response) => {
@@ -399,11 +398,12 @@ return
             user: response.model.data[0].user,
           };
           this.factor_list = info_basket;
-
-          this.loading_factor = false;
-          
-
+          if(!Boolean(this.next_btn)){
+            this.e1 = 3;
+          }
           this.next_btn = true;
+          this.loading_factor = false;
+    
         })
         .catch((error) => {
           this.loading_factor = false;
@@ -411,6 +411,9 @@ return
     },
     backStep() {
       this.e1 = 1;
+    },
+    changeNumber() {
+      this.save = false;
     },
   },
 };

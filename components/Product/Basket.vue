@@ -250,9 +250,7 @@ export default {
     addBasket(event) {
       this.loading = true;
       let repetitious_item = false;
-      if (!Boolean(this.list_basket.items)) {
-        this.list_basket["items"] = [];
-      } else {
+
         for (let index = 0; index < this.list_basket.items.length; index++) {
           const element = this.list_basket.items[index];
           if (element.id == event.product.id) {
@@ -261,7 +259,7 @@ export default {
             this.$toast.success(`${event.name} بروزرسانی شد `);
           }
         }
-      }
+      
       if (!Boolean(repetitious_item)) {
         this.list_basket.items.unshift({
           information:
@@ -307,7 +305,7 @@ export default {
       } else {
         item.number--;
       }
-      this.$emit("list", true);
+      this.$emit("chek_save");
       this.loading = false;
     },
     saveBasket() {

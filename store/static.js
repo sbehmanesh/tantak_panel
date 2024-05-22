@@ -110,12 +110,8 @@ let mnue_tree = [
         access: "wholesale_form/index",
         name: "فرم های دریافتی فروش عمده",
         route: "/product/wholesale-form",
-      },      {
-        id: 222,
-        access: "wholesale_form/index",
-        name: "خرید حضوری",
-        route: "/product/buy-person",
-      },
+      },    
+
     ],
   },
   {
@@ -133,6 +129,12 @@ let mnue_tree = [
         access: "recived_message/insert",
         name: "ورود اکسل",
         route: "/call-center/import",
+      },
+      {
+        id: 222,
+        access: "wholesale_form/index",
+        name: "فروش تلفنی",
+        route: "/product/buy-person",
       },
       {
         id: 52,

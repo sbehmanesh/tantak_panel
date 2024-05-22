@@ -131,7 +131,7 @@
                 class="ma-1"
                 text="ثبت سبد خرید "
                 :loading="loading_factor"
-                :disabled="loading"
+                :disabled="loading ||save"
               />
               <amp-button
                 v-if="next_btn"
@@ -142,7 +142,7 @@
                 class="ma-1"
                 text="بعدی "
                 :loading="loading"
-                :disabled="loading || !save"
+                :disabled="loading || !save || loading_factor"
               />
             </v-row>
           </v-stepper-content>
@@ -293,7 +293,7 @@ export default {
     kind_set: "",
     product_varcomb_id: "",
     length_item: "",
-    title: "ثبت خرید",
+    title: "ثبت فروش",
     basket_form: {
       user_id: "",
     },
@@ -316,7 +316,7 @@ export default {
     save() {
       if (Boolean(this.save)) {
         this.$refs.have_item.saveBasket();
-
+        this.next_btn = true;
         this.loadFactor();
       }
     },
@@ -385,7 +385,6 @@ export default {
     },
     loadFactor() {
       this.loading_factor = true;
-
       let info_basket = {};
       this.$reqApi("basket/list-personnel", { user_id: this.user_id })
         .then((response) => {
@@ -398,16 +397,12 @@ export default {
             user: response.model.data[0].user,
           };
           this.factor_list = info_basket;
-       
-          
-          this.next_btn = true;
-          this.e1 = 3;
           this.loading_factor = false;
-    
         })
         .catch((error) => {
           this.loading_factor = false;
         });
+ 
     },
     backStep() {
       this.e1 = 1;

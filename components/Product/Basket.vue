@@ -215,7 +215,7 @@ export default {
     receipt_img: "",
     product_varcomb_id: "",
     length_item: "",
-    title: "ثبت خرید",
+  
 
     dialog_add_product: { show: false, items: null },
   }),

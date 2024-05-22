@@ -127,7 +127,8 @@
         </v-row>
         <v-col cols="12" v-if="!Boolean(check) && !loading">
           <v-row class="d-flex justify-center my-6">
-            <amp-button
+            <amp-button 
+            v-if="product_varcomb_id"
               icon="add_shopping_cart"
               height="40"
               @click="addBasket()"

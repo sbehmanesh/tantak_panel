@@ -61,6 +61,11 @@
           :DialogCustomer="dialog_customer"
           :customer="customer"
         />
+        <BasketDialog
+          v-if="dialog_basket.show"
+          :BasketDialog="dialog_basket"
+          :user_basket="user_basket"
+        />
         <ChangeStatus
           v-if="dialog_change_status.show"
           :dialog_change_status="dialog_change_status"
@@ -85,8 +90,9 @@ import Customer from "~/components/CallCenter/Customer.vue";
 import History from "~/components/NewCallCenter/History.vue";
 import Refer from "~/components/NewCallCenter/Refer.vue";
 import MessageLog from "~/components/NewCallCenter/MessageLog.vue";
+import BasketDialog from "@/components/NewCallCenter/BasketDialog.vue";
 export default {
-  components: { BaseTable, History, ChangeStatus, Customer, Refer , MessageLog },
+  components: { BaseTable, History, ChangeStatus, Customer, Refer, MessageLog, BasketDialog },
   data: () => ({
     headers: [],
     panel: 1,
@@ -102,6 +108,7 @@ export default {
       items: null,
     },
     dialog_customer: { show: false, items: null },
+    dialog_basket: { show: false, items: null },
     dialog_message_log: { show: false, items: null },
     dialog_change_status: { show: false, items: null },
     dialog_Refer: { show: false, items: null },
@@ -110,6 +117,7 @@ export default {
     selected_item: [],
     user_info: {},
     customer: {},
+    user_basket: {},
     btn_actions: [],
     create_url: "",
     message_info: {},
@@ -242,7 +250,16 @@ export default {
           this.dialog_customer.show = true;
           this.customer = body.user;
         },
-  
+      },
+      {
+        icon: "fact_check",
+        color: "grey darken-3",
+        text: "ثبت فاکتور",
+        fun: (body) => {
+          this.dialog_basket.show = true;
+          this.user_basket = body.user;
+          console.log("this.user_basket --> " , this.user_basket);
+        },
       },
       {
         icon: "history",
@@ -256,7 +273,6 @@ export default {
     ];
     this.$store.dispatch("setPageTitle", this.title);
   },
-
 
   methods: {
     relod() {
@@ -285,7 +301,8 @@ export default {
                   show = true;
                 } else if (
                   this.$checkRole(this.$store.state.auth.role.superviser_id) &&
-                  (body.step == "manager_to_supervisor"||body.step == "operator_to_supervisor" )
+                  (body.step == "manager_to_supervisor" ||
+                    body.step == "operator_to_supervisor")
                 ) {
                   show = true;
                 } else if (

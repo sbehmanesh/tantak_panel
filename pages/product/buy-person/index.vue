@@ -152,21 +152,24 @@
           </v-stepper-content>
 
           <v-stepper-content step="3">
-        
             <v-row v-if="e1 == 3" class="d-flex justify-center">
               <v-col cols="12" md="10">
-                <CompleteInfo :basket_costumer_id="basket_costumer_id" @nextStep="e1 = 4" @backStep="e1 = 2"  :basket_id="basket_id"  :user_id="user_id" />
+                <CompleteInfo
+                  :basket_costumer_id="basket_costumer_id"
+                  @nextStep="e1 = 4"
+                  @backStep="e1 = 2"
+                  :user_id="user_id"
+                />
               </v-col>
-       
             </v-row>
           </v-stepper-content>
           <v-stepper-content step="4">
-            <v-row
-              v-if="factor_list.user && !loading_factor"
-              class="d-flex justify-center my-10"
-            >
-              <v-col cols="12" md="6">
-                <v-row class="d-flex justify-center">
+            <v-row class="d-flex justify-center">
+              <v-col cols="8">
+                <v-row
+                  class="d-flex justify-center"
+                  v-if="factor_list.user && !loading_factor"
+                >
                   <v-col cols="12" class="box-items text-center">
                     نام کاربر :
                     {{ factor_list.user.first_name }}
@@ -183,6 +186,26 @@
                     <small> گرم </small>
                   </v-col>
                   <v-col cols="6" class="box-items text-center">
+                    نام گیرنده:
+                    {{ factor_list.geter_first_name }}
+                  </v-col>
+                  <v-col cols="6" class="box-items text-center">
+                    نام خانوادگی گیرنده:
+                    {{ factor_list.geter_last_name }}
+                  </v-col>
+                  <v-col cols="6" class="box-items text-center">
+                    شماره همراه گیرنده:
+                    {{ factor_list.geter_phone_number }}
+                  </v-col>
+                  <v-col cols="6" class="box-items text-center">
+                    کد پستی :
+                    {{ factor_list.postal_code }}
+                  </v-col>
+                  <v-col cols="6" class="box-items text-center">
+                    زمان ارسال :
+                    {{ $toJalali(factor_list.send_at) }}
+                  </v-col>
+                  <v-col cols="6" class="box-items text-center">
                     مجموع قیمت :
                     {{ $price(factor_list.price) }}
                     <small> ریال </small>
@@ -192,13 +215,18 @@
                     {{ $price(factor_list.products_discount) }}
                     <small> ریال </small>
                   </v-col>
-                  <v-col cols="12" class="box-items text-center">
+                  <v-col cols="6" class="box-items text-center">
                     شماره فاکتور :
                     {{ factor_list.factor_number }}</v-col
+                  >
+                  <v-col cols="12" class="box-items text-center">
+                    آدرس :
+                    {{ factor_list.address }}</v-col
                   >
                 </v-row>
               </v-col>
             </v-row>
+
             <v-row class="d-flex justify-center" v-if="loading_factor">
               <v-col cols="8">
                 <v-row class="d-flex justify-center" v-if="loading_factor">
@@ -226,7 +254,21 @@
 
             <v-form v-model="valid_pay">
               <v-row class="d-flex justify-center">
-                <v-col cols="12" md="3">
+                <v-col cols="12" md="5">
+                  <amp-select
+                    text="مقدار پرداخت "
+                    rules="require"
+                    v-model="price_value"
+                    :items="type_pay"
+                  />
+                  <amp-input
+                    v-if="price_value == 'prepayment'"
+                    text="مبلغ پیش پرداخت (ریال)"
+                    rules="require"
+                    is-price
+                    cClass="ltr-item"
+                    v-model="prepayment"
+                  />
                   <amp-select
                     text="نوع پرداخت"
                     rules="require"
@@ -283,6 +325,11 @@ export default {
       { text: "کارت به کارت", value: "cardToCard" },
       { text: "ارسال لینک", value: "send_pay_link" },
     ],
+    price_value: "",
+    type_pay: [
+      { text: "پرداخت به صورت کامل", value: "full" },
+      { text: "پیش پرداخت", value: "prepayment" },
+    ],
     number: 1,
     valid_add_user: true,
     valid_pay: true,
@@ -300,6 +347,7 @@ export default {
     factor_list: {},
     main_image: "",
     basket_costumer_id: "",
+    prepayment: "",
     first_name: "",
     last_name: "",
     username: "",
@@ -329,17 +377,15 @@ export default {
     user_id() {
       this.$refs.have_item.cleareBasket();
     },
-    e1(){
-      if (this.e1 == 3) {
+    e1() {
+      if (this.e1 == 4) {
         this.loadFactor();
       }
-   
     },
     save() {
       if (Boolean(this.save)) {
         this.$refs.have_item.saveBasket();
         this.next_btn = true;
-     
       }
     },
   },
@@ -379,6 +425,15 @@ export default {
       this.loading = true;
       let form = {};
       form["user_id"] = this.user_id;
+      if (this.price_value == "prepayment") {
+        form["price"] = this.prepayment;
+      } else {
+        form["price"] = this.factor_list.price;
+      }
+
+      if (this.kind_set == "send_pay_link") {
+        this.receipt_img = "";
+      }
       if (this.kind_set == "cardToCard") {
         if (!Boolean(this.receipt_img)) {
           this.$toast.error("بارگذاری رسید اجباریست");
@@ -406,10 +461,18 @@ export default {
       this.save = false;
     },
     loadFactor() {
-      this.loading_factor = true;
+      this.loading = true;
+
       let info_basket = {};
       this.$reqApi("basket/list-personnel", { user_id: this.user_id })
         .then((response) => {
+          let information = "";
+          let info_user = "";
+          if (response.model.data[0].delivery_info) {
+            information = response.model.data[0].delivery_info;
+            info_user = JSON.parse(information);
+          }
+
           info_basket = {
             discount: response.model.data[0].discount,
             factor_number: response.model.data[0].factor_number,
@@ -417,12 +480,22 @@ export default {
             total_weight: response.model.data[0].total_weight,
             price: response.model.data[0].price,
             user: response.model.data[0].user,
+            address: info_user.address,
+            delivery_time: info_user.delivery_time,
+            geter_first_name: info_user.first_name,
+            geter_last_name: info_user.last_name,
+            geter_phone_number: info_user.phone_number,
+            postal_code: info_user.postal_code,
+            send_at: info_user.send_at,
           };
+
           this.factor_list = info_basket;
-          this.loading_factor = false;
+
+          this.loading = false;
+          this.show_factor = true;
         })
         .catch((error) => {
-          this.loading_factor = false;
+          this.loading = false;
         });
     },
     backStep() {

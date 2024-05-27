@@ -258,7 +258,6 @@ export default {
         fun: (body) => {
           this.dialog_basket.show = true;
           this.user_basket = body.user;
-          console.log("this.user_basket --> " , this.user_basket);
         },
       },
       {

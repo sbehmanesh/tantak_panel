@@ -101,7 +101,7 @@ export default {
       },
       {
         text: "نوع تخصیص",
-        value: "step",
+        value: "type_send",
         filterType: "select",
         items: [
             { text: "تخصیص خودکار", value: "auto" },

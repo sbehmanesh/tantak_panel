@@ -111,6 +111,12 @@ let mnue_tree = [
         name: "فرم های دریافتی فروش عمده",
         route: "/product/wholesale-form",
       },
+      {
+        id: 344650,
+        access: "payments/index",
+        name: "لیست پرداخت ها",
+        route: "/product/pay",
+      },
 
     ],
   },
@@ -170,11 +176,17 @@ let mnue_tree = [
         access: "delivery_times/index",
         route: "/setting/delivery-time",
       },
-       {
+      {
         id: 19,
         name: "اسلایدر",
         access: "setting/index",
         route: "/setting/slider",
+      },
+      {
+        id: 10569,
+        name: "حذف سبد خرید",
+        access: "setting/index",
+        route: "/setting/delete-basket",
       },
       {
         id: 1009,

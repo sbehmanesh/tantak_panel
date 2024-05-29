@@ -74,7 +74,7 @@ export default {
         text: "وضعیت",
         value: "status",
         filterType: "select",
-        items: this.$store.state.static.status
+        items: this.$store.state.static.user_status
       }
     ];
   }

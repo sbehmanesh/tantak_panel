@@ -41,7 +41,7 @@
             text="وضعیت"
             rules="require"
             v-model="form.status"
-            :items="$store.state.static.status"
+            :items="$store.state.static.user_status"
           />
         </v-col>
         <v-col cols="12" md="3">
@@ -310,7 +310,7 @@ export default {
           this.form.user_id = response.model.user_id;
           this.form.role_id = response.model.role_id;
           this.form.id = this.modelId;
-          this.form.status = response.model.status;
+          this.form.user_status = response.model.status;
           this.form.username = response.model.username;
           this.form.password = response.model.password;
           this.form.birth_date = response.model.birth_date;

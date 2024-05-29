@@ -28,7 +28,7 @@
             />
           </v-col>
           <v-col cols="12" md="12">
-            <amp-textarea text="متن پیام" v-model="form.message"></amp-textarea>
+            <amp-textarea               rules="require" text="متن پیام" v-model="form.message"></amp-textarea>
           </v-col>
         </v-row>
 

@@ -32,6 +32,7 @@ export const state = () => ({
   bool_number_enum,
   step_message,
   type_send,
+  user_status,
 });
 
 let mnue_tree = [
@@ -279,7 +280,15 @@ let type_send = [
   { text: "بر اساس سابقه فروش", value: "sale" },
 ];
 
-let status = [
+let user_status = [
+  { text: "فعال", value: "active" },
+  { text: "غیر فعال", value: "in_active" },
+  { text: " مرخصی ", value: "leave" },
+  { text: " استراحت", value: "rest" },
+  { text: " دورکاری", value: "remote" },
+];
+ let status = [
+  // leave','rest','remote
   { text: "فعال", value: "active" },
   { text: "غیر فعال", value: "in_active" },
 ];

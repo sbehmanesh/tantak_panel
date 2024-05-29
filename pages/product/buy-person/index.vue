@@ -276,9 +276,7 @@
                     :items="kind_set_item"
                   />
                 </v-col>
-                <v-col cols="12" v-if="kind_set == 'cardToCard'" md="3">
-                  <AmpUploadFile title="بارگذاری رسید" v-model="receipt_img" />
-                </v-col>
+
               </v-row>
             </v-form>
             <v-row class="my-4 d-flex justify-center">
@@ -352,7 +350,6 @@ export default {
     last_name: "",
     username: "",
     user_id: "",
-    receipt_img: "",
     kind_set: "",
     product_varcomb_id: "",
     basket_id: "",
@@ -430,20 +427,6 @@ export default {
       } else {
         form["price"] = this.factor_list.price;
       }
-
-      if (this.kind_set == "send_pay_link") {
-        this.receipt_img = "";
-      }
-      if (this.kind_set == "cardToCard") {
-        if (!Boolean(this.receipt_img)) {
-          this.$toast.error("بارگذاری رسید اجباریست");
-          this.loading = false;
-          return;
-        } else {
-          form["receipt_img"] = this.receipt_img;
-        }
-      }
-
       form["kind_set"] = this.kind_set;
       this.$reqApi("basket/manual-pay", form)
         .then((response) => {

@@ -278,7 +278,6 @@ export default {
     },
     updateAll(data) {
       try {
-        console.log(data);
       } catch (error) {
         console.log(error);
       }

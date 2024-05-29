@@ -16,24 +16,21 @@
             <v-icon> close </v-icon>
           </v-btn>
         </v-toolbar>
-        <v-tabs>
-          <v-row class="ma-1 d-flex justify-center">
-            <v-tab>
-              <span>
-                <v-icon size="15"> fact_check </v-icon>
-        برسی پیام
-              </span>
-            </v-tab>
-            <v-tab>
-              <span>
-                <v-icon size="15"> mail </v-icon>
-                افزودن نظر
-              </span>
-            </v-tab>
-          </v-row>
 
-          <v-tab-item>
-            <v-col cols="12" md="12"> </v-col>
+        <v-card-title class="text-h6 font-weight-regular justify-space-between mx-1">
+          <h1 class="font_16">{{ currentTitle }}</h1>
+          <v-avatar
+            color="primary lighten-2"
+            class="subheading white--text"
+            size="24"
+            v-text="step"
+          ></v-avatar>
+        </v-card-title>
+        <v-col>
+          <v-divider></v-divider>
+        </v-col>
+        <v-window v-model="step">
+          <v-window-item :value="1">
             <v-form
               v-model="valid"
               @submit.prevent="submit()"
@@ -71,48 +68,78 @@
                   ></amp-textarea>
                 </v-col>
               </v-row>
-              <v-row class="mb-2 mt-4 d-flex justify-center">
-                <amp-button
-                  text="تایید"
-                  type="submit"
-                  icon="done"
-                  class="ma-1"
-                  :disabled="!valid || loading"
-                  :loading="loading"
-                ></amp-button>
+              <v-row class="mb-2 d-flex justify-center">
+                <v-col cols="4">
+                  <amp-button
+                    block
+                    height="40"
+                    text="بعدی"
+                    @click="step++"
+                    class="ma-1"
+                    :disabled="!valid || loading"
+                    :loading="loading"
+                  ></amp-button>
+                </v-col>
               </v-row>
             </v-form>
-          </v-tab-item>
-          <v-tab-item>
-            <v-col cols="12" md="12"> </v-col>
-            <v-col cols="12" md="12">
-              <v-form
-                v-model="valid_comment"
-                @submit.prevent="sendComment()"
-                :disabled="loading"
-                class="rounded-0 pa-8 d-flex flex-column"
-              >
+          </v-window-item>
+
+          <v-window-item :value="2">
+            <v-form
+              v-model="valid_comment"
+              @submit.prevent="sendComment()"
+              :disabled="loading"
+              class="rounded-0 pa-x d-flex flex-column"
+            >
+              <v-col cols="12" md="12">
+                <div
+                  class="px-4"
+                  v-for="(question, index) in questions_list"
+                  :key="index"
+                >
+                  <amp-select
+                    :text="index + 1 + ' - ' + question.title"
+                    v-model="answers_list[index]"
+                    :items="question.answer"
+                    rules="require"
+                  />
+                </div>
                 <amp-textarea
+                  class="mx-4"
                   rules="require"
-                  text="نظر درباره مشتری "
+                  text="توضیحات"
                   v-model="comment"
                 ></amp-textarea>
+              </v-col>
 
-                <v-row class="mb-2 mt-4 d-flex justify-center">
+              <v-row class="mb-2 d-flex justify-center">
+                <v-col cols="3">
                   <amp-button
-                    text="تایید"
+                    block
+                    height="40"
+                    text="برگشت"
+                    color="red darken-2"
+                    @click="step--"
+                    class="ma-1"
+                    :loading="loading"
+                  ></amp-button>
+                </v-col>
+                <v-col cols="3">
+                  <amp-button
+                    block
+                    height="40"
+                    text="ثبت نظر"
                     type="submit"
-                    @click="sendComment()"
-                    icon="done"
+                    @click="submit()"
                     class="ma-1"
                     :disabled="!valid_comment || loading"
                     :loading="loading"
                   ></amp-button>
-                </v-row>
-              </v-form>
-            </v-col>
-          </v-tab-item>
-        </v-tabs>
+                </v-col>
+              </v-row>
+            </v-form>
+          </v-window-item>
+        </v-window>
       </v-card>
       <!-- <v-card class="pa-2 lighten-3">
 
@@ -144,7 +171,9 @@ export default {
   data: () => ({
     valid: true,
     valid_comment: true,
-
+    questions_list: [],
+    step: 1,
+    answers_list: [],
     comment: "",
     loading: false,
     form: {
@@ -153,6 +182,19 @@ export default {
       document: [{ img: "", end_at: "", description: "" }],
     },
   }),
+  computed: {
+    currentTitle() {
+      switch (this.step) {
+        case 1:
+          return "تعیین وضعیت پیام ارجاع داده شده";
+        case 2:
+          return "نظردهی درباره مشتری";
+      }
+    },
+  },
+  mounted() {
+    this.loadQuestions();
+  },
   methods: {
     submit() {
       this.loading = true;
@@ -162,8 +204,36 @@ export default {
       this.$reqApi(url, form)
         .then((res) => {
           this.loading = false;
+          this.sendComment();
           this.relod();
           this.closeDialog();
+        })
+        .catch((err) => {
+          this.loading = false;
+        });
+    },
+    loadQuestions() {
+      this.loading = true;
+      this.$reqApi(`comment-question`)
+        .then((res) => {
+          this.loading = false;
+          let questions = [];
+          for (let index = 0; index < res.model.data.length; index++) {
+            let answer_question = [];
+            const x = res.model.data[index];
+            x.answers.map((y) => {
+              answer_question.push({
+                text: y.answer,
+                value: y.id,
+              });
+            });
+            questions.push({
+              title: x.question,
+              answer: answer_question,
+            });
+          }
+
+          this.questions_list = questions;
         })
         .catch((err) => {
           this.loading = false;
@@ -174,6 +244,7 @@ export default {
 
       let form = {};
       form["user_id"] = this.userInfo.id;
+      form["answers"] = this.answers_list;
       form["comment"] = this.comment;
       let url = "/user-comment/insert";
       this.$reqApi(url, form)

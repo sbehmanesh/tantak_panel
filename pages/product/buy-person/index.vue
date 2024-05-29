@@ -427,10 +427,6 @@ export default {
       } else {
         form["price"] = this.factor_list.price;
       }
-
-
-   
-
       form["kind_set"] = this.kind_set;
       this.$reqApi("basket/manual-pay", form)
         .then((response) => {

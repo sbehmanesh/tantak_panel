@@ -4,7 +4,7 @@
       <v-stepper-step :complete="e1 > 1" step="1">
         <span>
           تعیین روند ارجاع
-          <small class="pt-1"> نوع تخصیص یا مرحله پیام  را انتخاب کنید </small>
+          <small class="pt-1"> نوع تخصیص یا مرحله پیام را انتخاب کنید </small>
         </span>
       </v-stepper-step>
       <v-stepper-content step="1">
@@ -28,23 +28,25 @@
             </v-col>
 
             <v-spacer></v-spacer>
-            <v-btn     :disabled="!valid_step1" class="mt-10 ml-4" v-if="Boolean(back_ref) && Boolean(check_steps)" color="primary" @click="submit()"> تایید </v-btn>
             <v-btn
-            v-else
+              :disabled="!valid_step1"
+              class="mt-10 ml-4"
+              v-if="Boolean(back_ref) && Boolean(check_steps)"
+              color="primary"
+              @click="submit()"
+            >
+              تایید
+            </v-btn>
+            <v-btn
+              v-else
               class="mt-10 ml-4"
               color="primary"
               @click="e1 = 2"
               :disabled="!valid_step1"
             >
-             بعدی
+              بعدی
             </v-btn>
-            <v-btn
-              class="mt-10 ml-4"
-              color="info"
-              @click="clearAll()"
-            >
-              انصراف
-            </v-btn>
+            <v-btn class="mt-10 ml-4" color="info" @click="clearAll()"> انصراف </v-btn>
           </v-row>
         </v-form>
       </v-stepper-content>
@@ -66,7 +68,7 @@
               تعداد پیام انتخاب شده : {{ selected_item.length }}
             </span>
             <v-spacer></v-spacer>
-            <v-col cols="12" md="4" v-if="!Boolean(back_ref) ">
+            <v-col cols="12" md="4" v-if="!Boolean(back_ref)">
               <v-btn color="primary" :disabled="selected_item.length < 1" @click="e1 = 3">
                 بعدی
               </v-btn>
@@ -81,14 +83,20 @@
           </v-row>
         </v-col>
       </v-stepper-content>
-      <v-stepper-step v-if="!Boolean(back_ref) ||Boolean(check_steps)" :step="chek_number_step ? 2 : 3">
+      <v-stepper-step
+        v-if="!Boolean(back_ref) || Boolean(check_steps)"
+        :step="chek_number_step ? 2 : 3"
+      >
         انتخاب مرکز تماس
         <small class="pt-1">
           مرکز تماسی را که قصد تخصیص به آن را دارید , انتخاب کنید
         </small>
       </v-stepper-step>
 
-      <v-stepper-content :step="chek_number_step ? 2 : 3" v-if="!Boolean(back_ref) || Boolean(check_steps)">
+      <v-stepper-content
+        :step="chek_number_step ? 2 : 3"
+        v-if="!Boolean(back_ref) || Boolean(check_steps)"
+      >
         <v-row>
           <v-col cols="12" md="6">
             <UserSelectForm
@@ -209,7 +217,10 @@ export default {
       }
       ///////////////////////////////////////////////////////////      // //////////////////////////////////////////////////////////////
       if (Boolean(this.is_superviser)) {
-        if (this.step_ref == "supervisor_to_operator" && (this.type_send=="multi" || this.type_send=="auto")) {
+        if (
+          this.step_ref == "supervisor_to_operator" &&
+          (this.type_send == "multi" || this.type_send == "auto")
+        ) {
           form["operator_id"] = this.user[0].id;
         }
 
@@ -244,17 +255,18 @@ export default {
     relod() {
       this.$emit("relod");
     },
-    clearAll(){
-      this.step_ref =""
-      this.type_send =""
+    clearAll() {
+      this.step_ref = "";
+      this.type_send = "";
       this.$emit("clearBox", true);
-    }
+    },
   },
   watch: {
     type_send() {
       if (
         Boolean(this.is_superviser) &&
-       (this.step_ref == "supervisor_to_operator" ||this.step_ref == "operator_to_supervisor" ) &&
+        (this.step_ref == "supervisor_to_operator" ||
+          this.step_ref == "operator_to_supervisor") &&
         this.type_send == "multi"
       ) {
         this.$emit("setHeaders", true);
@@ -274,7 +286,6 @@ export default {
       } else {
         this.$emit("setHeaders", false);
       }
-
     },
   },
   computed: {
@@ -310,8 +321,7 @@ export default {
       }
       if (this.is_superviser) {
         if (
-          (this.step_ref == "supervisor_to_operator" && this.type_send == "multi") ||
-          this.step_ref == "supervisor_to_manager"
+          (this.step_ref == "supervisor_to_operator" && this.type_send == "multi") 
         ) {
           show_step = true;
         }

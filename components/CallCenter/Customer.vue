@@ -53,22 +53,17 @@
               <v-stepper-content step="1">
                 <v-window v-model="step_basket">
                   <v-row class="d-flex justify-center">
-                    <v-col cols="6" class="center-div">
-                  <v-row class="d-flex justify-center  mt-3 py-3 grey lighten-3">
-                
-                <span class="font_16">
-                شما فقط سبد خرید های با
-                <span class="font_17 primary--text">
-                  وضعیت باز
-                </span>
-          
-                 را میتوانید بروزرسانی کنید
-                
-                </span>
-                </v-row>
-                </v-col>
+                    <v-col cols="4" class="center-div">
+                      <v-row class="d-flex justify-center mt-3 py-3 grey lighten-3">
+                        <span class="font_13">
+                          شما فقط سبد خرید های با
+                          <span class="font_14 primary--text"> وضعیت باز </span>
+
+                          را میتوانید بروزرسانی کنید
+                        </span>
+                      </v-row>
+                    </v-col>
                   </v-row>
-    
 
                   <v-window-item :value="1">
                     <v-col cols="12">
@@ -82,13 +77,24 @@
                   </v-window-item>
 
                   <v-window-item :value="2">
+                    <AddProduct
+                    @add="addBasket($event)"
+                    v-if="dialog_add_product.show"
+                    :DialogAdd="dialog_add_product"
+                  />
+
                     <v-col cols="12" class="mt-5">
-                      <!-- <BaseTable
-                        url="basket-item"
-                        :rootBody="{ basket_id: product_id }"
-                        :headers="baskets"
-                      /> -->
-                      <v-row class="orange lighten-3 py-2 my-2">
+      
+                      <v-col cols="12" class="text-start" v-if="show_update_btn">
+                        <amp-button
+                          icon="add_circle"
+                          height="40"
+                          @click="dialog_add_product.show = true"
+                          color="orange darken-3"
+                          text="افزودن محصول"
+                        />
+                      </v-col>
+                      <v-row class="orange lighten-3 py-2 my-2  mt-5">
                         <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
                           <small> نام محصول</small>
                         </v-col>
@@ -341,7 +347,11 @@
 </template>
 
 <script>
+import AddProduct from "@/components/Product/AddProduct.vue";
 export default {
+  components:{
+    AddProduct
+  },
   props: {
     DialogCustomer: {
       require: false,
@@ -366,6 +376,7 @@ export default {
     comment: "",
     username: "",
     product_id: "",
+    dialog_add_product: { show: false, items: null },
     basket_id: "",
     overlay: false,
     disabl_update: true,
@@ -409,7 +420,7 @@ export default {
           this.loadListBAskets(body.id);
           if (body.status == "open") {
             this.show_update_btn = true;
-          }else{
+          } else {
             this.show_update_btn = false;
           }
         },
@@ -879,6 +890,49 @@ export default {
         .catch((error) => {
           this.loading = false;
         });
+      this.loading = false;
+    },
+    addBasket(event) {
+      this.loading = true;
+      let repetitious_item = false;
+
+      for (let index = 0; index < this.list_basket.items.length; index++) {
+        const element = this.list_basket.items[index];
+        if (element.id == event.product.id) {
+          element.number = element.number + event.number;
+          repetitious_item = true;
+          this.$toast.success(`${event.name} بروزرسانی شد `);
+        }
+      }
+
+      if (!Boolean(repetitious_item)) {
+        this.list_basket.items.unshift({
+          information:
+            event.product.variation1.variation_type.value +
+            " " +
+            event.product.variation1.value +
+            " - " +
+            event.product.variation2.variation_type.value +
+            " " +
+            event.product.variation2.value +
+            " - " +
+            event.product.variation3.variation_type.value +
+            " " +
+            event.product.variation3.value,
+          number: event.number,
+          price: event.product.price
+            ? event.product.price
+            : event.product.variation1.product.base_price,
+
+          full_barcode: event.product.full_barcode,
+          discount: event.product.discount,
+          id: event.product.id,
+          name: event.product.variation1.product.name,
+          main_image: event.product.variation1.product.main_image,
+        });
+        this.$toast.success("محصول به سبد خرید اضافه شد");
+      }
+     this.disabl_update = false
       this.loading = false;
     },
   },

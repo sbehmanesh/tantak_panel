@@ -1,20 +1,20 @@
 <template>
-  <v-container fluid class="h-max">
+  <v-container fluid class="h-max container-class">
     <v-row dense class="h-max">
       <v-col />
       <v-col class="h-max center-div-justify pt-16">
         <div>
-          <div class="text-center logo_bg pb-1 elevation-5">
+          <div class="text-center logo_bg pb-1 mb-4 ">
             <img
               :src="$store.state.logo"
-              width="200"
+              width="230"
               height="auto"
               class="mt-1"
             />
+            <br>
+            <span class="font_18 black--text">ورود به {{ page_title }}</span>
           </div>
-          <div class="text-center mb-4 mt-3">
-            <span class="font_20 black--text">ورود به {{ page_title }}</span>
-          </div>
+    
           <v-card
             color="#00000000"
             elevation="0"
@@ -65,10 +65,10 @@ export default {
 
 <style scoped>
 .login-card {
-  background-color: #000000d2;
+  background-color: #000000a6;
 }
-.logo_bg {
-  background-color:#0000006a ;
-  border-radius: 5px;
+
+.container-class{
+  background: linear-gradient(to top, #040a3b, #641818d5, #ff6600e7) !important;
 }
 </style>

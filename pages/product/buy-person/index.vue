@@ -164,6 +164,7 @@
             </v-row>
           </v-stepper-content>
           <v-stepper-content step="4">
+
             <v-row class="d-flex justify-center">
               <v-col cols="8">
                 <v-row
@@ -216,10 +217,15 @@
                     <small> ریال </small>
                   </v-col>
                   <v-col cols="6" class="box-items text-center">
+                    مقدار پیش پرداخت :
+                    {{ $price(factor_list.prepay_amount) }}
+                    <small> ریال </small>
+                  </v-col>
+                  <v-col cols="6" class="box-items text-center">
                     شماره فاکتور :
                     {{ factor_list.factor_number }}</v-col
                   >
-                  <v-col cols="12" class="box-items text-center">
+                  <v-col cols="6" class="box-items text-center">
                     آدرس :
                     {{ factor_list.address }}</v-col
                   >
@@ -276,7 +282,6 @@
                     :items="kind_set_item"
                   />
                 </v-col>
-
               </v-row>
             </v-form>
             <v-row class="my-4 d-flex justify-center">
@@ -365,6 +370,11 @@ export default {
   },
 
   watch: {
+    price_value(){
+if(this.price_value == 'prepayment'){
+  this.prepayment  = this.factor_list.prepay_amount
+}
+    },
     tab() {
       (this.user = []),
         (this.first_name = ""),
@@ -455,7 +465,7 @@ export default {
             information = response.model.data[0].delivery_info;
             info_user = JSON.parse(information);
           }
-
+          this.prepayment 
           info_basket = {
             discount: response.model.data[0].discount,
             factor_number: response.model.data[0].factor_number,
@@ -463,6 +473,7 @@ export default {
             total_weight: response.model.data[0].total_weight,
             price: response.model.data[0].price,
             user: response.model.data[0].user,
+            prepay_amount: response.model.data[0].prepay_amount,
             address: info_user.address,
             delivery_time: info_user.delivery_time,
             geter_first_name: info_user.first_name,

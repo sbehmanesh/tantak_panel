@@ -18,18 +18,10 @@
       </v-stepper-header>
       <v-stepper-items>
         <v-stepper-content step="1">
-          <v-form
-            v-model="valid"
-            @submit.prevent="submit()"
-            :disabled="loading"
-          >
+          <v-form v-model="valid" @submit.prevent="submit()" :disabled="loading">
             <v-row dense>
               <v-col cols="12" md="3">
-                <amp-input
-                  text="نام محصول"
-                  v-model="form.name"
-                  rules="require"
-                />
+                <amp-input text="نام محصول" v-model="form.name" rules="require" />
               </v-col>
               <v-col cols="12" md="3">
                 <amp-input text="لینک" v-model="form.slug" rules="" />
@@ -54,7 +46,7 @@
                 <amp-input
                   text="بارکد"
                   is-number
-                  :disabled="modelId? true : false"
+                  :disabled="modelId ? true : false"
                   v-model="form.barcode"
                   rules="number,max_10"
                 />
@@ -70,16 +62,43 @@
               <v-col cols="12" md="3">
                 <amp-select
                   text="وضعیت انتشار"
+                  multiple
                   rules="require"
-                  v-model="form.publish_status"
-                  :items="this.$store.state.static.product_status"
+                  v-model="publish_status"
+                  :items="publish_status_items"
                 />
               </v-col>
+              <v-col cols="12" md="3" v-if="Boolean(chek_phone_sale)">
+                <amp-select
+                  text="نوع پیش پرداخت"
+                  rules="require"
+                  v-model="pay_type"
+                  :items="pay_type_item"
+                />
+              </v-col>
+              <v-col cols="12" md="3" v-if="Boolean(chek_phone_sale)">
+                <amp-input
+                  v-if="pay_type == 'amount'"
+                  text="مبلغ پیش پرداخت (ریال)"
+                  rules="require"
+                  is-price
+                  cClass="ltr-item"
+                  v-model="prepayment"
+                />
+                <amp-input
+                v-else
+                  text="درصد پیش پرداخت"
+                  rules="require,percent"
+                  cClass="ltr-item"
+                  v-model="prepayment"
+                />
+              </v-col>
+
               <v-col cols="12" md="3">
                 <amp-select
                   text="برند"
                   rules=""
-                  v-model="form.brand_id   "
+                  v-model="form.brand_id"
                   :items="this.$store.state.setting.barnds"
                 />
               </v-col>
@@ -125,15 +144,10 @@
             class="text-center"
             v-if="!modelId"
           >
-            برای فعال شدن بخش جزئیات محصول ، بعد از ورود اطلاعات پایه دکمه ذخیره
-            و ادامه را بزنید.
+            برای فعال شدن بخش جزئیات محصول ، بعد از ورود اطلاعات پایه دکمه ذخیره و ادامه
+            را بزنید.
           </v-alert>
-          <v-form
-            v-model="valid"
-            @submit.prevent="submit()"
-            :disabled="loading"
-            v-else
-          >
+          <v-form v-model="valid" @submit.prevent="submit()" :disabled="loading" v-else>
             <v-row dense>
               <v-col cols="12" md="4" class="mt-10">
                 <v-row>
@@ -245,8 +259,8 @@
               class="text-center mt-2 mx-3"
               v-if="!modelId"
             >
-              برای فعال شدن بخش ویژگی های محصول ، بعد از ورود اطلاعات پایه دکمه
-              ذخیره و ادامه را بزنید.
+              برای فعال شدن بخش ویژگی های محصول ، بعد از ورود اطلاعات پایه دکمه ذخیره و
+              ادامه را بزنید.
             </v-alert>
             <v-row v-else class="mt-5">
               <v-tabs v-model="tab" centered icons-and-text>
@@ -292,11 +306,7 @@
         </v-row>
         <v-row v-if="modelId">
           <v-col cols="12" md="12" class="text-center">
-            <v-form
-              v-model="valid"
-              @submit.prevent="submit()"
-              :disabled="loading"
-            >
+            <v-form v-model="valid" @submit.prevent="submit()" :disabled="loading">
               <amp-button
                 large
                 icon="redo"
@@ -335,10 +345,10 @@ export default {
     WholeProductForm,
     Gallery,
     AmpAutocomplete,
-    SelectCategory
+    SelectCategory,
   },
   props: {
-    modelId: { default: null }
+    modelId: { default: null },
   },
   data: () => ({
     step_number: 1,
@@ -346,6 +356,12 @@ export default {
     loading: false,
     gallery_dialog: false,
     tab: 0,
+    publish_status: [],
+    publish_status_items: [
+      { text: "فروش آنلاین", value: "online_sale" },
+      { text: "فروش تلفنی", value: "phone_sale" },
+      { text: "فروش حضوری", value: "person_sale" },
+    ],
     category_ids: [],
     createUrl: "/product/insert",
     updateUrl: "/product/update",
@@ -355,13 +371,35 @@ export default {
     mixtureTypes: [],
     variationTypes: [],
     specefication_table: [],
+    pay_type: "amount",
+    pay_type_item: [
+      { text: "درصد", value: "percent" },
+      { text: "مقدار", value: "amount" },
+    ],
+
+
+
+    // 'tags' => 'nullable|array',
+    //             'slug' => 'nullable|string',
+    //             'online_sale' => 'boolean',
+    //             'phone_sale' => 'boolean',
+    //             'person_sale' => 'boolean',
+    //             'barcode' => 'nullable|string',
+    //             'category_ids' => 'nullable|array',
+    //             'base_price' => 'nullable|integer',
+    //             'main_image' => 'nullable|string',
+    //             'product_infos' => 'nullable|array',
+    //             'wholesale_unit' => 'nullable|string',
+    //             'base_wholesale_price' => 'nullable|integer',
     form: {
       id: "",
       name: "",
       slug: "",
       code: "",
       barcode: "",
-      publish_status: "draft",
+      online_sale: false,
+      phone_sale: false,
+      person_sale: false,
       has_single_sell: "1",
       has_whole_sell: "0",
       mixturable: "0",
@@ -370,7 +408,7 @@ export default {
       product_variation_combinations: [],
       base_price: "",
       main_image: "/image/no_image.png",
-      brand_id:'',
+      brand_id: "",
       base_wholesale_price: "",
       category_ids: [],
       tags: [],
@@ -382,11 +420,13 @@ export default {
         seo_description: "",
         description: "",
         summerized_description: "",
-        specefication_table: []
-      }
-    }
+        specefication_table: [],
+      },
+    },
   }),
-
+  beforeMount() {
+    this.$store.dispatch("setting/setBrand");
+  },
   mounted() {
     if ("step" in this.$route.query) {
       this.step_number = this.$route.query.step;
@@ -409,12 +449,36 @@ export default {
       if (this.step_number > 3) {
         this.step_number = 3;
       }
-    }
+    },
+  },
+  computed: {
+    chek_phone_sale() {
+      if (Boolean(this.$store.state.auth.role)) {
+        return this.publish_status.indexOf("phone_sale") > -1;
+      }
+    },
   },
   methods: {
     submit() {
       let form = this.$copyForm(this.form);
+      // switch (this.publish_status_items) {
+      //   case "online_sale":
+      //     form.online_sale = true;
+      //   case "phone_sale":
+      //     form.phone_sale = true;
+      //   case "person_sale":
+      //     form.person_sale = true;
+      // }
 
+      for (let index = 0; index < this.publish_status_items.length; index++) {
+        const x = this.publish_status_items[index];
+        this.publish_status.map((y) => {
+          if (y == x.value) {
+            form[y] = true;
+          }
+        });
+      }
+      console.log("form --> ", form);
       form["has_single_sell"] = parseInt(form["has_single_sell"]);
       form["has_whole_sell"] = parseInt(form["has_whole_sell"]);
       form["mixturable"] = parseInt(form["mixturable"]);
@@ -447,7 +511,7 @@ export default {
         // }
       }
       this.$reqApi(url, form)
-        .then(response => {
+        .then((response) => {
           if (!this.modelId) {
             this.$toast.success("اطلاعات اولیه محصول مورد نظر شما ثبت شد");
             this.$router.push("/product/" + response.id + "?step=2");
@@ -461,24 +525,25 @@ export default {
             this.loading = false;
           }
         })
-        .catch(error => {
+        .catch((error) => {
           this.loading = false;
         });
     },
     loadData() {
       this.loading = true;
       this.$reqApi(this.showUrl, { id: this.modelId })
-        .then(async response => {
+        .then(async (response) => {
           try {
             response = response.model;
             this.form["id"] = response.id;
-            this.form.publish_status = response.publish_status;
+    //  this.
+
             this.form.name = response.name;
             this.form.slug = response.slug;
             this.form.base_price = response.base_price;
             this.form.base_wholesale_price = response.base_wholesale_price;
             this.form.barcode = response.barcode;
-            this.form.brand_id = response.brand_id   
+            this.form.brand_id = response.brand_id;
             this.form.product_variation_combinations =
               response.product_variation_combinations;
             for (let i = 0; i < response.categories.length; i++) {
@@ -487,10 +552,10 @@ export default {
 
             this.form.code = response.code;
             if (response.product_infos) {
-              response.product_infos.map(x => {
+              response.product_infos.map((x) => {
                 if (x.type == "table_item") {
                   this.specefication_table.push({
-                    [x.key]: x.value
+                    [x.key]: x.value,
                   });
                 }
                 if (x.type == "seo_description") {
@@ -525,7 +590,7 @@ export default {
             console.log(error);
           }
         })
-        .catch(error => {
+        .catch((error) => {
           this.redirectPage();
           this.loading = false;
         });
@@ -539,19 +604,19 @@ export default {
     },
     getCategories() {
       let form = {
-        row_number: 2000
+        row_number: 2000,
       };
 
       this.$reqApi("/product-variation", form)
-        .then(response => {
-          this.product_categories = response.model.data.map(x => ({
+        .then((response) => {
+          this.product_categories = response.model.data.map((x) => ({
             value: x.id,
-            text: x.value
+            text: x.value,
           }));
 
           this.loading = false;
         })
-        .catch(error => {
+        .catch((error) => {
           this.loading = false;
         });
     },
@@ -561,10 +626,10 @@ export default {
     },
     convetrSpacefication(arr) {
       return arr
-        .map(obj =>
-          Object.keys(obj).map(key => ({
+        .map((obj) =>
+          Object.keys(obj).map((key) => ({
             key,
-            value: obj[key]
+            value: obj[key],
           }))
         )
         .flat();
@@ -583,12 +648,12 @@ export default {
         row_number: 1000,
         // filters: { key: 'variation_type' },
         filters: {
-          key: { op: "in", value: ["variation_type", "units", "mixture_type"] }
-        }
+          key: { op: "in", value: ["variation_type", "units", "mixture_type"] },
+        },
       };
 
       this.$reqApi("/setting", form)
-        .then(response => {
+        .then((response) => {
           this.variationTypes = [];
           this.units = [];
           this.mixture_type = [];
@@ -607,10 +672,10 @@ export default {
 
           this.loading = false;
         })
-        .catch(error => {
+        .catch((error) => {
           this.loading = false;
         });
-    }
-  }
+    },
+  },
 };
 </script>

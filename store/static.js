@@ -33,6 +33,8 @@ export const state = () => ({
   step_message,
   type_send,
   user_status,
+  wallet_type,
+  wallet_kind,
 });
 
 let mnue_tree = [
@@ -182,6 +184,12 @@ let mnue_tree = [
         name: "اسلایدر",
         access: "setting/index",
         route: "/setting/slider",
+      },  
+          {
+        id: 19005,
+        name: "بابت های کیف پول",
+        access: "setting/index",
+        route: "/setting/for-wallet",
       },
       {
         id: 10569,
@@ -273,6 +281,14 @@ let setting_keys = [
   { text: "آدرس فیس بوک", value: "facebook", type: "single_text" },
   { text: "آدرس اینستاگرام ", value: "instagram", type: "single_text" },
   { text: "اسلایدر اصلی", value: "main_slider", type: "image" },
+];
+let wallet_type = [
+  { text: "شارژ", value: "put" },
+  { text: "برداشت", value: "remove" },
+];
+let wallet_kind = [
+  { text: "نقد", value: "cash" },
+  { text: "اعتبار", value: "credit" },
 ];
 let type_send = [
   { text: "ترخیص خودکار", value: "auto" },

@@ -3,7 +3,7 @@
     <v-col cols="12">
       <BaseTable
         url="/payment"
-        :filters="{ user_id: this.modelId }"
+        :filters="{ user_id:modelId }"
         :headers="headers"
       />
     </v-col>

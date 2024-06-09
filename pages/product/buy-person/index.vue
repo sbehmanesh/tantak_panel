@@ -295,10 +295,13 @@
               class="d-flex justify-center align-center"
             >
               <v-card class="white pa-6">
-                <v-card-title class="black--text" >
-                  تایید فاکتور پرداحت
-                  <v-divider></v-divider>
+                <v-card-title
+                  class="black--text d-flex justify-center align-center"
+                >
+                  تایید فاکتور پرداخت
                 </v-card-title>
+                <v-divider></v-divider>
+
                 <v-row>
                   <v-col
                     cols="12"
@@ -309,7 +312,7 @@
                   >
                     <span class="black--text">{{ item.text }}</span>
                     <span class="black--text">{{
-                      item.value ? $price(item.value) : "__"
+                      item.value ? `${$price(item.value) } ریال` : "__"
                     }}</span>
                   </v-col>
                   <v-col

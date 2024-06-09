@@ -5,18 +5,26 @@
         <v-row class="d-flex justify-center">
           <v-col cols="10" class="mt-4">
             <v-stepper-header>
-              <v-stepper-step :complete="e1 > 1" step="1"> انتخاب کاربر </v-stepper-step>
+              <v-stepper-step :complete="e1 > 1" step="1">
+                انتخاب کاربر
+              </v-stepper-step>
 
               <v-divider></v-divider>
 
-              <v-stepper-step :complete="e1 > 2" step="2"> سبد خرید </v-stepper-step>
+              <v-stepper-step :complete="e1 > 2" step="2">
+                سبد خرید
+              </v-stepper-step>
 
               <v-divider></v-divider>
-              <v-stepper-step :complete="e1 > 2" step="3">تکمیل اطلاعات</v-stepper-step>
+              <v-stepper-step :complete="e1 > 2" step="3"
+                >تکمیل اطلاعات</v-stepper-step
+              >
 
               <v-divider></v-divider>
 
-              <v-stepper-step :complete="e1 > 3" step="4"> مشاهده فاکتور </v-stepper-step>
+              <v-stepper-step :complete="e1 > 3" step="4">
+                مشاهده فاکتور
+              </v-stepper-step>
             </v-stepper-header>
           </v-col>
         </v-row>
@@ -62,7 +70,11 @@
                 <v-form v-model="valid_add_user">
                   <v-row class="d-flex justify-center">
                     <v-col cols="12" md="3">
-                      <amp-input text="نام" v-model="first_name" rules="require" />
+                      <amp-input
+                        text="نام"
+                        v-model="first_name"
+                        rules="require"
+                      />
                     </v-col>
                     <v-col cols="12" md="3">
                       <amp-input
@@ -93,7 +105,9 @@
                 color="primary "
                 text="افزودن "
                 :loading="loading"
-                :disabled="tab == 0 ? !user[0] || loading : loading || !valid_add_user"
+                :disabled="
+                  tab == 0 ? !user[0] || loading : loading || !valid_add_user
+                "
               />
               <amp-button
                 v-if="(tab == 1 && show_btn_nex) || tab == 0"
@@ -102,7 +116,9 @@
                 @click="addUser(tab, false)"
                 color="info darken-3"
                 text="بعدی"
-                :disabled="tab == 0 ? !user[0] || loading : loading || !valid_add_user"
+                :disabled="
+                  tab == 0 ? !user[0] || loading : loading || !valid_add_user
+                "
               />
             </v-col>
           </v-stepper-content>
@@ -164,7 +180,6 @@
             </v-row>
           </v-stepper-content>
           <v-stepper-content step="4">
-
             <v-row class="d-flex justify-center">
               <v-col cols="8">
                 <v-row
@@ -237,27 +252,95 @@
               <v-col cols="8">
                 <v-row class="d-flex justify-center" v-if="loading_factor">
                   <v-col cols="12">
-                    <v-skeleton-loader class="mx-auto" type="text"></v-skeleton-loader>
+                    <v-skeleton-loader
+                      class="mx-auto"
+                      type="text"
+                    ></v-skeleton-loader>
                   </v-col>
                   <v-col cols="6">
-                    <v-skeleton-loader class="mx-auto" type="text"></v-skeleton-loader
+                    <v-skeleton-loader
+                      class="mx-auto"
+                      type="text"
+                    ></v-skeleton-loader
                   ></v-col>
                   <v-col cols="6">
-                    <v-skeleton-loader class="mx-auto" type="text"></v-skeleton-loader
+                    <v-skeleton-loader
+                      class="mx-auto"
+                      type="text"
+                    ></v-skeleton-loader
                   ></v-col>
                   <v-col cols="6">
-                    <v-skeleton-loader class="mx-auto" type="text"></v-skeleton-loader
+                    <v-skeleton-loader
+                      class="mx-auto"
+                      type="text"
+                    ></v-skeleton-loader
                   ></v-col>
                   <v-col cols="6">
-                    <v-skeleton-loader class="mx-auto" type="text"></v-skeleton-loader
+                    <v-skeleton-loader
+                      class="mx-auto"
+                      type="text"
+                    ></v-skeleton-loader
                   ></v-col>
                   <v-col cols="12">
-                    <v-skeleton-loader class="mx-auto" type="text"></v-skeleton-loader
+                    <v-skeleton-loader
+                      class="mx-auto"
+                      type="text"
+                    ></v-skeleton-loader
                   ></v-col>
                 </v-row>
               </v-col>
             </v-row>
+            <v-overlay
+              v-model="overlay"
+              class="d-flex justify-center align-center"
+            >
+              <v-card class="white pa-6">
+                <v-card-title
+                  class="black--text d-flex justify-center align-center"
+                >
+                  تایید فاکتور پرداخت
+                </v-card-title>
+                <v-divider></v-divider>
 
+                <v-row>
+                  <v-col
+                    cols="12"
+                    md="12"
+                    v-for="(item, index) in factor_data"
+                    :key="index"
+                    class="d-flex justify-space-between"
+                  >
+                    <span class="black--text">{{ item.text }}</span>
+                    <span class="black--text">{{
+                      item.value ? `${$price(item.value) } ریال` : "__"
+                    }}</span>
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    md="12"
+                    class="d-flex justify-center align-center"
+                  >
+                    <amp-button
+                      icon="credit_card"
+                      height="40"
+                      @click="overlay = false"
+                      color="error"
+                      class="ma-1"
+                      text="انصراف "
+                    />
+                    <amp-button
+                      icon="credit_card"
+                      :loading="loading"
+                      height="40"
+                      @click="pay(false)"
+                      color="info  "
+                      class="ma-1"
+                      text="پرداخت "
+                    />
+                  </v-col>
+                </v-row>
+              </v-card>
+            </v-overlay>
             <v-form v-model="valid_pay">
               <v-row class="d-flex justify-center">
                 <v-col cols="12" md="5">
@@ -359,10 +442,12 @@ export default {
     product_varcomb_id: "",
     basket_id: "",
     length_item: "",
+    overlay: false,
     title: "ثبت فروش",
     basket_form: {
       user_id: "",
     },
+    factor_data: [],
     dialog_add_product: { show: false, items: null },
   }),
   beforeMount() {
@@ -370,10 +455,10 @@ export default {
   },
 
   watch: {
-    price_value(){
-if(this.price_value == 'prepayment'){
-  this.prepayment  = this.factor_list.prepay_amount
-}
+    price_value() {
+      if (this.price_value == "prepayment") {
+        this.prepayment = this.factor_list.prepay_amount;
+      }
     },
     tab() {
       (this.user = []),
@@ -428,21 +513,50 @@ if(this.price_value == 'prepayment'){
       this.basket_form.user_id = this.user_id;
     },
 
-    pay() {
+    pay(pay = true) {
       this.loading = true;
       let form = {};
-      form["user_id"] = this.user_id;
+      form["id"] = this.basket_id;
       if (this.price_value == "prepayment") {
         form["price"] = this.prepayment;
       } else {
         form["price"] = this.factor_list.price;
       }
       form["kind_set"] = this.kind_set;
+      form["only_price"] = pay;
       this.$reqApi("basket/manual-pay", form)
         .then((response) => {
-          this.$toast.success("پرداخت با مو فقیت انجام شد");
-          this.loading = false;
-          this.e1 = 1;
+          if (pay) {
+            let data = response;
+            this.factor_data = [
+              {
+                text: "پرداخت آنلاین",
+                value: data.buy_online,
+              },
+              {
+                text: "پرداخت درب منزل",
+                value: data.buy_post,
+              },
+              {
+                text: "کیف پول نقدی",
+                value: data.cash_wallt,
+              },
+              {
+                text: "کیف پول اعتباری",
+                value: data.credit_wallt,
+              },
+              {
+                text: "مبلغ",
+                value: data.price,
+              },
+            ];
+            console.log(this.factor_data);
+            this.overlay = true;
+          } else {
+            this.$toast.success("پرداخت با مو فقیت انجام شد");
+            this.loading = false;
+            this.e1 = 1;
+          }
         })
         .catch((error) => {
           this.loading = false;
@@ -465,7 +579,8 @@ if(this.price_value == 'prepayment'){
             information = response.model.data[0].delivery_info;
             info_user = JSON.parse(information);
           }
-          this.prepayment 
+          this.basket_id = response.model.data[0].id;
+          this.prepayment;
           info_basket = {
             discount: response.model.data[0].discount,
             factor_number: response.model.data[0].factor_number,

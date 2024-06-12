@@ -32,9 +32,9 @@ export const state = () => ({
   bool_number_enum,
   step_message,
   type_send,
-  user_status,
   wallet_type,
   wallet_kind,
+  status_work,
 });
 
 let mnue_tree = [
@@ -184,8 +184,8 @@ let mnue_tree = [
         name: "اسلایدر",
         access: "setting/index",
         route: "/setting/slider",
-      },  
-          {
+      },
+      {
         id: 19005,
         name: "بابت های کیف پول",
         access: "setting/index",
@@ -296,18 +296,19 @@ let type_send = [
   { text: "بر اساس سابقه فروش", value: "sale" },
 ];
 
-let user_status = [
+let status_work = [
   { text: "فعال", value: "active" },
-  { text: "غیر فعال", value: "in_active" },
   { text: " مرخصی ", value: "leave" },
   { text: " استراحت", value: "rest" },
   { text: " دورکاری", value: "remote" },
 ];
- let status = [
-  // leave','rest','remote
+let status = [
   { text: "فعال", value: "active" },
   { text: "غیر فعال", value: "in_active" },
-];
+]; 
+
+
+
 let status_message = [
   { text: "ثبت اولیه", value: "init" },
   { text: "برگشت", value: "regect" },

@@ -54,6 +54,12 @@ export default {
       { text: "نام", value: "first_name" },
       { text: "نام خانوادگی", value: "last_name" },
       { text: "نام کاربری", filterCol: "username", value: "username" },
+      {
+        text: "وضعبت فعالیت",
+        value: "status_work",
+        filterType: "select",
+        items: this.$store.state.static.status_work,
+      },
       { text: "کد ملی", filterCol: "national_code", value: "national_code" },
       {
         filterable: false,
@@ -92,8 +98,9 @@ export default {
         text: "وضعیت",
         value: "status",
         filterType: "select",
-        items: this.$store.state.static.user_status,
-      },
+        items: this.$store.state.static.status,
+      },  
+
       {
         text: "کیف پول",
         filterCol: "wallet",

@@ -2,7 +2,6 @@
   <div>
     <v-stepper alt-labels v-model="step_number">
       <v-stepper-header>
-        <v-divider></v-divider>
         <v-stepper-step :complete="step_number > 1" editable step="1">
           اطلاعات پایه محصول
         </v-stepper-step>
@@ -28,7 +27,7 @@
               </v-col>
               <v-col cols="12" md="3">
                 <amp-input
-                  text="قیمت  پایه"
+                  text="قیمت  پایه (ریال)"
                   is-price
                   rules="require"
                   v-model="form.base_price"
@@ -37,7 +36,7 @@
               <v-col cols="12" md="3">
                 <amp-input
                   is-price
-                  text="قیمت عمده فروشی پایه"
+                  text="قیمت عمده فروشی پایه (ریال)"
                   rules="require"
                   v-model="form.base_wholesale_price"
                 />
@@ -57,6 +56,14 @@
                   v-model="form.sort"
                   is-number
                   rules="number"
+                />
+              </v-col>
+              <v-col cols="12" md="3">
+                <amp-select
+                  text="واحد فروش عمده"
+                  rules="require"
+                  v-model="form.wholesale_unit"
+                  :items="wholesale_unit_items"
                 />
               </v-col>
               <v-col cols="12" md="3">
@@ -86,7 +93,7 @@
                   v-model="prepayment"
                 />
                 <amp-input
-                v-else
+                  v-else
                   text="درصد پیش پرداخت"
                   rules="require,percent"
                   cClass="ltr-item"
@@ -164,18 +171,18 @@
                   <v-col cols="12" md="12">
                     <AmpUploadFile v-model="form.main_image" title="تصویر" />
                   </v-col>
-                  <!-- <v-col cols="12" md="12">
+                  <v-col cols="12" md="12">
                     <amp-button
                       :class="{
                         'mt-9': $vuetify.breakpoint.mdAndUp,
-                        'mt-2': $vuetify.breakpoint.smAndDown
+                        'mt-2': $vuetify.breakpoint.smAndDown,
                       }"
                       height="40"
                       block
                       @click="openGalleryDialog()"
                       text="تنظیم گالری تصاویر"
                     />
-                  </v-col> -->
+                  </v-col>
                 </v-row>
               </v-col>
               <v-col cols="12" md="8" class="mt-10">
@@ -201,14 +208,14 @@
                 <amp-tags v-model="form.tags" text="برچسب ها" />
               </v-col>
 
-              <!-- <v-col cols="12" md="5">
+              <v-col cols="12" md="5">
                 <AmpJsonInput
                   textPlaceholder=" مثال: برای بیماران با احتیاط مصرف شود"
                   text="موارد منع مصرف "
                   v-model="form.additional_description"
                   :showValue="false"
                 />
-              </v-col> -->
+              </v-col>
 
               <v-col cols="12" md="12">
                 <amp-textarea
@@ -277,7 +284,7 @@
                 <SingleProductForm @reloadPage="reloadPage()" :product="form" />
               </v-col>
               <v-col cols="12" v-if="tab == 0">
-                <!-- <v-alert
+                <v-alert
                   outlined
                   type="warning"
                   prominent
@@ -285,13 +292,13 @@
                   class="text-center"
                 >
                   فروش تکی برای این محصول غیر فعال است
-                </v-alert> -->
+                </v-alert>
               </v-col>
               <v-col cols="12" v-if="tab == 1">
                 <WholeProductForm @reloadPage="reloadPage()" :product="form" />
               </v-col>
               <v-col cols="12" v-if="tab == 1">
-                <!-- <v-alert
+                <v-alert
                   outlined
                   type="warning"
                   prominent
@@ -299,7 +306,7 @@
                   class="text-center"
                 >
                   فروش عمده برای این محصول غیر فعال است
-                </v-alert> -->
+                </v-alert>
               </v-col>
             </v-row>
           </v-col>
@@ -354,6 +361,7 @@ export default {
     step_number: 1,
     valid: false,
     loading: false,
+    prepayment: "",
     gallery_dialog: false,
     tab: 0,
     publish_status: [],
@@ -369,6 +377,7 @@ export default {
     product_categories: [],
     units: [],
     mixtureTypes: [],
+    wholesale_unit_items: [],
     variationTypes: [],
     specefication_table: [],
     pay_type: "amount",
@@ -376,8 +385,6 @@ export default {
       { text: "درصد", value: "percent" },
       { text: "مقدار", value: "amount" },
     ],
-
-
 
     // 'tags' => 'nullable|array',
     //             'slug' => 'nullable|string',
@@ -391,7 +398,9 @@ export default {
     //             'product_infos' => 'nullable|array',
     //             'wholesale_unit' => 'nullable|string',
     //             'base_wholesale_price' => 'nullable|integer',
+
     form: {
+      wholesale_unit: "",
       id: "",
       name: "",
       slug: "",
@@ -436,6 +445,7 @@ export default {
     }
     // this.getCategories();
     this.getSettings();
+    this.loadWholesaleUnit();
   },
   watch: {
     specefication_table() {
@@ -460,15 +470,25 @@ export default {
   },
   methods: {
     submit() {
+      this.loading = true;
       let form = this.$copyForm(this.form);
-      // switch (this.publish_status_items) {
-      //   case "online_sale":
-      //     form.online_sale = true;
-      //   case "phone_sale":
-      //     form.phone_sale = true;
-      //   case "person_sale":
-      //     form.person_sale = true;
-      // }
+      form["online_sale"] = false;
+      form["phone_sale"] = false;
+      form["person_sale"] = false;
+      this.publish_status.map((y) => {
+        if (y == "person_sale") {
+          form.person_sale = true;
+        }
+        if (y == "online_sale") {
+          form.online_sale = true;
+        }
+
+        if (y == "phone_sale") {
+          form.phone_sale = true;
+          form["prepay_type"] = this.pay_type;
+          form["prepay_amount"] = this.prepayment;
+        }
+      });
 
       for (let index = 0; index < this.publish_status_items.length; index++) {
         const x = this.publish_status_items[index];
@@ -487,7 +507,6 @@ export default {
       //   );
       // }
 
-      this.loading = true;
       let url = this.createUrl;
       if (this.modelId) {
         url = this.updateUrl;
@@ -528,6 +547,7 @@ export default {
           this.loading = false;
         });
     },
+
     loadData() {
       this.loading = true;
       this.$reqApi(this.showUrl, { id: this.modelId })
@@ -535,9 +555,24 @@ export default {
           try {
             response = response.model;
             this.form["id"] = response.id;
-    //  this.
+            //  this.
 
             this.form.name = response.name;
+            this.form.main_image = response.main_image;
+            this.form.wholesale_unit = response.wholesale_unit;
+
+            if (Boolean(response.online_sale)) {
+              this.publish_status.push("online_sale");
+            }
+            if (Boolean(response.person_sale)) {
+              this.publish_status.push("person_sale");
+            }
+            if (Boolean(response.phone_sale)) {
+              this.publish_status.push("phone_sale");
+              this.prepay_type = response.prepay_type;
+              this.prepayment = response.prepay_amount;
+            }
+
             this.form.slug = response.slug;
             this.form.base_price = response.base_price;
             this.form.base_wholesale_price = response.base_wholesale_price;
@@ -609,6 +644,27 @@ export default {
       this.$reqApi("/product-variation", form)
         .then((response) => {
           this.product_categories = response.model.data.map((x) => ({
+            value: x.id,
+            text: x.value,
+          }));
+
+          this.loading = false;
+        })
+        .catch((error) => {
+          this.loading = false;
+        });
+    },
+    loadWholesaleUnit() {
+      let filters = {
+        key: {
+          op: "=",
+          value: "wholesale_unit",
+        },
+      };
+
+      this.$reqApi("/setting", { filters: filters })
+        .then((response) => {
+          this.wholesale_unit_items = response.model.data.map((x) => ({
             value: x.id,
             text: x.value,
           }));

@@ -80,6 +80,12 @@ export default {
       { text: "نام کاربری", filterCol: "username", value: "username" },
       { text: "کد ملی", filterCol: "national_code", value: "national_code" },
       {
+        text: "وضعبت فعالیت",
+        value: "status_work",
+        filterType: "select",
+        items: this.$store.state.static.status_work,
+      },
+      {
         filterable: false,
         disableSort: true,
         filterType: "date",

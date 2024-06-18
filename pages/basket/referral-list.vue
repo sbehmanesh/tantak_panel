@@ -17,56 +17,37 @@
           </v-btn>
         </v-card-title>
         <v-card-text clsas="pa-5">
-          <v-row
-            cols="12"
-            md="12"
-            v-for="(item, index) in dialog_itesm.item"
-            :key="index"
-            class="my-8 "
-          >
-            <v-col
-              cols="12"
-              md="4"
-              class="counter_col d-flex justify-space-between align-center"
-            >
-              <span>مبلغ</span>
-              <span>{{ $price(item.price) }}</span>
+          <v-row>
+            <v-col cols="12" md="12">
             </v-col>
-            <v-col
-              cols="12"
-              md="4"
-              class="counter_col d-flex justify-space-between align-center"
-            >
-              <span>نوع پرداخت</span>
-              <span>
-                {{ setKind(item.kind_set) }}
-              </span>
-            </v-col>
-            <v-col
-              cols="12"
-              md="4"
-              class="counter_col d-flex justify-space-between align-center"
-            >
-              <span>تاریخ پرداخت</span>
-              <span>{{ $toJalali(item.created_at) }}</span>
-            </v-col>
-            <v-col
-              cols="12"
-              md="4"
-              class="counter_col d-flex justify-space-between align-center"
-            >
-              <span>وضعیت</span>
-              <span>
-                {{ setStatus(item.status) }}
-              </span>
-            </v-col>
-            <v-col
-              cols="12"
-              md="4"
-              class="counter_col d-flex justify-space-between align-center"
-            >
-              <span> توضیحات</span>
-              <span>{{ item.text }}</span>
+            <v-col cols="12" md="12" class="pa-8" >
+              <template>
+                <v-simple-table>
+                  <template v-slot:default>
+                    <thead>
+                      <tr>
+                        <th class="text-center">مبلغ</th>
+                        <th class="text-center">نوع پرداخت</th>
+                        <th class="text-center">تاریخ پرداخت</th>
+                        <th class="text-center">وضعیت</th>
+                        <th class="text-center">توضیحات</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        v-for="(item, index) in dialog_itesm.item"
+                        :key="index"
+                      >
+                        <td dir="ltr">{{ $toJalali(item.created_at) }}</td>
+                        <td><small>ریال</small>{{ $price(item.price) }} </td>
+                        <td>{{ setKind(item.kind_set) }}</td>
+                        <td>{{ setStatus(item.status) }}</td>
+                        <td>{{ item.text }}</td>
+                      </tr>
+                    </tbody>
+                  </template>
+                </v-simple-table>
+              </template>
             </v-col>
           </v-row>
         </v-card-text>
@@ -94,33 +75,31 @@ export default {
       { text: "ارسال لینک", value: "send_pay_link" },
     ],
     status_items: [
-      [
-        {
-          text: "پرداخت شده",
-          value: "payed",
-        },
-        {
-          text: "باز ",
-          value: "open",
-        },
-        {
-          text: "در انتظار",
-          value: "waiting",
-        },
+      {
+        text: "پرداخت شده",
+        value: "payed",
+      },
+      {
+        text: "باز ",
+        value: "open",
+      },
+      {
+        text: "در انتظار",
+        value: "waiting",
+      },
 
-        {
-          text: "تکمیل شده ",
-          value: "completed",
-        },
-        {
-          text: "کنسل شده",
-          value: "canceled",
-        },
-        {
-          text: "ترکیبی ",
-          value: "mixture",
-        },
-      ],
+      {
+        text: "تکمیل شده ",
+        value: "completed",
+      },
+      {
+        text: "کنسل شده",
+        value: "canceled",
+      },
+      {
+        text: "ترکیبی ",
+        value: "mixture",
+      },
     ],
     title: "سبد های خرید",
     dialog_itesm: {

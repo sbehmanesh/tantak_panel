@@ -415,7 +415,7 @@
             >
           </v-card-title>
           <Payment
-            v-if="payment_list.show" 
+            v-if="payment_list.show"
             :model-id="payment_list.item"
             :userChangeStatus="true"
           />
@@ -476,6 +476,48 @@
         </v-card-text>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="wallet_transactoin.show">
+      <v-card class="white pa-3">
+        <v-card-title class="d-flex justify-space-between align-center">
+          <span>تاریخچه کیف پول</span>
+          <v-btn icon color="error" @click="wallet_transactoin.show = false">
+            <v-icon>close</v-icon>
+          </v-btn>
+        </v-card-title>
+        <v-card-text clsas="pa-5">
+          <v-row>
+            <v-col cols="12" md="12"> </v-col>
+            <v-col cols="12" md="12" class="pa-8">
+              <template>
+                <v-simple-table>
+                  <template v-slot:default>
+                    <thead>
+                      <tr>
+                        <th class="text-center">تاریخ پرداخت</th>
+                        <th class="text-center">مبلغ</th>
+                        <th class="text-center">نوع پرداخت</th>
+                        <th class="text-center">توضیحات</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        v-for="(item, index) in wallet_transactoin.item"
+                        :key="index"
+                      >
+                        <td dir="ltr">{{ $toJalali(item.created_at) }}</td>
+                        <td><small>ریال</small>{{ $price(item.amount) }}</td>
+                        <td>{{ item.type == "remove" ? "کاهش" : "افزایش" }}</td>
+                        <td>{{ item.description }}</td>
+                      </tr>
+                    </tbody>
+                  </template>
+                </v-simple-table>
+              </template>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -512,6 +554,10 @@ export default {
     headers_basket: [],
     item_basket: [],
     change_step: false,
+    wallet_transactoin: {
+      show: false,
+      item: null,
+    },
     btn_actions: [],
     question_form: [],
     baskets: [],
@@ -627,6 +673,17 @@ export default {
           if (body.id) {
             this.payment_list.show = true;
             this.payment_list.item = body.user.id;
+          }
+        },
+      },
+      {
+        text: "تاریخچه کیف پول",
+        icon: "account_balance_wallet",
+        color: "success darken-2",
+        fun: (body) => {
+          if (body.wallet_transactions.length > 0) {
+            this.wallet_transactoin.show = true;
+            this.wallet_transactoin.item = body.wallet_transactions;
           }
         },
       },

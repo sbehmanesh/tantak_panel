@@ -53,6 +53,48 @@
         </v-card-text>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="wallet_transactoin.show">
+      <v-card class="white pa-3">
+        <v-card-title class="d-flex justify-space-between align-center">
+          <span>تاریخچه کیف پول</span>
+          <v-btn icon color="error" @click="wallet_transactoin.show = false">
+            <v-icon>close</v-icon>
+          </v-btn>
+        </v-card-title>
+        <v-card-text clsas="pa-5">
+          <v-row>
+            <v-col cols="12" md="12"> </v-col>
+            <v-col cols="12" md="12" class="pa-8">
+              <template>
+                <v-simple-table>
+                  <template v-slot:default>
+                    <thead>
+                      <tr>
+                        <th class="text-center">تاریخ پرداخت</th>
+                        <th class="text-center">مبلغ</th>
+                        <th class="text-center">نوع پرداخت</th>
+                        <th class="text-center">توضیحات</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        v-for="(item, index) in wallet_transactoin.item"
+                        :key="index"
+                      >
+                        <td dir="ltr">{{ $toJalali(item.created_at) }}</td>
+                        <td><small>ریال</small>{{ $price(item.amount) }}</td>
+                        <td>{{ item.type == "remove" ? "کاهش" : "افزایش" }}</td>
+                        <td>{{ item.description }}</td>
+                      </tr>
+                    </tbody>
+                  </template>
+                </v-simple-table>
+              </template>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
     <v-overlay v-if="change">
       <v-card min-width="600" class="px-6 primary lighten-1">
         <v-card-title>
@@ -124,6 +166,10 @@ export default {
     },
     loading_for_chagne_status: false,
     form: {},
+    wallet_transactoin: {
+      show: false,
+      item: null,
+    },
     firacl_memebers: [],
     items_chagne: [
       {
@@ -190,6 +236,10 @@ export default {
     show_history: false,
     root_body_history: {},
     header_history: [],
+    wallet_data: {
+      show: false,
+      item: null,
+    },
     form: {
       fa_name: "",
       en_name: "",
@@ -250,6 +300,17 @@ export default {
           if (body.payments.length > 0) {
             this.dialog_itesm.show = true;
             this.dialog_itesm.item = body.payments;
+          }
+        },
+      },
+      {
+        text: "تاریخچه کیف پول",
+        icon: "account_balance_wallet",
+        color: "success darken-2",
+        fun: (body) => { 
+          if (body.wallet_transactions.length > 0) {
+            this.wallet_transactoin.show = true;
+            this.wallet_transactoin.item = body.wallet_transactions;
           }
         },
       },

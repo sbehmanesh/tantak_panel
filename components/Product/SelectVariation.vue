@@ -256,7 +256,7 @@ export default {
   methods: {
     loadProduct() {
       this.load_item = true;
-      this.$reqApi("/product/list-by-personnel", { row_number: 50000 })
+      this.$reqApi("/product/low-search", { row_number: 50000 })
         .then((response) => {
           let items = [];
           for (let index = 0; index < response.model.data.length; index++) {

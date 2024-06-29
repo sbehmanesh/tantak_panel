@@ -113,6 +113,10 @@ export default {
 
   methods: {
     submit() {
+      if (!Boolean(this.form.logo)) {
+        this.$toast.error("بارگذاری تصویر اجباری میباشد");
+        return;
+      }
       this.$refs.GetVariatonsId.sendVariation();
       return new Promise((res, rej) => {
         let form = { ...this.form };
@@ -160,7 +164,6 @@ export default {
             rej(true);
             this.loading = false;
           });
-     
       })
         .then((res) => {
           this.$refs.GetVariatonsId.loadVariationsCombinations();
@@ -171,25 +174,7 @@ export default {
           return rej;
         });
     },
-    loadProduct() {
-      this.load_item = true;
-      this.$reqApi("/product/list-by-personnel", { row_number: 50000 })
-        .then((response) => {
-          let items = [];
-          for (let index = 0; index < response.model.data.length; index++) {
-            const x = response.model.data[index];
-            items.push({
-              text: x.name,
-              value: x.id,
-            });
-          }
-          this.products = items;
-          this.load_item = false;
-        })
-        .catch((error) => {
-          this.load_item = false;
-        });
-    },
+
     getVariationIds(event) {
       this.form.product_varcom_ids = event;
     },

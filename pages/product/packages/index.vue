@@ -43,7 +43,7 @@ export default {
       {
         text: "تصویر",
         filtrabel: false,
-        disabled:true,
+        disabled: true,
         type: "image",
         value: "logo",
       },
@@ -62,7 +62,21 @@ export default {
         filterType: "select",
         items: this.$store.state.static.branch_status,
       },
-
+      {
+        text: "نوع فروش ",
+        value: (body) => {
+          if (body.sale_types) {
+            if (body.sale_types.length != 0) {
+              return body.sale_types.map((x) => `${x.fa_name}`).join(" | ");
+            }
+          }
+          // if (Boolean(body.sale_types )&& body.sale_types.length > 0) {
+          //   body.sale_type.map((x)=>
+          //     x.fa_name
+          //   )
+          // }
+        },
+      },
 
       {
         filterable: false,
@@ -84,18 +98,7 @@ export default {
         },
       },
     ];
-    // this.btn_actions = [
-    //   {
-    //     color: "primary",
-    //     icon: "inventory",
-    //     text: "موجودی",
-    //     fun: (body) => {
-    //       if (body.id) {
-    //         this.$router.push(`/branches/stock/${body.id}`)
-    //       }
-    //     },
-    //   },
-    // ];
+
     this.$store.dispatch("setPageTitle", this.title);
   },
   methods: {

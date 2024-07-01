@@ -262,7 +262,6 @@ export default {
             return err;
           });
       }
-      console.log(this.change_staus);
     },
   },
 };

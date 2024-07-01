@@ -125,6 +125,12 @@ let mnue_tree = [
         access: "payments/index",
         name: "لیست پرداخت ها",
         route: "/product/pay",
+      },   
+         {
+        id: 84512,
+        access: "sale_types/index",
+        name: " انواع فروش",
+        route: "/product/sale-type",
       },
 
     ],

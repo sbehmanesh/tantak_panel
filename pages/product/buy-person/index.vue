@@ -550,7 +550,6 @@ export default {
                 value: data.price,
               },
             ];
-            console.log(this.factor_data);
             this.overlay = true;
           } else {
             this.$toast.success("پرداخت با مو فقیت انجام شد");

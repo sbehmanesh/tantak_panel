@@ -6,15 +6,7 @@
         <v-col cols="12" md="3">
           <amp-input text="عنوان پکیج" v-model="form.name" rules="require" />
         </v-col>
-        <v-col cols="12" md="3">
-          <amp-input
-            text="نرخ (ریال)"
-            v-model="form.price"
-            is-price
-            cClass="ltr-item"
-            rules="require"
-          />
-        </v-col>
+
         <v-col cols="12" md="3">
           <amp-select
             :items="$store.state.static.status"
@@ -27,6 +19,16 @@
         <v-col cols="12" md="3">
           <AmpUploadFile title="بارگذاری تصویر" v-model="form.logo" />
         </v-col>
+        <v-col cols="12" md="3">
+          <amp-select
+            text="نوع فروش"
+            multiple
+            rules="require"
+            v-model="sale_type_selected"
+            :items="sale_type_items"
+          />
+        </v-col>
+
         <v-col cols="12" md="3">
           <amp-select
             text="نوع تخفیف "
@@ -52,7 +54,7 @@
             v-model="discount_value"
           />
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="3" v-if="Boolean(check_sale_type)">
           <amp-select
             text="نوع پیش پرداخت "
             rules="require"
@@ -61,7 +63,11 @@
           />
         </v-col>
 
-        <v-col cols="12" md="3" v-if="form.prepay_type != 'none'">
+        <v-col
+          cols="12"
+          md="3"
+          v-if="Boolean(check_sale_type) && form.prepay_type != 'none'"
+        >
           <amp-input
             v-if="form.prepay_type == 'amount'"
             text="مبلغ پیش پرداخت (ریال)"
@@ -78,15 +84,7 @@
             v-model="prepayment"
           />
         </v-col>
-        <v-col cols="12" md="3">
-          <amp-select
-            text="نوع فروش"
-            multiple
-            rules="require"
-            v-model="form.sale_type_ids"
-            :items="sale_type_items"
-          />
-        </v-col>
+
         <v-col cols="12" md="3">
           <amp-input text="ترتیب" v-model="form.sort" cClass="ltr-item" rules="number" />
         </v-col>
@@ -150,33 +148,41 @@ export default {
     product_varcoms: [],
     variations: [],
     selected: {},
-    pay_type_item:
-     [
+    pay_type_item: [
       { text: "درصد", value: "percent" },
       { text: "مقدار", value: "amount" },
       { text: "* ندارد", value: "none" },
     ],
     product_varcomb_id: "",
     products: [],
-    sale_type_items: [],
-
+    sale_type_items: [
+      { text: "فروش آنلاین", value: "sale_online" },
+      { text: "فروش تلفنی", value: "sale_phone" },
+      { text: "فروش حضوری", value: "sale_person" },
+    ],
+    sale_type_selected: [],
     form: {
       sort: 1,
       logo: "",
-      price: "",
       name: "",
       prepay_type: "none",
       discount_type: "none",
       status: "active",
       description: "",
       product_varcom_ids: [],
-      sale_type_ids: [],
     },
   }),
-
+  computed: {
+    check_sale_type() {
+      if (this.sale_type_selected.indexOf("sale_phone") > -1) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+  },
   beforeMount() {},
   mounted() {
-    this.loadSaleType();
     if (this.modelId) {
       this.loadData();
     }
@@ -188,18 +194,30 @@ export default {
         this.$toast.error("بارگذاری تصویر اجباری میباشد");
         return;
       }
-
+      this.loading = true;
       this.$refs.GetVariatonsId.sendVariation();
       return new Promise((res, rej) => {
         let form = { ...this.form };
+        form["sale_online"] = false;
+        form["sale_phone"] = false;
+        form["sale_person"] = false;
+        if (this.sale_type_selected.indexOf("sale_online") > -1) {
+          form.sale_online = true;
+        }
+        if (this.sale_type_selected.indexOf("sale_person") > -1) {
+          form.sale_person = true;
+        }
+
+        if (this.sale_type_selected.indexOf("sale_phone") > -1) {
+          form.sale_phone = true;
+          if (form.prepay_type != "none") {
+            form["prepay_amount"] = this.prepayment;
+          }
+        }
+
         if (form.discount_type != "none") {
           form["discount_amount"] = this.discount_value;
         }
-        if (form.prepay_type != "none") {
-          form["prepay_amount"] = this.prepayment;
-        }
-
-        this.loading = true;
         let url = this.createUrl;
         if (this.modelId) {
           url = this.updateUrl;
@@ -243,9 +261,15 @@ export default {
             if (response.product_varcoms && response.product_varcoms.length > 0) {
               this.product_varcoms = response.product_varcoms;
             }
-            response.sale_types.map((x) => {
-              this.form.sale_type_ids.push(x.id);
-            });
+            if (Boolean(response.sale_online)) {
+              this.sale_type_selected.push("sale_online");
+            }
+            if (Boolean(response.sale_person)) {
+              this.sale_type_selected.push("sale_person");
+            }
+            if (Boolean(response.sale_phone)) {
+              this.sale_type_selected.push("sale_phone");
+            }
             res(true);
           })
           .catch((rej) => {
@@ -260,22 +284,6 @@ export default {
         .catch((rej) => {
           this.loading = false;
           return rej;
-        });
-    },
-    loadSaleType() {
-      this.loading = true;
-      this.$reqApi("/sale-type")
-        .then((response) => {
-          response.model.data.map((x) => {
-            this.sale_type_items.push({
-              text: x.fa_name + " " + `( ${x.en_name})`,
-              value: x.id,
-            });
-          });
-          this.loading = false;
-        })
-        .catch((err) => {
-          this.loading = false;
         });
     },
 

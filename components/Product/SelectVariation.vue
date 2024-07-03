@@ -1,13 +1,10 @@
 <template>
-  <v-card style="overflow: hidden; border-radius: 10px" class="pa-4 elevation-5">
-    <v-row class="d-flex justify-center mx-4">
-      <v-col
-        cols="12"
-        md="6"
-        class="mt-8 px-4 "
-        style="border-left: 1px solid grey"
-      >
-
+  <v-card style="overflow: hidden; border-radius: 10px" class="elevation-5">
+    <v-col cols="12" class="primary">
+      <span class="white--text font_20 mr-3"> محصولات پکیچ </span>
+    </v-col>
+    <v-row class="d-flex justify-center mx-8 pb-8">
+      <v-col cols="12" md="6" class="mt-8 px-4" style="border-left: 1px solid grey">
         <v-autocomplete
           class="mx-2"
           prepend-inner-icon="shopping_basket"
@@ -21,15 +18,15 @@
           placeholder="نام محصول مورد نظر را وارد کنید ..."
         />
         <v-col
-        v-if="Boolean(check) && !loading"
-        class="justify-center text-center"
-        cols="12"
-      >
-        <v-icon color="red" size="80"> production_quantity_limits </v-icon>
-        <br />
-        <small class="red--text"> عدم موجودی محصول </small>
-      </v-col>
-        <v-form v-model="valid_variations"   v-if="!loading">
+          v-if="Boolean(check) && !loading"
+          class="justify-center text-center"
+          cols="12"
+        >
+          <v-icon color="red" size="80"> production_quantity_limits </v-icon>
+          <br />
+          <small class="red--text"> عدم موجودی محصول </small>
+        </v-col>
+        <v-form v-model="valid_variations" v-if="!loading">
           <v-row>
             <v-col cols="12" md="4">
               <amp-select
@@ -63,9 +60,36 @@
               />
             </v-col>
           </v-row>
+          <v-col
+            class="text-center"
+            cols="12"
+            v-if="Boolean(valid_variations) && Boolean(product_varcomb_id) && !loading"
+          >
+            <v-row class="d-flex justify-center px-5">
+              <span class="font_15 primary--text"> تعداد محصول : </span>
+              <v-spacer></v-spacer>
+              <v-btn text @click="addNumber(number, true, 'main')" x-small>
+                <h1 class="font_18 primary--text mt-2 mx-1">+</h1>
+              </v-btn>
+              <h1 class="font_14 primary--text mt-1 mx-1">{{ number }}</h1>
+              <v-btn
+                color="primary"
+                :disabled="number == 1"
+                @click="addNumber(number, false, 'main')"
+                text
+                x-small
+              >
+                <h1 class="font_20 primary--text mb-2 mx-1">_</h1>
+              </v-btn>
+            </v-row>
+            <v-divider class="mt-4"></v-divider>
+          </v-col>
         </v-form>
 
-        <v-col cols="12"   v-if="!loading &&Boolean(step_var_1) && Boolean(product_sort_1)">
+        <v-col
+          cols="12"
+          v-if="!loading && Boolean(step_var_1) && Boolean(product_sort_1)"
+        >
           <amp-button
             block
             height="40"
@@ -76,52 +100,61 @@
             class="my-1"
             color="orange darken-4"
             text="افزودن"
-            @click="addVAr()"
+            @click="addVariation()"
           />
         </v-col>
-        <v-row
-        class="mt-8"
-        v-if="loading"
-      >
-        <v-col cols="12" md="4">
-          <v-skeleton-loader v-bind="attrs" type="text@2"></v-skeleton-loader>
-        </v-col>
-        <v-col cols="12" md="4">
-          <v-skeleton-loader v-bind="attrs" type="text@2"></v-skeleton-loader>
-        </v-col>
-        <v-col cols="12" md="4">
-          <v-skeleton-loader v-bind="attrs" type="text@2"></v-skeleton-loader>
-        </v-col>   <v-col cols="12" md="12">
-          <v-skeleton-loader v-bind="attrs" type="text@1"></v-skeleton-loader>
-        </v-col>
-   
-      </v-row>
+        <v-row class="mt-8" v-if="loading">
+          <v-col cols="12" md="4">
+            <v-skeleton-loader v-bind="attrs" type="text@2"></v-skeleton-loader>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-skeleton-loader v-bind="attrs" type="text@2"></v-skeleton-loader>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-skeleton-loader v-bind="attrs" type="text@2"></v-skeleton-loader>
+          </v-col>
+          <v-col cols="12" md="12">
+            <v-skeleton-loader v-bind="attrs" type="text@1"></v-skeleton-loader>
+          </v-col>
+        </v-row>
       </v-col>
 
       <v-col cols="12" md="6" class="mt-8">
-        <div v-for="(item, index) in variations_list" :key="index" class="" >
-          <v-row class="px-5 py-4 mr-3 ">
+        <div v-for="(item, index) in variations_list" :key="index" class="">
+          <v-row class="px-5 py-4 mr-3">
             <h1 class="primary--text px-5 mr-3">
-           {{ index+1 }}  -  {{ item.variation1.product.name }}
+              {{ index + 1 }} - {{ item.variation1.product.name }}
             </h1>
             <v-spacer></v-spacer>
             <small> {{ item.variation1.value }} </small>
             <small class="mx-2"> {{ item.variation2.value }} </small>
             <small> {{ item.variation3.value }} </small>
             <v-spacer></v-spacer>
+            <v-row class="d-flex justify-center mt-1">
+              <v-btn text @click="addNumber(item, true, 'list')" x-small>
+                <h1 class="font_18 primary--text mt-2 mx-1">+</h1>
+              </v-btn>
+              <h1 class="font_14 primary--text mt-1 mx-1">{{ item.count }}</h1>
+              <v-btn
+                color="primary"
+                :disabled="item.count == 1"
+                @click="addNumber(item, false, 'list')"
+                text
+                x-small
+              >
+                <h1 class="font_20 primary--text mb-2 mx-1">_</h1>
+              </v-btn>
+            </v-row>
+            <v-spacer></v-spacer>
             <v-btn @click="deletVar(index)" small icon>
               <v-icon small> close </v-icon>
             </v-btn>
           </v-row>
-            <v-divider class="grey lighten-3 my-1 mr-15" />
-
-        
-          
+          <v-divider class="grey lighten-3 my-1 mr-15" />
 
           <div></div>
         </div>
       </v-col>
-
 
       <v-row class="d-flex justify-center">
         <v-col cols="12" md="10"> </v-col>
@@ -192,6 +225,7 @@ export default {
       this.var_id_1 = "";
       this.var_id_2 = "";
       this.var_id_3 = "";
+      this.selected_product = {};
       id = this.product_varcomb_id;
       if (Boolean(id)) {
         this.loadInfoProduct(id);
@@ -199,6 +233,7 @@ export default {
     },
     var_id_1() {
       let items = [];
+      this.var_id_2 = "";
       this.product_sort_2.items.filter((x) => {
         if (x.parent == this.var_id_1) {
           items.push({
@@ -210,6 +245,7 @@ export default {
       this.available_items_2 = items;
     },
     var_id_2() {
+      this.var_id_3 = "";
       let items = [];
       this.product_sort_3.items.filter((x) => {
         if (x.parent == this.var_id_2) {
@@ -248,12 +284,33 @@ export default {
               product = f;
             }
           }
-          this.selected_product = product;
         });
+        this.selected_product = product;
       }
     },
   },
   methods: {
+    addNumber(item, add, key) {
+      if (key == "main") {
+        if (Boolean(add)) {
+          item++;
+        } else {
+          item--;
+        }
+
+        this.number = item;
+      }
+      if (key == "list") {
+        if (Boolean(add)) {
+          item.count += 1;
+        } else {
+          item.count -= 1;
+        }
+      }
+      let arry = this.variations_list;
+      this.variations_list = [];
+      this.variations_list = arry;
+    },
     loadProduct() {
       this.load_item = true;
       this.$reqApi("/product/low-search", { row_number: 50000 })
@@ -374,11 +431,11 @@ export default {
 
     loadVariationsCombinations() {
       let items = [];
-
       for (let index = 0; index < this.productVarcoms.length; index++) {
         const e = this.productVarcoms[index];
         let obj = {};
         obj["id"] = e.id;
+        obj["count"] = e.count_product;
         if (Boolean(e.product_variation_1)) {
           obj["variation1"] = {
             product: e.product,
@@ -396,8 +453,33 @@ export default {
       this.variations_list = items;
     },
 
-    addVAr() {
-      this.variations_list.push(this.selected_product);
+    addVariation() {
+      if (!Boolean(this.variations_list) || this.variations_list.length == 0) {
+        this.selected_product["count"] = this.number;
+        this.variations_list.push(this.selected_product);
+        this.number = 1;
+        this.product_varcomb_id = "";
+        this.$toast.success(" محصول  اضافه شد");
+      } else {
+        let dublicate_variations = false;
+        this.variations_list.find((x) => {
+          if (x.id == this.selected_product.id) {
+            dublicate_variations = true;
+            this.$toast.info("این محصولا قبلا اضافه شده");
+            return;
+          }
+          if (!Boolean(dublicate_variations)) {
+            this.selected_product["count"] = this.number;
+            this.variations_list.push(this.selected_product);
+            this.number = 1;
+            this.product_varcomb_id = "";
+            this.$toast.success(" محصول  اضافه شد");
+          }
+
+        });
+
+     
+      }
     },
     deletVar(key) {
       let items = this.variations_list;
@@ -409,7 +491,10 @@ export default {
       let ids = [];
       for (let index = 0; index < this.variations_list.length; index++) {
         const x = this.variations_list[index];
-        ids.push(x.id);
+        ids.push({
+          id: x.id,
+          count: x.count,
+        });
       }
       variation_array = ids;
       this.$emit("variation_array", variation_array);

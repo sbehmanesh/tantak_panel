@@ -8,163 +8,258 @@
           <v-icon color="white"> close </v-icon>
         </v-btn>
       </v-row>
-      <v-row class="d-flex justify-center mt-4">
-        <v-col cols="10">
-          <v-autocomplete
-            prepend-inner-icon="shopping_basket"
-            v-model="product_varcomb_id"
-            :items="products"
-            outlined
-            dense
-            :disabled="Boolean(load_item)"
-            :loading="Boolean(load_item)"
-            label="جستو جوی سریع محصول"
-            placeholder="نام محصول مورد نظر را وارد کنید ..."
-          />
-        </v-col>
-        <v-col
-          v-if="Boolean(check) && !loading"
-          class="justify-center text-center mb-10"
-          cols="4"
-        >
-          <v-icon color="red" size="80"> production_quantity_limits </v-icon>
-          <br />
-          <small class="red--text"> عدم موجودی محصول </small>
-        </v-col>
-        <v-row
-          v-if="Boolean(step_var_1) && Boolean(product_sort_1) && !loading"
-          class="d-flex justify-center"
-        >
-          <v-col cols="12" md="10">
-            <v-form v-model="valid_variations">
-              <v-row>
-                <v-col
-                  cols="12"
-                  md="4"
-                  v-if="Boolean(step_var_1) && Boolean(product_sort_1)"
-                >
-                  <amp-select
-                    :text="product_sort_1.title"
-                    rules="require"
-                    v-model="var_id_1"
-                    :items="product_sort_1.items"
-                    :loading="loading"
-                    :disabled="loading"
-                  />
-                </v-col>
-                <v-col
-                  cols="12"
-                  md="4"
-                  v-if="Boolean(step_var_2) && Boolean(product_sort_2)"
-                >
-                  <amp-select
-                    :text="product_sort_2.title"
-                    rules="require"
-                    v-model="var_id_2"
-                    :items="available_items_2"
-                    :loading="loading"
-                    :disabled="!Boolean(var_id_1) || loading"
-                  />
-                </v-col>
-                <v-col
-                  cols="12"
-                  md="4"
-                  v-if="Boolean(step_var_3) && Boolean(product_sort_3)"
-                >
-                  <amp-select
-                    :text="product_sort_3.title"
-                    rules="require"
-                    v-model="var_id_3"
-                    :items="available_items_3"
-                    :loading="loading"
-                    :disabled="!Boolean(var_id_2) || loading"
-                  />
-                </v-col>
-              </v-row>
-            </v-form>
-          </v-col>
-          <v-col cols="10" v-if="product_varcomb_id">
-            <v-row class="d-flex justify-center">
-              <v-col cols="12" md="2" calss="pa-3">
-                <v-img calss="pa-3" :src="$getImage(main_image)" height="auto" />
-              </v-col>
-              <v-spacer></v-spacer>
+      <v-tabs>
+        <v-row class="d-flex justify-center">
+          <v-tab>
+            <h1>ثبت محصول</h1>
+          </v-tab>
+          <v-tab>
+            <h1>خرید پکیجی</h1>
+          </v-tab>
+        </v-row>
 
-              <v-col class="text-center pt-11" cols="4">
-                <span
-                  >قیمت محصول : {{ $price(main_price) }}
-                  <small> ریال </small>
-                </span>
+        <v-tab-item>
+          <v-row class="d-flex justify-center mt-4">
+            <v-col cols="10">
+              <v-autocomplete
+                prepend-inner-icon="shopping_basket"
+                v-model="product_varcomb_id"
+                :items="products"
+                outlined
+                dense
+                :disabled="Boolean(load_item)"
+                :loading="Boolean(load_item)"
+                label="جستو جوی سریع محصول"
+                placeholder="نام محصول مورد نظر را وارد کنید ..."
+              />
+            </v-col>
+            <v-col
+              v-if="Boolean(check) && !loading"
+              class="justify-center text-center mb-10"
+              cols="4"
+            >
+              <v-icon color="red" size="80"> production_quantity_limits </v-icon>
+              <br />
+              <small class="red--text"> عدم موجودی محصول </small>
+            </v-col>
+            <v-row
+              v-if="Boolean(step_var_1) && Boolean(product_sort_1) && !loading"
+              class="d-flex justify-center"
+            >
+              <v-col cols="12" md="10">
+                <v-form v-model="valid_variations">
+                  <v-row>
+                    <v-col
+                      cols="12"
+                      md="4"
+                      v-if="Boolean(step_var_1) && Boolean(product_sort_1)"
+                    >
+                      <amp-select
+                        :text="product_sort_1.title"
+                        rules="require"
+                        v-model="var_id_1"
+                        :items="product_sort_1.items"
+                        :loading="loading"
+                        :disabled="loading"
+                      />
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      md="4"
+                      v-if="Boolean(step_var_2) && Boolean(product_sort_2)"
+                    >
+                      <amp-select
+                        :text="product_sort_2.title"
+                        rules="require"
+                        v-model="var_id_2"
+                        :items="available_items_2"
+                        :loading="loading"
+                        :disabled="!Boolean(var_id_1) || loading"
+                      />
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      md="4"
+                      v-if="Boolean(step_var_3) && Boolean(product_sort_3)"
+                    >
+                      <amp-select
+                        :text="product_sort_3.title"
+                        rules="require"
+                        v-model="var_id_3"
+                        :items="available_items_3"
+                        :loading="loading"
+                        :disabled="!Boolean(var_id_2) || loading"
+                      />
+                    </v-col>
+                  </v-row>
+                </v-form>
               </v-col>
-              <v-spacer></v-spacer>
-              <v-col class="text-center pt-11" cols="4">
-                <span>
-                  مجموع قیمت : {{ $price(sumb_price) }}
-                  <small> ریال </small>
-                </span>
-              </v-col>
-              <v-spacer></v-spacer>
+              <v-col cols="10" v-if="product_varcomb_id">
+                <v-row class="d-flex justify-center">
+                  <v-col cols="12" md="2" calss="pa-3">
+                    <v-img calss="pa-3" :src="$getImage(main_image)" height="auto" />
+                  </v-col>
+                  <v-spacer></v-spacer>
 
-              <v-col class="text-center pt-8" cols="2">
-                <v-row class="d-flex justify-center py-5">
-                  <v-btn text @click="addNumber(number, true)" x-small>
-                    <h1 class="font_18 primary--text mt-2 mx-1">+</h1>
-                  </v-btn>
-                  <h1 class="font_14 primary--text mt-1 mx-1">{{ number }}</h1>
-                  <v-btn
-                    color="primary"
-                    :disabled="number == 1"
-                    @click="addNumber(number, false)"
-                    text
-                    x-small
-                  >
-                    <h1 class="font_20 primary--text mb-2 mx-1">_</h1>
-                  </v-btn>
+                  <v-col class="text-center pt-11" cols="4">
+                    <span
+                      >قیمت محصول : {{ $price(main_price) }}
+                      <small> ریال </small>
+                    </span>
+                  </v-col>
+                  <v-spacer></v-spacer>
+                  <v-col class="text-center pt-11" cols="4">
+                    <span>
+                      مجموع قیمت : {{ $price(sumb_price) }}
+                      <small> ریال </small>
+                    </span>
+                  </v-col>
+                  <v-spacer></v-spacer>
+
+                  <v-col class="text-center pt-8" cols="2">
+                    <v-row class="d-flex justify-center py-5">
+                      <v-btn text @click="addNumber(number, true)" x-small>
+                        <h1 class="font_18 primary--text mt-2 mx-1">+</h1>
+                      </v-btn>
+                      <h1 class="font_14 primary--text mt-1 mx-1">{{ number }}</h1>
+                      <v-btn
+                        color="primary"
+                        :disabled="number == 1"
+                        @click="addNumber(number, false)"
+                        text
+                        x-small
+                      >
+                        <h1 class="font_20 primary--text mb-2 mx-1">_</h1>
+                      </v-btn>
+                    </v-row>
+                  </v-col>
                 </v-row>
               </v-col>
             </v-row>
-          </v-col>
-        </v-row>
-        <v-col cols="12" v-if="!Boolean(check) && !loading">
-          <v-row class="d-flex justify-center my-6">
-            <amp-button 
-            v-if="product_varcomb_id"
-              icon="add_shopping_cart"
-              height="40"
-              @click="addBasket()"
-              color="orange darken-3 "
-              text="افزودن به سبد "
-              :disabled="!valid_variations || loading"
-            />
+            <v-col cols="12" v-if="!Boolean(check) && !loading">
+              <v-row class="d-flex justify-center my-6">
+                <amp-button
+                  v-if="product_varcomb_id"
+                  icon="add_shopping_cart"
+                  height="40"
+                  @click="addBasket()"
+                  color="orange darken-3 "
+                  text="افزودن به سبد "
+                  :disabled="!valid_variations || loading"
+                />
+              </v-row>
+            </v-col>
           </v-row>
-        </v-col>
-      </v-row>
-      <v-row class="d-flex justify-center" v-if="loading ">
-        <v-col cols="10">
-          <v-skeleton-loader v-bind="attrs" type="text@2"></v-skeleton-loader>
-        </v-col>
-        <v-col cols="10">
-        <v-row>
-          <v-col cols="4">
-            <v-skeleton-loader v-bind="attrs" type="text@2"></v-skeleton-loader>
-          </v-col>
-          <v-col cols="4">
-            <v-skeleton-loader v-bind="attrs" type="text@2"></v-skeleton-loader>
-          </v-col>
-          <v-col cols="4">
-            <v-skeleton-loader v-bind="attrs" type="text@2"></v-skeleton-loader>
-          </v-col>
-       
-        
-   
-        
-        </v-row>
-   
-        </v-col>
-      </v-row>
-     
+          <v-row class="d-flex justify-center" v-if="loading">
+            <v-col cols="10">
+              <v-skeleton-loader v-bind="attrs" type="text@2"></v-skeleton-loader>
+            </v-col>
+            <v-col cols="10">
+              <v-row>
+                <v-col cols="4">
+                  <v-skeleton-loader v-bind="attrs" type="text@2"></v-skeleton-loader>
+                </v-col>
+                <v-col cols="4">
+                  <v-skeleton-loader v-bind="attrs" type="text@2"></v-skeleton-loader>
+                </v-col>
+                <v-col cols="4">
+                  <v-skeleton-loader v-bind="attrs" type="text@2"></v-skeleton-loader>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-tab-item>
+        <v-tab-item>
+          <v-row class="d-flex justify-center mt-4">
+            <v-col cols="10">
+              <v-autocomplete
+                prepend-inner-icon="playlist_add_check"
+                v-model="selected_package_id"
+                :items="package_list"
+                outlined
+                dense
+                :disabled="Boolean(load_item)"
+                :loading="Boolean(load_item)"
+                label="جستو جوی  پکیج"
+                placeholder="نام پکیچ مورد نظر را وارد کنید ..."
+              />
+            </v-col>
+            <v-col cols="10">
+              <v-row v-if="Boolean(selected_package_id)" class="mb-2">
+                <v-col cols="8">
+                  <v-row>
+                    <v-col cols="12">
+                      <span> قیمت پکیج : {{ $price(informations_package.price) }} </span>
+                      <small> ( ریال) </small>
+                    </v-col>
+                    <v-col cols="12">
+                      <span>
+                        پیش پرداخت : {{ $price(informations_package.prepay_amount) }}
+
+                        <small> (درصد / ریال) </small>
+                      </span>
+                    </v-col>
+                    <v-col cols="12">
+                      <span>
+                        تخفیف: {{ $price(informations_package.discount_amount) }}
+                        <small> (درصد / ریال) </small>
+                      </span>
+                    </v-col>
+                    <v-col cols="12">
+                      <span>
+                        وزن: {{ informations_package.weight }}
+                        <small> ( گرم) </small>
+                      </span>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="4">
+                  <v-col cols="12" md="12" calss="pa-3">
+                    <v-img
+                      calss="pa-3"
+                      :src="$getImage(informations_package.logo)"
+                      height="auto"
+                    />
+                  </v-col>
+
+                  <v-col cols="12" md="12" calss="mt-4">
+                    <v-row class="d-flex justify-center px-5">
+                      <v-btn text @click="addCountPackage(true)" x-small>
+                        <h1 class="font_18 primary--text mt-2 mx-1">+</h1>
+                      </v-btn>
+                      <h1 class="font_14 primary--text mt-1 mx-1">
+                        {{ informations_package.count }}
+                      </h1>
+                      <v-btn
+                        color="primary"
+                        :disabled="informations_package.count == 1"
+                        @click="addCountPackage(false)"
+                        text
+                        x-small
+                      >
+                        <h1 class="font_20 primary--text mb-2 mx-1">_</h1>
+                      </v-btn>
+                    </v-row>
+                  </v-col>
+                </v-col>
+                <v-col cols="12">
+                  <amp-button
+                    block
+                    height="40"
+                    :disabled="!Boolean(selected_package_id)"
+                    icon="add"
+                    class="my-1"
+                    color="orange darken-4"
+                    text="افزودن به سبد"
+                    @click="addPackage()"
+                  />
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-tab-item>
+      </v-tabs>
     </v-card>
- 
   </v-dialog>
 </template>
 
@@ -195,9 +290,11 @@ export default {
     step_var_2: false,
     step_var_3: false,
     product_sort_1: {},
+    informations_package: {},
     product_sort_2: [],
     product_sort_3: [],
     products: [],
+    package_list: [],
     available_items_2: [],
     available_items_3: [],
     variations_Product: [],
@@ -205,6 +302,7 @@ export default {
     all_variatons_product: [],
     list_basket: [],
     parent_2: "",
+    selected_package_id: "",
     parent_3: "",
     var_id_1: "",
     var_id_2: "",
@@ -223,13 +321,17 @@ export default {
   }),
   beforeMount() {
     this.loadProduct();
+    this.loadPackages();
   },
   watch: {
+    selected_package_id() {
+      this.loadInfoPackages(this.selected_package_id);
+    },
     product_varcomb_id() {
       let id = "";
-      this.var_id_1 =""
-      this.var_id_2 =""
-      this.var_id_3 =""
+      this.var_id_1 = "";
+      this.var_id_2 = "";
+      this.var_id_3 = "";
       id = this.product_varcomb_id;
       if (Boolean(id)) {
         this.loadInfoProduct(id);
@@ -261,7 +363,7 @@ export default {
     },
     valid_variations() {
       if (Boolean(this.valid_variations)) {
-        let product = {}
+        let product = {};
         this.all_variatons_product.filter((f) => {
           if (Boolean(this.step_var_3)) {
             if (
@@ -269,22 +371,21 @@ export default {
               this.var_id_2 == f.variation_2_id &&
               this.var_id_3 == f.variation_3_id
             ) {
-              product = f
-       
-              
+              product = f;
             }
           }
-          if (Boolean(this.step_var_2) && !Boolean(this.step_var_3) ) {
+          if (Boolean(this.step_var_2) && !Boolean(this.step_var_3)) {
             if (this.var_id_1 == f.variation_3_id && this.var_id_2 == f.variation_2_id) {
-              product = f
-            
+              product = f;
             }
           }
-          if (Boolean(this.step_var_1)&&!Boolean(this.step_var_2)&&!Boolean(this.step_var_3)) {
+          if (
+            Boolean(this.step_var_1) &&
+            !Boolean(this.step_var_2) &&
+            !Boolean(this.step_var_3)
+          ) {
             if (this.var_id_1 == f.variation_1_id) {
-          
-              product = f
-          
+              product = f;
             }
           }
           this.selected_product = product;
@@ -293,6 +394,12 @@ export default {
     },
   },
   methods: {
+    addPackage() {
+      let package_id = {};
+      package_id["id"] = this.informations_package.id;
+      package_id["count"] = this.informations_package.count;
+      this.$emit("addPackage", package_id);
+    },
     loadProduct() {
       this.load_item = true;
       this.$reqApi("/product/list-by-personnel", { row_number: 50000 })
@@ -306,6 +413,48 @@ export default {
             });
           }
           this.products = items;
+          this.load_item = false;
+        })
+        .catch((error) => {
+          this.load_item = false;
+        });
+    },
+    loadPackages() {
+      this.load_item = true;
+      this.$reqApi("/package", { row_number: 50000 })
+        .then((response) => {
+          let items = [];
+          for (let index = 0; index < response.model.data.length; index++) {
+            const x = response.model.data[index];
+            items.push({
+              text: x.name,
+              value: x.id,
+            });
+          }
+          this.package_list = items;
+          this.load_item = false;
+        })
+        .catch((error) => {
+          this.load_item = false;
+        });
+    },
+
+    loadInfoPackages(package_id) {
+      this.load_item = true;
+      this.$reqApi("/package/show", { id: package_id })
+        .then((response) => {
+          const res = response.data;
+          let items = {};
+          items["prepay_amount"] = res.prepay_amount;
+          items["name"] = res.name;
+          items["price"] = res.price;
+          items["discount_amount"] = res.discount_amount;
+          items["weight"] = res.weight;
+          items["logo"] = res.logo;
+          items["id"] = res.id;
+          items["count"] = 1;
+          console.log(" this.informations_package  -- <", this.informations_package);
+          this.informations_package = items;
           this.load_item = false;
         })
         .catch((error) => {
@@ -424,7 +573,13 @@ export default {
 
       this.number = numb;
     },
-
+    addCountPackage(add) {
+      if (Boolean(add)) {
+        this.informations_package.count += 1;
+      } else {
+        this.informations_package.count -= 1;
+      }
+    },
     closeDialog() {
       this.DialogAdd.show = false;
       this.DialogAdd.items = null;
@@ -433,16 +588,14 @@ export default {
       this.$emit("relod");
     },
     addBasket() {
-      let product= {}
-      product =      {
+      let product = {};
+      product = {
         id: this.selected_product.id,
         name: this.product_name,
         product: this.selected_product,
         number: this.number,
-      }
-      this.$emit("add", product
-
-    );
+      };
+      this.$emit("add", product);
       this.closeDialog();
     },
   },

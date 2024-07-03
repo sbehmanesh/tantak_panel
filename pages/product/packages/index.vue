@@ -52,6 +52,10 @@ export default {
         value: "name",
       },
       {
+        text: " وزن محصول (گرم)",
+        value: "weight",
+      },
+      {
         text: "قیمت پکیج (ریال)",
         type: "price",
         value: "price",
@@ -63,18 +67,39 @@ export default {
         items: this.$store.state.static.branch_status,
       },
       {
-        text: "نوع فروش ",
+        text: "فروش تلفنی",
+        type: "boolean",
+        filterable: false,
         value: (body) => {
-          if (body.sale_types) {
-            if (body.sale_types.length != 0) {
-              return body.sale_types.map((x) => `${x.fa_name}`).join(" | ");
-            }
+          if (body.sale_phone) {
+            return true;
+          } else {
+            return false;
           }
-          // if (Boolean(body.sale_types )&& body.sale_types.length > 0) {
-          //   body.sale_type.map((x)=>
-          //     x.fa_name
-          //   )
-          // }
+        },
+      },
+      {
+        text: "فروش حضوری",
+        type: "boolean",
+        filterable: false,
+        value: (body) => {
+          if (body.sale_person) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
+      {
+        text: "فروش آنلاین",
+        type: "boolean",
+        filterable: false,
+        value: (body) => {
+          if (body.sale_online) {
+            return true;
+          } else {
+            return false;
+          }
         },
       },
 

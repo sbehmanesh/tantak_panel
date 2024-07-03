@@ -485,7 +485,6 @@ export default {
 
         if (y == "phone_sale") {
           form.phone_sale = true;
-          form["prepay_type"] = this.pay_type;
           form["prepay_amount"] = this.prepayment;
         }
       });

@@ -2,6 +2,7 @@
   <div>
     <AddProduct
       @add="addBasket($event)"
+      @addPackage="addPackageToBasket($event)"
       v-if="dialog_add_product.show"
       :DialogAdd="dialog_add_product"
     />
@@ -22,7 +23,10 @@
           />
         </v-col>
         <div>
-          <v-row class="orange lighten-3 py-2 my-2">
+
+
+
+            <v-row class="amber py-2 my-2">
             <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
               <small> نام محصول</small>
             </v-col>
@@ -55,6 +59,10 @@
               <small> حذف </small>
             </v-col>
           </v-row>
+
+<!-- ----------------------------------------------------------------------------------------------------- -->
+
+
           <v-col
             v-if="loading && load_list"
             v-for="i in 5"
@@ -148,6 +156,53 @@
         </div>
       </v-col>
     </v-row>
+
+
+<!-- ============================================= -->
+<v-col cols="12" class="mt-8">
+<v-row>
+  <v-divider class="mt-3"></v-divider>
+  <h1 class="mx-4">
+  پکیج های ثبت شده
+  </h1>
+  <v-divider class="mt-3"></v-divider>
+</v-row>
+
+</v-col>
+          <v-row class="orange lighten-3 py-2 my-2">
+            <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
+              <small> نام محصول</small>
+            </v-col>
+            <v-spacer />
+
+            <v-col class="ma-0 pa-0 text-center" md="3" cols="4">
+              <small> ویژگی های انتخابی محصول </small>
+            </v-col>
+            <v-spacer />
+            <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
+              <small> تعداد</small>
+            </v-col>
+            <v-spacer />
+            <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
+              <small> بارکد</small>
+            </v-col>
+            <v-spacer />
+            <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
+              <small> قیمت محصول</small>
+            </v-col>
+            <v-spacer />
+            <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
+              <small> مجموع قیمت</small>
+            </v-col>
+            <v-spacer />
+            <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
+              <small>تصویر</small>
+            </v-col>
+            <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
+              <small> حذف </small>
+            </v-col>
+          </v-row>   
+
     <v-col
       class="text-center"
       cols="12"
@@ -290,7 +345,21 @@ export default {
       this.$emit("list", this.list_basket);
       this.loading = false;
     },
+    addPackageToBasket(event) {
+      this.load_item = true;
+      let form ={}
+      form["user_id"]=this.UserId
+      form["package_ids"]= []
+      form.package_ids.push(event)
 
+      this.$reqApi("package/add-basket", form)
+        .then((response) => {
+          this.$toast.success("پکیج  به سبد خرید اضافه شد");
+        })
+        .catch((error) => {
+          this.load_item = false;
+        });
+    },   
     deleFromCard(key, item) {
       this.loading = true;
       let product = this.list_basket.items;

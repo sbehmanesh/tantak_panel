@@ -395,10 +395,9 @@ export default {
   },
   methods: {
     addPackage() {
-      let package_id = {};
-      package_id["id"] = this.informations_package.id;
-      package_id["count"] = this.informations_package.count;
-      this.$emit("addPackage", package_id);
+      this.$emit("createList", this.informations_package);
+      this.$toast.success("پکیج  به سبد خرید اضافه شد");
+      this.closeDialog();
     },
     loadProduct() {
       this.load_item = true;

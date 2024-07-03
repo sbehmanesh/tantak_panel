@@ -220,6 +220,7 @@ export default {
         }
         let url = this.createUrl;
         if (this.modelId) {
+   
           url = this.updateUrl;
           form["id"] = this.modelId;
         }

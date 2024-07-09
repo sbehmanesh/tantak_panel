@@ -452,7 +452,6 @@ export default {
           items["logo"] = res.logo;
           items["id"] = res.id;
           items["count"] = 1;
-          console.log(" this.informations_package  -- <", this.informations_package);
           this.informations_package = items;
           this.load_item = false;
         })

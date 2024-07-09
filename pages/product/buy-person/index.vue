@@ -570,7 +570,14 @@ export default {
       this.loading = true;
 
       let info_basket = {};
-      this.$reqApi("basket/list-personnel", { user_id: this.user_id })
+      let filters = {};
+      filters = {
+        id: {
+          op: "=",
+          value: this.basket_costumer_id,
+        },
+      };
+      this.$reqApi("basket/list-personnel", { user_id: this.user_id , filters:filters })
         .then((response) => {
           let information = "";
           let info_user = "";

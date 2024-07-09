@@ -422,7 +422,7 @@
         </v-card>
       </v-dialog>
       <v-overlay v-if="change_step">
-        <v-card min-width="600" class="px-6 primary lighten-1">
+        <v-card min-width="600" class="px-6 teal darken-3">
           <v-card-title>
             <span>ارجاع به واحد مالی</span>
           </v-card-title>
@@ -711,7 +711,7 @@ export default {
         },
       },
       {
-        color: "primary",
+        color: "orange",
         icon: "change_circle",
         text: "ارجاع به واحد مالی",
         fun: (body) => {

@@ -1,4 +1,5 @@
 <template>
+
   <v-form
     v-model="valid"
     @submit.prevent="submit()"
@@ -66,26 +67,29 @@
       />
 
       <v-col cols="12" md="12" v-if="address.length > 0 || show_select_addres">
-        <v-row class="ml-5 d-flex justify-end">
+        <v-row>
+          <v-col cols="10">
+            <amp-select
+              rules="require"
+              text="آدرس گیرنده"
+              v-model="array_profile.address_id"
+              :items="address"
+              :loading="loading"
+            />
+          </v-col>
+
           <v-col cols="2">
             <amp-button
               icon="add_location_alt"
               height="40"
               @click="dialog_add.show = true"
               color="orange darken-3 "
-              class="ma-1"
+              class="ma-1 mt-8"
               text="افزودن آدرس "
               :loading="loading"
             />
           </v-col>
         </v-row>
-        <amp-select
-          rules="require"
-          text="آدرس گیرنده"
-          v-model="array_profile.address_id"
-          :items="address"
-          :loading="loading"
-        />
       </v-col>
       <v-col class="text-center" cols="12" md="12" v-else>
         <v-btn text @click="dialog_add.show = true">
@@ -94,8 +98,6 @@
         <br />
         <small> برای کاربر آدرسی ثبت نشده </small>
       </v-col>
-
-      <v-divider></v-divider>
     </v-col>
 
     <v-row class="my-4 d-flex justify-center">
@@ -194,6 +196,7 @@ export default {
     this.getAddress();
   },
   watch: {
+
     show_select_addres() {
       if (this.show_select_addres) {
       }
@@ -226,7 +229,8 @@ export default {
       this.$reqApi("basket/set-form-send", form)
         .then((response) => {
           this.loading = false;
-          this.$toast.success("اطلاعات با موفقیت ثبت شد")
+          this.$toast.success("اطلاعات با موفقیت ثبت شد");
+          this.$emit("validForm", this.valid);
           this.$emit("load");
         })
         .catch((err) => {

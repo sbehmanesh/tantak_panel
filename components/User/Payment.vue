@@ -104,7 +104,7 @@ export default {
     },
   },
   beforeMount() {
-    this.filters = { basket_id: this.modelId };
+    this.filters = { user_id: this.modelId };
     if (this.userChangeStatus) {
       this.btn_actions = [
         {

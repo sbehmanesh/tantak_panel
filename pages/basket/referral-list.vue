@@ -332,6 +332,7 @@ export default {
       item: null,
     },
     btn_actions: [],
+    items_basket: [],
     item_id: "",
     basket_price: "",
     show_history: false,

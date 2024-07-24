@@ -19,7 +19,7 @@
       v-if="price_dialog.show"
     />
     <v-col cols="12" class="mt-5">
-      <v-col cols="12" class="text-start">
+      <v-col cols="12" class="text-start" v-if="Boolean(is_coordinator)">
         <amp-button
           icon="add_circle"
           height="40"
@@ -100,11 +100,17 @@
               <v-spacer> </v-spacer>
               <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
                 <v-row class="d-flex justify-center mt-1">
-                  <v-btn @click="addNumber(item, true, 'product')" x-small text>
+                  <v-btn
+                    v-if="Boolean(is_coordinator)"
+                    @click="addNumber(item, true, 'product')"
+                    x-small
+                    text
+                  >
                     <v-icon small> add </v-icon>
                   </v-btn>
                   <small> {{ item.number }}</small>
                   <v-btn
+                    v-if="Boolean(is_coordinator)"
                     :disabled="item.number == 1"
                     @click="addNumber(item, false, 'product')"
                     x-small
@@ -148,6 +154,7 @@
 
               <v-col class="ma-0 pa-0 text-center pr-3" md="1" cols="4">
                 <v-btn
+                  v-if="Boolean(is_coordinator)"
                   @click="deleFromCard(index, item, 'product')"
                   x-small
                   text
@@ -229,11 +236,17 @@
               <v-spacer />
               <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
                 <v-row class="d-flex justify-center mt-1">
-                  <v-btn @click="addNumber(item, true, 'package')" x-small text>
+                  <v-btn
+                    v-if="Boolean(is_coordinator)"
+                    @click="addNumber(item, true, 'package')"
+                    x-small
+                    text
+                  >
                     <v-icon small> add </v-icon>
                   </v-btn>
                   <small> {{ item.count }}</small>
                   <v-btn
+                    v-if="Boolean(is_coordinator)"
                     :disabled="item.count == 1"
                     @click="addNumber(item, false, 'package')"
                     x-small
@@ -272,6 +285,7 @@
               </v-col>
               <v-col class="ma-0 pa-0 text-center" md="1" cols="4">
                 <v-btn
+                  v-if="Boolean(is_coordinator)"
                   @click="deleFromCard(index, item, 'package')"
                   x-small
                   text
@@ -340,7 +354,7 @@
           text=" برگشت"
         />
       </v-col>
-      <v-col cols="1">
+      <v-col cols="1" v-if="Boolean(is_coordinator)">
         <amp-button
           block
           :disabled="loading"
@@ -394,6 +408,7 @@ export default {
     valid: true,
     headers: [],
     loading_for_chagne_status: false,
+    is_coordinator: false,
     form_change_step: {
       id: "",
       step: "",
@@ -488,6 +503,9 @@ export default {
     firacl_memebers: [],
   }),
   beforeMount() {
+    if (this.$checkRole(this.$store.state.auth.role.coordinator_id)) {
+      this.is_coordinator = true;
+    }
     let admin = this.$store.state.auth.role.admin_id;
     let opr = this.$store.state.auth.role.oprator_id;
     let fac = this.$store.state.auth.role.fac_call_id;
@@ -770,6 +788,8 @@ export default {
       let new_price = 0;
       let product_price = 0;
       let package_price = 0;
+      this.basket_price.basket = 0;
+      this.basket_price.new_price = 0;
       if (this.list_basket.items.length > 0) {
         this.list_basket.items.forEach((x) => {
           product_price += x.price * x.number;
@@ -783,8 +803,11 @@ export default {
             if (x.discount_type == "amount") {
               price = (x.price - x.discount_amount) * x.count;
               package_price += price;
-            } else {
+            } else if (x.discount_type == "percent") {
               price = (x.discount_amount / 100) * x.price * x.count;
+              package_price += price;
+            } else {
+              price = x.price;
               package_price += price;
             }
           } else {

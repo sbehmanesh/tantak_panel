@@ -1,28 +1,28 @@
 <template>
-    <div>
-      <BaseTable
-        url="/basket/my-referral-history"
-        :filters="filters"
-        :headers="headers"
-      >
-      </BaseTable>
-    </div>
-  </template>
-  
-  <script>
-  import BaseTable from '~/components/DataTable/BaseTable'
-  export default {
-    components: { BaseTable },
-    data: () => ({
-      headers: [],
-      btn_actions: [],
-      filters: { key: 'day_delete_basket' },
-      title: 'تاریخچه سبد های خرید',
-    }),
-    beforeMount() {
-      this.$store.dispatch('setPageTitle', this.title)
-  
-      this.headers = [
+  <div>
+    <BaseTable
+      url="/basket/my-referral-history"
+      :filters="filters"
+      :headers="headers"
+    >
+    </BaseTable>
+  </div>
+</template>
+
+<script>
+import BaseTable from "~/components/DataTable/BaseTable";
+export default {
+  components: { BaseTable },
+  data: () => ({
+    headers: [],
+    btn_actions: [],
+    filters: { key: "day_delete_basket" },
+    title: "تاریخچه سبد های خرید",
+  }),
+  beforeMount() {
+    this.$store.dispatch("setPageTitle", this.title);
+
+    this.headers = [
       {
         text: "زمان ثبت",
         filterType: "date",
@@ -37,6 +37,14 @@
       {
         text: "پیام",
         value: "message",
+      },
+      {
+        text: "شماره فاکتور",
+        value: (body) => {
+          if (body.basket) {
+            return body.basket.factor_number;
+          }
+        },
       },
       {
         text: "نوع ارجاع",
@@ -85,7 +93,6 @@
         },
       },
     ];
-    },
-  }
-  </script>
-  
+  },
+};
+</script>

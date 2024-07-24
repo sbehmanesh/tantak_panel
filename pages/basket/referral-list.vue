@@ -253,7 +253,6 @@ export default {
       { text: "ارسال لینک", value: "send_pay_link" },
       { text: "دستی", value: "manual" },
       { text: "پرداخت به اداره پست", value: "post" },
-      
     ],
     step_status: [
       { text: "ثبت اولیه", value: "init" },
@@ -319,7 +318,7 @@ export default {
       },
       {
         text: "کنسل شده",
-        value: "canceled",
+        value: "cancled",
       },
       {
         text: "ترکیبی ",
@@ -572,10 +571,56 @@ export default {
         value: "step",
         items: this.step_status,
       },
+      {
+        text: "وضعیت سبد",
+        value: "status",
+        filterType: "select",
+        items: [
+          {
+            text: "پرداخت شده",
+            value: "payed",
+          },
+          {
+            text: "باز ",
+            value: "open",
+          },
+          {
+            text: "در انتظار",
+            value: "waiting",
+          },
 
+          {
+            text: "تکمیل شده ",
+            value: "completed",
+          },
+          {
+            text: "کنسل شده",
+            value: "canceled",
+          },
+          {
+            text: "ترکیبی ",
+            value: "mixture",
+          },
+        ],
+      },
       {
         text: "وزن",
         value: "total_weight",
+      },
+      {
+        text: "کیف پول",
+        filterCol: "wallet",
+        value: (body) => {
+          let items = [];
+          items.push(
+            `<span class="green--text font_10">کیف پول نقدی : ${body.user.cash_wallt.toLocaleString()} ریال</span>`
+          );
+          items.push(
+            `<span class="primary--text font_10">کیف پول اعتباری  : ${body.user.credit_wallt.toLocaleString()} ریال</span>`
+          );
+
+          return items.join("<br>");
+        },
       },
     ];
   },

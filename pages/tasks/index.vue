@@ -91,10 +91,12 @@ export default {
       {
         icon: "visibility",
         color: "teal darken-2",
+        setColor:(body , color)=>{
+console.log("setColor" , body );
+        },
         text: "مشاهده وظیفه",
         fun: (body) => {
             this.dialog_task.show = true;
-           
             this.task = body;
         },
       },

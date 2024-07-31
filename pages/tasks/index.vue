@@ -5,7 +5,6 @@
       :BTNactions="btn_actions"
       :actionsList="actions_list"
       :headers="headers"
-      createUrl="/tasks/insert"
       ref="TaskList"
     />
     <Dialog :dialogTask="dialog_task" :task="task" v-if="dialog_task.show" />

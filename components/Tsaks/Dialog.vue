@@ -127,7 +127,7 @@
                         </h1>
                       </v-row>
                     </v-col>
-                    <v-row v-if="task.file" class="align-center mt-4">
+                    <v-row v-if="task.file" class="align-center">
                       <h1 class="font_14">
                         <v-icon small>arrow_left</v-icon>
                         فایل بار گذاری شده
@@ -199,7 +199,7 @@
                       indeterminate
                       :color="set_color"
                     /> -->
-                        <v-col cols="12" md="5">
+                        <v-col cols="12" md="5" class="mt-6">
                           <amp-select
                             text="تعیین وضعیت"
                             :disabled="Boolean(loading)"
@@ -211,7 +211,7 @@
                           <AmpUploadFileNew v-model="file" />
                         </v-col>
 
-                        <v-col cols="2">
+                        <v-col cols="2" class="mt-6">
                           <amp-button
                             text="تایید"
                             height="38"
@@ -341,7 +341,7 @@
                     </v-col>
        
                   </v-col>
-                  <v-row class="align-center py-3 px-4 grey lighten-3">
+                  <v-row class="align-center py-3 px-4 grey lighten-3 mb-3">
                       <h1>
                         قیمت کل سبد
                       </h1>

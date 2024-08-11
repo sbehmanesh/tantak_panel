@@ -125,6 +125,7 @@
             <template v-else v-for="(btn, index) in btn_actions">
               <v-btn
               small
+              class="white--text"
                 :title="btn.text"
                 :color="btn.color"
                 :key="index + btn.text"

@@ -8,14 +8,14 @@
       :BTNactions="btn_actions"
     >
     </BaseTable>
-    {{ show_dialog }}
     <Dialog
       :branchId="id"
       :dialog="show_dialog"
       v-if="show_dialog"
       @closeDialog="closeDialog"
       
-    />
+    />   
+
   </div>
 </template>
 
@@ -149,12 +149,14 @@ export default {
           this.id = body.id;
           this.show_dialog = true;
         },
-      },
+      },   
+
     ];
   },
   methods: {
     closeDialog() {
       this.show_dialog = false;
+    
     },
   },
 };

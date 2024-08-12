@@ -69,13 +69,8 @@ export default {
         },
       },
       {
-        filterable: false,
         text: "شماره پورت داخلی",
-        value: (body) => {
-          if (Boolean(body.internal_port)) {
-            return body.internal_port;
-          }
-        },
+        value: "internal_port",
       },
     ];
   },

@@ -12,6 +12,7 @@ export const state = () => ({
     is_supervasier:false,
     is_operator:false,
     is_adming_call_center_id:false,
+    seal_manager :"1964bd45-1d8d-4666-9330-0955f8c2c4c6",
     cashier_id: "38d3025b-ed61-4d0d-815f-31c008eb33fc", //  صندوق دار
     user_id: "5246f14d-1905-4e34-a412-8fb689d20f23",
     warehouseman_id: "1deb3b9b-a4bb-46cd-8c20-592767aa1d22", //انبار گردان
@@ -32,7 +33,13 @@ manager_financial_unit:"f013ea6f-78ed-44c5-ab38-6ed3ff9a4145",
 head_financial_unit:"d4d80c65-15fd-42e6-b578-594280168664",
 delivery_coordination_manager :"f910512c-d16e-49de-94e2-8e6082099a3e" ,
 delivery_coordination_supervisor :"c47efd40-041a-4ad6-8447-c38ad75adb8b" ,
-delivery_coordination :"e2bc62b1-ea70-494a-bb77-2efee98fa477" 
+delivery_coordination :"e2bc62b1-ea70-494a-bb77-2efee98fa477" ,
+storekeeper:"7b69e2eb-8036-4d27-8b6a-a1e37928635e",
+agency_manager:"1964bd45-1d8d-4666-9330-0955f8c2c4c6",
+agency_employee:"bc5bde21-2126-4c7a-b979-12c9a0b73744",
+courier:"32b21551-05fe-42ad-a769-d1c633efd8e0",
+
+
   },
 });
 

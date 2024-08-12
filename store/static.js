@@ -73,7 +73,8 @@ let mnue_tree = [
     name: "لیست کارکنان",
     access: "user/internal_personnels",
     route: "/user/internal-personnel",
-  },
+  }, 
+
   {
     id: 6,
     name: "ناحیه ها",
@@ -85,6 +86,12 @@ let mnue_tree = [
     name: "شعبات",
     access: "branch/index",
     route: "/branches",
+  },
+  {
+    id: 6185145,
+    name: "نمایندگی های فروش",
+    access: "sale_agencies/index",
+    route: "/product/sale-agency",
   },
   {
     id: 200,

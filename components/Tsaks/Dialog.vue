@@ -311,13 +311,22 @@
 
               <v-window-item :value="2">
                 <v-card-text>
+                  <v-row class="align-center d-felx justify-center">
+                    <v-col
+                      cols="12"
+                      class="text-center mb-5"
+                      style="border-bottom: 1px dashed gray"
+                    >
+                      <h1>موجودی سبد</h1>
+                    </v-col>
+                  </v-row>
                   <v-col
                     cols="12"
                     v-for="(item, index) in basket_items"
                     :key="index"
                   >
-                    <v-row class="align-center">
-                      <h1 class="font_11">{{ index + 1 }}  - {{ item.type }}</h1>
+                    <v-row class="py-4">
+                      <h1 class="font_11">{{ index + 1 }} - {{ item.type }}</h1>
                       <v-spacer></v-spacer>
                       <h1 class="font_11">
                         {{ item.name }}
@@ -326,32 +335,34 @@
                       <h1 class="font_11" v-if="item.type == 'محصول'">
                         {{ item.information }}
                       </h1>
-                      <v-spacer></v-spacer>    
-                          <h1 class="font_11">
-                        {{ item.count }} عدد
-                      </h1>
                       <v-spacer></v-spacer>
-                      <v-col cols="6" md="2">
-                        <v-img :src="$getImage(item.main_image)" />
-                      </v-col>
-                    
+                      <h1 class="font_11">{{ item.count }} عدد</h1>
+                      <v-spacer></v-spacer>
+                      <v-btn
+                        small
+                        outlined
+                        class="white--text"
+                        color="teal"
+                        @click="getImage(item.main_image)"
+                      >
+                      <small>
+                        مشاهده
+                      </small>
+                 
+                        <v-icon small> image </v-icon>
+                      </v-btn>
                     </v-row>
                     <v-col cols="12">
                       <v-divider></v-divider>
                     </v-col>
-       
                   </v-col>
                   <v-row class="align-center py-3 px-4 grey lighten-3 mb-3">
-                      <h1>
-                        قیمت کل سبد
-                      </h1>
-                      <v-spacer>
-
-                      </v-spacer>
-                      <h1>
-                        {{ $price(base_price) }}
-                      </h1>
-                    </v-row>
+                    <h1>قیمت کل سبد</h1>
+                    <v-spacer> </v-spacer>
+                    <h1>
+                      {{ $price(base_price) }}
+                    </h1>
+                  </v-row>
                 </v-card-text>
               </v-window-item>
             </v-window>
@@ -378,19 +389,15 @@
                   <v-icon class="mx-1" large color="grey">
                     shopping_basket
                   </v-icon>
-                  </v-btn>
+                </v-btn>
 
-                 
-                 
-                  <v-btn @click="step++" text>
+                <v-btn @click="step++" text>
                   <h1 class="font_12">مشاهده سبد</h1>
                 </v-btn>
               </div>
               <div v-if="step == 2">
                 <v-btn @click="step--" text small>
-                  <v-icon class="mx-1"  color="grey">
-                    arrow_circle_left</v-icon
-                  >
+                  <v-icon class="mx-1" color="grey"> arrow_circle_left</v-icon>
                 </v-btn>
                 <v-btn @click="step--" text small>
                   <h1 class="font_12">برگشت</h1>
@@ -628,7 +635,7 @@ export default {
         .then((res) => {
           let basket = [];
           let items = res.data.items;
-        this.base_price =res.data.base_price
+          this.base_price = res.data.base_price;
           for (let index = 0; index < items.length; index++) {
             const x = items[index];
             if (Boolean(x.product) && Boolean(x.product_id)) {

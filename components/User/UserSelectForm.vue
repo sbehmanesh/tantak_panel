@@ -1,26 +1,12 @@
 <template>
   <div :class="clear ? 'd-flex justify-center align-center' : ''">
-    <amp-input
-      readonly
-      :text="text"
-      :rules="rules"
-      class="pointer"
-      append-icon="edit"
-      v-model="inp_value_name"
-      @click:append="openDialog()"
-    />
+    <amp-input readonly :text="text" :rules="rules" class="pointer" append-icon="edit" v-model="inp_value_name"
+      @click:append="openDialog()" />
     <div v-if="clear">
-      <v-btn small @click="emptyInpValue()" class="elevation-0 white mt-2"
-        ><v-icon>close</v-icon></v-btn
-      >
+      <v-btn small @click="emptyInpValue()" class="elevation-0 white mt-2"><v-icon>close</v-icon></v-btn>
     </div>
-    <v-dialog
-      fullscreen
-      hide-overlay
-      v-model="user_dialog"
-      transition="dialog-bottom-transition"
-    >
-      <v-toolbar dark color="primary">
+    <v-dialog fullscreen hide-overlay v-model="user_dialog" transition="dialog-bottom-transition">
+      <v-toolbar dark color="secondary">
         <v-btn icon dark @click="closeDialog()">
           <v-icon>close</v-icon>
         </v-btn>
@@ -29,20 +15,14 @@
         </v-toolbar-title>
       </v-toolbar>
       <v-card class="pa-7">
-        <UserSelect
-          :multi="multi"
-          :show-url="url"
-          v-model="items"
-          @closeDialog="closeDialog()"
-          :rootBody="rootBody"
-        />
+        <UserSelect :multi="multi" :show-url="url" v-model="items" @closeDialog="closeDialog()" :rootBody="root_body" />
       </v-card>
     </v-dialog>
   </div>
 </template>
 
 <script>
-import UserSelect from "~/components/User/UserSelect.vue";
+import UserSelect from "~/components/User/UserSelect";
 export default {
   components: { UserSelect },
   props: {
@@ -52,8 +32,8 @@ export default {
     rules: { require: false, default: "" },
     text: { require: false, default: "انتخاب کاربر" },
     url: { require: false, default: "/user/searchByRole" },
+    keyUrl: { require: false, default: false },
     clear: { require: false, default: false },
-    rootBody: { require: false, type: Object },
     notIn: { require: false, default: false },
   },
   data: () => ({
@@ -89,11 +69,21 @@ export default {
       this.$emit("input", this.items);
       this.$emit("getData", this.items);
       this.inp_value_name = this.items
-        .map((x) => `${x.first_name} ${x.last_name}`)
+        .map((x) => {
+          if (Boolean(x.first_name) && Boolean(x.last_name)) {
+            return `${x.first_name} ${x.last_name}`
+          } else {
+            return `${x.username}`
+          }
+        })
+
         .join(" | ");
     },
   },
   beforeMount() {
+    if (this.keyUrl && Boolean(this.keyUrl)) {
+      this.url = `/${this.keyUrl}`;
+    }
     this.items = [...this.value];
   },
   methods: {

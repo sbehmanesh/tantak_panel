@@ -130,6 +130,36 @@ export default {
         this.form.role_id.push(
           this.$store.state.auth.role.delivery_coordination
         );
+      }    
+       if (
+        this.$checkRole(
+          this.$store.state.auth.role.agency_manager
+        )
+      ) {
+        dialog_title = " ایجاد  انبار دار ";
+        this.form.role_id.push(
+          this.$store.state.auth.role.storekeeper
+        );
+      }      
+       if (
+        this.$checkRole(
+          this.$store.state.auth.role.storekeeper
+        )
+      ) {
+        dialog_title = " ایجاد  کارمند ";
+        this.form.role_id.push(
+          this.$store.state.auth.role.agency_employee
+        );
+      }      
+       if (
+        this.$checkRole(
+          this.$store.state.auth.role.agency_employee
+        )
+      ) {
+        dialog_title = " ایجاد  پیک ";
+        this.form.role_id.push(
+          this.$store.state.auth.role.courier
+        );
       }
 
       return dialog_title;

@@ -4,7 +4,7 @@
       persistent
       v-model="refralDialog.show"
       :model-id="refralDialog.items"
-      width="600"
+      width="500"
     >
       <v-card>
         <v-row class="mx-3 pt-8">
@@ -21,34 +21,38 @@
         <v-card-text>
           <v-form v-model="valid" @submit.prevent="submit()">
             <v-row>
-              <v-col cols="12" md="7">
+              <v-col cols="12" md="12">
                 <amp-select
                   text="تغییر وضعیت"
                   :items="step_items"
                   v-model="form.step"
                   rules="require"
                 ></amp-select>
-              </v-col>
-              <v-col cols="12" md="5" >
+                <UserSelectForm
+                  v-if="show_select_user && form.step != 'send_to_agency'"
+                  :text="title_select"
+                  v-model="user"
+                  :url="url"
+                  rules="require"
+                />
+                <amp-autocomplete
+                  v-if="form.step == 'send_to_agency'"
+                  :text="title_select"
+                  rules="require"
+                  v-model="agency_id"
+                  :items="agencyes"
+                />
                 <AmpUploadFileNew title="بارگذاری فایل" v-model="form.file" />
               </v-col>
-            <v-col cols="12" v-if="show_select_user">
-              <UserSelectForm
-                :text="title_select"
-                v-model="user"
-                :url="url"
-                rules="require"
-              />
-            </v-col>
 
-            <v-col cols="12">
-              <amp-textarea
-                text="پیام"
-                v-model="form.message"
-                rules="require"
-              ></amp-textarea>
-            </v-col>
-          </v-row>
+              <v-col cols="12">
+                <amp-textarea
+                  text="پیام"
+                  v-model="form.message"
+                  rules="require"
+                ></amp-textarea>
+              </v-col>
+            </v-row>
 
             <v-row class="ma-1 d-flex justify-center">
               <v-col cols="3">
@@ -93,6 +97,7 @@ export default {
   data: () => ({
     valid: true,
     url: "",
+    agency_id: "",
     message: "",
     title_select: "",
     form: {
@@ -102,6 +107,7 @@ export default {
     },
     valid_comment: true,
     step_items: [],
+    agencyes: [],
     user: [],
     loading: false,
     show_select_user: false,
@@ -117,6 +123,10 @@ export default {
     delivery_coordination_manager: false,
     delivery_coordination_supervisor: false,
     delivery_coordination: false,
+    agency_manager: false,
+    storekeeper: false,
+    agency_employee: false,
+    courier: false,
   }),
   mounted() {
     this.setOPtion();
@@ -124,9 +134,12 @@ export default {
   watch: {
     "form.step"() {
       switch (this.form.step) {
+        // STEP*****
         case "refer_fiscal_manager":
           this.show_select_user = true;
+          // URL SELECT USER*****
           this.url = "user/fiscal-manager";
+          // TITLE SELECT USER*****
           this.title_select = "انتخاب مدیر واحد مالی";
           break;
 
@@ -169,6 +182,27 @@ export default {
           this.url = "user/list-employee";
           this.title_select = "انتخاب   هماهنگ کننده ارسال";
           break;
+        case "send_to_agency":
+          this.show_select_user = true;
+          this.url = "sale-agency/have-inventory";
+          this.title_select = "انتخاب نمایندگی";
+          this.loadAgencyes();
+          break;
+        case "agency_to_stockclerk":
+          this.show_select_user = true;
+          this.url = "user/list-employee";
+          this.title_select = "انتخاب انبار دار";
+          break;
+        case "stockclerk_to_employee":
+          this.show_select_user = true;
+          this.url = "user/list-employee";
+          this.title_select = "انتخاب  کارمند";
+          break;
+        case "employee_to_courier":
+          this.show_select_user = true;
+          this.url = "user/list-employee";
+          this.title_select = "انتخاب  به پیک";
+          break;
         default:
           this.show_select_user = false;
           break;
@@ -181,7 +215,9 @@ export default {
       let form = {};
       form = { ...this.form };
       form["id"] = this.basketId;
-      if (Boolean(this.user) && Boolean(this.user[0])) {
+      if (form.step == "send_to_agency") {
+        form["sale_agency_id"] = this.agency_id;
+      } else if (Boolean(this.user) && Boolean(this.user[0])) {
         form["user_refer_id"] = this.user[0].id;
       }
 
@@ -209,7 +245,10 @@ export default {
       this.setStepItems();
     },
     chekRole() {
-      if (this.$checkRole(this.$store.state.auth.role.admin_id) || this.$checkRole(this.$store.state.auth.role.oprator_id)) {
+      if (
+        this.$checkRole(this.$store.state.auth.role.admin_id) ||
+        this.$checkRole(this.$store.state.auth.role.oprator_id)
+      ) {
         this.is_admin = true;
       }
       if (this.$checkRole(this.$store.state.auth.role.financial_unit_id)) {
@@ -247,8 +286,21 @@ export default {
       if (this.$checkRole(this.$store.state.auth.role.delivery_coordination)) {
         this.delivery_coordination = true;
       }
+      if (this.$checkRole(this.$store.state.auth.role.agency_manager)) {
+        this.agency_manager = true;
+      }
+      if (this.$checkRole(this.$store.state.auth.role.storekeeper)) {
+        this.storekeeper = true;
+      }
+      if (this.$checkRole(this.$store.state.auth.role.agency_employee)) {
+        this.agency_employee = true;
+      }
+      if (this.$checkRole(this.$store.state.auth.role.courier)) {
+        this.courier = true;
+      }
     },
     setStepItems() {
+      // #SET ITEMS FOR SLELCT STEP
       if (Boolean(this.is_admin)) {
         if (this.stepOrder == "accept_coordinator") {
           this.step_items = [
@@ -345,11 +397,85 @@ export default {
       if (Boolean(this.delivery_coordination)) {
         this.step_items = [
           {
+            text: "ارجاع به  نمایندگی فروش",
+            value: "send_to_agency",
+          },
+          {
             text: "برگشت ",
             value: "send_to_supervisor",
           },
         ];
       }
+      if (Boolean(this.agency_manager)) {
+        this.step_items = [
+          {
+            text: "ارجاع به انباردار",
+            value: "agency_to_stockclerk",
+          },
+          {
+            text: "برگشت ",
+            value: "agency_to_send",
+          },
+        ];
+      }
+      if (Boolean(this.storekeeper)) {
+        this.step_items = [
+          {
+            text: "ارجاع به کارمند نمایندگی",
+            value: "stockclerk_to_employee",
+          },
+          {
+            text: "برگشت ",
+            value: "stockclerk_to_agency",
+          },
+        ];
+      }
+      if (Boolean(this.agency_employee)) {
+        this.step_items = [
+          {
+            text: "ارجاع   به پیک",
+            value: "employee_to_courier",
+          },
+          {
+            text: "برگشت ",
+            value: "employee_to_stockclerk",
+          },
+        ];
+      }
+      if (Boolean(this.courier)) {
+        this.step_items = [
+          {
+            text: "برگشت",
+            value: "courier_to_employee",
+          },
+          {
+            text: "تحویل داده شده",
+            value: "done",
+          },
+        ];
+      }
+    },
+    loadAgencyes() {
+      this.loading = true;
+      let url = this.url;
+      this.$reqApi(url)
+        .then((res) => {
+          this.loading = false;
+
+          let items = [];
+          let data = res.model.data;
+          for (let index = 0; index < data.length; index++) {
+            const element = data[index];
+            items.push({
+              text: element.name,
+              value: element.id,
+            });
+          }
+          this.agencyes = items;
+        })
+        .catch((err) => {
+          this.loading = false;
+        });
     },
   },
 };

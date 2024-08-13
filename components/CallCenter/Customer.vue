@@ -877,6 +877,42 @@ export default {
         text: " هماهنگی ارسال به سرپرست",
         value: "send_to_supervisor",
       },
+      {
+        text: "ارجاع به نمایندگی",
+        value: "send_to_agency",
+      },
+      {
+        text: "برگشت به هماهنگ کننده ارسال",
+        value: "agency_to_send",
+      },
+      {
+        text: "agency_to_stockclerk",
+        value: "ارجاع از نمایندگی به انبار دار",
+      },
+      {
+        text: "برگشت از انبار دار به نمایندگی",
+        value: "stockclerk_to_agency",
+      },
+      {
+        text: "کارمند به انبار دار",
+        value: "employee_to_stockclerk",
+      },
+      {
+        text: "stockclerk_to_employee",
+        value: "ارجاع انبار دار به کارمند نمایندگی",
+      },
+      {
+        text: "ارجاع کارمند به پیک",
+        value: "employee_to_courier",
+      },
+      {
+        text: "ارجاع از پیک به کارمند",
+        value: "courier_to_employee",
+      },
+      {
+        text: "تحویل داده شده",
+        value: "done",
+      },
     ],
     step_items: [],
     admin: [
@@ -1025,6 +1061,8 @@ export default {
             } else {
               return false;
             }
+          }else{
+            return false
           }
         },
       },

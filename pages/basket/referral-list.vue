@@ -616,12 +616,22 @@ export default {
         },
       },
       {
-        disableSort: "true",
-        filterable: false,
         text: "شماره تماس",
+        type: "phone",
         value: (body) => {
           if (body.user) {
             return body.user.username;
+          }
+        },
+        show_fun: (body) => {
+          if (
+            this.$store.state.auth.action.indexOf(
+              "messages/issabel_request_call"
+            ) > -1
+          ) {
+            return true;
+          } else {
+            return false;
           }
         },
       },

@@ -26,7 +26,7 @@
               :items="coordinator_list"
               v-model="coordinator_id"
             />
-            <AmpUploadFile title="بارگذاری فایل" v-model="form.file" />
+            <AmpUploadFile title="بارگذاری فایل" v-model="file" />
 
             <amp-textarea
               rules="require"

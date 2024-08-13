@@ -13,7 +13,6 @@
       :dialog="show_dialog"
       v-if="show_dialog"
       @closeDialog="closeDialog"
-      
     />   
 
   </div>
@@ -48,7 +47,7 @@ export default {
         filtercol: "manager.first_name",
         value: (body) => {
           if (body.manager) {
-            let user = body.manager.first_name
+            let user = body.manager.first_name && body.manager.last_name
               ? body.manager.first_name + " " + body.manager.last_name
               : body.manager.username;
             return user;

@@ -296,10 +296,7 @@ export default {
 
           if (Boolean(response.model.data[0])) {
             if (response.model.data[0].variation1) {
-              console.log(
-                "response.model.data[0].variation1 .. ",
-                response.model.data[0].variation1
-              );
+  
               this.step_var_1 = true;
               set_title[
                 `var_${response.model.data[0].variation1.variation_type.sort}`

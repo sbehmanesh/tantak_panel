@@ -68,7 +68,8 @@
                                 text="تایید"
                                 color="green darken-1"
                                 @click="submit"
-                                :disabled="!Boolean(check_continue) || !valid"
+                                :loading="loading"
+                                :disabled="!Boolean(check_continue) || !valid || loading"
                               />
                             </v-col>
                             <v-col cols="2">
@@ -294,7 +295,7 @@ export default {
       this.$emit("closeDialog");
     },
     submit() {
-      this.loader = true;
+      this.loading = true;
       let form = { ...this.form };
       form.sale_agency_id = this.branchId;
       let url = this.update
@@ -304,12 +305,12 @@ export default {
         .then((response) => {
           this.step == 1;
           this.$toast.success("عملیات با موفقیت انجام شده");
-          this.loader = false;
+          this.loading = false;
           this.$refs.Refresh.getDataFromApi();
           this.canceld()
         })
         .catch((err) => {
-          this.loader = false;
+          this.loading = false;
         });
     },
     canceld() {

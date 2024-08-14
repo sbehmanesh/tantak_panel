@@ -886,8 +886,8 @@ export default {
         value: "agency_to_send",
       },
       {
-        text: "agency_to_stockclerk",
-        value: "ارجاع از نمایندگی به انبار دار",
+        text: "ارجاع از نمایندگی به انبار دار",
+        value: "agency_to_stockclerk",
       },
       {
         text: "برگشت از انبار دار به نمایندگی",

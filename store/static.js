@@ -194,23 +194,23 @@ let mnue_tree = [
         name: "فروش تلفنی",
         route: "/product/buy-person",
       },
-      {
-        id: 52,
-        access: (state) => {
-          if (state.auth) {
-            if (
-              state.auth.action.indexOf(
-                "call_center/index-superviser-messages"
-              ) > -1 ||
-              state.auth.action.indexOf("recived_message/index") > -1
-            ) {
-              return true;
-            }
-          }
-        },
-        name: "لیست کارکنان",
-        route: "/call-center/list",
-      },
+      // {
+      //   id: 52,
+      //   access: (state) => {
+      //     if (state.auth) {
+      //       if (
+      //         state.auth.action.indexOf(
+      //           "call_center/index-superviser-messages"
+      //         ) > -1 ||
+      //         state.auth.action.indexOf("recived_message/index") > -1
+      //       ) {
+      //         return true;
+      //       }
+      //     }
+      //   },
+      //   name: "لیست کارکنان",
+      //   route: "/call-center/list",
+      // },
       {
         id: 53,
         access: "messages/index",

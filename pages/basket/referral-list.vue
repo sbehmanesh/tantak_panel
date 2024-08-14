@@ -1,6 +1,5 @@
 <template>
   <v-window v-model="step">
-
     <RefralDialog
       :refralDialog="refral_basket"
       v-if="refral_basket.show"
@@ -8,12 +7,12 @@
       @relod="refresh"
     />
 
-          <PickedUp
-          @closeDialog="closeDialog"
-          v-if="show_picked_up"
-          :dialog="show_picked_up"
-          :basketId="basket_id"
-          />
+    <PickedUp
+      @closeDialog="closeDialog"
+      v-if="show_picked_up"
+      :dialog="show_picked_up"
+      :basketId="basket_id"
+    />
     <v-window-item :value="1">
       <div>
         <v-row class="d-flex justify-center align-center mt-5">
@@ -204,8 +203,7 @@
             :deliveryInfo="delivery_info"
             v-if="step == 2"
             @refresh="refresh"
-          /> 
- 
+          />
         </v-col>
       </v-row>
     </v-window-item>
@@ -220,7 +218,7 @@ import PickedUp from "@/components/CallCenter/PickedUp.vue";
 import Dialog from "~/components/Tsaks/Dialog.vue";
 
 export default {
-  components: { BaseTable, Basket, RefralDialog , PickedUp , Dialog },
+  components: { BaseTable, Basket, RefralDialog, PickedUp, Dialog },
   props: {
     rootBody: { default: () => ({}) },
     filters: { default: () => ({}) },
@@ -542,15 +540,15 @@ export default {
         },
       },
       {
-        text: "برداشا از انبار",
+        text: "برداشت از انبار",
         icon: "change_circle",
         color: "success",
         fun: (body) => {
-          this.show_picked_up = true
+          this.show_picked_up = true;
           this.basket_id = body.id;
         },
         show_fun: (body) => {
-          if (body.step == "agency_to_stockclerk") {
+          if (body.step == "agency_to_stockclerk" && body.status_stock !="wait") {
             return true;
           } else {
             return false;
@@ -732,6 +730,17 @@ export default {
         value: "total_weight",
       },
       {
+        text: "وضعیت  انبار",
+        filterType: "select",
+        value: "status_stock",
+        items: [
+          { text: "منتظر برداشت", value: "wait" },
+          { text: "برداشت انجام شده", value: "done" },
+          { text: "کنسل شده", value: "reject" },
+        ],
+      },
+
+      {
         text: "کیف پول",
         filterCol: "wallet",
         value: (body) => {
@@ -749,8 +758,8 @@ export default {
     ];
   },
   methods: {
-    closeDialog(){
-      this.show_picked_up = false
+    closeDialog() {
+      this.show_picked_up = false;
     },
     loadFiscal() {
       this.$reqApi("/user/fiscal-manager", { row_number: 300 })

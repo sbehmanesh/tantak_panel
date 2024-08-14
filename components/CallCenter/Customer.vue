@@ -1241,6 +1241,16 @@ export default {
         value: "products_discount",
       },
       {
+        text: "وضعیت  انبار",
+        filterType: "select",
+        value: "status_stock",
+        items: [
+          { text: "منتظر برداشت", value: "wait" },
+          { text: "برداشت انجام شده", value: "done" },
+          { text: "کنسل شده", value: "reject" },
+        ],
+      },
+      {
         text: "شماره فاکتور",
 
         value: "factor_number",

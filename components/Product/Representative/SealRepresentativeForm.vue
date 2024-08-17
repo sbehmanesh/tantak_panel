@@ -66,13 +66,21 @@
         </v-col>
         <v-col cols="12" md="3">
           <amp-select
-            text="بازه زمانی"
-            multiple
+            text="ارسال کالا"
             rules="require"
-            v-model="form.delivery_time_ids"
-            :items="delivery_time"
+            v-model="form.send_good"
+            :items="check_have"
+          />
+        </v-col>    
+            <v-col cols="12" md="3">
+          <amp-select
+            text="خدمات پس از فروش"
+            rules="require"
+            v-model="form.after_sale_service"
+            :items="check_have"
           />
         </v-col>
+
         <v-col cols="12" md="3">
           <SelectLocationDialog v-model="location" />
         </v-col>
@@ -104,7 +112,13 @@
           ></amp-textarea>
         </v-col>
         <v-col cols="12">
-          <Time :deliveryTime="delivery_time" />
+          <Time
+          v-if="!loading"
+            :deliveryTime="delivery_time"
+            :deliveryTimeIds="form.delivery_time_ids"
+            @validTime="valid_time = $event"
+            @deliveryForm="form.delivery_time_ids = $event"
+          />
         </v-col>
       </v-row>
       <v-row dense>
@@ -127,7 +141,7 @@
             type="submit"
             :loading="loading"
             color="success"
-            :disabled="!valid || loading"
+            :disabled="!valid || loading || !valid_time"
             :text="modelId ? 'ویرایش' : 'ثبت'"
           />
         </v-col>
@@ -151,8 +165,19 @@ export default {
   },
   data: () => ({
     valid: false,
+    valid_time: false,
     loading: false,
     location: [],
+    check_have: [
+      {
+        text: "دارد",
+        value: "have",
+      },
+      {
+        text: "ندارد",
+        value: "font_have",
+      },
+    ],
     citis: [],
     province: [],
     province_id: "",
@@ -182,6 +207,8 @@ export default {
       score: "",
       name: "",
       status: "active",
+      after_sale_service: "",
+      send_good: "",
       address: "",
       sale_online: "",
       sale_phone: "",
@@ -200,7 +227,7 @@ export default {
 
   watch: {
     location() {
-      if (this.location.length > 0) {
+      if (this.location.length > 0 &&  this.location[0] && this.location[1]) {
         this.form.lat = this.location[0].toString();
         this.form.long = this.location[1].toString();
       }
@@ -232,7 +259,27 @@ export default {
         case "sub":
           form.agency_main = false;
           break;
+      }     
+      
+      
+      switch (form.send_good) {
+        case "have":
+          form.send_good = true;
+          break;
+        case "dont_have":
+          form.send_good = false;
+          break;
+      }     
+       switch (form.after_sale_service) {
+        case "have":
+          form.after_sale_service = true;
+          break;
+        case "dont_have":
+          form.after_sale_service = false;
+          break;
       }
+
+      
       form["sale_online"] = false;
       form["sale_phone"] = false;
       form["sale_person"] = false;
@@ -285,11 +332,9 @@ export default {
               this.form.agency_main = "sub";
               break;
           }
-          let ids = [];
-          response.delivery_times.map((x) => {
-            ids.push(x.id);
-          });
-          this.form.delivery_time_ids = ids;
+  
+          this.form.delivery_time_ids = response.delivery_times;
+          
 
           this.location.push(response.lat);
           this.location.push(response.long);
@@ -303,6 +348,7 @@ export default {
           if (Boolean(response.sale_phone)) {
             this.sale_type_selected.push("sale_phone");
           }
+          
           this.loading = false;
         })
         .catch((error) => {
@@ -338,8 +384,8 @@ export default {
           this.city_items = response;
           if (Boolean(this.modelId)) {
             this.loadData();
-          }else{
-            this.loading = false
+          } else {
+            this.loading = false;
           }
         })
         .catch((rej) => {
@@ -347,7 +393,7 @@ export default {
           this.loading = false;
         });
     },
- 
+
     redirectPage() {
       if (window.history.length > 2) {
         this.$router.back();

@@ -107,7 +107,7 @@
                   call
                 </v-icon>
                 <span test-tag="string_type" class="font_l">{{
-                  header.value(data.item)
+                  $showUsername(header.value(data.item),"ltr")
                 }}</span>
               </div>
 

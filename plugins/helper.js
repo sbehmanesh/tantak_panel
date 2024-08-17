@@ -113,6 +113,21 @@ export default ({ redirect, store, $toast }, inject) => {
     }
     return new_form;
   });
+  inject("showUsername", (username, dir) => {
+    let show = "";
+    if (store.state.auth.action.indexOf("users/show_username") > -1) {
+      show = username;
+    } else {
+      let start = username.slice(0, 3);
+      let end = username.slice(-4);
+      if (dir == "ltr") {
+        show = start + "****" + end;
+      } else {
+        show = end + "****" + start;
+      }
+    }
+    return show;
+  });
   inject("checkNotNull", (...item) => {
     for (let index = 0; index < item.length; index++) {
       const element = item[index];

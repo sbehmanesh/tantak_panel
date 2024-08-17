@@ -55,7 +55,6 @@
 "
                 step="4"
               >
- 
                 <span class="font_16"> سفارشات </span>
                 <small class="pt-2">
                   لیست سفارشات باز مشتری
@@ -1053,7 +1052,7 @@ export default {
                 body.step == "init" ||
                 body.step == "reject_fiscal_manager" ||
                 body.step == "manager_admin_coordinator" ||
-                body.step == "accept_coordinator"||
+                body.step == "accept_coordinator" ||
                 body.step == "manager_admin_send"
               ) {
                 return true;
@@ -1063,8 +1062,8 @@ export default {
             } else {
               return false;
             }
-          }else{
-            return false
+          } else {
+            return false;
           }
         },
       },
@@ -1177,14 +1176,11 @@ export default {
 
       {
         text: "شماره همراه مشتری",
+        type:"phone",
         value: (body) => {
           if (body.user) {
             if (body.user.username) {
-              let start = body.user.username.slice(0, 3);
-              let end = body.user.username.slice(-4);
-
-              let phone_number = end + "****" + start;
-              return phone_number;
+              return body.user.username;
             }
           }
         },

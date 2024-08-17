@@ -103,6 +103,9 @@
             :rows="1"
           ></amp-textarea>
         </v-col>
+        <v-col cols="12">
+          <Time :deliveryTime="delivery_time" />
+        </v-col>
       </v-row>
       <v-row dense>
         <v-col cols="12" md="12">
@@ -136,10 +139,12 @@
 <script>
 import UserSelectForm from "@/components/User/UserSelectForm";
 import SelectLocationDialog from "@/components/Base/SelectLocationDialog.vue";
+import Time from "@/components/Product/Representative/Time.vue";
 export default {
   components: {
     UserSelectForm,
     SelectLocationDialog,
+    Time,
   },
   props: {
     modelId: { default: null },
@@ -192,7 +197,6 @@ export default {
     this.role_id = [this.$store.state.auth.role.seal_manager];
     this.loadCitise();
   },
-
 
   watch: {
     location() {
@@ -334,34 +338,16 @@ export default {
           this.city_items = response;
           if (Boolean(this.modelId)) {
             this.loadData();
+          }else{
+            this.loading = false
           }
-          this.timsSend();
         })
         .catch((rej) => {
           console.log(rej);
           this.loading = false;
         });
     },
-    timsSend() {
-      this.$reqApi("delivery-time", { row_number: 50000 })
-        .then(async (response) => {
-          let items = [];
-          let data = response.model.data;
-          for (let index = 0; index < data.length; index++) {
-            const element = data[index];
-            items.push({
-              text: element.range_time,
-              value: element.id,
-            });
-          }
-          this.delivery_time = items;
-
-          this.loading = false;
-        })
-        .catch((error) => {
-          this.loading = false;
-        });
-    },
+ 
     redirectPage() {
       if (window.history.length > 2) {
         this.$router.back();

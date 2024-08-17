@@ -8,14 +8,13 @@
       :BTNactions="btn_actions"
     >
     </BaseTable>
-    {{ show_dialog }}
     <Dialog
       :branchId="id"
       :dialog="show_dialog"
       v-if="show_dialog"
       @closeDialog="closeDialog"
-      
-    />
+    />   
+
   </div>
 </template>
 
@@ -48,7 +47,7 @@ export default {
         filtercol: "manager.first_name",
         value: (body) => {
           if (body.manager) {
-            let user = body.manager.first_name
+            let user = body.manager.first_name && body.manager.last_name
               ? body.manager.first_name + " " + body.manager.last_name
               : body.manager.username;
             return user;
@@ -149,12 +148,14 @@ export default {
           this.id = body.id;
           this.show_dialog = true;
         },
-      },
+      },   
+
     ];
   },
   methods: {
     closeDialog() {
       this.show_dialog = false;
+    
     },
   },
 };

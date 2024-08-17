@@ -9,7 +9,7 @@
           :items="products"
           outlined
           dense
-          :disabled="Boolean(load_item) || Boolean(productInfo.product_id)"
+          :disabled="Boolean(load_item) "
           :loading="Boolean(load_item)"
           label="انتخاب محصول"
           placeholder="نام محصول مورد نظر را وارد کنید ..."
@@ -39,8 +39,8 @@
                   (loading &&
                     !Boolean(step_var_1) &&
                     !Boolean(product_sort_1)) ||
-                  !Boolean(product_varcomb_id) ||
-                  Boolean(productInfo.product_id)
+                  !Boolean(product_varcomb_id) 
+            
                 "
             /></v-col>
             <v-col cols="12" md="4">
@@ -51,7 +51,7 @@
                 v-model="var_id_2"
                 :items="available_items_2"
                 :loading="loading"
-                :disabled="!Boolean(var_id_1) || loading ||  Boolean(productInfo.product_id)"
+                :disabled="!Boolean(var_id_1) || loading"
               />
             </v-col>
             <v-col cols="12" md="4">
@@ -62,7 +62,7 @@
                 v-model="var_id_3"
                 :items="available_items_3"
                 :loading="loading"
-                :disabled="!Boolean(var_id_2) || loading ||  Boolean(productInfo.product_id)"
+                :disabled="!Boolean(var_id_2) || loading "
               />
             </v-col>
           </v-row>
@@ -94,10 +94,10 @@
 <script>
 export default {
   props: {
-    productInfo: {
-      default: {},
-      require: false,
-    },
+    clear_vaue:{
+      default :false,
+      require:false
+    }
   },
   data: () => ({
     e1: 2,
@@ -149,41 +149,26 @@ export default {
   },
   mounted() {},
   watch: {
-    "productInfo.product_id"() {
-      if (Boolean(this.productInfo.product_id)) {
-        this.product_varcomb_id = this.productInfo.product_id;
-        this.var_id_1 = this.productInfo.var1;
-
-        this.available_items_2.push({
-          text: this.productInfo.var_text_2,
-          value: this.productInfo.var2,
-        });
-        console.log("    this.available_items_2" ,     this.available_items_2);
-        this.var_id_2 = this.productInfo.var2;
-        this.available_items_3.push({
-          text: this.productInfo.var_text_3,
-          value: this.productInfo.var3,
-        });
-        this.var_id_3 = this.productInfo.var3;
+    clear_vaue(){
+      if (!this.clear_vaue) {
+        this.product_varcomb_id = ""
       }
     },
     product_varcomb_id() {
       let id = "";
-      if (!Boolean(this.productInfo.product_id)) {
+     
         this.var_id_1 = "";
         this.var_id_2 = "";
         this.var_id_3 = "";
         this.selected_product = {};
-      }
 
       id = this.product_varcomb_id;
-      console.log("id ==== ? ", id);
       if (Boolean(id)) {
         this.loadInfoProduct(id);
       }
     },
     var_id_1() {
-      if (!Boolean(this.productInfo.product_id)) {
+    
         let items = [];
         this.var_id_2 = "";
         this.product_sort_2.items.filter((x) => {
@@ -195,10 +180,10 @@ export default {
           }
         });
         this.available_items_2 = items;
-      }
+   
     },
     var_id_2() {
-      if (!Boolean(this.productInfo.product_id)) {
+
         this.var_id_3 = "";
         let items = [];
         this.product_sort_3.items.filter((x) => {
@@ -210,7 +195,7 @@ export default {
           }
         });
         this.available_items_3 = items;
-      }
+
     },
     valid_variations() {
       if (Boolean(this.valid_variations)) {
@@ -245,6 +230,7 @@ export default {
         });
         this.selected_product = product;
         this.$emit("productId", product.id);
+        this.$emit("validVariations", this.valid_variations);
       } else {
         this.selected_product = {};
       }
@@ -310,10 +296,7 @@ export default {
 
           if (Boolean(response.model.data[0])) {
             if (response.model.data[0].variation1) {
-              console.log(
-                "response.model.data[0].variation1 .. ",
-                response.model.data[0].variation1
-              );
+  
               this.step_var_1 = true;
               set_title[
                 `var_${response.model.data[0].variation1.variation_type.sort}`

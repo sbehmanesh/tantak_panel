@@ -75,30 +75,30 @@ let mnue_tree = [
     route: "/user/internal-personnel",
   }, 
 
-  {
-    id: 6,
-    name: "ناحیه ها",
-    access: "region/index",
-    route: "/region",
-  },
-  {
-    id: 7,
-    name: "شعبات",
-    access: "branch/index",
-    route: "/branches",
-  },
+  // {
+  //   id: 6,
+  //   name: "ناحیه ها",
+  //   access: "region/index",
+  //   route: "/region",
+  // },
+  // {
+  //   id: 7,
+  //   name: "شعبات",
+  //   access: "branch/index",
+  //   route: "/branches",
+  // },
   {
     id: 6185145,
     name: "نمایندگی های فروش",
     access: "sale_agencies/index",
     route: "/product/sale-agency",
   },
-  {
-    id: 200,
-    name: "فروش تجمیعی",
-    access: "collective_sell/index",
-    route: "/collective-sell",
-  },
+  // {
+  //   id: 200,
+  //   name: "فروش تجمیعی",
+  //   access: "collective_sell/index",
+  //   route: "/collective-sell",
+  // },
   {
     id: 13,
     name: "محصولات",
@@ -166,12 +166,12 @@ let mnue_tree = [
     ],
   },
 
-  {
-    id: 31,
-    name: "موجودی انبار",
-    access: "product/root",
-    route: "/stock",
-  },
+  // {
+  //   id: 31,
+  //   name: "موجودی انبار",
+  //   access: "product/root",
+  //   route: "/stock",
+  // },
    {
     id: 34751,
     name: "وظیفه ها",
@@ -194,23 +194,23 @@ let mnue_tree = [
         name: "فروش تلفنی",
         route: "/product/buy-person",
       },
-      {
-        id: 52,
-        access: (state) => {
-          if (state.auth) {
-            if (
-              state.auth.action.indexOf(
-                "call_center/index-superviser-messages"
-              ) > -1 ||
-              state.auth.action.indexOf("recived_message/index") > -1
-            ) {
-              return true;
-            }
-          }
-        },
-        name: "لیست کارکنان",
-        route: "/call-center/list",
-      },
+      // {
+      //   id: 52,
+      //   access: (state) => {
+      //     if (state.auth) {
+      //       if (
+      //         state.auth.action.indexOf(
+      //           "call_center/index-superviser-messages"
+      //         ) > -1 ||
+      //         state.auth.action.indexOf("recived_message/index") > -1
+      //       ) {
+      //         return true;
+      //       }
+      //     }
+      //   },
+      //   name: "لیست کارکنان",
+      //   route: "/call-center/list",
+      // },
       {
         id: 53,
         access: "messages/index",

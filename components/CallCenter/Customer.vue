@@ -51,9 +51,11 @@
               <v-stepper-step
                 complete
                 editable
-                edit-icon="account_circle"
+                edit-icon="shopping_basket
+"
                 step="4"
               >
+ 
                 <span class="font_16"> سفارشات </span>
                 <small class="pt-2">
                   لیست سفارشات باز مشتری
@@ -877,6 +879,42 @@ export default {
         text: " هماهنگی ارسال به سرپرست",
         value: "send_to_supervisor",
       },
+      {
+        text: "ارجاع به نمایندگی",
+        value: "send_to_agency",
+      },
+      {
+        text: "برگشت به هماهنگ کننده ارسال",
+        value: "agency_to_send",
+      },
+      {
+        text: "ارجاع از نمایندگی به انبار دار",
+        value: "agency_to_stockclerk",
+      },
+      {
+        text: "برگشت از انبار دار به نمایندگی",
+        value: "stockclerk_to_agency",
+      },
+      {
+        text: "کارمند به انبار دار",
+        value: "employee_to_stockclerk",
+      },
+      {
+        text: "stockclerk_to_employee",
+        value: "ارجاع انبار دار به کارمند نمایندگی",
+      },
+      {
+        text: "ارجاع کارمند به پیک",
+        value: "employee_to_courier",
+      },
+      {
+        text: "ارجاع از پیک به کارمند",
+        value: "courier_to_employee",
+      },
+      {
+        text: "تحویل داده شده",
+        value: "done",
+      },
     ],
     step_items: [],
     admin: [
@@ -1025,6 +1063,8 @@ export default {
             } else {
               return false;
             }
+          }else{
+            return false
           }
         },
       },
@@ -1201,6 +1241,16 @@ export default {
         text: "تخفیف (ریال)",
         type: "price",
         value: "products_discount",
+      },
+      {
+        text: "وضعیت  انبار",
+        filterType: "select",
+        value: "status_stock",
+        items: [
+          { text: "منتظر برداشت", value: "wait" },
+          { text: "برداشت انجام شده", value: "done" },
+          { text: "کنسل شده", value: "reject" },
+        ],
       },
       {
         text: "شماره فاکتور",

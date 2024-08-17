@@ -1,11 +1,7 @@
 <template>
   <v-form v-model="valid" @submit.prevent="submit()" :disabled="loading">
-    <v-card
-      class=" elevation-0 pa-8 "
-      :disabled="Boolean(loading)"
-  
-    >
-      <v-row dense >
+    <v-card class="elevation-0 pa-8" :disabled="Boolean(loading)">
+      <v-row dense>
         <v-col cols="12" md="3">
           <amp-input text="نام نمایندگی" v-model="form.name" rules="require" />
         </v-col>
@@ -126,7 +122,7 @@
             icon="done"
             class="my-1"
             type="submit"
-                :loading="loading"
+            :loading="loading"
             color="success"
             :disabled="!valid || loading"
             :text="modelId ? 'ویرایش' : 'ثبت'"
@@ -285,9 +281,12 @@ export default {
               this.form.agency_main = "sub";
               break;
           }
-          this.form.delivery_time_ids = response.delivery_times.map(
-            (x) => x.id
-          );
+          let ids = [];
+          response.delivery_times.map((x) => {
+            ids.push(x.id);
+          });
+          this.form.delivery_time_ids = ids;
+
           this.location.push(response.lat);
           this.location.push(response.long);
           if (Boolean(response.sale_online)) {
@@ -335,9 +334,8 @@ export default {
           this.city_items = response;
           if (Boolean(this.modelId)) {
             this.loadData();
-          } else {
-            this.timsSend();
           }
+          this.timsSend();
         })
         .catch((rej) => {
           console.log(rej);

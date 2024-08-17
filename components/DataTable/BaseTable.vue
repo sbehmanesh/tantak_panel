@@ -124,7 +124,8 @@
             <v-skeleton-loader type="image" height="20px" v-if="loading" />
             <template v-else v-for="(btn, index) in btn_actions">
               <v-btn
-              small
+                small
+                class="white--text"
                 :title="btn.text"
                 :color="btn.color"
                 :key="index + btn.text"
@@ -194,6 +195,12 @@
       @deleteItem="removeItem"
       v-model="delete_dialog.show"
     />
+    <CallDialog
+      v-if="show_call_dialog"
+      :dialog="show_call_dialog"
+      :username="username"
+      @closeDialog="closeDialog"
+    />
   </div>
 </template>
 
@@ -202,9 +209,10 @@ import AmpDelete from "~/components/Base/AmpDelete.vue";
 import TableItem from "~/components/DataTable/TableItem.vue";
 import FilterItem from "~/components/DataTable/FilterItem.vue";
 import TableFooter from "~/components/DataTable/TableFooter.vue";
+import CallDialog from "~/components/CallCenter/CallDialog.vue";
 
 export default {
-  components: { FilterItem, TableItem, AmpDelete, TableFooter },
+  components: { FilterItem, TableItem, AmpDelete, TableFooter, CallDialog },
   props: {
     value: {
       type: Array,
@@ -339,6 +347,8 @@ export default {
     page_count: 1,
     total_item: 0,
     loading: false,
+    username: "",
+    show_call_dialog: false,
     sort_desc: true,
     sort_by_type: "",
     selectedItem: [],
@@ -1184,15 +1194,20 @@ export default {
       });
     },
     openCallDialog(username) {
-      this.$reqApi("message/issabel-request-call", { username: username }).then(
-        (res) => {
-          
-        }
-      ).catch((err)=>{
-        console.log(err);
-      })
-      this.call_dialog.show = true;
-      this.call_dialog.item = username;
+      this.show_call_dialog = true;
+      this.username = username;
+      // this.$reqApi("message/issabel-request-call", { username: username }).then(
+      //   (res) => {
+
+      //   }
+      // ).catch((err)=>{
+      //   console.log(err);
+      // })
+      // this.call_dialog.show = true;
+      // this.call_dialog.item = username;
+    },
+    closeDialog() {
+      this.show_call_dialog = false;
     },
     emitDataTable() {
       this.$emit("emitDataTable", this.desserts);

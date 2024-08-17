@@ -100,6 +100,15 @@ export default {
       if (this.$checkRole(this.$store.state.auth.role.head_financial_unit)) {
         dialog_title = "ایجاد  واحد مالی";
         this.form.role_id.push(this.$store.state.auth.role.financial_unit_id);
+      }      
+      
+      if (this.$checkRole(this.$store.state.auth.role.admin_call_center_id)) {
+        dialog_title = "ایجاد مرکز تماس";
+        this.form.role_id.push(this.$store.state.auth.role.superviser_id);
+      }    
+        if (this.$checkRole(this.$store.state.auth.role.superviser_id)) {
+        dialog_title = "ایجاد اپراتور مرکز تماس";
+        this.form.role_id.push(this.$store.state.auth.role.oprator_id);
       }
       if (this.$checkRole(this.$store.state.auth.role.coordinating_manager)) {
         dialog_title = "ایجاد سرپرست هماهنگ کننده";
@@ -129,6 +138,36 @@ export default {
         dialog_title = " ایجاد  هماهنگ کننده ارسال";
         this.form.role_id.push(
           this.$store.state.auth.role.delivery_coordination
+        );
+      }    
+       if (
+        this.$checkRole(
+          this.$store.state.auth.role.agency_manager
+        )
+      ) {
+        dialog_title = " ایجاد  انبار دار ";
+        this.form.role_id.push(
+          this.$store.state.auth.role.storekeeper
+        );
+      }      
+       if (
+        this.$checkRole(
+          this.$store.state.auth.role.storekeeper
+        )
+      ) {
+        dialog_title = " ایجاد  کارمند ";
+        this.form.role_id.push(
+          this.$store.state.auth.role.agency_employee
+        );
+      }      
+       if (
+        this.$checkRole(
+          this.$store.state.auth.role.agency_employee
+        )
+      ) {
+        dialog_title = " ایجاد  پیک ";
+        this.form.role_id.push(
+          this.$store.state.auth.role.courier
         );
       }
 

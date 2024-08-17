@@ -6,6 +6,13 @@
       :basketId="ref_basket_id"
       @relod="refresh"
     />
+
+    <PickedUp
+      @closeDialog="closeDialog"
+      v-if="show_picked_up"
+      :dialog="show_picked_up"
+      :basketId="basket_id"
+    />
     <v-window-item :value="1">
       <div>
         <v-row class="d-flex justify-center align-center mt-5">
@@ -51,7 +58,7 @@
                             <th class="text-center">نوع پرداخت</th>
                             <th class="text-center">وضعیت</th>
                             <th class="text-center">توضیحات</th>
-                            <th class="text-center"> شناسه پرداخت</th>
+                            <th class="text-center">شناسه پرداخت</th>
                             <th class="text-center">عکس رسید</th>
                           </tr>
                         </thead>
@@ -207,9 +214,11 @@
 import BaseTable from "@/components/DataTable/BaseTable";
 import Basket from "@/components/Product/Coordiantor/Basket.vue";
 import RefralDialog from "@/components/CallCenter/RefralDialog.vue";
+import PickedUp from "@/components/CallCenter/PickedUp.vue";
+import Dialog from "~/components/Tsaks/Dialog.vue";
 
 export default {
-  components: { BaseTable, Basket, RefralDialog },
+  components: { BaseTable, Basket, RefralDialog, PickedUp, Dialog },
   props: {
     rootBody: { default: () => ({}) },
     filters: { default: () => ({}) },
@@ -324,6 +333,42 @@ export default {
         text: " هماهنگی ارسال به سرپرست",
         value: "send_to_supervisor",
       },
+      {
+        text: "ارجاع به نمایندگی",
+        value: "send_to_agency",
+      },
+      {
+        text: "برگشت به هماهنگ کننده ارسال",
+        value: "agency_to_send",
+      },
+      {
+        value: "agency_to_stockclerk",
+        text: "ارجاع از نمایندگی به انبار دار",
+      },
+      {
+        text: "برگشت از انبار دار به نمایندگی",
+        value: "stockclerk_to_agency",
+      },
+      {
+        text: "کارمند به انبار دار",
+        value: "employee_to_stockclerk",
+      },
+      {
+        text: "stockclerk_to_employee",
+        value: "ارجاع انبار دار به کارمند نمایندگی",
+      },
+      {
+        text: "ارجاع کارمند به پیک",
+        value: "employee_to_courier",
+      },
+      {
+        text: "ارجاع از پیک به کارمند",
+        value: "courier_to_employee",
+      },
+      {
+        text: "تحویل داده شده",
+        value: "done",
+      },
     ],
     status_items: [
       {
@@ -366,6 +411,7 @@ export default {
     basket_price: "",
     delivery_info: "",
     show_history: false,
+    show_picked_up: false,
     root_body_history: {},
     refral_basket: { show: false, items: null },
     header_history: [],
@@ -493,22 +539,22 @@ export default {
           }
         },
       },
-      // {
-      //   text: "تغییر وضعیت",
-      //   icon: "change_circle",
-      //   color: "success",
-      //   fun: (body) => {
-      //     this.change = true;
-      //     this.item_id = body.id;
-      //   },
-      //   show_fun: (body) => {
-      //     if (body.step == "refer_fiscal_manager") {
-      //       return true;
-      //     } else {
-      //       return false;
-      //     }
-      //   },
-      // },
+      {
+        text: "برداشت از انبار",
+        icon: "change_circle",
+        color: "success",
+        fun: (body) => {
+          this.show_picked_up = true;
+          this.basket_id = body.id;
+        },
+        show_fun: (body) => {
+          if (body.step == "agency_to_stockclerk" && body.status_stock =="wait") {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
       // {
       //   text: "تغییر وضعیت",
       //   icon: "change_circle",
@@ -580,12 +626,22 @@ export default {
         },
       },
       {
-        disableSort: "true",
-        filterable: false,
         text: "شماره تماس",
+        type: "phone",
         value: (body) => {
           if (body.user) {
             return body.user.username;
+          }
+        },
+        show_fun: (body) => {
+          if (
+            this.$store.state.auth.action.indexOf(
+              "messages/issabel_request_call"
+            ) > -1
+          ) {
+            return true;
+          } else {
+            return false;
           }
         },
       },
@@ -674,6 +730,17 @@ export default {
         value: "total_weight",
       },
       {
+        text: "وضعیت  انبار",
+        filterType: "select",
+        value: "status_stock",
+        items: [
+          { text: "منتظر برداشت", value: "wait" },
+          { text: "برداشت انجام شده", value: "done" },
+          { text: "کنسل شده", value: "reject" },
+        ],
+      },
+
+      {
         text: "کیف پول",
         filterCol: "wallet",
         value: (body) => {
@@ -691,6 +758,9 @@ export default {
     ];
   },
   methods: {
+    closeDialog() {
+      this.show_picked_up = false;
+    },
     loadFiscal() {
       this.$reqApi("/user/fiscal-manager", { row_number: 300 })
         .then((res) => {

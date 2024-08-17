@@ -79,13 +79,13 @@
                 <amp-select
                   text="نوع پیش پرداخت"
                   rules="require"
-                  v-model="pay_type"
-                  :items="pay_type_item"
+                  v-model="prepay_type"
+                  :items="prepay_type_item"
                 />
               </v-col>
               <v-col cols="12" md="3" v-if="Boolean(chek_phone_sale)">
                 <amp-input
-                  v-if="pay_type == 'amount'"
+                  v-if="prepay_type == 'amount'"
                   text="مبلغ پیش پرداخت (ریال)"
                   rules="require"
                   is-price
@@ -380,8 +380,8 @@ export default {
     wholesale_unit_items: [],
     variationTypes: [],
     specefication_table: [],
-    pay_type: "amount",
-    pay_type_item: [
+    prepay_type: "amount",
+    prepay_type_item: [
       { text: "درصد", value: "percent" },
       { text: "مقدار", value: "amount" },
     ],
@@ -473,6 +473,7 @@ export default {
       this.loading = true;
       let form = this.$copyForm(this.form);
       form["online_sale"] = false;
+      form["prepay_type"] = this.prepay_type;
       form["phone_sale"] = false;
       form["person_sale"] = false;
       this.publish_status.map((y) => {
@@ -568,7 +569,7 @@ export default {
             }
             if (Boolean(response.phone_sale)) {
               this.publish_status.push("phone_sale");
-              this.prepay_type = response.prepay_type;
+              this.preprepay_type = response.preprepay_type;
               this.prepayment = response.prepay_amount;
             }
 

@@ -43,7 +43,7 @@
                   :items="agencyes"
                 />
                 <amp-autocomplete
-                  v-if="form.step == 'reject' && Boolean(courier)"
+                  v-if="form.step == 'cancel' && Boolean(courier)"
                   text="علت لغو سفارش"
                   rules="require"
                   v-model="cancel"
@@ -237,7 +237,7 @@ export default {
       let form = {};
       form = { ...this.form };
       if (Boolean(this.courier)) {
-        if (form.step == "reject") {
+        if (form.step == "cancel") {
           form["text_cancel"] = this.cancel;
         }
         if (form.step == "done") {
@@ -484,7 +484,7 @@ export default {
           },
           {
             text: "لغو سفارش",
-            value: "reject",
+            value: "cancel",
           },
         ];
       }

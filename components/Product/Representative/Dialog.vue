@@ -1,6 +1,6 @@
 <template>
   <v-row justify="center">
-    <v-dialog v-model="dialog" persistent width="1200">
+    <v-dialog v-model="dialog" persistent width="1200" :fullscreen="$vuetify.breakpoint.mdAndUp ? false : true">
       <v-card>
         <v-card-title class="primary mb-10">
           <span class="font_20 white--text">موجودی انبار</span>
@@ -61,7 +61,7 @@
                             </v-col>
                           </v-row>
                           <v-row class="d-flex justify-center mt-5">
-                            <v-col cols="2">
+                            <v-col cols="6" md="2">
                               <amp-button
                                 block
                                 height="40"
@@ -72,7 +72,7 @@
                                 :disabled="!Boolean(check_continue) || !valid || loading"
                               />
                             </v-col>
-                            <v-col cols="2">
+                            <v-col cols="6" md="2">
                               <amp-button
                                 block
                                 height="40"

@@ -123,7 +123,7 @@
         <div v-for="(item, index) in variations_list" :key="index" class="">
           <v-row class="px-5 py-4 mr-3 align-center">
             <h1 class="primary--text px-5 mr-3">
-              {{ index + 1 }} - {{ item.variation1.product.name }}
+              {{ index + 1 }} - {{ item.product.name }}
             </h1>
             <v-spacer></v-spacer>
             <small> {{ item.variation1.value }} </small>
@@ -225,7 +225,9 @@ export default {
       this.var_id_1 = "";
       this.var_id_2 = "";
       this.var_id_3 = "";
-      this.selected_product = {};
+      this.sumb_price = "";
+      this.main_price = "";
+      this.number = 1;
       id = this.product_varcomb_id;
       if (Boolean(id)) {
         this.loadInfoProduct(id);
@@ -233,7 +235,6 @@ export default {
     },
     var_id_1() {
       let items = [];
-      this.var_id_2 = "";
       this.product_sort_2.items.filter((x) => {
         if (x.parent == this.var_id_1) {
           items.push({
@@ -243,9 +244,11 @@ export default {
         }
       });
       this.available_items_2 = items;
+      if (Boolean(this.valid_variations)) {
+        this.findSelectedProduct();
+      }
     },
     var_id_2() {
-      this.var_id_3 = "";
       let items = [];
       this.product_sort_3.items.filter((x) => {
         if (x.parent == this.var_id_2) {
@@ -256,36 +259,18 @@ export default {
         }
       });
       this.available_items_3 = items;
+      if (Boolean(this.valid_variations)) {
+        this.findSelectedProduct();
+      }
+    },
+    var_id_3() {
+      if (Boolean(this.valid_variations)) {
+        this.findSelectedProduct();
+      }
     },
     valid_variations() {
       if (Boolean(this.valid_variations)) {
-        let product = {};
-        this.all_variatons_product.filter((f) => {
-          if (Boolean(this.step_var_3)) {
-            if (
-              this.var_id_1 == f.variation_1_id &&
-              this.var_id_2 == f.variation_2_id &&
-              this.var_id_3 == f.variation_3_id
-            ) {
-              product = f;
-            }
-          }
-          if (Boolean(this.step_var_2) && !Boolean(this.step_var_3)) {
-            if (this.var_id_1 == f.variation_3_id && this.var_id_2 == f.variation_2_id) {
-              product = f;
-            }
-          }
-          if (
-            Boolean(this.step_var_1) &&
-            !Boolean(this.step_var_2) &&
-            !Boolean(this.step_var_3)
-          ) {
-            if (this.var_id_1 == f.variation_1_id) {
-              product = f;
-            }
-          }
-        });
-        this.selected_product = product;
+        this.findSelectedProduct();
       }
     },
   },
@@ -370,12 +355,12 @@ export default {
           } else {
             this.check = true;
           }
-          this.main_image = response.model.data[0].variation1.product.main_image;
-          this.product_name = response.model.data[0].variation1.product.name;
+          this.main_image = response.model.data[0].product.main_image;
+          this.product_name = response.model.data[0].product.name;
           // get price
           this.main_price = response.model.data[0].price
             ? response.model.data[0].price
-            : response.model.data[0].variation1.product.base_price;
+            : response.model.data[0].product.base_price;
           this.sumb_price = this.main_price;
 
           // set items variations
@@ -498,6 +483,52 @@ export default {
       }
       variation_array = ids;
       this.$emit("variation_array", variation_array);
+    },
+    findSelectedProduct() {
+      return new Promise((res, rej) => {
+        if (Boolean(this.valid_variations)) {
+          let product = {};
+          this.all_variatons_product.filter((f) => {
+            if (Boolean(this.step_var_3)) {
+              if (
+                this.var_id_1 == f.variation_1_id &&
+                this.var_id_2 == f.variation_2_id &&
+                this.var_id_3 == f.variation_3_id
+              ) {
+                product = f;
+              }
+            }
+            if (Boolean(this.step_var_2) && !Boolean(this.step_var_3)) {
+              if (
+                this.var_id_1 == f.variation_3_id &&
+                this.var_id_2 == f.variation_2_id
+              ) {
+                product = f;
+              }
+            }
+            if (
+              Boolean(this.step_var_1) &&
+              !Boolean(this.step_var_2) &&
+              !Boolean(this.step_var_3)
+            ) {
+              if (this.var_id_1 == f.variation_1_id) {
+                product = f;
+              }
+            }
+            if (Object.keys(product).length > 0) {
+              res(product);
+            }
+          });
+        }
+      })
+        .then((res) => {
+          this.selected_product = res;
+          this.main_price = res.price ? res.price : res.product.base_price;
+          this.sumb_price = this.main_price;
+        })
+        .catch((rej) => {
+          console.log(rej);
+        });
     },
   },
 };

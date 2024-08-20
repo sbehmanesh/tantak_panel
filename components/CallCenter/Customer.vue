@@ -1681,13 +1681,13 @@ export default {
       //     number: event.number,
       //     price: event.product.price
       //       ? event.product.price
-      //       : event.product.variation1.product.base_price,
+      //       : event.product.product.base_price,
 
       //     full_barcode: event.product.full_barcode,
       //     discount: event.product.discount,
       //     id: event.product.id,
-      //     name: event.product.variation1.product.name,
-      //     main_image: event.product.variation1.product.main_image,
+      //     name: event.product.product.name,
+      //     main_image: event.product.product.main_image,
       //   });
     },
     updateBasket() {
@@ -1741,7 +1741,6 @@ export default {
           this.$toast.success(`${event.name} بروزرسانی شد `);
         }
       }
-
       if (!Boolean(repetitious_item)) {
         this.list_basket.items.unshift({
           information:
@@ -1759,13 +1758,13 @@ export default {
           number: event.number,
           price: event.product.price
             ? event.product.price
-            : event.product.variation1.product.base_price,
+            : event.product.product.base_price,
 
           full_barcode: event.product.full_barcode,
           discount: event.product.discount,
           id: event.product.id,
-          name: event.product.variation1.product.name,
-          main_image: event.product.variation1.product.main_image,
+          name: event.product.product.name,
+          main_image: event.product.product.main_image,
         });
         this.$toast.success("محصول به سبد خرید اضافه شد");
       }

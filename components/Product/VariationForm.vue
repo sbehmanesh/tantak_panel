@@ -2,10 +2,13 @@
   <v-card class="pa-1 ma-0 elevation-0">
     <v-expansion-panels variant="popout" class="my-4 elevation-5">
       <v-expansion-panel>
-        <v-expansion-panel-header expand-icon="webhook" class="primary lighten-4">
+        <v-expansion-panel-header
+          expand-icon="webhook"
+          class="primary lighten-4"
+        >
           ویژگی ها
         </v-expansion-panel-header>
-        <v-expansion-panel-content class="primary lighten-5 ">
+        <v-expansion-panel-content class="primary lighten-5">
           <v-row>
             <template v-if="showAddVairiation">
               <v-col cols="12" md="3">
@@ -112,48 +115,56 @@
             <v-col cols="12" md="2" class="text-center"> گالری</v-col>
             <v-col cols="12" md="3" class="text-center"> عملیات </v-col>
           </v-row>
-          <v-row
-            v-for="(v, index) in variations"
-            :key="'v' + index"
-            :class="index % 2 == 0 ? 'odd-row' : ''"
-          >
-            <v-col cols="12" md="3" class="text-center">
-              {{ v.variation_type.value }}
-            </v-col>
-            <v-col cols="12" md="3" class="text-center"
-              ><amp-input v-model="v.value" />
-            </v-col>
-            <!-- <v-col cols="12" md="2" class="text-center"
+   
+            <v-row
+              v-for="(v, index) in variations"
+              :key="'v' + index"
+              :class="index % 2 == 0 ? 'odd-row' : ''"
+            >
+            
+              <v-col cols="12" md="3" class="text-center">
+                {{ v.variation_type.value }}
+              </v-col>
+              <v-col cols="12" md="3" class="text-center"
+                ><amp-input v-model="v.value" />
+              </v-col>
+              <!-- <v-col cols="12" md="2" class="text-center"
         ><amp-input v-model="v.barcode"
       /></v-col> -->
-            <v-col cols="12" md="1" class="text-center"
-              ><amp-input v-model="v.sort" rules="number" />
-            </v-col>
-            <v-col cols="12" md="2" class="d-flex justify-center" v-if="v.variation_type && v.variation_type.value == 'رنگ'" >
-              <v-btn color="primary" @click="GalleryDialog(true, v, index)">
-                <v-icon>image</v-icon>
-              </v-btn>
-            </v-col>
-            <v-col cols="12" md="2" v-else ></v-col>
-            <v-col cols="12" md="3" class="text-center">
-              <amp-button
-                small
-                text="به روز رسانی"
-                color="success"
-                :loading="loading"
-                @click="update(index)"
+              <v-col cols="12" md="1" class="text-center"
+                ><amp-input v-model="v.sort" rules="number" />
+              </v-col>
+              <v-col
+                cols="12"
+                md="2"
+                class="d-flex justify-center"
+                v-if="v.variation_type && v.variation_type.value == 'رنگ'"
               >
-              </amp-button>
-              <amp-button
-                small
-                text="حذف"
-                color="error"
-                :loading="loading"
-                @click="deleteDialog(true, index)"
-              >
-              </amp-button>
-            </v-col>
-          </v-row>
+                <v-btn color="primary" @click="GalleryDialog(true, v, index)">
+                  <v-icon>image</v-icon>
+                </v-btn>
+              </v-col>
+              <v-col cols="12" md="2" v-else></v-col>
+              <v-col cols="12" md="3" class="text-center">
+                <amp-button
+                  small
+                  text="به روز رسانی"
+                  color="success"
+                  :loading="loading"
+                  @click="update(index)"
+                >
+                </amp-button>
+                <amp-button
+                  small
+                  text="حذف"
+                  color="error"
+                  :loading="loading"
+                  @click="deleteDialog(true, index)"
+                >
+                </amp-button>
+              </v-col>
+            </v-row>
+
 
           <v-dialog
             v-model="deleteDiaolog"
@@ -196,7 +207,7 @@ import VariationGallery from "@/components/Product/VariationGallery.vue";
 export default {
   components: { VariationGallery },
   props: {
-    product_id: { default: null }
+    product_id: { default: null },
   },
   data: () => ({
     valid: false,
@@ -220,12 +231,12 @@ export default {
       value: "",
       barcode: "",
       images: [],
-      code: ""
-    }
+      code: "",
+    },
   }),
 
   mounted() {
-    this.loadData()
+    this.loadData();
     this.getCategories();
     this.getProducts();
   },
@@ -237,10 +248,10 @@ export default {
     },
     images() {
       if (this.images) {
-        this.images.map(x => {
+        this.images.map((x) => {
           this.form.images.push({
             alt: "image",
-            path: x
+            path: x,
           });
         });
       }
@@ -250,9 +261,9 @@ export default {
     loadData() {
       this.loading = true;
       this.$reqApi("/product-variation", {
-        filters: { product_id: this.$route.params.id }
+        filters: { product_id: this.$route.params.id },
       })
-        .then(async response => {
+        .then(async (response) => {
           this.variations = [];
           response = response.model.data;
           for (let i = 0; response.length; i++) {
@@ -264,12 +275,12 @@ export default {
               sort: response[i].sort,
               code: response[i].code,
               variation_type_id: response[i].variation_type_id,
-              images: response[i].product_images
+              images: response[i].product_images,
             });
           }
           this.loading = false;
         })
-        .catch(error => {
+        .catch((error) => {
           this.loading = false;
         });
     },
@@ -290,36 +301,36 @@ export default {
       }
 
       this.$reqApi("/product-variation/update", form)
-        .then(response => {
+        .then((response) => {
           this.$toast.success("اطلاعات ویرایش شد");
           this.loading = false;
         })
-        .catch(error => {
+        .catch((error) => {
           this.loading = false;
         });
     },
     getCategories() {
       let form = {
-        row_number: 2000
+        row_number: 2000,
       };
 
       this.$reqApi("/category", form)
-        .then(response => {
+        .then((response) => {
           this.product_categories = response.model.data
-            .filter(x => !x.parent_category_id && this.modelId != x.id)
-            .map(x => ({
+            .filter((x) => !x.parent_category_id && this.modelId != x.id)
+            .map((x) => ({
               value: x.id,
-              text: x.name
+              text: x.name,
             }));
 
           this.product_categories.push({
             value: "",
-            text: "بدون والد"
+            text: "بدون والد",
           });
 
           this.loading = false;
         })
-        .catch(error => {
+        .catch((error) => {
           this.loading = false;
         });
     },
@@ -327,20 +338,20 @@ export default {
       let form = {
         row_number: 2000,
         filters: {
-          categories_id: id
-        }
+          categories_id: id,
+        },
       };
 
       this.$reqApi("/product", form)
-        .then(response => {
-          this.products = response.model.data.map(x => ({
+        .then((response) => {
+          this.products = response.model.data.map((x) => ({
             value: x.id,
-            text: x.name
+            text: x.name,
           }));
 
           this.loading = false;
         })
-        .catch(error => {
+        .catch((error) => {
           this.loading = false;
         });
     },
@@ -352,14 +363,14 @@ export default {
       this.loading = true;
       let selected_id = this.variations[this.selected_item].id;
       this.$reqApi("/product-variation/delete", { id: selected_id })
-        .then(response => {
+        .then((response) => {
           this.$toast.success("ویژگی مد نظر با موفقیت حذف شد.");
           this.loadData();
           this.deleteDiaolog = false;
 
           this.loading = false;
         })
-        .catch(error => {
+        .catch((error) => {
           this.loading = false;
         });
     },
@@ -371,7 +382,7 @@ export default {
       this.form["product_id"] = this.product_id;
       let form = this.$copyForm(this.form);
       this.$reqApi("/product-variation/insert", form)
-        .then(response => {
+        .then((response) => {
           this.$toast.success("ویژگی مد نظر با موفقیت حذف شد");
           this.loadData();
           this.deleteDiaolog = false;
@@ -381,12 +392,12 @@ export default {
             value: "",
             variation_type_id: "",
             product_id: "",
-            code: ""
+            code: "",
           };
           this.showAddVairiation = false;
           this.loading = false;
         })
-        .catch(error => {
+        .catch((error) => {
           this.loading = false;
         });
     },
@@ -395,7 +406,7 @@ export default {
         this.gallery_diaolog.show = true;
         this.gallery_diaolog.item = {
           index: index,
-          items: value.images
+          items: value.images,
         };
       } else {
         this.gallery_diaolog.show = false;
@@ -406,8 +417,8 @@ export default {
       if (event) {
         this.update(event[1], event[0]);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style>

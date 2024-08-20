@@ -2,6 +2,7 @@
   <div>
     <BaseTable
       url="/sale-agency"
+        autoDelete="/sale-agency/delete"
       :headers="headers"
       autoUpdate="/product/sale-agency"
       createUrl="/product/sale-agency/insert"

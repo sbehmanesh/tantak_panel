@@ -2,10 +2,10 @@
   <v-form v-model="valid" @submit.prevent="submit()" :disabled="loading">
     <v-card class="elevation-0 pa-8" :disabled="Boolean(loading)">
       <v-row dense>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="2">
           <amp-input text="نام نمایندگی" v-model="form.name" rules="require" />
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="2">
           <amp-input
             text="کد نمایندگی"
             v-model="form.code"
@@ -13,7 +13,7 @@
             cClass="ltr-item"
           />
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="2">
           <amp-select
             text="وضعیت"
             rules="require"
@@ -21,7 +21,7 @@
             :items="$store.state.static.status"
           />
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="2">
           <UserSelectForm
             text="انتخاب مدیر"
             v-model="manager"
@@ -30,7 +30,7 @@
             :role-id="role_id"
           />
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="2">
           <amp-select
             text="شعبه اصلی است ؟‌"
             v-model="form.agency_main"
@@ -38,7 +38,7 @@
             rules="require"
           />
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="2">
           <amp-autocomplete
             text="انتخاب استان"
             rules="require"
@@ -46,7 +46,7 @@
             :items="province"
           />
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="2">
           <amp-autocomplete
             :disabled="!Boolean(province_id)"
             text="انتخاب شهر"
@@ -55,7 +55,7 @@
             :items="citis"
           />
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="2">
           <amp-select
             text="نوع فروش"
             multiple
@@ -64,15 +64,15 @@
             :items="sale_type_items"
           />
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="2">
           <amp-select
             text="ارسال کالا"
             rules="require"
             v-model="form.send_good"
             :items="check_have"
           />
-        </v-col>    
-            <v-col cols="12" md="3">
+        </v-col>
+        <v-col cols="12" md="2">
           <amp-select
             text="خدمات پس از فروش"
             rules="require"
@@ -81,13 +81,13 @@
           />
         </v-col>
 
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="2">
           <SelectLocationDialog v-model="location" />
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="2">
           <AmpUploadFileNew v-model="form.img" />
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="2">
           <amp-input
             text="امتیاز"
             v-model="form.score"
@@ -95,7 +95,7 @@
             cClass="ltr-item"
           />
         </v-col>
-        <v-col cols="12" md="1">
+        <v-col cols="12" md="2">
           <amp-input
             text="ترتیب"
             v-model="form.sort"
@@ -111,9 +111,10 @@
             :rows="1"
           ></amp-textarea>
         </v-col>
-        <v-col cols="12">
+
+        <v-col cols="12" md="12">
           <Time
-          v-if="!loading"
+            v-if="!loading"
             :deliveryTime="delivery_time"
             :deliveryTimeIds="form.delivery_time_ids"
             @validTime="valid_time = $event"
@@ -134,6 +135,7 @@
             text="انصراف"
             @click="redirectPage"
           />
+
           <amp-button
             large
             icon="done"
@@ -175,7 +177,7 @@ export default {
       },
       {
         text: "ندارد",
-        value: "font_have",
+        value: "dont_have",
       },
     ],
     citis: [],
@@ -227,7 +229,7 @@ export default {
 
   watch: {
     location() {
-      if (this.location.length > 0 &&  this.location[0] && this.location[1]) {
+      if (this.location.length > 0 && this.location[0] && this.location[1]) {
         this.form.lat = this.location[0].toString();
         this.form.long = this.location[1].toString();
       }
@@ -251,7 +253,29 @@ export default {
   },
   methods: {
     submit() {
-      let form = { ...this.form };
+      this.loading = true;
+      if (
+        !this.form.delivery_time_ids ||
+        this.form.delivery_time_ids.length == 0
+      ) {
+        this.loading = false;
+        this.$toast.error(
+          "نمایندگی باید حداقل یک بازه زمانی ارسال  داشته باشد"
+        );
+        return;
+      }
+      this.form.delivery_time_ids = this.form.delivery_time_ids.map((x) => {
+        let week_days = x.week_days;
+        if (typeof week_days != "string") {
+          week_days = JSON.stringify(x.week_days);
+        }
+        return {
+          ...x,
+          week_days,
+        };
+      });
+      let form = JSON.parse(JSON.stringify(this.form));
+
       switch (form.agency_main) {
         case "main":
           form.agency_main = true;
@@ -259,9 +283,8 @@ export default {
         case "sub":
           form.agency_main = false;
           break;
-      }     
-      
-      
+      }
+
       switch (form.send_good) {
         case "have":
           form.send_good = true;
@@ -269,8 +292,8 @@ export default {
         case "dont_have":
           form.send_good = false;
           break;
-      }     
-       switch (form.after_sale_service) {
+      }
+      switch (form.after_sale_service) {
         case "have":
           form.after_sale_service = true;
           break;
@@ -279,7 +302,6 @@ export default {
           break;
       }
 
-      
       form["sale_online"] = false;
       form["sale_phone"] = false;
       form["sale_person"] = false;
@@ -332,10 +354,26 @@ export default {
               this.form.agency_main = "sub";
               break;
           }
-  
-          this.form.delivery_time_ids = response.delivery_times;
-          
+          switch (response.send_good) {
+            case true:
+              this.form.send_good = "have";
+              break;
 
+            default:
+              this.form.send_good = "dont_have";
+              break;
+          }
+          switch (response.after_sale_service) {
+            case true:
+              this.form.after_sale_service = "have";
+              break;
+
+            default:
+              this.form.after_sale_service = "dont_have";
+              break;
+          }
+
+          this.form.delivery_time_ids = response.delivery_times;
           this.location.push(response.lat);
           this.location.push(response.long);
           if (Boolean(response.sale_online)) {
@@ -348,7 +386,7 @@ export default {
           if (Boolean(response.sale_phone)) {
             this.sale_type_selected.push("sale_phone");
           }
-          
+
           this.loading = false;
         })
         .catch((error) => {

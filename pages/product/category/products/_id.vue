@@ -31,8 +31,8 @@ export default {
     this.headers = [
       { title: ' ', value: 'main_image', type: 'image', disableSort: 'true', filterable: false },
       { text: 'نام محصول', value: 'name' },
-      { text:'واحد فروش عمده',value:"wholesale_unit"},
-      { text: 'ترتیب نمایش', value: 'sort', disableSort: 'true', filterable: false },
+      // { text:'واحد فروش عمده',value:"wholesale_unit"},
+
       // {
       //   text: 'فروش تکی',
       //   value: 'has_single_sell',
@@ -75,6 +75,7 @@ export default {
         filterType: 'select',
         items: this.$store.state.static.product_status,
       },
+      { text: 'ترتیب نمایش', value: 'sort', disableSort: 'true', filterable: false },
     ]
 
     this.$store.dispatch('setPageTitle', this.title)

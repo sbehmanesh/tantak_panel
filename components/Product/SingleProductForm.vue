@@ -16,7 +16,6 @@
           ref="variationsFormSingleSeal"
           :dataItems="product.category_ids"
         />
-
       </v-col>
     </v-row>
 
@@ -48,12 +47,13 @@
 
     <v-row
       v-for="(sv, index) in product.product_variation_combinations.filter(
-        x => x.sell_type == 'single'
+        (x) => x.sell_type == 'single'
       )"
       :key="'sv' + index"
       :class="index % 2 == 0 ? 'odd-row' : ''"
     >
       <v-col cols="12" md="2" class="text-center mt-3">
+        {{ product.name }}
         <span v-if="sv.variation1">
           {{ sv.variation1.value }}
         </span>
@@ -158,19 +158,21 @@ export default {
   props: {
     product: {
       type: Object,
-      require: true
-    }
+      require: true,
+    },
+  },
+  mounted() {
   },
   data: () => ({
     loading: false,
     deleteDiaolog: false,
     variationDiaolog: {
       show: false,
-      item: ""
+      item: "",
     },
     addCombinationDiaolog: {
       show: false,
-      item: ""
+      item: "",
     },
     selected_item: "",
     form: {
@@ -192,8 +194,8 @@ export default {
       medias: [],
       description: "",
       seo_description: "",
-      sort: 1
-    }
+      sort: 1,
+    },
   }),
   methods: {
     submit() {
@@ -209,7 +211,7 @@ export default {
         form["id"] = this.modelId;
       }
       this.$reqApi(url, form)
-        .then(response => {
+        .then((response) => {
           if (!this.modelId) {
             this.$toast.success("اطلاعات ثبت شد");
           } else {
@@ -217,7 +219,7 @@ export default {
           }
           this.redirectPage();
         })
-        .catch(error => {
+        .catch((error) => {
           this.loading = false;
         });
     },
@@ -236,13 +238,13 @@ export default {
         this.loading = false;
         return;
       }
-      form.sort = 0
+      form.sort = 0;
       this.$reqApi("/product-variation-combination/update", form)
-        .then(response => {
+        .then((response) => {
           this.$toast.success("اطلاعات ویرایش شد");
           this.loading = false;
         })
-        .catch(error => {
+        .catch((error) => {
           this.loading = false;
         });
     },
@@ -258,13 +260,13 @@ export default {
       let selected_id =
         this.product.product_variation_combinations[this.selected_item].id;
       this.$reqApi("/product-variation-combination/delete", { id: selected_id })
-        .then(response => {
+        .then((response) => {
           this.$toast.success("ویژگی مد نظر با موفقیت حذف شد");
           this.$emit("reloadPage");
           this.deleteDiaolog = false;
           this.loading = false;
         })
-        .catch(error => {
+        .catch((error) => {
           this.loading = false;
         });
     },
@@ -279,7 +281,7 @@ export default {
     showAddCombination() {
       this.addCombinationDiaolog.show = true;
       this.addCombinationDiaolog.item = this.product;
-    }
-  }
+    },
+  },
 };
 </script>

@@ -60,7 +60,7 @@ export default {
     time: 3,
     timeInterval: null,
     extraBtn: [],
-    filters: {}
+    filters: {},
   }),
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);
@@ -73,19 +73,19 @@ export default {
         width: "30px",
         type: "checkbox",
         disableSort: true,
-        filterable: false
+        filterable: false,
       },
       {
         text: "نام",
         disableSort: true,
         filterable: false,
-        value: body => {
+        value: (body) => {
           if (body.variation_type) {
             return body.variation_type.value;
           } else {
             return "-";
           }
-        }
+        },
       },
       {
         text: "مقدار",
@@ -98,20 +98,14 @@ export default {
         text: "بارکد",
         disableSort: true,
         filterable: false,
-        value: "barcode"
+        value: "barcode",
       },
       {
         text: "ترتیب نمایش",
         disableSort: true,
         filterable: false,
-        value: body => {
-          if (body.variation_type) {
-            return body.variation_type.sort;
-          } else {
-            return "-";
-          }
-        }
-      }
+        value: "sort",
+      },
     ];
     this.extraBtn = [
       {
@@ -119,7 +113,7 @@ export default {
         text: "حذف گروهی",
         color: "error",
         icon: "delete",
-        fun: body => {
+        fun: (body) => {
           if (this.selected_item.length == 0) {
             this.$toast.error("موردی انتخاب نشده");
             return;
@@ -134,8 +128,8 @@ export default {
               clearInterval(this.timeInterval);
             }
           }, 1000);
-        }
-      }
+        },
+      },
     ];
   },
 
@@ -144,7 +138,7 @@ export default {
       this.loading = true;
       for (let i = 0; i < this.selected_item.length; i++) {
         this.$reqApi("/product-variation/delete", { id: this.selected_item[i] })
-          .then(async response => {
+          .then(async (response) => {
             if (i == this.selected_item.length - 1) {
               this.loading = false;
               this.$refs.baseTable.getDataFromApi();
@@ -153,14 +147,14 @@ export default {
               this.$toast.success("موارد انتخابی حذف شدن");
             }
           })
-          .catch(error => {
+          .catch((error) => {
             this.loading = false;
           });
       }
     },
     closeDeleteAllDialog() {
       this.removeDialog = false;
-    }
-  }
+    },
+  },
 };
 </script>

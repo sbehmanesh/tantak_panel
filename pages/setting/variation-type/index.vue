@@ -27,6 +27,7 @@ export default {
 
     this.headers = [
     { text: 'ویژگی', value: 'value' },
+    { text: 'ترتیب ', value: 'sort' },
 
     ]
   },

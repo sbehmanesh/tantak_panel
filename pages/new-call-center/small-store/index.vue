@@ -1,17 +1,32 @@
 <template>
   <div>
-    <BaseTable url="/small-stock" :filters="filters" :headers="headers">
+    <BaseTable
+      url="/small-stock"
+      :filters="filters"
+      :headers="headers"
+      :BTNactions="btn_actions"
+    >
     </BaseTable>
+    <SmallStoke
+      :stokeId="stoke_id"
+      :dialogFile="dialog_file"
+      v-if="dialog_file"
+      @cloaseDialog="dialog_file = false"
+    ></SmallStoke>
   </div>
 </template>
 <script>
 import BaseTable from "~/components/DataTable/BaseTable";
+import SmallStoke from "~/components/Stock/SmallStoke.vue";
 export default {
-  components: { BaseTable },
+  components: { BaseTable, SmallStoke },
   data: () => ({
     headers: [],
     filters: {},
     title: "موجودی انبارک",
+    btn_actions: [],
+    stoke_id: "",
+    dialog_file: false,
   }),
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);
@@ -41,7 +56,7 @@ export default {
       //   value: (body) => {
       //     if (body.product_var) {
       //       console.log("body.product_var.product.main_image" , body.product_var.product.main_image);
-            
+
       //       return body.product_var.product.main_image;
       //     }
       //   },
@@ -76,7 +91,21 @@ export default {
         value: (body) => {
           if (body.number) {
             return body.number;
+          } else {
+            return "عدم موجودی";
           }
+        },
+      },
+    ];
+
+    this.btn_actions = [
+      {
+        text: "تاریخچه",
+        icon: "list",
+        color: "info darken-2",
+        fun: (body) => {
+          this.dialog_file = true;
+          this.stoke_id = body.id;
         },
       },
     ];

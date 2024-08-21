@@ -40,10 +40,12 @@ export default {
       root_body_history: {},
     };
   },
-  mounted() {
+  beforeMount() {
     this.root_body_history = {
       small_stock_id: this.stokeId,
     };
+  },
+  mounted() {
     this.header_history = [
       {
         text: "زمان ثبت",

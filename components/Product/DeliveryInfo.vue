@@ -88,7 +88,8 @@ export default {
     loading: true,
   }),
   mounted() {
-    if (this.data.address_id) {
+    // && Boolean(this.$store.state.auth.action.indexOf("messages/update") > -1
+    if (this.data.address_id ) {
       this.loadAddress(this.data.address_id);
     }else{
       this.loading = false;

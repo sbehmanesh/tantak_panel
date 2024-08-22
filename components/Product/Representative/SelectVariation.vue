@@ -156,7 +156,6 @@ export default {
     },
     product_varcomb_id() {
       let id = "";
-     
         this.var_id_1 = "";
         this.var_id_2 = "";
         this.var_id_3 = "";
@@ -168,7 +167,6 @@ export default {
       }
     },
     var_id_1() {
-    
         let items = [];
         this.var_id_2 = "";
         this.product_sort_2.items.filter((x) => {
@@ -183,7 +181,6 @@ export default {
    
     },
     var_id_2() {
-
         this.var_id_3 = "";
         let items = [];
         this.product_sort_3.items.filter((x) => {

@@ -1,8 +1,15 @@
 <template>
-  <v-dialog persistent v-model="DialogAdd.show" :model-id="DialogAdd.items" width="750">
+  <v-dialog
+    persistent
+    v-model="DialogAdd.show"
+    :model-id="DialogAdd.items"
+    width="750"
+  >
     <v-card style="overflow: hidden">
       <v-row class="primary pt-5 mb-6 pb-2 px-4">
-        <span class="white--text mt-1 font_16 mr-3"> افزودن محصول به سبد خرید </span>
+        <span class="white--text mt-1 font_16 mr-3">
+          افزودن محصول به سبد خرید
+        </span>
         <v-spacer></v-spacer>
         <v-btn text @click="closeDialog">
           <v-icon color="white"> close </v-icon>
@@ -38,7 +45,9 @@
               class="justify-center text-center mb-10"
               cols="4"
             >
-              <v-icon color="red" size="80"> production_quantity_limits </v-icon>
+              <v-icon color="red" size="80">
+                production_quantity_limits
+              </v-icon>
               <br />
               <small class="red--text"> عدم موجودی محصول </small>
             </v-col>
@@ -97,7 +106,11 @@
               <v-col cols="10" v-if="product_varcomb_id">
                 <v-row class="d-flex justify-center">
                   <v-col cols="12" md="2" calss="pa-3">
-                    <v-img calss="pa-3" :src="$getImage(main_image)" height="auto" />
+                    <v-img
+                      calss="pa-3"
+                      :src="$getImage(main_image)"
+                      height="auto"
+                    />
                   </v-col>
                   <v-spacer></v-spacer>
 
@@ -121,7 +134,9 @@
                       <v-btn text @click="addNumber(number, true)" x-small>
                         <h1 class="font_18 primary--text mt-2 mx-1">+</h1>
                       </v-btn>
-                      <h1 class="font_14 primary--text mt-1 mx-1">{{ number }}</h1>
+                      <h1 class="font_14 primary--text mt-1 mx-1">
+                        {{ number }}
+                      </h1>
                       <v-btn
                         color="primary"
                         :disabled="number == 1"
@@ -152,18 +167,30 @@
           </v-row>
           <v-row class="d-flex justify-center" v-if="loading">
             <v-col cols="10">
-              <v-skeleton-loader v-bind="attrs" type="text@2"></v-skeleton-loader>
+              <v-skeleton-loader
+                v-bind="attrs"
+                type="text@2"
+              ></v-skeleton-loader>
             </v-col>
             <v-col cols="10">
               <v-row>
                 <v-col cols="4">
-                  <v-skeleton-loader v-bind="attrs" type="text@2"></v-skeleton-loader>
+                  <v-skeleton-loader
+                    v-bind="attrs"
+                    type="text@2"
+                  ></v-skeleton-loader>
                 </v-col>
                 <v-col cols="4">
-                  <v-skeleton-loader v-bind="attrs" type="text@2"></v-skeleton-loader>
+                  <v-skeleton-loader
+                    v-bind="attrs"
+                    type="text@2"
+                  ></v-skeleton-loader>
                 </v-col>
                 <v-col cols="4">
-                  <v-skeleton-loader v-bind="attrs" type="text@2"></v-skeleton-loader>
+                  <v-skeleton-loader
+                    v-bind="attrs"
+                    type="text@2"
+                  ></v-skeleton-loader>
                 </v-col>
               </v-row>
             </v-col>
@@ -189,19 +216,23 @@
                 <v-col cols="8">
                   <v-row>
                     <v-col cols="12">
-                      <span> قیمت پکیج : {{ $price(informations_package.price) }} </span>
+                      <span>
+                        قیمت پکیج : {{ $price(informations_package.price) }}
+                      </span>
                       <small> ( ریال) </small>
                     </v-col>
                     <v-col cols="12">
                       <span>
-                        پیش پرداخت : {{ $price(informations_package.prepay_amount) }}
+                        پیش پرداخت :
+                        {{ $price(informations_package.prepay_amount) }}
 
                         <small> (درصد / ریال) </small>
                       </span>
                     </v-col>
                     <v-col cols="12">
                       <span>
-                        تخفیف: {{ $price(informations_package.discount_amount) }}
+                        تخفیف:
+                        {{ $price(informations_package.discount_amount) }}
                         <small> (درصد / ریال) </small>
                       </span>
                     </v-col>
@@ -246,7 +277,9 @@
                   <amp-button
                     block
                     height="40"
-                    :disabled="!Boolean(selected_package_id) || load_item || loading"
+                    :disabled="
+                      !Boolean(selected_package_id) || load_item || loading
+                    "
                     icon="add"
                     class="my-1"
                     color="orange darken-4"
@@ -348,6 +381,7 @@ export default {
         }
       });
       this.available_items_2 = items;
+      this.var_id_2 = "";
     },
     var_id_2() {
       let items = [];
@@ -360,6 +394,7 @@ export default {
         }
       });
       this.available_items_3 = items;
+      this.var_id_3 = "";
     },
     valid_variations() {
       if (Boolean(this.valid_variations)) {
@@ -375,7 +410,10 @@ export default {
             }
           }
           if (Boolean(this.step_var_2) && !Boolean(this.step_var_3)) {
-            if (this.var_id_1 == f.variation_3_id && this.var_id_2 == f.variation_2_id) {
+            if (
+              this.var_id_1 == f.variation_3_id &&
+              this.var_id_2 == f.variation_2_id
+            ) {
               product = f;
             }
           }
@@ -389,6 +427,10 @@ export default {
             }
           }
           this.selected_product = product;
+          this.main_price;
+          let price = product.price ? product.price : this.main_price;
+          this.main_price = price;
+          this.sumb_price = price;
         });
       }
     },
@@ -481,7 +523,9 @@ export default {
       this.step_var_2 = false;
       this.step_var_3 = false;
       this.check = false;
-      this.$reqApi("product-variation-combination/variety-list", { product_id: id })
+      this.$reqApi("product-variation-combination/variety-list", {
+        product_id: id,
+      })
         .then((response) => {
           let set_title = [];
           this.all_variatons_product = response.model.data;
@@ -515,12 +559,12 @@ export default {
           } else {
             this.check = true;
           }
-          this.main_image = response.model.data[0].variation1.product.main_image;
+          this.main_image =
+            response.model.data[0].variation1.product.main_image;
           this.product_name = response.model.data[0].variation1.product.name;
           // get price
-          this.main_price = response.model.data[0].price
-            ? response.model.data[0].price
-            : response.model.data[0].variation1.product.base_price;
+          this.main_price =
+            response.model.data[0].variation1.product.base_price;
           this.sumb_price = this.main_price;
 
           // set items variations

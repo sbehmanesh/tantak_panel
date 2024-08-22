@@ -197,7 +197,7 @@ export default {
           let var_1 = "";
           let var_2 = "";
           let var_3 = "";
-          if (body.product_var) {
+          if (body.product_var && body.product_var.product) {
             product_name = body.product_var.product.name;
           }
           if (body.product_var.variation1) {

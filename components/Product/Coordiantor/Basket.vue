@@ -26,14 +26,12 @@
       v-if="dialog_req_to_license.show"
     />
     <v-row class="d-flex justify-center mt-4">
-      <v-col calss=""cols="12" md="4">
-      <DeliveryInfo :data="user_informations" />
-    </v-col>
+      <v-col calss="" cols="12" md="4">
+        <DeliveryInfo :data="user_informations" v-if="!loading_factor " />
+      </v-col>
     </v-row>
 
-    
     <v-col cols="12" class="mt-5">
-    
       <v-col cols="12" class="text-start" v-if="Boolean(is_coordinator)">
         <amp-button
           icon="add_circle"
@@ -433,6 +431,7 @@ export default {
     },
   },
   data: () => ({
+    loading_factor:true,
     attrs: {
       class: "mb-6",
       boilerplate: true,
@@ -581,6 +580,9 @@ export default {
     }
 
     this.createListBasket(this.itemsBasket);
+    setTimeout(() => {
+      this.loading_factor = false
+    }, 500);
   },
   methods: {
     deleFromCard(key, item, key_name, brack) {

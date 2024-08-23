@@ -479,32 +479,10 @@ export default {
       form["has_single_sell"] = parseInt(form["has_single_sell"]);
       form["has_whole_sell"] = parseInt(form["has_whole_sell"]);
       form["mixturable"] = parseInt(form["mixturable"]);
-      // if (form.additional_description) {
-      //   form.additional_description = JSON.stringify(
-      //     form.additional_description
-      //   );
-      // }
-
       let url = this.createUrl;
       if (this.modelId) {
         url = this.updateUrl;
         form["id"] = this.modelId;
-
-        // if (form.status == "hidden") {
-        //   if (
-        //     this.form.single_sell_variation_combinations.length > 0 ||
-        //     form.whole_sell_variation_combinations.length > 0
-        //   ) {
-        //     form.status = "active";
-        //   }
-        // }
-
-        // if (
-        //   this.form.single_sell_variation_combinations.length == 0 &&
-        //   form.whole_sell_variation_combinations.length == 0
-        // ) {
-        //   form.status = "hidden";
-        // }
       }
       this.$reqApi(url, form)
         .then((response) => {
@@ -612,11 +590,9 @@ export default {
         });
     },
     redirectPage() {
-      if (window.history.length > 2) {
+    
         this.$router.back();
-      } else {
-        this.$router.push(this.path);
-      }
+ 
     },
     getCategories() {
       let form = {

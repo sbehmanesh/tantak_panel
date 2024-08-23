@@ -9,99 +9,112 @@
           ترکیب جدید
         </v-expansion-panel-header>
         <v-expansion-panel-content class="primary lighten-5">
-          <v-form v-model="valid" @submit.prevent="submit()" v-if="!loading">
-            <v-row>
-              <v-col cols="12">
-                <amp-title
-                  text="افزودن تنوع فروش جدید برای این محصول"
-                ></amp-title>
-              </v-col>
-              <v-col cols="2" v-for="(v, index) in variations" :key="v.id">
-                <amp-select
-                  v-if="index == 0"
-                  :text="v.text.value"
-                  :items="v.items"
-                  v-model="variation_1_id"
-                  @change="
-                    setVariationId(variation_1_id, v.text.sort, v.text.id , v)
-                  "
-                  rules="require"
-                />
-                <amp-select
-                  v-if="index == 1"
-                  :text="v.text.value"
-                  :items="v.items"
-                  v-model="variation_2_id"
-                  @change="
-                    setVariationId(variation_2_id, v.text.sort, v.text.id , v)
-                  "
-                  rules="require"
-                />
-                <amp-select
-                  v-if="index == 2"
-                  :text="v.text.value"
-                  :items="v.items"
-                  v-model="variation_3_id"
-                  @change="
-                     setVariationId(variation_3_id, v.text.sort, v.text.id , v)
-                  "
-                  rules="require"
-                />
-              </v-col>
-              <v-col cols="2">
-                <amp-input
-                  is-price
-                  text="قیمت تومان"
-                  v-model="form.price"
-                  rules="require"
-                />
-              </v-col>
-  
-              <v-col cols="2">
-                <amp-input
-                  is-price
-                  text="تخفیف"
-                  v-model="form.discount"
-                  rules="percent"
-                />
-              </v-col>
-              <v-col cols="2">
-                <amp-input
-                  is-price
-                  text="حداقل"
-                  v-model="form.minimum"
-                  :rules="sellType == 'single' ? '' : 'require'"
-                />
-              </v-col>
-              <v-col cols="2">
-                <amp-input
-                  is-price
-                  text="حداکثر"
-                  v-model="form.maximum"
-                  :rules="sellType == 'single' ? '' : 'require'"
-                />
-              </v-col>
-              <v-col cols="1">
-                <amp-input
-                  is-number
-                  text="ترتیب "
-                  v-model="form.sort"
-                  rules="number,require"
-                />
-              </v-col>
-              <v-col cols="12" md="1" class="text-center mt-8">
-                <amp-button
-                  :disabled="!valid || loading"
-                  small
-                  text="افزودن"
-                  color="success"
-                  :loading="loading"
-                  @click="createVariatoin_1()"
-                >
-                </amp-button>
-              </v-col>
-            </v-row>
+          <v-form v-model="valid" @submit.prevent="submit()" >
+            <v-card class="elevation-0 primary lighten-5 mt-4 " :disabled="loading">
+              <v-row v-if="!loading">
+                <v-col cols="12">
+                  <amp-title
+                    text="افزودن تنوع فروش جدید برای این محصول"
+                  ></amp-title>
+                </v-col>
+                <v-col cols="2" v-for="(v, index) in variations" :key="v.id">
+                  <amp-select
+                    v-if="index == 0"
+                    :text="v.text.value"
+                    :items="v.items"
+                    v-model="variation_1_id"
+                    @change="
+                      setVariationId(variation_1_id, v.text.sort, v.text.id, v)
+                    "
+                    rules="require"
+                  />
+                  <amp-select
+                    v-if="index == 1"
+                    :text="v.text.value"
+                    :items="v.items"
+                    v-model="variation_2_id"
+                    @change="
+                      setVariationId(variation_2_id, v.text.sort, v.text.id, v)
+                    "
+                    rules="require"
+                  />
+                  <amp-select
+                    v-if="index == 2"
+                    :text="v.text.value"
+                    :items="v.items"
+                    v-model="variation_3_id"
+                    @change="
+                      setVariationId(variation_3_id, v.text.sort, v.text.id, v)
+                    "
+                    rules="require"
+                  />
+                </v-col>
+                <v-col cols="2">
+                  <amp-input
+                    is-price
+                    text="قیمت تومان"
+                    v-model="form.price"
+                    rules="require"
+                  />
+                </v-col>
+
+                <v-col cols="2">
+                  <amp-input
+                    is-price
+                    text="تخفیف"
+                    v-model="form.discount"
+                    rules="percent"
+                  />
+                </v-col>
+                <v-col cols="2">
+                  <amp-input
+                    is-price
+                    text="حداقل"
+                    v-model="form.minimum"
+                    :rules="sellType == 'single' ? '' : 'require'"
+                  />
+                </v-col>
+                <v-col cols="2">
+                  <amp-input
+                    is-price
+                    text="حداکثر"
+                    v-model="form.maximum"
+                    :rules="sellType == 'single' ? '' : 'require'"
+                  />
+                </v-col>
+                <v-col cols="1">
+                  <amp-input
+                    is-number
+                    text="ترتیب "
+                    v-model="form.sort"
+                    rules="number,require"
+                  />
+                </v-col>
+                <v-col cols="12" md="1" class="text-center mt-8">
+                  <amp-button
+                    :disabled="!valid || loading"
+                    small
+                    text="افزودن"
+                    color="success"
+                    :loading="loading"
+                    @click="createVariatoin_1()"
+                  >
+                  </amp-button>
+                </v-col>
+              </v-row>
+            </v-card>
           </v-form>
+          <v-card :disabled="loading"  class="elevation-0 primary lighten-5 mt-4 " v-if="loading" >
+            <v-col cols="12" class="text-center py-10" >
+            <v-progress-circular
+              :width="5"
+              :size="45"
+              color="grey"
+              indeterminate
+            ></v-progress-circular>
+          </v-col>
+          </v-card>
+
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -177,7 +190,6 @@ export default {
         });
     },
     submit() {
-
       let form = { ...this.form };
       form["product_id"] = this.product_id;
       form["type"] = this.sellType;
@@ -251,20 +263,17 @@ export default {
       return ids;
     },
     setVariationId(value, sort, variation_type_id, v) {
-
       if (Boolean(v)) {
-        let find_text = v.items.find((t=>t.id == value))
-      if (Boolean(find_text)) {
-        let items = {};
-      items["sort"] = sort;
-      items["value"] = find_text.text;
-      items["value_id"] = value;
-      items["variation_type_id"] = variation_type_id;
-      this.selected_variations.push(items);
+        let find_text = v.items.find((t) => t.id == value);
+        if (Boolean(find_text)) {
+          let items = {};
+          items["sort"] = sort;
+          items["value"] = find_text.text;
+          items["value_id"] = value;
+          items["variation_type_id"] = variation_type_id;
+          this.selected_variations.push(items);
+        }
       }
-      }
-
-   
     },
     createNewVariation(id, count) {
       return new Promise((response) => {
@@ -312,12 +321,10 @@ export default {
               this.form["variation_1_id"] = response.id;
               res(response.id);
             })
-            .catch((err) => {
-            });
+            .catch((err) => {});
         }
       })
         .then((res) => {
-      
           this.createVariatoin_2(res);
         })
         .catch((rej) => {
@@ -339,8 +346,7 @@ export default {
               this.form["variation_2_id"] = response.id;
               res(response.id);
             })
-            .catch((err) => {
-            });
+            .catch((err) => {});
         }
       })
         .then((res) => {
@@ -365,12 +371,10 @@ export default {
               this.form["variation_3_id"] = response.id;
               res(response.id);
             })
-            .catch((err) => {
-            });
+            .catch((err) => {});
         }
       })
         .then((res) => {
-  
           this.submit();
         })
         .catch((rej) => {

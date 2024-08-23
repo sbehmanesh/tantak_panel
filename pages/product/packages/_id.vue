@@ -12,6 +12,7 @@ export default {
     title: 'ویرایش پکیج',
   }),
   beforeMount() {
+    
   },
   mounted() {
     this.$store.dispatch('setPageTitle', this.title)

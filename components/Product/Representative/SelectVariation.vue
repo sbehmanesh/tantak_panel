@@ -168,6 +168,7 @@ export default {
     },
     var_id_1() {
       let items = [];
+      this.var_id_2 = "";
       this.product_sort_2.items.filter((x) => {
         if (x.parent == this.var_id_1) {
           items.push({
@@ -177,11 +178,9 @@ export default {
         }
       });
       this.available_items_2 = items;
-      if (Boolean(this.valid_variations)) {
-        this.findSelectedProduct();
-      }
     },
     var_id_2() {
+      this.var_id_3 = "";
       let items = [];
       this.product_sort_3.items.filter((x) => {
         if (x.parent == this.var_id_2) {
@@ -192,19 +191,41 @@ export default {
         }
       });
       this.available_items_3 = items;
-      if (Boolean(this.valid_variations)) {
-        this.findSelectedProduct();
-      }
-    },
-    var_id_3() {
-      if (Boolean(this.valid_variations)) {
-        this.findSelectedProduct();
-      }
     },
     valid_variations() {
       if (Boolean(this.valid_variations)) {
- 
-        this.findSelectedProduct();
+        let product = {};
+        this.all_variatons_product.filter((f) => {
+          if (Boolean(this.step_var_3)) {
+            if (
+              this.var_id_1 == f.variation_1_id &&
+              this.var_id_2 == f.variation_2_id &&
+              this.var_id_3 == f.variation_3_id
+            ) {
+              product = f;
+            }
+          }
+          if (Boolean(this.step_var_2) && !Boolean(this.step_var_3)) {
+            if (
+              this.var_id_1 == f.variation_3_id &&
+              this.var_id_2 == f.variation_2_id
+            ) {
+              product = f;
+            }
+          }
+          if (
+            Boolean(this.step_var_1) &&
+            !Boolean(this.step_var_2) &&
+            !Boolean(this.step_var_3)
+          ) {
+            if (this.var_id_1 == f.variation_1_id) {
+              product = f;
+            }
+          }
+          this.selected_product = product;
+          this.$emit("validVariations", this.valid_variations);
+          this.$emit("productId", product.id);
+        });
       }
     },
     check() {
@@ -294,13 +315,10 @@ export default {
           } else {
             this.check = true;
           }
-          this.main_image = response.model.data[0].product.main_image;
-          this.product_name = response.model.data[0].productname;
-          // get price
-          this.main_price = response.model.data[0].price
-            ? response.model.data[0].price
-            : response.model.data[0].product.base_price;
-          this.sumb_price = this.main_price;
+
+          this.main_image =
+            response.model.data[0].variation1.product.main_image;
+          this.product_name = response.model.data[0].variation1.productname;
 
           // set items variations
           let items_var_1 = [];
@@ -443,7 +461,6 @@ export default {
           this.selected_product = res;
           this.$emit("validVariations", true);
           this.$emit("productId", res.id);
-
         })
         .catch((rej) => {
           console.log(rej);

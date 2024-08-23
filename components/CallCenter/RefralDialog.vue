@@ -90,7 +90,6 @@
 
 <script>
 import UserSelectForm from "@/components/User/UserSelectForm";
-
 export default {
   props: {
     basketId: {

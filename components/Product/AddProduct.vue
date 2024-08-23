@@ -384,9 +384,7 @@ export default {
         }
       });
       this.available_items_2 = items;
-      if (Boolean(this.valid_variations)) {
-        this.findSelectedProduct();
-      }
+      this.var_id_2 = "";
     },
     var_id_2() {
       let items = [];
@@ -399,18 +397,44 @@ export default {
         }
       });
       this.available_items_3 = items;
-      if (Boolean(this.valid_variations)) {
-        this.findSelectedProduct();
-      }
-    },
-    var_id_3() {
-      if (Boolean(this.valid_variations)) {
-        this.findSelectedProduct();
-      }
+      this.var_id_3 = "";
     },
     valid_variations() {
       if (Boolean(this.valid_variations)) {
-        this.findSelectedProduct();
+        let product = {};
+        this.all_variatons_product.filter((f) => {
+          if (Boolean(this.step_var_3)) {
+            if (
+              this.var_id_1 == f.variation_1_id &&
+              this.var_id_2 == f.variation_2_id &&
+              this.var_id_3 == f.variation_3_id
+            ) {
+              product = f;
+            }
+          }
+          if (Boolean(this.step_var_2) && !Boolean(this.step_var_3)) {
+            if (
+              this.var_id_1 == f.variation_3_id &&
+              this.var_id_2 == f.variation_2_id
+            ) {
+              product = f;
+            }
+          }
+          if (
+            Boolean(this.step_var_1) &&
+            !Boolean(this.step_var_2) &&
+            !Boolean(this.step_var_3)
+          ) {
+            if (this.var_id_1 == f.variation_1_id) {
+              product = f;
+            }
+          }
+          this.selected_product = product;
+          this.main_price;
+          let price = product.price ? product.price : this.main_price;
+          this.main_price = price;
+          this.sumb_price = price;
+        });
       }
     },
   },
@@ -538,14 +562,16 @@ export default {
           } else {
             this.check = true;
           }
-          this.main_image = response.model.data[0].product.main_image;
-          this.product_name = response.model.data[0].product.name;
+          this.main_image =
+            response.model.data[0].variation1.product.main_image;
+          this.product_name = response.model.data[0].variation1.product.name;
+         ///*******get price
+          this.main_price =
+            response.model.data[0].variation1.product.base_price;
+          this.sumb_price = this.main_price;
 
           ///*******get price
-          // this.main_price = response.model.data[0].price
-          //   ? response.model.data[0].price
-          //   : response.model.data[0].product.base_price;
-          // this.sumb_price = this.main_price;
+    
 
           // *******set items variations
           let items_var_1 = [];

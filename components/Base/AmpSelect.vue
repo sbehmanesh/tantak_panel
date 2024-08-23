@@ -133,6 +133,7 @@ export default {
     },
     inp_value() {
       this.$emit('input', this.inp_value)
+      this.$emit('change', this.inp_value)
     },
     value_inp() {
       this.inp_value = this.value_inp

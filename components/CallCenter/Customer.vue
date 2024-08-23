@@ -914,6 +914,10 @@ export default {
         text: "تحویل داده شده",
         value: "done",
       },
+      {
+            text: "کنسل شده",
+            value: "cancel",
+          },
     ],
     step_items: [],
     admin: [

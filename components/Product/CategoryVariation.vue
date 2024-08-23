@@ -1,5 +1,5 @@
 <template>
-  <v-form v-model="valid" @submit.prevent="submit()" :disabled="loading">
+  <v-form v-model="valid" @submit.prevent="submit()" :disabled="loading" >
     <v-container fluid class="px-8">
       <v-row dense>
         <v-col cols="12" md="3">
@@ -30,9 +30,7 @@
         <v-col cols="12" md="3">
           <amp-input text="مقدار" v-model="form.value" />
         </v-col>
-        <v-col cols="3">
-          <amp-input text="بارکد" is-number v-model="form.barcode" rules="max_4" />
-        </v-col>
+
         <v-col cols="3">
           <amp-input text="ترتیب نمایش " v-model="form.sort" rules="number" />
         </v-col>
@@ -91,7 +89,6 @@ export default {
       variation_type_id: "",
       product_id: "",
       category_id: "",
-      barcode: "",
       images: []
     },
 
@@ -161,7 +158,6 @@ export default {
         .then(response => {
           response = response.model;
           this.form["id"] = response.id;
-          this.form.barcode = response.barcode;
           this.form.sort = response.sort;
           this.form.value = response.value;
           this.form.category_id = response.category_id

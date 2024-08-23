@@ -2,7 +2,10 @@
   <div>
     <v-expansion-panels variant="popout" class="my-4 elevation-5">
       <v-expansion-panel>
-        <v-expansion-panel-header expand-icon="category" class="primary lighten-4">
+        <v-expansion-panel-header
+          expand-icon="category"
+          class="primary lighten-4"
+        >
           انتخاب دسته بندی
         </v-expansion-panel-header>
         <v-expansion-panel-content class="primary lighten-5">
@@ -15,9 +18,8 @@
                 >
                   <span class="grey--text font_13">
                     <v-icon class="mx-3 warning--text">ads_click</v-icon>
-                      برای مشاهده زیر مجموعه هر دسته بندی روی آن کلیک کنید
-                    </span
-                  >
+                    برای مشاهده زیر مجموعه هر دسته بندی روی آن کلیک کنید
+                  </span>
                 </v-card-title>
                 <v-card-text v-if="selected_category.length > 0">
                   <v-row>
@@ -82,7 +84,7 @@ export default {
   components: { BaseTable },
   props: {
     productId: { default: null },
-    loadCategory: { default: null }
+    loadCategory: { default: null },
   },
   data: () => ({
     headers: [],
@@ -101,8 +103,8 @@ export default {
     filters: {
       parent_id: {
         op: "=",
-        value: null
-      }
+        value: null,
+      },
     },
     valid: false,
     loading: false,
@@ -115,11 +117,11 @@ export default {
       value: "",
       variation_type_id: "",
       product_id: "",
-      product_category_id: ""
+      product_category_id: "",
     },
 
     allVariations: [],
-    category_id: ""
+    category_id: "",
   }),
   beforeMount() {
     this.product_id = this.$route.params.id;
@@ -127,15 +129,15 @@ export default {
       {
         color: "success",
         text: "",
-        fun: body => {
+        fun: (body) => {
           return body;
         },
-        show_fun: body => {
+        show_fun: (body) => {
           if (body) {
             return false;
           }
-        }
-      }
+        },
+      },
     ];
     this.headers = [
       { text: "نام", value: "name", filterable: false },
@@ -143,23 +145,23 @@ export default {
         text: "لینک",
         value: "slug",
         disableSort: "true",
-        filterable: false
+        filterable: false,
       },
       {
         text: "تعداد محصول",
-        value: "products_count"
+        value: "products_count",
       },
       {
         text: "تعداد ویژگی",
-        value: "product_variations_count"
+        value: "product_variations_count",
       },
       {
         text: "بارکد",
-        value: "barcode"
+        value: "barcode",
       },
       {
         text: "سطح",
-        value: "level"
+        value: "level",
       },
     ];
   },
@@ -178,13 +180,15 @@ export default {
       }
     },
     loadCategory() {
+      this.selected_category = [];
       if (this.loadCategory) {
-        this.loadCategory.map(x => {
+        this.loadCategory.map((x) => {
           this.selected_category.push({
             text: x.name,
-            value: x.id
+            value: x.id,
           });
           this.id_selected_category.push(x.id);
+ 
         });
       }
     },
@@ -195,18 +199,18 @@ export default {
           parent_id: {
             op: "=",
             value:
-              this.id_selected_category[this.id_selected_category.length - 1]
-          }
+              this.id_selected_category[this.id_selected_category.length - 1],
+          },
         };
       } else {
         this.filters = {
           parent_id: {
             op: "=",
-            value: null
-          }
+            value: null,
+          },
         };
       }
-    }
+    },
   },
   methods: {
     submit() {
@@ -225,7 +229,7 @@ export default {
       }
       this.modelId = "";
       this.$reqApi(url, form)
-        .then(response => {
+        .then((response) => {
           if (!this.modelId) {
             this.$toast.success("ویژگی مورد نظر با موفقیت اضافه شد.");
           } else {
@@ -235,17 +239,17 @@ export default {
           this.ClearData();
           this.loading = false;
         })
-        .catch(error => {
+        .catch((error) => {
           this.loading = false;
         });
     },
     loadData() {
       this.loading = true;
       this.$reqApi(this.showUrl, { id: this.modelId })
-        .then(response => {
+        .then((response) => {
           response = response.model;
         })
-        .catch(error => {
+        .catch((error) => {
           this.ClearData();
           this.loading = false;
         });
@@ -253,7 +257,7 @@ export default {
     rowClick(event) {
       this.selected_category.push({
         text: event.name ? event.name : event.variation_type.value,
-        value: event.id
+        value: event.id,
       });
       this.id_selected_category.push(event.id);
     },
@@ -266,7 +270,7 @@ export default {
       this.selected_category.pop();
     },
     ClearData() {},
-    getAllVariations() {}
-  }
+    getAllVariations() {},
+  },
 };
 </script>

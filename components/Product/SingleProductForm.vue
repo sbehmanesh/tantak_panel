@@ -52,13 +52,9 @@
       :key="'sv' + index"
       :class="index % 2 == 0 ? 'odd-row' : ''"
     >
+
       <v-col cols="12" md="2" class="text-center mt-3">
-        {{ product.name }}
-        <span v-if="sv.variation1">
-          {{ sv.variation1.value }}
-        </span>
-        <span v-if="sv.variation2"> / {{ sv.variation2.value }} </span>
-        <span v-if="sv.variation3"> / {{ sv.variation3.value }} </span>
+        {{product.name}}
       </v-col>
       <v-col cols="12" md="1" class="text-center mt-3">
         <amp-input is-price v-model="sv.price" />
@@ -197,6 +193,7 @@ export default {
       sort: 1,
     },
   }),
+
   methods: {
     submit() {
       let form = this.$copyForm(this.form);

@@ -270,7 +270,40 @@ export default {
     },
     valid_variations() {
       if (Boolean(this.valid_variations)) {
-        this.findSelectedProduct();
+        let product = {};
+        this.all_variatons_product.filter((f) => {
+          if (Boolean(this.step_var_3)) {
+            if (
+              this.var_id_1 == f.variation_1_id &&
+              this.var_id_2 == f.variation_2_id &&
+              this.var_id_3 == f.variation_3_id
+            ) {
+              product = f;
+            }
+          }
+          if (Boolean(this.step_var_2) && !Boolean(this.step_var_3)) {
+            if (
+              this.var_id_1 == f.variation_3_id &&
+              this.var_id_2 == f.variation_2_id
+            ) {
+              product = f;
+            }
+          }
+          if (
+            Boolean(this.step_var_1) &&
+            !Boolean(this.step_var_2) &&
+            !Boolean(this.step_var_3)
+          ) {
+            if (this.var_id_1 == f.variation_1_id) {
+              product = f;
+            }
+          }
+          this.selected_product = product;
+          this.main_price;
+          let price = product.price ? product.price : this.main_price;
+          this.main_price = price;
+          this.sumb_price = price;
+        });
       }
     },
   },

@@ -2,25 +2,33 @@
   <div>
     <v-stepper alt-labels v-model="step_number">
       <v-stepper-header>
-        <v-stepper-step :complete="step_number > 1" editable step="1">
+        <v-stepper-step :complete="step_number > 1" step="1">
           اطلاعات پایه محصول
         </v-stepper-step>
         <v-divider></v-divider>
-        <v-stepper-step :complete="step_number > 2" editable step="2">
+        <v-stepper-step :complete="step_number > 2" step="2">
           جزئیات محصول</v-stepper-step
         >
         <v-divider></v-divider>
-        <v-stepper-step :complete="step_number > 3" editable step="3">
+        <v-stepper-step :complete="step_number > 3" step="3">
           قیمت گذاری
         </v-stepper-step>
         <v-divider></v-divider>
       </v-stepper-header>
       <v-stepper-items>
         <v-stepper-content step="1">
-          <v-form v-model="valid" @submit.prevent="submit()" :disabled="loading">
+          <v-form
+            v-model="valid"
+            @submit.prevent="submit()"
+            :disabled="loading"
+          >
             <v-row dense>
-              <v-col cols="12" md="2">
-                <amp-input text="نام محصول" v-model="form.name" rules="require" />
+              <v-col cols="12" md="3">
+                <amp-input
+                  text="نام محصول"
+                  v-model="form.name"
+                  rules="require"
+                />
               </v-col>
               <v-col cols="12" md="2">
                 <amp-input text="لینک" v-model="form.slug" rules="" />
@@ -41,16 +49,8 @@
                   v-model="form.base_wholesale_price"
                 />
               </v-col>
-              <v-col cols="12" md="2">
-                <amp-input
-                  text="بارکد"
-                  is-number
-                  :disabled="modelId ? true : false"
-                  v-model="form.barcode"
-                  rules="number"
-                />
-              </v-col>
-              <v-col cols="12" md="2">
+
+              <v-col cols="12" md="3">
                 <amp-input
                   text="ترتیب نمایش"
                   v-model="form.sort"
@@ -151,10 +151,15 @@
             class="text-center"
             v-if="!modelId"
           >
-            برای فعال شدن بخش جزئیات محصول ، بعد از ورود اطلاعات پایه دکمه ذخیره و ادامه
-            را بزنید.
+            برای فعال شدن بخش جزئیات محصول ، بعد از ورود اطلاعات پایه دکمه ذخیره
+            و ادامه را بزنید.
           </v-alert>
-          <v-form v-model="valid" @submit.prevent="submit()" :disabled="loading" v-else>
+          <v-form
+            v-model="valid"
+            @submit.prevent="submit()"
+            :disabled="loading"
+            v-else
+          >
             <v-row dense>
               <v-col cols="12" md="4" class="mt-10">
                 <v-row>
@@ -188,7 +193,7 @@
               <v-col cols="12" md="8" class="mt-10">
                 <v-card class="pa-4 elevation-6">
                   <AmpEditor
-                    v-model="form.product_infos.summerized_description"
+                    v-model="product_infos.summerized_description"
                     text="توضیحات مختصر"
                   />
                 </v-card>
@@ -196,7 +201,7 @@
               <v-col cols="12" md="12" class="mt-10">
                 <v-card class="pa-5 elevation-0 my-3">
                   <AmpEditor
-                    v-model="form.product_infos.description"
+                    v-model="product_infos.description"
                     text="توضیحات کامل محصول"
                   />
                 </v-card>
@@ -220,7 +225,7 @@
               <v-col cols="12" md="12">
                 <amp-textarea
                   text="توضیحات سئو"
-                  v-model="form.product_infos.seo_description"
+                  v-model="product_infos.seo_description"
                   :rows="4"
                 />
               </v-col>
@@ -234,6 +239,14 @@
                   color="error"
                   text="انصراف"
                   @click="redirectPage()"
+                />
+                <amp-button
+                  large
+                  icon="arrow_circle_right"
+                  class="my-1"
+                  color="orange"
+                  text="برگشت"
+                  @click="step_number--"
                 />
                 <amp-button
                   large
@@ -258,62 +271,20 @@
       <v-stepper-content step="3">
         <v-row>
           <v-col cols="12" class="d-flex align-center">
-            <v-alert
-              outlined
-              type="warning"
-              prominent
-              border="left"
-              class="text-center mt-2 mx-3"
-              v-if="!modelId"
-            >
-              برای فعال شدن بخش ویژگی های محصول ، بعد از ورود اطلاعات پایه دکمه ذخیره و
-              ادامه را بزنید.
-            </v-alert>
-            <v-row v-else class="mt-5">
-              <v-tabs v-model="tab" centered icons-and-text>
-                <v-tab
-                  ><span class="font-weight-medium">تنظیمات فروش تکی</span>
-                  <v-icon class="font_30">shopping_cart</v-icon></v-tab
-                >
-                <v-tab>
-                  <span> تنظیمات فروش عمده </span>
-                  <v-icon class="font_30">scale</v-icon>
-                </v-tab>
-              </v-tabs>
-              <v-col cols="12" v-if="tab == 0">
+            <v-row class="mt-5">
+              <v-col>
                 <SingleProductForm @reloadPage="reloadPage()" :product="form" />
-              </v-col>
-              <v-col cols="12" v-if="tab == 0">
-                <v-alert
-                  outlined
-                  type="warning"
-                  prominent
-                  border="left"
-                  class="text-center"
-                >
-                  فروش تکی برای این محصول غیر فعال است
-                </v-alert>
-              </v-col>
-              <v-col cols="12" v-if="tab == 1">
-                <WholeProductForm @reloadPage="reloadPage()" :product="form" />
-              </v-col>
-              <v-col cols="12" v-if="tab == 1">
-                <v-alert
-                  outlined
-                  type="warning"
-                  prominent
-                  border="left"
-                  class="text-center"
-                >
-                  فروش عمده برای این محصول غیر فعال است
-                </v-alert>
               </v-col>
             </v-row>
           </v-col>
         </v-row>
         <v-row v-if="modelId">
           <v-col cols="12" md="12" class="text-center">
-            <v-form v-model="valid" @submit.prevent="submit()" :disabled="loading">
+            <v-form
+              v-model="valid"
+              @submit.prevent="submit()"
+              :disabled="loading"
+            >
               <amp-button
                 large
                 icon="redo"
@@ -321,6 +292,14 @@
                 color="error"
                 text="انصراف"
                 @click="redirectPage()"
+              />
+              <amp-button
+                large
+                icon="arrow_circle_right"
+                class="my-1"
+                color="orange"
+                text="برگشت"
+                @click="step_number--"
               />
               <amp-button
                 large
@@ -343,13 +322,11 @@
 <script>
 import Gallery from "@/components/Product/Gallery.vue";
 import SingleProductForm from "@/components/Product/SingleProductForm.vue";
-import WholeProductForm from "@/components/Product/WholeProductForm.vue";
 import AmpAutocomplete from "../Base/AmpAutocomplete.vue";
 import SelectCategory from "@/components/Product/SelectCategory.vue";
 export default {
   components: {
     SingleProductForm,
-    WholeProductForm,
     Gallery,
     AmpAutocomplete,
     SelectCategory,
@@ -385,27 +362,19 @@ export default {
       { text: "درصد", value: "percent" },
       { text: "مقدار", value: "amount" },
     ],
-
-    // 'tags' => 'nullable|array',
-    //             'slug' => 'nullable|string',
-    //             'online_sale' => 'boolean',
-    //             'phone_sale' => 'boolean',
-    //             'person_sale' => 'boolean',
-    //             'barcode' => 'nullable|string',
-    //             'category_ids' => 'nullable|array',
-    //             'base_price' => 'nullable|integer',
-    //             'main_image' => 'nullable|string',
-    //             'product_infos' => 'nullable|array',
-    //             'wholesale_unit' => 'nullable|string',
-    //             'base_wholesale_price' => 'nullable|integer',
-
+    product_infos: {
+        seo_description: "",
+        description: "",
+        summerized_description: "",
+        specefication_table: [],
+      },
     form: {
+    
       wholesale_unit: "",
       id: "",
       name: "",
       slug: "",
       code: "",
-      barcode: "",
       online_sale: false,
       phone_sale: false,
       person_sale: false,
@@ -425,12 +394,7 @@ export default {
       additional_description: [],
       sort: 1,
       excerpt_description: "",
-      product_infos: {
-        seo_description: "",
-        description: "",
-        summerized_description: "",
-        specefication_table: [],
-      },
+
     },
   }),
   beforeMount() {
@@ -450,7 +414,7 @@ export default {
   watch: {
     specefication_table() {
       if (this.specefication_table) {
-        this.form.product_infos.specefication_table = this.convetrSpacefication(
+        this.product_infos.specefication_table = this.convetrSpacefication(
           this.specefication_table
         );
       }
@@ -472,7 +436,20 @@ export default {
     submit() {
       this.loading = true;
       let form = this.$copyForm(this.form);
-      form["prepay_type"] = this.prepay_type;
+      form["product_infos"] = this.product_infos
+      if (this.step_number > 2) {
+        if (form.category_ids.length > 0) {
+          let items = [];
+          for (let index = 0; index < form.category_ids.length; index++) {
+            const element = form.category_ids[index];
+            if (!Boolean(items.find((f) => f == element))) {
+              items.push(element);
+            }
+          }
+          form.category_ids = items
+        }
+      }
+
       form["online_sale"] = false;
       form["prepay_type"] = this.prepay_type;
       form["phone_sale"] = false;
@@ -502,32 +479,10 @@ export default {
       form["has_single_sell"] = parseInt(form["has_single_sell"]);
       form["has_whole_sell"] = parseInt(form["has_whole_sell"]);
       form["mixturable"] = parseInt(form["mixturable"]);
-      // if (form.additional_description) {
-      //   form.additional_description = JSON.stringify(
-      //     form.additional_description
-      //   );
-      // }
-
       let url = this.createUrl;
       if (this.modelId) {
         url = this.updateUrl;
         form["id"] = this.modelId;
-
-        // if (form.status == "hidden") {
-        //   if (
-        //     this.form.single_sell_variation_combinations.length > 0 ||
-        //     form.whole_sell_variation_combinations.length > 0
-        //   ) {
-        //     form.status = "active";
-        //   }
-        // }
-
-        // if (
-        //   this.form.single_sell_variation_combinations.length == 0 &&
-        //   form.whole_sell_variation_combinations.length == 0
-        // ) {
-        //   form.status = "hidden";
-        // }
       }
       this.$reqApi(url, form)
         .then((response) => {
@@ -537,7 +492,7 @@ export default {
             return;
           } else {
             this.$toast.success("اطلاعات ویرایش شد");
-            if (this.step_number == 3) {
+            if (this.step_number > 2) {
               this.redirectPage();
             }
             this.step_number += 1;
@@ -553,6 +508,7 @@ export default {
       this.loading = true;
       this.$reqApi(this.showUrl, { id: this.modelId })
         .then(async (response) => {
+          this.form = {};
           try {
             response = response.model;
             this.form["id"] = response.id;
@@ -561,30 +517,31 @@ export default {
             this.form.name = response.name;
             this.form.main_image = response.main_image;
             this.form.wholesale_unit = response.wholesale_unit;
-
+            let items = [];
             if (Boolean(response.online_sale)) {
-              this.publish_status.push("online_sale");
+              items.push("online_sale");
             }
             if (Boolean(response.person_sale)) {
-              this.publish_status.push("person_sale");
+              items.push("person_sale");
             }
             if (Boolean(response.phone_sale)) {
-              this.publish_status.push("phone_sale");
+              items.push("phone_sale");
               this.preprepay_type = response.preprepay_type;
               this.prepayment = response.prepay_amount;
             }
-
+            this.publish_status = items;
             this.form.slug = response.slug;
             this.form.base_price = response.base_price;
             this.form.base_wholesale_price = response.base_wholesale_price;
-            this.form.barcode = response.barcode;
             this.form.brand_id = response.brand_id;
             this.form.product_variation_combinations =
               response.product_variation_combinations;
+            let items_category = [];
             for (let i = 0; i < response.categories.length; i++) {
-              this.category_ids.push(response.categories[i]);
+              items_category.push(response.categories[i]);
             }
 
+            this.category_ids = items_category;
             this.form.code = response.code;
             if (response.product_infos) {
               response.product_infos.map((x) => {
@@ -594,13 +551,13 @@ export default {
                   });
                 }
                 if (x.type == "seo_description") {
-                  this.form.product_infos.seo_description = x.value;
+                  this.product_infos.seo_description = x.value;
                 }
                 if (x.type == "summerized_description") {
-                  this.form.product_infos.summerized_description = x.value;
+                  this.product_infos.summerized_description = x.value;
                 }
                 if (x.type == "description") {
-                  this.form.product_infos.description = x.value;
+                  this.product_infos.description = x.value;
                 }
               });
               // if (response.description.additional_description) {
@@ -609,9 +566,11 @@ export default {
               //   );
               // }
             }
+            let tag_items = [];
             for (let i = 0; i < response.tags.length; i++) {
-              this.form.tags.push(response.tags[i].name);
+              tag_items.push(response.tags[i].name);
             }
+            this.form.tags = tag_items;
             this.form.main_image = response.main_image;
             this.form.single_sell_variation_combinations =
               response.single_sell_variation_combinations;
@@ -631,11 +590,9 @@ export default {
         });
     },
     redirectPage() {
-      if (window.history.length > 2) {
+    
         this.$router.back();
-      } else {
-        this.$router.push(this.path);
-      }
+ 
     },
     getCategories() {
       let form = {

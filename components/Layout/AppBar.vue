@@ -25,12 +25,13 @@
             >
               <span class="white--text">امروز {{ dateTime }}</span>
             </v-col>
-            <v-col cols="12" md="4" class="d-flex justify-end">
+            <v-col cols="12" md="4" class="d-flex justify-end align-center">
+              <NotificationBadge />
               <Profile />
             </v-col>
           </v-row>
         </v-col>
-        <v-col cols="12">
+        <v-col cols="12" :class="is_mobile ? 'menu-header' : ''">
           <AppBarMenu v-if="$vuetify.breakpoint.mdAndUp" />
           <v-icon
             :class="is_mobile ? 'mobile_icon' : 'absulut'"
@@ -39,6 +40,7 @@
             @click="toggleDrawer()"
             >menu</v-icon
           >
+          
         </v-col>
       </v-row>
     </v-container>
@@ -49,8 +51,9 @@
 let jmoment = require("jalali-moment");
 import Profile from "@/components/Layout/Profile.vue";
 import AppBarMenu from "@/components/Layout/AppBarMenu.vue";
+import NotificationBadge from "../notification/NotificationBadge.vue";
 export default {
-  components: { Profile, AppBarMenu },
+  components: { Profile, AppBarMenu, NotificationBadge },
   props: {
     value: {
       required: false,

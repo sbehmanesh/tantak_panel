@@ -70,6 +70,7 @@ export default {
     checkAuth() {
       let user = this.$store.state.auth.user;
       document.getElementById("landing-parent").style.display = "flex";
+      this.$store.dispatch('notification/getNotif')
       if (Boolean(user)) {
         this.showBody();
       } else {

@@ -35,7 +35,9 @@ export const state = () => ({
   wallet_type,
   wallet_kind,
   status_work,
-  status_type
+  status_type,
+  type_message,
+  send_for
 });
 
 let mnue_tree = [
@@ -74,7 +76,7 @@ let mnue_tree = [
     name: "لیست کارکنان",
     access: "user/internal_personnels",
     route: "/user/internal-personnel",
-  }, 
+  },
 
   // {
   //   id: 6,
@@ -173,7 +175,7 @@ let mnue_tree = [
   //   access: "product/root",
   //   route: "/stock",
   // },
-   {
+  {
     id: 34751,
     name: "وظیفه ها",
     access: "tasks/index",
@@ -277,8 +279,8 @@ let mnue_tree = [
         name: "تنظیمات عمومی",
         access: "setting/index",
         route: "/setting/public/1",
-      },     
-       {
+      },
+      {
         id: 29541,
         name: "علل های کنسلی",
         access: "setting/index",
@@ -289,6 +291,12 @@ let mnue_tree = [
         name: "ویژگی های محصولات",
         access: "setting/index",
         route: "/setting/variation-type",
+      },
+      {
+        id: 6101373,
+        name: "اطلاعیه ها",
+        access: "notifications/index",
+        route: "/notification",
       },
       {
         id: 23,
@@ -354,10 +362,10 @@ let mnue_tree = [
   },
 ];
 let status_type = [
-  {text: "شارژ", value: "charg"},
-  {text: "خرید", value: "buy"},
-  {text: "برگشت", value:"reject"}
-]
+  { text: "شارژ", value: "charg" },
+  { text: "خرید", value: "buy" },
+  { text: "برگشت", value: "reject" },
+];
 
 let setting_keys = [
   { text: "لوگوی صفحه اصلی", value: "header_logo", type: "image" },
@@ -417,6 +425,10 @@ let step_message = [
   { text: "از مرکز تماس به فروشنده", value: "supervisor_to_operator" },
   { text: "از فروشنده به مرکز تماس", value: "operator_to_supervisor" },
   { text: "انجام شده", value: "done" },
+];
+let type_message = [
+  { text: "کاربر", value: "User" },
+  { text: "همه کاربران", value: "All" },
 ];
 
 let product_status = [
@@ -498,6 +510,10 @@ let bool_number_enum = [
   { text: "بله", value: "1" },
   { text: "خیر", value: "0" },
 ];
+let send_for = [
+  {text: "همه", value:"All"},
+  {text: "کاربر", value:"User"}
+]
 
 let person_type = [
   { text: "حقیقی", value: "real" },

@@ -26,9 +26,12 @@ export default {
     title: "",
     drawer: false,
     show_body: false,
+    call_notif: false,
   }),
   mounted() {
     this.checkAuth();
+    this.checkNotification();
+    // this.callNotif();
   },
   watch: {
     "$store.state.auth.action"() {
@@ -70,7 +73,6 @@ export default {
     checkAuth() {
       let user = this.$store.state.auth.user;
       document.getElementById("landing-parent").style.display = "flex";
-      this.$store.dispatch('notification/getNotif')
       if (Boolean(user)) {
         this.showBody();
       } else {
@@ -84,12 +86,20 @@ export default {
       this.$store.dispatch("setLogo");
       this.title = this.$store.state.page_title;
     },
+    checkNotification() {
+      this.$store.dispatch("notification/getNotif");
+    },
     goMessages() {
       var link = document.createElement("a");
       link.href = this.$store.state.chat_url + "/#/messages";
       link.target = "_blanck";
       link.click();
     },
+    // callNotif() {
+    //   setInterval(() => {
+    //     this.checkNotification();
+    //   }, 10000);
+    // },
   },
 };
 </script>

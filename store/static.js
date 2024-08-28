@@ -238,6 +238,49 @@ let mnue_tree = [
     name: "لیست کارکنان",
     route: "/new-call-center/my-staff",
   },
+
+  {
+    id: 26,
+    name: "فرم های دریافتی",
+    children: [
+      {
+        id: 27,
+        name: "تماس با ما",
+        access: "contact_us_form/index",
+        route: "/forms/contact-us-form",
+      },
+      {
+        id: 28,
+        name: "درخواست فرم نمایندگی",
+        access: "representation_request_form/index",
+        route: "/forms/representation-request-form",
+      },
+      {
+        id: 29,
+        name: "شکایات",
+        access: "complaint_form/index",
+        route: "/forms/complaint",
+      },
+    ],
+  },
+  {
+    id: 1373,
+    access: "small_stocks/index",
+    name: "انبارک",
+    route: "/new-call-center/small-store",
+  }, 
+   {
+    id: 75373,
+    access: "custom_notifications/index",
+    name: "الگوریتم های اعلان",
+    route: "/custom-notif",
+  },  
+   {
+    id: 7587453,
+    access: "product_requests/index",
+    name: "درخواست موجودی",
+    route: "/new-call-center/inventory-request",
+  },
   {
     id: 18,
     name: "تنظیمات",
@@ -339,48 +382,6 @@ let mnue_tree = [
         route: "/setting/category-task",
       },
     ],
-  },
-  {
-    id: 26,
-    name: "فرم های دریافتی",
-    children: [
-      {
-        id: 27,
-        name: "تماس با ما",
-        access: "contact_us_form/index",
-        route: "/forms/contact-us-form",
-      },
-      {
-        id: 28,
-        name: "درخواست فرم نمایندگی",
-        access: "representation_request_form/index",
-        route: "/forms/representation-request-form",
-      },
-      {
-        id: 29,
-        name: "شکایات",
-        access: "complaint_form/index",
-        route: "/forms/complaint",
-      },
-    ],
-  },
-  {
-    id: 1373,
-    access: "small_stocks/index",
-    name: "انبارک",
-    route: "/new-call-center/small-store",
-  }, 
-   {
-    id: 75373,
-    access: "custom_notifications/index",
-    name: "الگوریتم های اعلان",
-    route: "/custom-notif",
-  },  
-   {
-    id: 7587453,
-    access: "product_requests/index",
-    name: "درخواست موجودی",
-    route: "/new-call-center/inventory-request",
   },
 ];
 let status_type = [

@@ -37,6 +37,10 @@ export const state = () => ({
   status_work,
   status_type,
   notif_type,
+  status_invitor,
+  type_invitor,
+  step_invitor,
+
 });
 
 let mnue_tree = [
@@ -358,6 +362,12 @@ let mnue_tree = [
     access: "custom_notifications/index",
     name: "الگوریتم های اعلان",
     route: "/custom-notif",
+  },  
+   {
+    id: 7587453,
+    access: "product_requests/index",
+    name: "درخواست موجودی",
+    route: "/new-call-center/inventory-request",
   },
 ];
 let status_type = [
@@ -644,8 +654,20 @@ let menu_type = [
   { text: "فعال", value: "active" },
   { text: "غیرفعال", value: "hidden" },
 
-];let notif_type = [
+];
+let notif_type = [
   { text: "پیامک", value: "sms" },
   { text: "اعلان", value: "notification" },
   { text: "هردو", value: "all" },
+
+];
+let status_invitor = [
+  { text: "ثبت اولیه", value: "init" },
+
+];let type_invitor = [
+  { text: "عادی ", value: "normal" },
+
+];let step_invitor = [
+  { text: "ثبت اولیه", value: "init" },
+
 ];

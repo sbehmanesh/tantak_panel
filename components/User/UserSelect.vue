@@ -45,7 +45,7 @@ import BaseTable from "~/components/DataTable/BaseTable";
 export default {
   components: { BaseTable },
   props: {
-    showUrl: { default: "/user/searchByRole" },
+    showUrl: { default: "/user" },
     value: { require: false },
     multi: { type: Boolean, default: false },
     rootBody: { type: Object, require: false },

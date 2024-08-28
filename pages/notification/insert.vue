@@ -1,5 +1,5 @@
 <template>
-    <NotificationForm :model-id="$route.params.id" />
+    <NotificationForm />
   </template>
   
   <script>
@@ -7,7 +7,7 @@
   export default {
     components: { NotificationForm },
     data: () => ({
-      title: "ویرایش اعلان",
+      title: "ثبت اعلان",
     }),
     mounted() {
       this.$store.dispatch("setPageTitle", this.title);

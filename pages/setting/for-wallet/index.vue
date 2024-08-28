@@ -2,7 +2,7 @@
   <div>
     <BaseTable
       url="/setting"
-      :filters="filters"
+      :filters="filters" 
       :headers="headers"
       autoUpdate="/setting/for-wallet"
       createUrl="/setting/for-wallet/insert"

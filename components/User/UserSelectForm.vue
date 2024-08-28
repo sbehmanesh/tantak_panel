@@ -31,7 +31,7 @@ export default {
     value: { require: true, default: () => [] },
     rules: { require: false, default: "" },
     text: { require: false, default: "انتخاب کاربر" },
-    url: { require: false, default: "/user/searchByRole" },
+    url: { require: false, default: "/user" },
     keyUrl: { require: false, default: false },
     clear: { require: false, default: false },
     notIn: { require: false, default: false },

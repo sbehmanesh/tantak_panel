@@ -1,5 +1,4 @@
 <template>
-
   <v-form
     v-model="valid"
     @submit.prevent="submit()"
@@ -7,7 +6,7 @@
     class="rounded-0 pa-2 d-flex flex-column"
   >
     <v-row class="ma-2 d-flex justify-center">
-      <v-col cols="12" md="8">
+      <v-col cols="12" md="6">
         <amp-select
           rules="require"
           text=" ارسال خرید برای"
@@ -15,12 +14,20 @@
           v-model="for_buy"
         />
       </v-col>
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="3">
         <amp-jdate
           text="تاریخ ارسال"
           :is-number="true"
           rules="require"
           v-model="array_profile.send_at"
+        />
+      </v-col>
+      <v-col cols="12" md="3">
+        <amp-select
+          rules="require"
+          text=" ارسال  فوری"
+          :items="force_items"
+          v-model="sale_force"
         />
       </v-col>
       <v-col cols="12" md="3">
@@ -161,6 +168,7 @@ export default {
       show_btn: false,
       show_select_addres: false,
       for_buy: "",
+      sale_force: "",
       dialog_add: { items: null, show: false },
       address: [],
       address_list: [],
@@ -169,6 +177,10 @@ export default {
       for_buy_item: [
         { text: "خود کاربر ", value: "user" },
         { text: "دیگران", value: "other" },
+      ],
+      force_items: [
+        { text: " بله ", value: "yes" },
+        { text: "خیر", value: "no" },
       ],
 
       array_profile: {
@@ -196,7 +208,6 @@ export default {
     this.getAddress();
   },
   watch: {
-
     show_select_addres() {
       if (this.show_select_addres) {
       }
@@ -221,6 +232,14 @@ export default {
     submit() {
       this.loading = true;
       let form = {};
+      switch (this.sale_force) {
+        case "yes":
+          form["sale_force"] = true;
+          break;
+        default:
+          form["sale_force"] = false;
+          break;
+      }
       form["basket_id"] = this.basket_costumer_id;
       form["for_buy"] = this.for_buy;
 

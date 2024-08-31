@@ -34,10 +34,16 @@
 import { icon } from "leaflet";
 
 export default {
+  data: () => ({
+    title: "اعلانهای دریافتی",
+  }),
   computed: {
     items() {
       return this.$store.state.notification.items;
     },
+  },
+  beforeMount() {
+    this.$store.dispatch("setPageTitle", this.title);
   },
   methods: {
     borderClass(item) {

@@ -90,8 +90,11 @@ export const mutations = {
 
 export const actions = {
   async nuxtServerInit({ state, commit, dispatch }, redirect = true) {
+    
+    
     return new Promise(async (res, rej) => {
       try {
+        
         let token = localStorage.getItem("panel_token");
         let secondary_token = localStorage.getItem("secondary_token");
         if (token) {

@@ -31,7 +31,7 @@ export default {
   mounted() {
     this.checkAuth();
     this.checkNotification();
-    // this.callNotif();
+    this.callNotif();
   },
   watch: {
     "$store.state.auth.action"() {
@@ -95,11 +95,11 @@ export default {
       link.target = "_blanck";
       link.click();
     },
-    // callNotif() {
-    //   setInterval(() => {
-    //     this.checkNotification();
-    //   }, 10000);
-    // },
+    callNotif() {
+      setInterval(() => {
+        this.checkNotification();
+      }, 300000);
+    },
   },
 };
 </script>

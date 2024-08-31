@@ -96,9 +96,9 @@ export default {
       this.$reqApi(url, form)
         .then((response) => {
           if (this.modelId) {
-            this.$toast.success("اطلاعات ثبت شد");
-          } else {
             this.$toast.success("اطلاعات ویرایش شد");
+          } else {
+            this.$toast.success("اطلاعات ثبت شد");
           }
           this.$router.push("/notification");
         })

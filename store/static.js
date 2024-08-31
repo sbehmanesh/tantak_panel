@@ -341,13 +341,13 @@ let mnue_tree = [
       },
       {
         id: 6101373,
-        name: "اطلاعیه ها",
+        name: "ارسال اعلان",
         access: "notifications/index",
         route: "/notification",
       },
       {
         id: 61013734,
-        name: "بخش های الگوریتم پیامها",
+        name: "الگوریتم اعلانات",
         access: "setting/index",
         route: "/setting/message-algouritm",
       },

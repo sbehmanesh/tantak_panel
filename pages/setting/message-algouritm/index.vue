@@ -19,7 +19,7 @@ export default {
   data: () => ({
     headers: [],
     filters: { key: "custom_notif" },
-    title: "الگوریتم پیامها",
+    title: "الگوریتم اعلانات",
     
   }),
   beforeMount() {

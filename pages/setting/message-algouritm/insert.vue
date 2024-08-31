@@ -7,7 +7,7 @@
   export default {
     components: { MessageAlgouritm },
     data: () => ({
-      title: "ثبت پیام",
+      title: "ثبت اعلان",
     }),
     mounted() {
       this.$store.dispatch("setPageTitle", this.title);

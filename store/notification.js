@@ -30,4 +30,10 @@ export const actions = {
       }
     });
   },
+  setSeenNotification({ state, commit }) {
+    if (state.count == 0) {
+      return
+    }
+    commit('set_notification', { count: 0 })
+  }, 
 };

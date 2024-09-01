@@ -650,7 +650,7 @@
           </v-card-title>
           <Payment
             v-if="payment_list.show"
-            :model-id="payment_list.item"
+            :basketId="payment_list.item"
             :userChangeStatus="true"
           />
         </v-card>
@@ -728,7 +728,7 @@
 
 <script>
 import AddProduct from "@/components/Product/AddProduct.vue";
-import Payment from "@/components/User/Payment.vue";
+import Payment from "@/components/CallCenter/Payment.vue";
 import CoordinatorDialog from "@/components/CallCenter/CoordinatorDialog.vue";
 import RefralDialog from "@/components/CallCenter/RefralDialog.vue";
 import DeliveryInfo from "@/components/Product/DeliveryInfo.vue";

@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-col cols="12">
-      <v-alert prominent color="info darken-4" text>
+      <v-alert prominent outlined text>
         <v-col cols="12" class="text-center mb-5">
           <h1 style="font-size: 23px">موجودی کیف پول</h1>
           <h1 style="font-size: 14px">

@@ -31,6 +31,9 @@
           <amp-upload-file v-model="form.avatar" />
         </v-col>
       </v-row>
+      <v-col v-if="Boolean(cheke_role)" cols="12" md="12">
+        <MyWallet  />
+      </v-col>
       <v-row dense>
         <v-col cols="12" md="12">
           <v-divider />
@@ -53,7 +56,12 @@
 </template>
 
 <script>
+import MyWallet from "@/components/Cartabl/MyWallet.vue";
+
 export default {
+  components: {
+    MyWallet,
+  },
   props: { modelId: { default: null } },
   data: () => ({
     valid: false,
@@ -71,6 +79,18 @@ export default {
   mounted() {
     this.$store.dispatch("setPageTitle", this.title);
     this.loadData();
+  },
+  computed: {
+    cheke_role() {
+      if (
+        this.$checkRole(this.$store.state.auth.role.courier) ||
+        this.$checkRole(this.$store.state.auth.role.seal_manager)
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    },
   },
   methods: {
     submit() {

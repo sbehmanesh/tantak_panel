@@ -115,20 +115,21 @@
             :role-id="[$store.state.auth.role.admin_id]"
           />
         </v-col>
-        <v-col cols="12" md="3" v-if="cheke_branch">
+        <v-col cols="12" md="3" v-if="sales_manager">
           <amp-select
             text="ناحیه"
+            rules="require"
             v-model="form.region_id"
             :items="$store.state.setting.region"
           />
         </v-col>
-        <v-col cols="12" md="3" v-if="cheke_branch">
+        <!-- <v-col cols="12" md="3" v-if="cheke_branch">
           <amp-select
             text=" کد شعبه "
             v-model="form.branch_id"
             :items="$store.state.setting.branch_code"
           />
-        </v-col>
+        </v-col> -->
         <v-col cols="12" md="3">
           <amp-upload-file v-model="form.avatar" />
         </v-col>
@@ -214,7 +215,6 @@ export default {
     supervisor_status: "",
     supervisor: [],
     internal_items: [],
-    sales_manager: [],
     parent_id: [],
     psychologist: [],
     supervisor_status_items: [],
@@ -244,18 +244,29 @@ export default {
     },
   }),
   computed: {
-    cheke_branch() {
-      if (this.form.role_id) {
-        return (
-          this.form.role_id.indexOf(this.$store.state.auth.role.cashier_id) >
-            -1 ||
-          this.form.role_id.indexOf(
-            this.$store.state.auth.role.warehouseman_id
-          ) > -1
-        );
+    // cheke_branch() {
+    //   if (this.form.role_id) {
+    //     return (
+    //       this.form.role_id.indexOf(this.$store.state.auth.role.cashier_id) >
+    //         -1 ||
+    //       this.form.role_id.indexOf(
+    //         this.$store.state.auth.role.warehouseman_id
+    //       ) > -1
+    //     );
+    //   }
+    // },
+    sales_manager() {
+      if (
+        Boolean(
+          this.form.role_id.indexOf(this.$store.state.auth.role.sales_manager) >
+            -1
+        )
+      ) {
+        return true;
+      } else {
+        return false;
       }
     },
-
     cheke_user() {
       return (
         this.form.role_id.indexOf(this.$store.state.auth.role.cashier_id) >

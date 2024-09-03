@@ -1,28 +1,24 @@
 <template>
   <div>
     <v-col cols="12">
-      <v-alert prominent outlined text>
-        <v-col cols="12" class="text-center mb-5">
-          <h1 style="font-size: 23px">موجودی کیف پول</h1>
-          <h1 style="font-size: 14px">
-            کیف پول نقدی :
-            <small> (ریال)</small>
-            {{ $price(user.cash_wallt) }}
-          </h1>
-          <h1 style="font-size: 14px">
-            کیف پول اعتباری:
-            <small> (ریال)</small>
-            {{ $price(user.credit_wallt) }}
-          </h1>
-          <v-divider class="mt-2"></v-divider>
-          <v-col cols="12" class="mb-2 text-center">
-          <h1 style="font-size: 23px" class="mx-2">
-          
-            تراکنش
-          </h1>
-        </v-col>
-     
-        </v-col>
+      <v-divider></v-divider>
+    </v-col>
+    <v-col cols="12">
+      <v-col cols="12" class="text-center mb-5">
+        <h1 style="font-size: 25px">موجودی کیف پول</h1>
+        <h1 style="font-size: 16px">
+          کیف پول نقدی :
+          <small> (ریال)</small>
+          {{ $price(user.cash_wallt) }}
+        </h1>
+        <v-spacer></v-spacer>
+        <h1 style="font-size: 16px">
+          کیف پول اعتباری:
+          <small> (ریال)</small>
+          {{ $price(user.credit_wallt) }}
+        </h1>
+      </v-col>
+      <v-card-text class="pa-5 mx-10">
         <v-row>
           <v-col
             cols="12 "
@@ -32,7 +28,7 @@
             :key="index"
           >
             <v-alert
-              icon="receipt_long"
+              icon="history"
               dens
               text
               color="info darken-4"
@@ -42,38 +38,55 @@
             >
               <strong>
                 {{ item.pay_text }} (
-                {{ $getItemEnum($store.state.static.wallet_type, item.type)  }}
-          
+                {{ $getItemEnum($store.state.static.wallet_type, item.type) }}
+
                 )
               </strong>
-              <br />
+              <v-col cols="12">
+                <v-row>
+                  <h1>
+                    تاریخ ثبت :‌
+                    {{
+                      $toJalali(item.created_at, "YYYY-MM-DD", "jYYYY/jMM/jDD")
+                    }}
+                  </h1>
+                  <v-spacer></v-spacer>
+                  <h1>
+                    تاریخ پرداخت :
+                    {{
+                      $toJalali(item.paid_date, "YYYY-MM-DD", "jYYYY/jMM/jDD")
+                    }}
+                  </h1>
+                </v-row>
+              </v-col>
+              <v-col cols="12">
+                <v-row>
+                  <h1>
+                    نوع :
+                    {{
+                      $getItemEnum($store.state.static.wallet_kind, item.kind)
+                    }}
+                  </h1>
+                  <v-spacer></v-spacer>
+                  <h1>
+                    مقدار :
+                    {{ $price(item.amount) }} (ریال)
+                  </h1>
+                </v-row>
+              </v-col>
 
-              <h1>
-                تاریخ ثبت :‌
-                {{ $toJalali(item.created_at, "YYYY-MM-DD", "jYYYY/jMM/jDD") }}
-              </h1>
-              <h1>
-                تاریخ پرداخت :
-                {{ $toJalali(item.paid_date, "YYYY-MM-DD", "jYYYY/jMM/jDD") }}
-              </h1>
-
-              <h1>
-                نوع :
-                {{ $getItemEnum($store.state.static.wallet_kind, item.kind) }}
-              </h1>
-              <h1>
-                مقدار :
-                {{ $price(item.amount) }} (ریال)
-              </h1>
-
-              <h1 v-if="item.description">
-                توضیحات :‌
-                {{ item.description }}
-              </h1>
+              <v-col cols="12">
+                <v-row>
+                  <h1 v-if="item.description">
+                    توضیحات :‌
+                    {{ item.description }}
+                  </h1>
+                </v-row>
+              </v-col>
             </v-alert>
           </v-col>
         </v-row>
-      </v-alert>
+      </v-card-text>
     </v-col>
   </div>
 </template>

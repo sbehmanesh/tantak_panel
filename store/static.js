@@ -79,6 +79,71 @@ let mnue_tree = [
     ],
   },
   {
+    id: 50,
+    name: "مرکز فروش تلفنی",
+    children: [
+      {
+        id: 51,
+        access: "recived_message/insert",
+        name: "ورود اکسل",
+        route: "/call-center/import",
+      },
+      {
+        id: 222,
+        access: "wholesale_form/index",
+        name: "فروش تلفنی",
+        route: "/product/buy-person",
+      },
+      // {
+      //   id: 52,
+      //   access: (state) => {
+      //     if (state.auth) {
+      //       if (
+      //         state.auth.action.indexOf(
+      //           "call_center/index-superviser-messages"
+      //         ) > -1 ||
+      //         state.auth.action.indexOf("recived_message/index") > -1
+      //       ) {
+      //         return true;
+      //       }
+      //     }
+      //   },
+      //   name: "لیست کارکنان",
+      //   route: "/call-center/list",
+      // },
+      {
+        id: 53,
+        access: "messages/index",
+        name: "پیام های دریافتی",
+        route: "/new-call-center",
+      },
+      {
+        id: 55643,
+        access: "internals/index",
+        name: "اطلاعات داخلی",
+        route: "/new-call-center/internal",
+      },
+    ],
+  },
+  {
+    id: 610,
+    name: "نمایندگی ها",
+    children: [
+      {
+        id: 6185145,
+        name: "نمایندگی های فروش",
+        access: "sale_agencies/index",
+        route: "/product/sale-agency",
+      },
+      {
+        id: 6,
+        name: "ناحیه ها",
+        access: "region/index",
+        route: "/region",
+      },
+    ],
+  },
+  {
     id: 6185,
     name: "لیست کارکنان",
     access: "user/internal_personnels",
@@ -86,23 +151,12 @@ let mnue_tree = [
   },
 
   // {
-  //   id: 6,
-  //   name: "ناحیه ها",
-  //   access: "region/index",
-  //   route: "/region",
-  // },
-  // {
   //   id: 7,
   //   name: "شعبات",
   //   access: "branch/index",
   //   route: "/branches",
   // },
-  {
-    id: 6185145,
-    name: "نمایندگی های فروش",
-    access: "sale_agencies/index",
-    route: "/product/sale-agency",
-  },
+
   // {
   //   id: 200,
   //   name: "فروش تجمیعی",
@@ -188,53 +242,7 @@ let mnue_tree = [
     access: "tasks/index",
     route: "/tasks",
   },
-  {
-    id: 50,
-    name: "مرکز فروش تلفنی",
-    children: [
-      {
-        id: 51,
-        access: "recived_message/insert",
-        name: "ورود اکسل",
-        route: "/call-center/import",
-      },
-      {
-        id: 222,
-        access: "wholesale_form/index",
-        name: "فروش تلفنی",
-        route: "/product/buy-person",
-      },
-      // {
-      //   id: 52,
-      //   access: (state) => {
-      //     if (state.auth) {
-      //       if (
-      //         state.auth.action.indexOf(
-      //           "call_center/index-superviser-messages"
-      //         ) > -1 ||
-      //         state.auth.action.indexOf("recived_message/index") > -1
-      //       ) {
-      //         return true;
-      //       }
-      //     }
-      //   },
-      //   name: "لیست کارکنان",
-      //   route: "/call-center/list",
-      // },
-      {
-        id: 53,
-        access: "messages/index",
-        name: "پیام های دریافتی",
-        route: "/new-call-center",
-      },
-      {
-        id: 55643,
-        access: "internals/index",
-        name: "اطلاعات داخلی",
-        route: "/new-call-center/internal",
-      },
-    ],
-  },
+
   {
     id: 545613,
     access: "user/access_managers",
@@ -272,17 +280,29 @@ let mnue_tree = [
     name: "انبارک",
     route: "/new-call-center/small-store",
   },
-  {
-    id: 75373,
-    access: "custom_notifications/index",
-    name: "الگوریتم های اعلان",
-    route: "/custom-notif",
-  },
+  // {
+  //   id: 75373,
+  //   access: "custom_notifications/index",
+  //   name: "الگوریتم های اعلان",
+  //   route: "/custom-notif",
+  // },
   {
     id: 7587453,
-    access: "product_requests/index",
     name: "درخواست موجودی",
-    route: "/new-call-center/inventory-request",
+    children: [
+      {
+        id: 75874531,
+        access: "product_requests/index",
+        name: "درخواست موجودی",
+        route: "/new-call-center/inventory-request",
+      },
+      {
+        id: 75874532,
+        access: "product_request_logs/index",
+        name: "تاریخچه درخواست موجودی",
+        route: "/new-call-center/referral-history",
+      },
+    ],
   },
   {
     id: 18,

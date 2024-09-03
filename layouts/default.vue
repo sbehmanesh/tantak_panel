@@ -98,7 +98,7 @@ export default {
     callNotif() {
       setInterval(() => {
         this.checkNotification();
-      }, 300000);
+      }, 900000);
     },
   },
 };

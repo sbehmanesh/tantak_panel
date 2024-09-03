@@ -19,6 +19,11 @@
         @closeDialog="show_dialog = false"
         @reload="refresh"
       />
+      <HistoryInventoryRequest
+        v-if="dialog_history.show"
+        :dialogHistory="dialog_history"
+        :messageId="id_message"
+      />
       <DialogRefral
         :dialog="show_refral"
         :basketId="basket_id"
@@ -40,13 +45,18 @@
 
 <script>
 import Dialog from "@/components/NewCallCenter/InventoryRequest/Dialog.vue";
+import HistoryInventoryRequest from "~/components/NewCallCenter/InventoryRequest/HistoryInventoryRequest.vue";
 import DialogRefral from "@/components/NewCallCenter/InventoryRequest/DialogRefral.vue";
 import DialogTransactions from "@/components/NewCallCenter/InventoryRequest/DialogTransactions.vue";
 export default {
-  components: { Dialog, DialogRefral, DialogTransactions },
+  components: {
+    Dialog,
+    DialogRefral,
+    DialogTransactions,
+    HistoryInventoryRequest,
+  },
   data: () => ({
     title: "درخواست موجودی",
-
     headers: [],
     payments: [],
     extra_btn: [],
@@ -57,6 +67,10 @@ export default {
     add_transaction: false,
     request: "",
     basket_id: "",
+    dialog_history: {
+      show: false,
+      items: null,
+    },
     status_payment: "",
   }),
   beforeMount() {
@@ -116,6 +130,7 @@ export default {
         items: this.$store.state.static.status_payment_invitor,
       },
     ];
+    this.$store.dispatch("setPageTitle", this.title);
     this.extra_btn = [
       {
         text: "درخواست موجودی",
@@ -130,16 +145,30 @@ export default {
     ];
     this.btn_actions = [
       {
+        color: "primary",
+        icon: "history",
+        text: "تاریخچه",
+        fun: (body) => {
+          if (body.id) {
+            this.dialog_history.show = true;
+            this.id_message = body.id;
+          }
+        },
+      },
+      {
         text: "‌برسی روند ارجاع ",
         color: "primary darkeb-2",
         icon: "event_repeat",
         fun: (body) => {
           this.show_refral = true;
-          this.status_payment = body.status_payment
+          this.status_payment = body.status_payment;
           this.basket_id = body.id;
         },
         show_fun: (body) => {
           let show = true;
+          if (Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))) {
+            show = false;
+          }
           if (
             Boolean(this.$checkRole(this.$store.state.auth.role.agency_manager))
           ) {
@@ -179,7 +208,6 @@ export default {
         fun: (body) => {
           this.add_transaction = true;
           this.payments = body.payments;
-
         },
         show_fun: (body) => {
           if (

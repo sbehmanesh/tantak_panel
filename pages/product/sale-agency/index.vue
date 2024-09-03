@@ -66,6 +66,15 @@ export default {
         },
       },
       {
+        text: "ناحیه",
+        filterable: false,
+        value: (body) => {
+          if (body.region) {
+            return body.region.fa_name;
+          }
+        },
+      },
+      {
         text: "شعبه اصلی",
         type: "boolean",
         filterable: false,

@@ -59,93 +59,15 @@
           </div>
         </v-sheet>
         <!-- جدول کارتابل -->
-        <table border="1" class="my-6 dashboard-table">
-          <tr>
-            <td>
-              <v-icon>home</v-icon>
-              <span>فروش</span>
-            </td>
-            <td class="d-flex align-center justify-space-between">
-              <div>
-                <v-icon>mode_comment</v-icon>
-                <span>پیام های جدید</span>
-              </div>
-              <div class="primary px-3">2</div>
-            </td>
-          </tr>
-          <!-- ردیف دوم -->
-          <tr>
-            <td>
-              <v-icon>home</v-icon>
-              <span>پروژه ها</span>
-            </td>
-            <td class="d-flex align-center justify-space-between">
-              <div>
-                <v-icon>mode_comment</v-icon>
-                <span>پیام های جدید</span>
-              </div>
-              <div class="primary px-3">2</div>
-            </td>
-          </tr>
-          <!-- ردیف سوم -->
-          <tr>
-            <td>
-              <v-icon>home</v-icon>
-              <span>وظایف شما</span>
-            </td>
-            <td>
-              <div class="d-flex align-center justify-space-between">
-                <div>
-                  <v-icon>mode_comment</v-icon>
-                  <span>پیام های جدید</span>
-                </div>
-                <div class="primary px-3">2</div>
-              </div>
-              <div class="d-flex align-center justify-space-between">
-                <div>
-                  <v-icon>mode_comment</v-icon>
-                  <span>وظایف دارای تاخیر</span>
-                </div>
-                <div class="primary px-3">2</div>
-              </div>
-              <div class="d-flex align-center justify-space-between">
-                <div>
-                  <v-icon>mode_comment</v-icon>
-                  <span>وظایف دارای زمان</span>
-                </div>
-                <div class="primary px-3">2</div>
-              </div>
-              <div class="d-flex align-center justify-space-between">
-                <div>
-                  <v-icon>mode_comment</v-icon>
-                  <span>وظایف بدون زمان</span>
-                </div>
-                <div class="primary px-3">2</div>
-              </div>
-            </td>
-          </tr>
-          <!-- ردیف آخر -->
-          <tr>
-            <td>
-              <v-icon>home</v-icon>
-              <span>نامه ها</span>
-            </td>
-            <td class="d-flex align-center justify-space-between">
-              <div>
-                <v-icon>mode_comment</v-icon>
-                <span>پیام های جدید</span>
-              </div>
-              <div class="primary px-3">2</div>
-            </td>
-          </tr>
-        </table>
+        <MainTable />
       </v-col>
     </v-row>
   </v-container>
 </template>
-
 <script>
+import MainTable from '@/components/dashboard/MainCard'
 export default {
+components: {MainTable},
   data: () => ({
     title: "کارتابل",
     roles: [],

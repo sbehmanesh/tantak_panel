@@ -12,17 +12,17 @@
               </v-btn>
             </v-row>
           </v-alert>
-          <v-divider></v-divider>
         </v-col>
         <v-col cols="12" v-for="(item, index) in data" :key="index">
           <v-alert outlined dense color="grey darken-2" text border="left" class="ma-0">
-            <strong> {{ index + 1 }} - {{ item.text }}</strong>
-            <h1 class="my-1">مبلغ تراکنش: {{ $price(item.price) }}</h1>
-            <h1>
+            <h1> {{ index + 1 }} - {{ item.text }}</h1>
+            <h1  class="my-1 font_11">مبلغ تراکنش: {{ $price(item.price) }}</h1>
+
+            <h1 class="font_11">
               شماره تراکنش :
               {{ item.transaction_number }}
             </h1>
-            <h1 class="red--text my-1">
+            <h1 class="red--text my-1 font_11">
               وضعیت :
               {{
                 $getItemEnum(

@@ -101,9 +101,9 @@ export default {
         dialog_title = "ایجاد  واحد مالی";
         this.form.role_id.push(this.$store.state.auth.role.financial_unit_id);
       }
-      if (this.$checkRole(this.$store.state.auth.role.sale_head)) {
+      if (this.$checkRole(this.$store.state.auth.role.sales_manager)) {
         dialog_title = "ایجاد کارشناس فروش";
-        this.form.role_id.push(this.$store.state.auth.role.sale_employee);
+        this.form.role_id.push(this.$store.state.auth.role.sales_expert);
       }
 
       if (this.$checkRole(this.$store.state.auth.role.admin_call_center_id)) {

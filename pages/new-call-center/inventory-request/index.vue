@@ -6,6 +6,7 @@
         :headers="headers"
         :extraBtn="extra_btn"
         :actionsList="actions_list"
+        :BTNactions="btn_action"
         ref="ProductRequest"
       />
     </v-col>
@@ -18,22 +19,33 @@
         @closeDialog="show_dialog = false"
         @reload="refresh"
       />
+      <HistoryInventoryRequest
+        v-if="dialog_history.show"
+        :dialogHistory="dialog_history"
+        :messageId="id_message"
+      />
     </v-col>
   </v-row>
 </template>
 
 <script>
 import Dialog from "@/components/NewCallCenter/InventoryRequest/Dialog.vue";
+import HistoryInventoryRequest from "~/components/NewCallCenter/InventoryRequest/HistoryInventoryRequest.vue";
 export default {
-  components: { Dialog },
+  components: { Dialog, HistoryInventoryRequest },
   data: () => ({
     title: "درخواست موجودی",
     headers: [],
     extra_btn: [],
     actions_list: [],
+    btn_action: [],
     show_dialog: false,
     request: "",
     basket_id: "",
+    dialog_history: {
+      show: false,
+      items: null,
+    },
   }),
   beforeMount() {
     this.headers = [
@@ -61,8 +73,8 @@ export default {
       {
         text: "شماره فاکتور",
         value: "order_number",
-      },     
-       {
+      },
+      {
         text: "کد نمایندگی",
         value: "agency_code",
       },
@@ -85,6 +97,19 @@ export default {
         items: this.$store.state.static.type_invitor,
       },
     ];
+    this.btn_action = [
+      {
+        color: "primary",
+        icon: "history",
+        text: "تاریخچه",
+        fun: (body) => {
+          if (body.id) {
+            this.dialog_history.show = true;
+            this.id_message = body.id;
+          }
+        },
+      },
+    ],
     this.$store.dispatch("setPageTitle", this.title);
     this.extra_btn = [
       {

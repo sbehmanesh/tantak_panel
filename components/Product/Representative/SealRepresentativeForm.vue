@@ -235,7 +235,7 @@ export default {
   beforeMount() {
     this.role_id = [this.$store.state.auth.role.seal_manager];
     this.loadCitise();
-    this.loadRegion()
+    this.loadRegion();
   },
 
   watch: {
@@ -445,16 +445,17 @@ export default {
     loadRegion() {
       this.loading = true;
       this.$reqApi("/region").then(async (response) => {
+        let items = [];
         let data = response.model.data;
-        data.forEach((element) => {
-          this.region.push({
+        for (let index = 0; index < data.length; index++) {
+          const element = data[index]
+          items.push({
             text: element.fa_name,
             value: element.id,
           });
-        });
+        }
+        this.region = items;
       });
-      console.log(this.region);
-      
     },
 
     redirectPage() {

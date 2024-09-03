@@ -100,7 +100,7 @@ export default {
   }),
   beforeMount() {
     this.user = this.$store.state.auth.user;
-    console.log();
+
     this.getWallet();
   },
   methods: {

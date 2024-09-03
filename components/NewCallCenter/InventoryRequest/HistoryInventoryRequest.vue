@@ -1,68 +1,52 @@
 <template>
   <div>
-    <v-col>
-      <v-row cols="12" class="center-div mt-5">
-        <v-chip
-          dark
-          label
-          class="ma-2 px-3"
-          color="teal"
-          v-for="item in items"
-          :key="item.key"
-          @click="tab = item.key"
-          :outlined="tab != item.key"
-        >
-          {{ item.text }}
-        </v-chip>
-      </v-row>
-    </v-col>
-    <BaseTable
-      url="/product-request/referral-history-all"
-      :headers="headers"
-      :filters="filters"
-      :BTNactions="btn_actions"
-    />
+    <v-dialog
+      persistent
+      v-model="dialogHistory.show"
+      :model-id="dialogHistory.items"
+      fullscreen
+    >
+      <v-card>
+        <v-toolbar color="primary" dark>
+          <v-toolbar-title>
+            <span style="font-size: 21px">تاریخچه درخواست موجودی</span>
+          </v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-btn icon @click="closeDialog">
+            <v-icon> close </v-icon>
+          </v-btn>
+        </v-toolbar>
+        <BaseTable
+          url="/product-request/referral-history"
+          :headers="headers"
+          :root-body="root_body"
+          :BTNactions="btn_actions"
+        />
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
-import BaseTable from "@/components/DataTable/BaseTable";
 export default {
-  components: { BaseTable },
-  data: () => ({
-    headers: [],
-    title: "تاریخچه درخواست موجودی",
-    tab: "all",
-    items: [
-      { text: "همه", key: "all" },
-      { text: "فعالیت های من", key: "my_logs" },
-    ],
-    user_login_id: "",
-    filters: {},
-    btn_actions: [],
-  }),
-  watch: {
-    tab() {
-      switch (this.tab) {
-        case "all":
-          this.filters = {};
-          break;
-        case "my_logs":
-          this.filters = {
-            send_user_id: {
-              op: "=",
-              value: this.user_login_id,
-            },
-          };
-          break;
-      }
+  props: {
+    dialogHistory: {
+      require: false,
+      default: false,
+    },
+    messageId: {
+      require: false,
+      default: false,
     },
   },
+
+  data: () => ({
+    headers: [],
+    root_body: "",
+    btn_actions: [],
+  }),
   beforeMount() {
-    this.$store.dispatch("setPageTitle", this.title);
-    this.user_login_id = this.$store.state.auth.user.id;
-  },
-  mounted() {
+    this.root_body = { product_request_id: this.messageId };
     this.headers = [
       {
         text: "زمان ثبت",
@@ -151,6 +135,12 @@ export default {
         },
       },
     ];
+  },
+  methods: {
+    closeDialog() {
+      this.dialogHistory.show = false;
+      this.dialogHistory.items = null;
+    },
   },
 };
 </script>

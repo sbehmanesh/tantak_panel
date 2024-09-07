@@ -1,6 +1,35 @@
 <template>
   <div>
+    <v-row class="d-flex justify-center mt-3">
+      <v-col cols="12" md="8" v-if="this.show_catgory_list" class="mx-3">
+
+<v-alert border="left" text icon="space_dashboard" prominent>
+  <h1 class="font_16 mb-1">دسته بندی های مرتبط</h1>
+  <v-row class="align-center">
+    <h1
+      v-for="(text, index) in catgory_name"
+      :key="index"
+      @click="SelectCategory(text, index)"
+      class="ma-1 hover-class py-2"
+    >
+      <v-icon> {{ text.icon }} </v-icon>
+      {{ text.text }}
+    </h1>
+    <v-spacer></v-spacer>
+    <v-btn text @click="clearAll" class="mr-10" color="primary">
+      <h1>
+        بازگشت به صفحه اصلی
+        <v-icon> arrow_circle_right </v-icon>
+      </h1>
+    </v-btn>
+  </v-row>
+</v-alert>
+</v-col>
+      </v-row>
+
+
     <BaseTable
+      :filters="filters"
       ref="baseTable"
       url="/category"
       :headers="headers"
@@ -47,6 +76,7 @@
 
 <script>
 import BaseTable from "~/components/DataTable/BaseTable";
+import SelectCategory from "~/components/Product/SelectCategory.vue";
 export default {
   components: { BaseTable },
   data: () => ({
@@ -55,42 +85,54 @@ export default {
     title: "دسته بندی محصولات",
     selected_item: [],
     removeDialog: false,
+    show_catgory_list: false,
     loading: false,
     time: 3,
     timeInterval: null,
-    extraBtn: []
+    extraBtn: [],
+    main_catgory: [],
+    all_data: [],
+    catgory_id: "",
+    catgory_name: [],
+    filters: {},
   }),
   beforeMount() {
+    this.subCategory();
+    this.filters = {
+      level: {
+        op: "=",
+        value: 1,
+      },
+    };
     this.$store.dispatch("setPageTitle", this.title);
-
     this.headers = [
       {
         text: "",
         width: "30px",
         type: "checkbox",
         disableSort: true,
-        filterable: false
+        filterable: false,
       },
       {
         text: "تاریخ ایجاد",
         filterType: "date",
         filterCol: "created_at",
         parentClass: "ltr-item text-center",
-        value: body => this.$toJalali(body.created_at)
+        value: (body) => this.$toJalali(body.created_at),
       },
       {
         text: "نام دسته بندی",
         value: "name",
         disableSort: "true",
-        filterable: false
+        filterable: false,
       },
       {
         text: "سطح",
-        value: "level"
+        value: "level",
       },
       {
         text: "بارکد",
-        value: "barcode"
+        value: "barcode",
       },
       // {
       //   text: "والد",
@@ -108,33 +150,40 @@ export default {
         text: "تعداد محصولات",
         value: "products_count",
         disableSort: "true",
-        filterable: false
+        filterable: false,
       },
       {
         text: "ترتیب نمایش",
         value: "sort",
         disableSort: "true",
-        filterable: false
-      }
+        filterable: false,
+      },
     ];
 
     this.btn_actions = [
       {
         color: "primary",
         text: "مشاهده محصولات",
-        fun: body => {
+        fun: (body) => {
           this.$router.push(
             "/product/category/products/" + body.id + "?name=" + body.name
           );
-        }
+        },
       },
       {
         color: "success",
         text: "ویژگی ها",
-        fun: body => {
+        fun: (body) => {
           this.$router.push("/product/category/variation/" + body.id);
-        }
-      }
+        },
+      },
+      {
+        color: "teal",
+        text: "مشاهده زیر دسته",
+        fun: (body) => {
+          this.findSubCatgoryes(body.id);
+        },
+      },
     ];
 
     this.extraBtn = [
@@ -143,7 +192,7 @@ export default {
         text: "حذف موارد",
         color: "error",
         icon: "delete",
-        fun: body => {
+        fun: (body) => {
           if (this.selected_item.length == 0) {
             this.$toast.error("موردی انتخاب نشده");
             return;
@@ -158,8 +207,8 @@ export default {
               clearInterval(this.timeInterval);
             }
           }, 1000);
-        }
-      }
+        },
+      },
     ];
   },
 
@@ -168,7 +217,7 @@ export default {
       this.loading = true;
       for (let i = 0; i < this.selected_item.length; i++) {
         this.$reqApi("/category/delete", { id: this.selected_item[i] })
-          .then(async response => {
+          .then(async (response) => {
             if (i == this.selected_item.length - 1) {
               this.loading = false;
               this.$refs.baseTable.getDataFromApi();
@@ -177,14 +226,82 @@ export default {
               this.$toast.success("حذف موارد انجام شد");
             }
           })
-          .catch(error => {
+          .catch((error) => {
             this.loading = false;
           });
       }
     },
+    subCategory() {
+      this.loading = true;
+
+      this.$reqApi("/category", { row_number: 30000 })
+        .then(async (response) => {
+          let items = [];
+          let data = response.model.data;
+          for (let index = 0; index < data.length; index++) {
+            const element = data[index];
+            items.push(element);
+          }
+
+          this.all_data = items;
+        })
+        .catch((error) => {
+          this.loading = false;
+        });
+    },
     closeDeleteAllDialog() {
       this.removeDialog = false;
-    }
-  }
+    },
+    findSubCatgoryes(id) {
+      if (!this.show_catgory_list) {
+        this.show_catgory_list = true;
+      }
+      let category = {};
+      let data = JSON.parse(JSON.stringify(this.all_data));
+      for (let index = 0; index < data.length; index++) {
+        const element = data[index];
+        if (element.id == id) {
+          category = element;
+        }
+      }
+
+      if (Boolean(category)) {
+        console.log("category", category);
+
+        this.catgory_name.push({
+          text: category.name,
+          value: category.id,
+          icon: "arrow_left",
+        });
+      }
+
+      this.filters = {
+        parent_id: {
+          op: "=",
+          value: id,
+        },
+      };
+    },
+    SelectCategory(item, index) {
+      this.catgory_name.splice(index);
+      this.findSubCatgoryes(item.value);
+    },
+    clearAll() {
+      this.show_catgory_list = false;
+      this.catgory_name = [];
+      this.filters = {
+        level: {
+          op: "=",
+          value: 1,
+        },
+      };
+    },
+  },
 };
 </script>
+<style>
+.hover-class:hover {
+  color: rgb(253, 81, 2);
+  cursor: pointer;
+}
+</style>

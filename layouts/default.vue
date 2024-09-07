@@ -1,6 +1,11 @@
 <template>
   <v-app>
-    <AppBar v-model="drawer" class="container_menu" />
+    <AppBar
+      v-if="$vuetify.breakpoint.mdAndUp"
+      v-model="drawer"
+      class="container_menu"
+    />
+    <AppBarMobile v-else v-model="drawer" class="" />
     <MenuDrawer
       v-model="drawer"
       v-if="!$vuetify.breakpoint.mdAndUp"
@@ -17,11 +22,12 @@
 
 <script>
 import AppBar from "@/components/Layout/AppBar.vue";
+import AppBarMobile from "@/components/Layout/AppBarMobile.vue";
 import PageTitle from "~/components/Layout/PageTitle.vue";
 import MenuDrawer from "@/components/Layout/MenuDrawer.vue";
 export default {
   name: "default",
-  components: { AppBar, PageTitle, MenuDrawer },
+  components: { AppBar, AppBarMobile, PageTitle, MenuDrawer },
   data: () => ({
     title: "",
     drawer: false,

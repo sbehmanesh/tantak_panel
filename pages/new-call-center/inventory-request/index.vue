@@ -34,9 +34,23 @@
       />
       <DialogTransactions
         :dialog="add_transaction"
-        :data="payments"
+        :data="all_data"
         v-if="add_transaction"
         @closeDialog="add_transaction = false"
+        @reload="refresh"
+      />
+      <DialogCancel
+        :dialog="show_cansel"
+        :getApi="get_api"
+        v-if="show_cansel"
+        @closeDialog="show_cansel = false"
+        @reload="refresh"
+      />
+      <HistoryWallet
+        :walletDialog="show_wallet"
+        :walletData="wallet_data"
+        v-if="show_wallet"
+        @closeDialog="show_wallet = false"
         @reload="refresh"
       />
     </v-col>
@@ -46,19 +60,24 @@
 <script>
 import Dialog from "@/components/NewCallCenter/InventoryRequest/Dialog.vue";
 import HistoryInventoryRequest from "~/components/NewCallCenter/InventoryRequest/HistoryInventoryRequest.vue";
+import DialogCancel from "~/components/NewCallCenter/InventoryRequest/DialogCancel.vue";
 import DialogRefral from "@/components/NewCallCenter/InventoryRequest/DialogRefral.vue";
 import DialogTransactions from "@/components/NewCallCenter/InventoryRequest/DialogTransactions.vue";
+import HistoryWallet from "~/components/NewCallCenter/InventoryRequest/HistoryWallet.vue";
 export default {
   components: {
     Dialog,
     DialogRefral,
     DialogTransactions,
     HistoryInventoryRequest,
+    DialogCancel,
+    HistoryWallet,
   },
   data: () => ({
     title: "درخواست موجودی",
     headers: [],
     payments: [],
+    all_data: [],
     extra_btn: [],
     actions_list: [],
     btn_actions: [],
@@ -66,7 +85,11 @@ export default {
     show_refral: false,
     add_transaction: false,
     request: "",
+    show_cansel: false,
+    get_api: "",
     basket_id: "",
+    show_wallet: false,
+    wallet_data: null,
     dialog_history: {
       show: false,
       items: null,
@@ -156,12 +179,11 @@ export default {
         },
       },
       {
-        text: "‌برسی روند ارجاع ",
+        text: "‌بررسی روند ارجاع ",
         color: "primary darkeb-2",
         icon: "event_repeat",
         fun: (body) => {
           this.show_refral = true;
-          this.status_payment = body.status_payment;
           this.basket_id = body.id;
         },
         show_fun: (body) => {
@@ -184,7 +206,6 @@ export default {
         color: "teal darkeb-2",
         icon: "post_add",
         fun: (body) => {
-          this.add_transaction = true;
           this.createPayment(body.id);
         },
         show_fun: (body) => {
@@ -207,7 +228,8 @@ export default {
         icon: "receipt_long",
         fun: (body) => {
           this.add_transaction = true;
-          this.payments = body.payments;
+          this.all_data = body;
+          this.$reqApi("/product-request");
         },
         show_fun: (body) => {
           if (
@@ -215,6 +237,46 @@ export default {
             Array.isArray(body.payments) &&
             body.payments.length > 0
           ) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
+      {
+        text: "کنسل کردن سفارش",
+        color: "red darken-1",
+        icon: "cancel",
+        fun: (body) => {
+          this.show_cansel = true;
+          this.get_api = body.id;
+        },
+        show_fun: (body) => {
+          if (
+            Boolean(
+              (body.status == "init" || body.status == "wait") &&
+                (this.$checkAccess("product_requests/root") ||
+                  this.$checkRole(this.$store.state.auth.role.seal_manager))
+            )
+          ) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
+      {
+        text: "تاریخچه کیف پول",
+        icon: "account_balance_wallet",
+        color: "success darken-2",
+        fun: (body) => {
+          if (body.wallet_transactions.length > 0) {
+            this.show_wallet = true;
+            this.wallet_data = body.wallet_transactions;
+          }
+        },
+        show_fun: (body) => {
+          if (body.wallet_transactions.length > 0) {
             return true;
           } else {
             return false;

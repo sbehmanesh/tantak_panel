@@ -3,7 +3,7 @@
     <template v-slot:activator="{ on, attrs }">
       <div class="center-div">
         <span class="white--text px-2 font_15 font_bold" v-if="$vuetify.breakpoint.mdAndUp">{{ fullname }}</span>
-        <img :src="avatar" width="50" height="50" :class="is_mobile ? 'image_profile_mobile my-6 ml-3' : 'image_profile'" v-bind="attrs" v-on="on" />
+        <img :src="avatar" :width="is_mobile ? 40 : 50" :height="is_mobile ? 40 : 50" :class="is_mobile ? 'mr-3' : 'image_profile'" v-bind="attrs" v-on="on" />
       </div>
     </template>
     <v-card width="250" class="pa-2">

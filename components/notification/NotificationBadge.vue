@@ -1,5 +1,4 @@
 <template>
-  <div>
     <v-badge
       :class="[customClass, 'notification-badge']"
       :color="$store.state.notification.count > 0 ? 'success' : ''"
@@ -19,7 +18,6 @@
         <v-icon size="x-large" color="white"> notifications </v-icon>
       </v-btn>
     </v-badge>
-  </div>
 </template>
 <script>
 export default {

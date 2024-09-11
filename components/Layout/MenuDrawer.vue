@@ -2,10 +2,10 @@
   <v-navigation-drawer app v-model="drawer" right color="primary">
     <v-list>
       <v-row class="d-flex align-center">
-        <v-col cols="12" md="1" class="ma-0 pa-0">
+        <v-col cols="12" md="1" :class="$vuetify.breakpoint.mdAndUp ? 'ma-0 pa-0' : ''">
           <v-text-field
             v-model="search"
-            label="search menu"
+            label="جستجوی منو"
             class="serachBoxMnue mb-1 px-3"
             dark
             flat

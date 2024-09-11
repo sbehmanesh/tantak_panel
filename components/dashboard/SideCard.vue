@@ -1,5 +1,6 @@
 <template>
   <v-card
+    v-if="is_access"
     width="110"
     :class="[
       'd-flex flex-column justify-center align-center my-2 border-radius-10 elevation-0',
@@ -26,6 +27,16 @@ export default {
       type: Object,
     },
   },
-  data: () => ({}),
+  data: () => ({
+    is_access: false,
+  }),
+  mounted() {
+    this.checkRole();
+  },
+  methods: {
+    checkRole() {
+      this.is_access = true;
+    },
+  },
 };
 </script>

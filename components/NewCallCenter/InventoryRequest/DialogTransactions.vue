@@ -171,7 +171,6 @@ export default {
         .catch((error) => {
           this.loading = false;
           item.show = true;
-          this.closeDialog();
         });
     },
   },

@@ -1278,7 +1278,7 @@ export default {
 .search-input > .v-input__control {
   min-height: 40px !important;
 }
-v-data-table > td {
+td {
   text-align: center;
   padding: 0 !important;
 }

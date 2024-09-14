@@ -22,7 +22,7 @@
             class="my-1"
             color="error"
             text="انصراف"
-            @click="$router.push('/change-check-days')"
+            @click="$router.push('/setting/change-check-days')"
           />
           <amp-button
             large

@@ -107,7 +107,8 @@
             :disabled="citis.length > 0 ? false : true"
           />
         </v-col> -->
-        <v-col cols="12" md="3" v-if="cheke_branch">
+        <!-- <v-col cols="12" md="3" v-if="cheke_branch"> --> //روی check_branch خطا میداد
+        <v-col cols="12" md="3" >
           <UserSelectForm
             text=" کاربر ناظر"
             v-model="parent_id"

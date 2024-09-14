@@ -410,6 +410,12 @@ let mnue_tree = [
         access: "setting/index",
         route: "/setting/payment",
       },
+      {
+        id:13731006,
+        name: "تغییر روزهای چک",
+        access: "setting/index",
+        route: "/setting/change-check-days"
+      },
     ],
   },
 ];
@@ -740,6 +746,7 @@ let step_invitor = [
   },
   { text: "سرپرست فروش به کارشناس فروش", value: "supervisor_to_employee_sale" },
   { text: "کارشناس فروش به سرپرست فروش", value: "employee_to_supervisor_sale" },
+  { text: "کنسل شده", value: "cancel" },
 ];
 let status_transactions =[
   { text: "منتظر پرداخت", value: "wait" },

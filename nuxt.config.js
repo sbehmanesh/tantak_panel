@@ -73,6 +73,7 @@ export default {
           background: '#EC407A',
           light_purple: '#EC407A',
           btn_color: '#66CDAA',
+          gray: '#cccccc',
         }
       },
     },

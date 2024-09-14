@@ -1,36 +1,34 @@
 <template>
   <div>
     <v-row class="d-flex justify-center mt-3">
-      <v-col cols="12" md="8" v-if="this.show_catgory_list" class="mx-3">
-
-<v-card  text class="elevation-3 pa-3 card-class" prominent>
-  <h1 class="font_16 mb-1">
-    <v-icon large>
-      space_dashboard
-    </v-icon>
-    دسته بندی های مرتبط</h1>
-  <v-row class="align-center">
-    <span
-      v-for="(text, index) in catgory_name"
-      :key="index"
-      @click="SelectCategory(text, index)"
-      class="ma-1 hover-class py-2"
-    >
-      <v-icon> {{ text.icon }} </v-icon>
-      {{ text.text }}
-    </span>
-    <v-spacer></v-spacer>
-    <v-btn text @click="clearAll" class="mr-10" color="primary">
-      <h1>
-        بازگشت به صفحه اصلی
-        <v-icon> arrow_circle_right </v-icon>
-      </h1>
-    </v-btn>
-  </v-row>
-</v-card>
-</v-col>
-      </v-row>
-
+      <v-col cols="12" md="6" v-if="this.show_catgory_list" class="mx-3">
+        <v-alert prominent icon="space_dashboard">
+          <h1 class="font_15 mb-1">دسته بندی های مرتبط</h1>
+          <v-row class="align-center">
+            <h1
+              v-for="(text, index) in catgory_name"
+              :key="index"
+              @click="SelectCategory(text, index)"
+              class="ma-1 hover-class mt-2 font_12"
+            >
+              <v-icon> {{ text.icon }} </v-icon>
+              {{ text.text }}
+            </h1>
+            <v-spacer></v-spacer>
+            <v-btn text @click="clearAll" class="mr-10" color="grey darken-2" >
+              <h1 class="font_12" >
+                بازگشت به صفحه اصلی
+                <v-icon size="19">
+                  refresh
+                </v-icon>
+              </h1>
+            </v-btn>
+          </v-row>
+        </v-alert>
+        <v-divider></v-divider>
+        <v-divider></v-divider>
+      </v-col>
+    </v-row>
 
     <BaseTable
       :filters="filters"
@@ -308,7 +306,7 @@ export default {
   color: rgb(253, 81, 2);
   cursor: pointer;
 }
-.card-class{
+.card-class {
   border: 1px solid #00000038 !important;
   border-radius: 7px !important;
 }

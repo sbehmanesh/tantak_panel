@@ -4,6 +4,12 @@
 
 <script>
 export default {
+  data: () => ({
+    title: "کارتابل"
+  }),
+  beforeMount() {
+    this.$store.dispatch("setPageTitle", this.title);
+  },
   mounted() {
     this.redirect();
   },

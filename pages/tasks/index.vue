@@ -3,7 +3,7 @@
     <BaseTable
       url="/task"
       :BTNactions="btn_actions"
-              createUrl="/tasks/insert"
+      createUrl="/tasks/insert"
       :actionsList="actions_list"
       :headers="headers"
       ref="TaskList"
@@ -39,21 +39,19 @@ export default {
     this.$store.dispatch("setPageTitle", this.title);
 
     this.headers = [
-    {
+      {
         filterable: false,
         disableSort: true,
         text: "رنگ ",
         value: (body) => {
           if (body.color) {
-          return `<i aria-hidden="true"  color="red" class="v-icon notranslate  material-icons" style="font-size: 20px; color: ${body.color}">fiber_manual_record</i>`;
-            
-          }else{
-          return `<i aria-hidden="true"  color="red" class="v-icon notranslate  material-icons" style="font-size: 20px; color: grey">fiber_manual_record</i>`;
-
+            return `<i aria-hidden="true"  color="red" class="v-icon notranslate  material-icons" style="font-size: 20px; color: ${body.color}">fiber_manual_record</i>`;
+          } else {
+            return `<i aria-hidden="true"  color="red" class="v-icon notranslate  material-icons" style="font-size: 20px; color: grey">fiber_manual_record</i>`;
           }
         },
       },
-    {
+      {
         text: "زمان ثبت",
         filterType: "date",
         filterCol: "created_at",
@@ -64,7 +62,7 @@ export default {
           return "";
         },
       },
- 
+
       { text: "عنوان", value: "title" },
       {
         filterable: false,
@@ -116,10 +114,10 @@ export default {
         text: "نوع ایجاد",
         filterType: "select",
         value: "type",
-        items:[
-          {text:"دستی" , value:"manual"},
-          {text:"سیستمی" , value:"system"},
-        ]
+        items: [
+          { text: "دستی", value: "manual" },
+          { text: "سیستمی", value: "system" },
+        ],
       },
     ];
     this.btn_actions = [

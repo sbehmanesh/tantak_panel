@@ -747,6 +747,7 @@ let step_invitor = [
   { text: "سرپرست فروش به کارشناس فروش", value: "supervisor_to_employee_sale" },
   { text: "کارشناس فروش به سرپرست فروش", value: "employee_to_supervisor_sale" },
   { text: "کنسل شده", value: "cancel" },
+  { text: "تایید کارمند فروش", value: "accept_employee_sale" }
 ];
 let status_transactions =[
   { text: "منتظر پرداخت", value: "wait" },

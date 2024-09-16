@@ -52,6 +52,7 @@
 
             <amp-button
               v-if="
+                $checkRole($store.state.auth.role.sales_expert) &&
                 !Boolean(item.show) &&
                 item.kind_set == 'demand_note' &&
                 data.step == 'supervisor_to_employee_sale' &&
@@ -67,6 +68,28 @@
               :loading="loading"
               :disabled="!valid || loading"
             />
+            <!-- <amp-button
+              v-if="
+                !Boolean(item.show) &&
+                item.kind_set == 'demand_note' &&
+                item.status == 'wait' &&
+                data.step == 'accept_employee_sale' &&
+                data.status == 'wait' &&
+                data.status_payment == 'wait'
+              "
+              text="آپلود چک"
+              width="100px"
+              height="25px"
+              @click="uploadCheck(item)"
+              color="blue"
+              :loading="loading"
+              :disabled="!valid || loading"
+            /> -->
+            <!-- <UploadReceipt
+              :overlay="overlay"
+              :getData="get_data"
+              :getItem="get_item"
+            /> -->
             <v-row
               no-gutters
               class="align-end d-flex justify-center"
@@ -166,7 +189,6 @@ export default {
       get_data: null,
       get_item: null,
       change: false,
-      reload_flag: false,
     };
   },
   mounted() {
@@ -185,9 +207,6 @@ export default {
     },
     closeDialog() {
       this.$emit("closeDialog");
-      if (this.reload_flag == true) {
-        this.$emit("reload");
-      }
     },
     changeTime(item) {
       this.loading = true;
@@ -221,7 +240,6 @@ export default {
     },
     uploadImg(item) {
       this.loading = true;
-      this.reload_flag = true;
       this.$reqApi("product-request/upload-receipt", {
         id: this.data.id,
         payment_id: item.id,
@@ -229,6 +247,7 @@ export default {
       })
         .then((response) => {
           this.$toast.success("اطلاعات ویرایش شد");
+          this.$emit("reload");
           this.dialog = true;
           this.loading = false;
           // this.closeDialog();
@@ -238,6 +257,7 @@ export default {
         });
     },
     showImg(item) {
+      console.log(11111111, item);
       let path = this.$getImage(item.receipt_img);
       window.open(path);
     },
@@ -248,8 +268,13 @@ export default {
           const element = this.data.payments[index];
           element["show"] = false;
           element["new_date"] = this.data.payments[index].receipt_date;
+          element["show_img"] = false;
+          element["get_reciept"] = "";
+          items.push(element);
         }
         this.items = items;
+
+        this.set_item = false;
       }
     },
   },

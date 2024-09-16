@@ -36,7 +36,6 @@
             />
           </v-col>
         </v-form>
-
         <v-card-actions>
           <v-row class="d-flex justify-center pa-1">
             <amp-button

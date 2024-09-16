@@ -185,6 +185,7 @@ export default {
         fun: (body) => {
           this.show_refral = true;
           this.basket_id = body.id;
+          this.status_payment = body.status_payment
         },
         show_fun: (body) => {
           let show = true;

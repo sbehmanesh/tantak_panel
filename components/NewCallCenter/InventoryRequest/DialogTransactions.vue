@@ -99,7 +99,8 @@
                 item.status == 'wait' &&
                 data.step == 'accept_employee_sale' &&
                 data.status == 'wait' &&
-                data.status_payment == 'wait'
+                data.status_payment == 'wait' &&
+                !Boolean(item.show_img)
               "
             >
               <v-col cols="9">
@@ -107,6 +108,7 @@
               </v-col>
               <v-col cols="3">
                 <amp-button
+                
                   text="تایید"
                   height="40"
                   color="success"
@@ -117,7 +119,7 @@
               </v-col>
             </v-row>
             <amp-button
-              v-if="item.status == 'payed' && item.receipt_img != null"
+              v-if="item.status == 'payed' && Boolean(item.receipt_img) && Boolean(item.show_img)"
               text="نمایش چک"
               height="40"
               color="blue"
@@ -250,6 +252,7 @@ export default {
           this.$emit("reload");
           this.dialog = true;
           this.loading = false;
+          item.show_img = true
           // this.closeDialog();
         })
         .catch((error) => {
@@ -267,8 +270,8 @@ export default {
         for (let index = 0; index < this.data.payments.length; index++) {
           const element = this.data.payments[index];
           element["show"] = false;
-          element["new_date"] = this.data.payments[index].receipt_date;
-          element["show_img"] = false;
+          element["new_date"] = element.receipt_date;
+          element["show_img"] = element.receipt_img ? true : false;
           element["get_reciept"] = "";
           items.push(element);
         }

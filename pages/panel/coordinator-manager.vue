@@ -50,11 +50,13 @@ export default {
   components: { MainTable, SideCard },
   data: () => ({
     title: "کارتابل",
+    // set_filter: true,
     roles: [],
     get_data: [],
     username_employee: "",
     firstname_employee: "",
     lastname_employee: "",
+    // count_works: [],
     sides: [
       {
         icon: "/image/dashboard/todolist.svg",
@@ -63,6 +65,7 @@ export default {
         color: "#80CC16B2",
         // textcolor: '#fff',
         count: "0",
+        route: "/basket/referral-list?filter=my_today_work",
       },
       {
         icon: "/image/dashboard/works2.svg",
@@ -71,6 +74,7 @@ export default {
         color: "#FF7700B2",
         // textcolor: '#fff',
         count: "0",
+        route: "/basket/referral-list?filter=my_late_work",
       },
       {
         icon: "/image/dashboard/works3.svg",
@@ -79,6 +83,7 @@ export default {
         color: "#118EF3B2",
         // textcolor: '#fff',
         count: "0",
+        route: "/basket/referral-list?filter=all",
       },
       {
         icon: "/image/dashboard/Chat.svg",
@@ -115,6 +120,18 @@ export default {
                   console.log(error);
                 });
             }
+            ////////////////////////////////// this function maybe add in the future
+            // if (res.count_work > 0) {
+            //   let items = [];
+            //   for (let index = 0; index < res.array_work.length; index++) {
+            //     const element = this.res.array_work[index];
+            //     console.log(333333333333);
+
+            //     items.push(element);
+            //   }
+            //   this.count_works = items;
+            //   console.log(this.count_works);
+            // }
           })
 
           .catch((error) => {

@@ -199,7 +199,7 @@ let mnue_tree = [
       },
       {
         id: 344650,
-        access: "payments/index",
+        access: "payments/root",
         name: "لیست پرداخت ها",
         route: "/product/pay",
       },

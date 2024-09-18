@@ -63,6 +63,7 @@ export default {
         color: "#80CC16B2",
         // textcolor: '#fff',
         count: "0",
+        route: "/basket/referral-list?filter=my_today_work",
       },
       {
         icon: "/image/dashboard/works2.svg",
@@ -71,6 +72,7 @@ export default {
         color: "#FF7700B2",
         // textcolor: '#fff',
         count: "0",
+        route: "/basket/referral-list?filter=my_late_work",
       },
       {
         icon: "/image/dashboard/works3.svg",
@@ -79,6 +81,7 @@ export default {
         color: "#118EF3B2",
         // textcolor: '#fff',
         count: "0",
+        route: "/basket/referral-list?filter=all",
       },
       {
         icon: "/image/dashboard/Chat.svg",

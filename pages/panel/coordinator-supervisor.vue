@@ -74,15 +74,15 @@ export default {
         count: "0",
         route: "/basket/referral-list?filter=my_late_work",
       },
-      {
-        icon: "/image/dashboard/works3.svg",
-        title: "کارهای قابل پیگیری",
-        // backgroundColor: '#7EC5FF',
-        color: "#118EF3B2",
-        // textcolor: '#fff',
-        count: "0",
-        route: "/basket/referral-list?filter=all",
-      },
+      // {
+      //   icon: "/image/dashboard/works3.svg",
+      //   title: "کارهای قابل پیگیری",
+      //   // backgroundColor: '#7EC5FF',
+      //   color: "#118EF3B2",
+      //   // textcolor: '#fff',
+      //   count: "0",
+      //   route: "/basket/referral-list?filter=all",
+      // },
       {
         icon: "/image/dashboard/Chat.svg",
         title: "پیام های شخصی من",
@@ -90,6 +90,7 @@ export default {
         color: "#E476FFB2",
         textcolor: "#fff",
         count: "0",
+        route: ""
       },
     ],
   }),

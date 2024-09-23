@@ -5,24 +5,26 @@
   >
     <tr v-for="(row, i) in rows" :key="i">
       <td>
-        <div class="d-flex align-center">
+        <div class="d-flex align-center pa-3">
           <!-- <v-icon :color="row.color">{{ row.icon1 }}</v-icon> -->
           <img :src="row.icon1" />
-          <span :class="row.color + '--text'" class="mr-2">{{
-            row.title
-          }}</span>
+          <span
+            :class="row.color + '--text'"
+            class="mr-2"
+            >{{ row.title }}</span
+          >
         </div>
       </td>
-      <td class="pb-0">
+      <td class="pb-0 pa-3">
         <div
           v-for="(menu, i) in row.menus"
           :key="i"
           class="d-flex align-center justify-space-between mb-3"
         >
-          <div>
+          <div @click="sendRoute(menu.route)" >
             <img v-if="menu.img" :src="menu.img" />
             <v-icon v-else :color="menu.color">{{ menu.icon }}</v-icon>
-            <span>{{ menu.title }}</span>
+            <span class="pointer">{{ menu.title }}</span>
           </div>
           <div :class="['px-2 white--text', menu.color]">{{ menu.count }}</div>
         </div>
@@ -49,23 +51,24 @@ export default {
             img: "/image/dashboard/message.svg",
             title: "پیام های جدید",
             color: "primary",
-            count: "به زودی",
+            count: "",
+            route: "basket",
           },
         ],
       },
-      {
-        icon1: "/image/dashboard/Project.svg",
-        title: "پروژه ها",
-        color: "blue",
-        menus: [
-          {
-            img: "/image/dashboard/message2.svg",
-            title: "پیام های جدید",
-            color: "blue",
-            count: "به زودی",
-          },
-        ],
-      },
+      // {
+      //   icon1: "/image/dashboard/Project.svg",
+      //   title: "پروژه ها",
+      //   color: "blue",
+      //   menus: [
+      //     {
+      //       img: "/image/dashboard/message2.svg",
+      //       title: "پیام های جدید",
+      //       color: "blue",
+      //       count: "به زودی",
+      //     },
+      //   ],
+      // },
       {
         icon1: "/image/dashboard/duties.svg",
         title: "وظایف شما",
@@ -76,24 +79,28 @@ export default {
             title: "وظایف امروز",
             color: "green",
             count: "",
+            route: "/tasks?filter=task_today",
           },
           {
             icon: "radio_button_checked",
             title: "وظایف دارای تاخیر",
             color: "red",
             count: "",
+            route: "/tasks?filter=task_late",
           },
           {
             icon: "radio_button_checked",
             title: "وظایف دارای زمان",
             color: "blue",
             count: "",
+            route: "/tasks?filter=task_time",
           },
           {
             icon: "radio_button_checked",
             title: "وظایف بدون زمان",
             color: "gray",
             count: "",
+            route: "/tasks?filter=task_untime",
           },
         ],
       },
@@ -113,10 +120,21 @@ export default {
   }),
   watch: {
     getData() {
-      this.rows[2].menus[0].count = this.getData.task_today;
-      this.rows[2].menus[1].count = this.getData.task_late;
-      this.rows[2].menus[2].count = this.getData.task_time;
-      this.rows[2].menus[3].count = this.getData.task_untime;
+      this.rows[1].menus[0].count = this.getData.task_today;
+      this.rows[1].menus[1].count = this.getData.task_late;
+      this.rows[1].menus[2].count = this.getData.task_time;
+      this.rows[1].menus[3].count = this.getData.task_untime;
+    },
+  },
+  methods: {
+    sendRoute(path) {
+      if (path != null) {
+        this.$router.push(path);
+      }
+
+      if (path == "basket") {
+        this.$router.push("/basket/referral-list");
+      }
     },
   },
 };

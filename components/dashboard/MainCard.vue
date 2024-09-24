@@ -120,6 +120,8 @@ export default {
   }),
   watch: {
     getData() {
+      
+      this.rows[0].menus[0].count = this.getData.work_all;
       this.rows[1].menus[0].count = this.getData.task_today;
       this.rows[1].menus[1].count = this.getData.task_late;
       this.rows[1].menus[2].count = this.getData.task_time;

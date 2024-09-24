@@ -31,10 +31,32 @@
           <div>همکاران من:</div>
           <div class="mr-3">
             <!-- <img src="/image/default-user.jpg" width="30" class="mt-2" /> -->
-            <h5>
+            <!-- <h5>
               {{ firstname_employee }} {{ lastname_employee }} /
               {{ username_employee }}
-            </h5>
+            </h5> -->
+            <v-tooltip bottom v-if="employee_flag">
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  small
+                  v-on="on"
+                  @click="show_employee()"
+                  icon
+                  color="blue"
+                >
+                  <v-avatar color="primary" size="30" small>
+                    <span class="white--text text-h7">
+                      {{ firstname_employee[0] }}
+                      {{ lastname_employee[0] }}</span
+                    ></v-avatar
+                  >
+                </v-btn>
+              </template>
+              <span
+                >{{ username_employee }} / {{ firstname_employee }}
+                {{ lastname_employee }}</span
+              >
+            </v-tooltip>
           </div>
         </v-sheet>
         <!-- جدول کارتابل -->
@@ -55,6 +77,7 @@ export default {
     username_employee: "",
     firstname_employee: "",
     lastname_employee: "",
+    employee_flag: false,
     sides: [
       {
         icon: "/image/dashboard/todolist.svg",
@@ -90,7 +113,7 @@ export default {
         color: "#E476FFB2",
         textcolor: "#fff",
         count: "0",
-        route: "",
+        route: "messages",
       },
     ],
   }),
@@ -106,9 +129,10 @@ export default {
             this.get_data = res;
             this.sides[0].count = res.work_today;
             this.sides[1].count = res.work_late;
-            this.sides[2].count = res.work_all;
-            this.sides[3].count = res.my_message;
+            this.sides[2].count = res.my_message;
+            // this.sides[3].count = res.my_message;
             if (res.list_employee == true) {
+              this.employee_flag = true;
               this.$reqApi("user/list-employee")
                 .then((response) => {
                   this.firstname_employee = response.model.data[0].first_name;
@@ -125,6 +149,9 @@ export default {
             console.log(error);
           });
       }
+    },
+    show_employee() {
+      this.$router.push("/new-call-center/my-staff");
     },
   },
 };

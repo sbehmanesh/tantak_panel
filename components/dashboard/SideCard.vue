@@ -39,7 +39,11 @@ export default {
       this.is_access = true;
     },
     sendRoute(path) {
-      this.$router.push(path);
+      if (path == "messages") {
+        this.$router.push("/message");
+      } else {
+        this.$router.push(path);
+      }
     },
   },
 };

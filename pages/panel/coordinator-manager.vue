@@ -31,10 +31,31 @@
           <div>همکاران من:</div>
           <div class="mr-3">
             <!-- <img src="/image/default-user.jpg" width="30" class="mt-2" /> -->
-            <h5>
+            <!-- <h5>
               {{ firstname_employee }} {{ lastname_employee }} /
               {{ username_employee }}
-            </h5>
+            </h5> -->
+            <v-tooltip bottom v-if="employee_flag">
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  small
+                  v-on="on"
+                  @click="show_employee()"
+                  icon
+                  color="blue"
+                >
+                  <v-avatar color="primary" size="30" small>
+                    <span class="white--text text-h7">
+                      {{ firstname_employee[0] }} {{ lastname_employee[0] }}</span
+                    ></v-avatar
+                  >
+                </v-btn>
+              </template>
+              <span
+                >{{ username_employee }} / {{ firstname_employee }}
+                {{ lastname_employee }}</span
+              >
+            </v-tooltip>
           </div>
         </v-sheet>
         <!-- جدول کارتابل -->
@@ -50,11 +71,14 @@ export default {
   components: { MainTable, SideCard },
   data: () => ({
     title: "کارتابل",
+    // set_filter: true,
     roles: [],
     get_data: [],
     username_employee: "",
     firstname_employee: "",
     lastname_employee: "",
+    employee_flag: false,
+    // count_works: [],
     sides: [
       {
         icon: "/image/dashboard/todolist.svg",
@@ -62,7 +86,8 @@ export default {
         // backgroundColor: '#8BE014',
         color: "#80CC16B2",
         // textcolor: '#fff',
-        count: "0",
+        count: 0,
+        route: "/basket/referral-list?filter=my_today_work",
       },
       {
         icon: "/image/dashboard/works2.svg",
@@ -70,23 +95,26 @@ export default {
         // backgroundColor: '#FFA04DB2',
         color: "#FF7700B2",
         // textcolor: '#fff',
-        count: "0",
+        count: 0,
+        route: "/basket/referral-list?filter=my_late_work",
       },
-      {
-        icon: "/image/dashboard/works3.svg",
-        title: "کارهای قابل پیگیری",
-        // backgroundColor: '#7EC5FF',
-        color: "#118EF3B2",
-        // textcolor: '#fff',
-        count: "0",
-      },
+      // {
+      //   icon: "/image/dashboard/works3.svg",
+      //   title: "کارهای قابل پیگیری",
+      //   // backgroundColor: '#7EC5FF',
+      //   color: "#118EF3B2",
+      //   // textcolor: '#fff',
+      //   count: "0",
+      //   route: "/basket/referral-list?filter=all",
+      // },
       {
         icon: "/image/dashboard/Chat.svg",
         title: "پیام های شخصی من",
         backgroundColor: "#EDA6FF",
         color: "#E476FFB2",
         textcolor: "#fff",
-        count: "0",
+        count: 0,
+        route: "messages",
       },
     ],
   }),
@@ -100,11 +128,14 @@ export default {
         this.$reqApi("user-cartable/coordinator-manager")
           .then((res) => {
             this.get_data = res;
+
             this.sides[0].count = res.work_today;
             this.sides[1].count = res.work_late;
-            this.sides[2].count = res.work_all;
-            this.sides[3].count = res.my_message;
+            this.sides[2].count = res.my_message;
+            // this.sides[3].count = res.my_message;
+
             if (res.list_employee == true) {
+              this.employee_flag = true,
               this.$reqApi("user/list-employee")
                 .then((response) => {
                   this.firstname_employee = response.model.data[0].first_name;
@@ -115,12 +146,27 @@ export default {
                   console.log(error);
                 });
             }
+            ////////////////////////////////// this function maybe add in the future
+            // if (res.count_work > 0) {
+            //   let items = [];
+            //   for (let index = 0; index < res.array_work.length; index++) {
+            //     const element = this.res.array_work[index];
+            //     console.log(333333333333);
+
+            //     items.push(element);
+            //   }
+            //   this.count_works = items;
+            //   console.log(this.count_works);
+            // }
           })
 
           .catch((error) => {
             console.log(error);
           });
       }
+    },
+    show_employee() {
+      this.$router.push("/new-call-center/my-staff");
     },
   },
 };

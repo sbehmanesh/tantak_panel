@@ -26,6 +26,22 @@
             </span>
           </v-col>
         </v-row>
+        <v-col>
+          <v-row cols="12" class="center-div mt-5">
+            <v-chip
+              dark
+              label
+              class="ma-2 px-3"
+              color="teal"
+              v-for="item in items"
+              :key="item.key"
+              @click="tab = item.key"
+              :outlined="tab != item.key"
+            >
+              {{ item.text }}
+            </v-chip>
+          </v-row>
+        </v-col>
 
         <BaseTable
           url="/basket/referral-list"
@@ -35,6 +51,7 @@
           :BTNactions="btn_actions"
           :rootBody="rootBody"
           :actionsList="actionsList"
+          :filters="filter"
           ref="changeTable"
         />
         <v-dialog v-model="dialog_itesm.show">
@@ -218,6 +235,8 @@ import RefralDialog from "@/components/CallCenter/RefralDialog.vue";
 import PickedUp from "@/components/CallCenter/PickedUp.vue";
 import Dialog from "~/components/Tsaks/Dialog.vue";
 
+let jmoment = require("moment");
+
 export default {
   components: { BaseTable, Basket, RefralDialog, PickedUp, Dialog },
   props: {
@@ -232,6 +251,7 @@ export default {
     ref_basket_id: "",
     step: 1,
     headers: [],
+    filter: {},
     items: [],
     change: false,
     valid: false,
@@ -242,6 +262,12 @@ export default {
       id: "",
       fiscal_manager_id: "",
     },
+    tab: "all",
+    items: [
+      { text: "همه", key: "all" },
+      { text: "کارهای امروز من", key: "my_today_work" },
+      { text: "کارهای دارای تاخیر", key: "my_late_work" },
+    ],
     loading_for_chagne_status: false,
     form: {},
     wallet_transactoin: {
@@ -426,7 +452,41 @@ export default {
       code: "",
     },
   }),
+  watch: {
+    tab() {
+      switch (this.tab) {
+        case "all":
+          this.filter = {};
+          break;
+        case "my_today_work":
+          this.filter = {
+            allocation_at: {
+              op: "=",
+              value: (this.now = jmoment().format("YYYY-MM-DD")),
+            },
+          };
+          break;
+        case "my_late_work":
+          this.filter = {
+            allocation_at: {
+              op: "<",
+              value: jmoment(this.now).add(-1, "days").format("YYYY-MM-DD"),
+            },
+          };
+          break;
+      }
+    },
+  },
   beforeMount() {
+    if (this.$route.query.filter == "my_today_work") {
+      this.tab = "my_today_work";
+    }
+    if (this.$route.query.filter == "my_late_work") {
+      this.tab = "my_late_work";
+    }
+    if (this.$route.query.filter == "all") {
+      this.tab = "all";
+    }
     if (this.$checkRole(this.$store.state.auth.role.coordinator_id)) {
       this.is_coordinator = true;
       this.delete_url = "basket/special-delete";
@@ -703,6 +763,17 @@ export default {
         filterType: "select",
         value: "step",
         items: this.step_status,
+      },
+      {
+        text: " زمان تخصیص",
+        filterType: "date",
+        filterCol: "allocation_at",
+        value: (body) => {
+          if (body.allocation_at) {
+            return this.$toJalali(body.allocation_at);
+          }
+          return "";
+        },
       },
       {
         text: "وضعیت سبد",

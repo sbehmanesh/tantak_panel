@@ -1,6 +1,7 @@
 <template>
   <v-card
     v-if="is_access"
+    @click="sendRoute(card.route)"
     width="110"
     :class="[
       'd-flex flex-column justify-center align-center my-2 border-radius-10 elevation-0',
@@ -36,6 +37,13 @@ export default {
   methods: {
     checkRole() {
       this.is_access = true;
+    },
+    sendRoute(path) {
+      if (path == "messages") {
+        this.$router.push("/message");
+      } else {
+        this.$router.push(path);
+      }
     },
   },
 };

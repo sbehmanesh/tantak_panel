@@ -87,11 +87,20 @@ export default {
     tab() {
       switch (this.tab) {
         case "all":
-          this.filter = {};
+          if (!Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))) {
+            this.filter = {
+              start_task: {
+                op: "<=",
+                value: jmoment().format("YYYY-MM-DD"),
+              },
+            };
+          } else {
+            this.filter = {};
+          }
           break;
         case "task_today":
           this.filter = {
-            created_at: {
+            start_task: {
               op: "=",
               value: (this.now = jmoment().format("YYYY-MM-DD")),
             },
@@ -106,16 +115,34 @@ export default {
           };
           break;
         case "task_time":
-          this.filter = {
-            end_task: {
+          if (!Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))) {
+            console.log(1111111111111);
+
+            this.filter = {
+              start_task: {
+                op: "<=",
+                value: jmoment().format("YYYY-MM-DD"),
+              },
+            };
+            this.filter["end_task"] = {
               op: "!=",
               value: null,
-            },
-            start_task: {
-              op: "!=",
-              value: null,
-            },
-          };
+            };
+          } else {
+            this.filter = {
+              start_task: {
+                op: "!=",
+                value: null,
+              },
+            };
+            this.filter = {
+              end_task: {
+                op: "!=",
+                value: null,
+              },
+            };
+          }
+
           break;
         case "task_untime":
           this.filter = {
@@ -135,7 +162,7 @@ export default {
       switch (this.tab2) {
         case "today_task":
           this.filter = {
-            created_at: {
+            start_task: {
               op: "=",
               value: (this.now = jmoment().format("YYYY-MM-DD")),
             },
@@ -145,13 +172,21 @@ export default {
           this.filter = {
             end_task: {
               op: "=",
-              value: (this.now = jmoment().format("YYYY-MM-DD")),
+              value: jmoment().format("YYYY-MM-DD"),
             },
           };
       }
     },
   },
   beforeMount() {
+    if (!Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))) {
+      this.filter = {
+        start_task: {
+          op: "<=",
+          value: jmoment().format("YYYY-MM-DD"),
+        },
+      };
+    }
     this.$store.dispatch("setPageTitle", this.title);
     if (this.$route.query.filter == "task_today") {
       this.tab = "task_today";
@@ -269,11 +304,13 @@ export default {
           this.$router.push(`/tasks/${body.id}`);
         },
         show_fun: (body) => {
-          let user_id = this.$store.state.auth.user.id;
-          if (body.user_creator_id == user_id) {
-            return true;
-          } else {
-            return false;
+          if (this.$store.state.auth.user.id) {
+            let user_id = this.$store.state.auth.user.id;
+            if (body.user_creator_id == user_id) {
+              return true;
+            } else {
+              return false;
+            }
           }
         },
       },

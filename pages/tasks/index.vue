@@ -116,8 +116,6 @@ export default {
           break;
         case "task_time":
           if (!Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))) {
-            console.log(1111111111111);
-
             this.filter = {
               start_task: {
                 op: "<=",

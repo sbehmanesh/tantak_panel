@@ -730,7 +730,7 @@ let status_invitor = [
 let status_payment_invitor = [
   { text: "تعریف نشده ", value: "none" },
   { text: "منتظر پرداخت ", value: "wait" },
-  { text: "پرداخت دشه ", value: "payed" },
+  { text: "پرداخت شده ", value: "payed" },
   { text: "کنسل شده ", value: "cancel" },
 ];
 let type_invitor = [

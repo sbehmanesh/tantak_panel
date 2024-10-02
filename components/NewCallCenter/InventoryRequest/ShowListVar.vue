@@ -46,6 +46,8 @@
 
       <v-col cols="12" md="10" class="text-center">
         <amp-button
+          :loading="loading"
+          :disabled="loading"
           text="تایید نقص سفارش "
           @click="callSubmit"
           color="success"
@@ -454,24 +456,23 @@ export default {
           });
         }
       }
-      if (items.length <1) {
-      this.$toast.error("محصولی انتخاب نشده")
-      }else if (items.length > 0) {
+      if (items.length < 1) {
+        this.$toast.error("محصولی انتخاب نشده");
+      } else if (items.length > 0) {
         this.loading = true;
-      let form ={}
-      form["type"] = "defect"
-      form["id"] = this.basketId
+        let form = {};
+        form["type"] = "defect";
+        form["id"] = this.basketId;
         form["product_varcom_ids"] = items;
-      this.$reqApi("product-request/deliver-order", form)
-        .then((res) => {
+        this.$reqApi("product-request/deliver-order", form)
+          .then((res) => {
             this.$toast.success("نقص سفارش با موفقیت انجام شد");
-        this.$emit("defectivBasket")
-          this.loading = false;
-        })
-        .catch((rej) => {
-          this.loading = false;
-        });
-        
+            this.$emit("defectivBasket");
+            this.loading = false;
+          })
+          .catch((rej) => {
+            this.loading = false;
+          });
       }
     },
   },

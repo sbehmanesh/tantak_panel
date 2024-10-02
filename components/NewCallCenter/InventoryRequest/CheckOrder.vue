@@ -106,7 +106,7 @@ export default {
       }
     },
     getList(event) {
-      console.log("defectivOrder" , event);
+      console.log("defectivOrder", event);
       this.product_varcom_ids = event;
     },
 
@@ -136,9 +136,9 @@ export default {
           this.loading = false;
         });
     },
-    doneDefectiv(){
-this.closeDialog()
-this.$emit("reload");
+    doneDefectiv() {
+      this.closeDialog();
+      this.$emit("reload");
     },
     getData(event) {
       this.infos = event;

@@ -246,7 +246,27 @@ export default {
           }
         },
       },
+      {
+        text: "مشاهده  تراکنش",
+        color: "teal darkeb-2",
+        icon: "receipt_long",
+        fun: (body) => {
+          this.add_transaction = true;
+          this.all_data = body;
+          this.$reqApi("/product-request");
+        },
+        show_fun: (body) => {
+          let show = false
+          if (
+            body.payments &&
+            body.payments.length > 0
+          ) {
+            show =  true;
+          } 
+          return show
 
+        },
+      },
       {
         text: "تاریخچه کیف پول",
         icon: "account_balance_wallet",
@@ -271,12 +291,11 @@ export default {
         color: "teal",
         fun: (body) => {
           this.check_order = true;
-          
           this.basket_id = body.id;
         },
         show_fun: (body) => {
           if (
-            body.step == "pack_and_send" ||
+            body.step == "pack_and_send" && 
             this.$store.state.auth.action.indexOf("product_requests/root") > -1
           ) {
             return true;
@@ -316,27 +335,7 @@ export default {
           }
         },
       },
-      {
-        text: "مشاهده  تراکنش",
-        color: "teal darkeb-2",
-        icon: "receipt_long",
-        fun: (body) => {
-          this.add_transaction = true;
-          this.all_data = body;
-          this.$reqApi("/product-request");
-        },
-        show_fun: (body) => {
-          if (
-            body.payments &&
-            Array.isArray(body.payments) &&
-            body.payments.length > 0
-          ) {
-            return true;
-          } else {
-            return false;
-          }
-        },
-      },
+
     ];
   },
 

@@ -5,7 +5,7 @@
 <script>
 export default {
   data: () => ({
-    title: "کارتابل"
+    title: "کارتابل",
   }),
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);
@@ -23,6 +23,15 @@ export default {
       }
       if (this.$checkAccess("access_cartable/coordinator_supervisor")) {
         this.$router.push("/panel/coordinator-supervisor");
+      }
+      if (this.$checkAccess("access_cartable/cartable_fiscal_manager")) {
+        this.$router.push("/panel/financial-manager");
+      }
+      if (this.$checkAccess("access_cartable/cartable_fiscal_supervisor")) {
+        this.$router.push("/panel/financial-supervisor");
+      }
+      if (this.$checkAccess("access_cartable/cartable_fiscal")) {
+        this.$router.push("/panel/financial");
       }
     },
   },

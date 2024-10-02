@@ -19,18 +19,19 @@
                       <th class="text-center">تاریخ پرداخت</th>
                       <th class="text-center">مبلغ</th>
                       <th class="text-center">نوع پرداخت</th>
+                      <th class="text-center">نوع کیف پول</th>
                       <th class="text-center">توضیحات</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr
-                      v-for="(item, index) in walletData"
-                      :key="index"
-                    >
+                    <tr v-for="(item, index) in walletData" :key="index">
                       <td dir="ltr">{{ $toJalali(item.created_at) }}</td>
                       <td><small>ریال</small>{{ $price(item.amount) }}</td>
                       <td>
                         {{ item.type == "remove" ? "کاهش" : "افزایش" }}
+                      </td>
+                      <td>
+                        {{ item.kind == "cash" ? "نقدی" : "اعتباری" }}
                       </td>
                       <td>{{ item.description }}</td>
                     </tr>
@@ -60,11 +61,11 @@ export default {
     },
   },
   data: () => ({}),
-  methods:{
+  methods: {
     closeDialog() {
       this.$emit("closeDialog");
     },
-  }
+  },
 };
 </script>
 <style></style>

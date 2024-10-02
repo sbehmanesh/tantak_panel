@@ -446,7 +446,7 @@ let wallet_type = [
 ];
 let wallet_kind = [
   { text: "نقد", value: "cash" },
-  { text: "اعتبار", value: "credit" },
+  { text: "اعتباری", value: "credit" },
 ];
 let type_send = [
   { text: "ترخیص خودکار", value: "auto" },

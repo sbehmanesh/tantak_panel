@@ -260,7 +260,6 @@ export default {
         });
     },
     showImg(item) {
-      console.log(11111111, item);
       let path = this.$getImage(item.receipt_img);
       window.open(path);
     },

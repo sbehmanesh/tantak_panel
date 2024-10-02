@@ -373,7 +373,7 @@
               :disabled="!is_creator"
               class="mt-2"
               color="black"
-              label="  تعیین رنگ"
+              label="تعیین فوریت"
               dense
               :items="set_color_items"
               v-model="get_color_task"
@@ -453,10 +453,9 @@ export default {
   }),
   mounted() {
     this.set_color_items = [
-      { text: "قرمز", value: "red" },
-      { text: "نارنجی", value: "orange" },
-      { text: "سبز", value: "green" },
-      { text: "آبی", value: "blue" },
+      { text: "فوری", value: "red" },
+      { text: "اولویت بالا", value: "orange" },
+      { text: "عادی", value: "green" },
     ];
     this.loadGeter();
     this.loadData();

@@ -206,7 +206,7 @@ export default {
       {
         filterable: false,
         disableSort: true,
-        text: "رنگ ",
+        text: "فوریت",
         value: (body) => {
           if (body.color) {
             return `<i aria-hidden="true"  color="red" class="v-icon notranslate  material-icons" style="font-size: 20px; color: ${body.color}">fiber_manual_record</i>`;

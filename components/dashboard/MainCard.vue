@@ -49,7 +49,7 @@ export default {
         menus: [
           {
             img: "/image/dashboard/message.svg",
-            title: "پیام های جدید",
+            title: "کارهای جدید",
             color: "primary",
             count: "",
             route: "basket",

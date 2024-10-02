@@ -134,7 +134,6 @@ export default {
             a.created_at - b.created_at;
           });
           this.walet_items = sort_items;
-          console.log(res);
         })
         .catch((err) => {});
     },

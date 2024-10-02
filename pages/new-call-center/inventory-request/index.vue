@@ -19,6 +19,13 @@
         @closeDialog="show_dialog = false"
         @reload="refresh"
       />
+      <CheckOrder
+        :dialog="check_order"
+        :basketId="basket_id"
+        v-if="check_order"
+        @closeDialog="check_order = false"
+        @reload="refresh"
+      />
       <HistoryInventoryRequest
         v-if="dialog_history.show"
         :dialogHistory="dialog_history"
@@ -27,6 +34,7 @@
       <DialogRefral
         :dialog="show_refral"
         :basketId="basket_id"
+        :stepInvitor="step_invitor"
         :statusPayment="status_payment"
         v-if="show_refral"
         @closeDialog="show_refral = false"
@@ -64,6 +72,7 @@ import DialogCancel from "~/components/NewCallCenter/InventoryRequest/DialogCanc
 import DialogRefral from "@/components/NewCallCenter/InventoryRequest/DialogRefral.vue";
 import DialogTransactions from "@/components/NewCallCenter/InventoryRequest/DialogTransactions.vue";
 import HistoryWallet from "~/components/NewCallCenter/InventoryRequest/HistoryWallet.vue";
+import CheckOrder from "~/components/NewCallCenter/InventoryRequest/CheckOrder.vue";
 export default {
   components: {
     Dialog,
@@ -72,6 +81,7 @@ export default {
     HistoryInventoryRequest,
     DialogCancel,
     HistoryWallet,
+    CheckOrder,
   },
   data: () => ({
     title: "درخواست موجودی",
@@ -85,7 +95,9 @@ export default {
     show_refral: false,
     add_transaction: false,
     request: "",
+    step_invitor: "",
     show_cansel: false,
+    check_order: false,
     get_api: "",
     basket_id: "",
     show_wallet: false,
@@ -170,7 +182,7 @@ export default {
       {
         color: "primary",
         icon: "history",
-        text: "تاریخچه",
+        text: "تاریخچه سفارش",
         fun: (body) => {
           if (body.id) {
             this.dialog_history.show = true;
@@ -180,25 +192,36 @@ export default {
       },
       {
         text: "‌بررسی روند ارجاع ",
-        color: "primary darkeb-2",
+        color: "blue darken-1",
         icon: "event_repeat",
         fun: (body) => {
           this.show_refral = true;
           this.basket_id = body.id;
-          this.status_payment = body.status_payment
+          this.status_payment = body.status_payment;
+          this.step_invitor = body.step;
         },
         show_fun: (body) => {
-          let show = true;
+          let show = false;
           if (Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))) {
             show = false;
-          }
-          if (
+          } else if (
+            Boolean(this.$checkRole(this.$store.state.auth.role.sale_manager))
+          ) {
+            show = false;
+          } else if (
             Boolean(this.$checkRole(this.$store.state.auth.role.agency_manager))
           ) {
-            if (body.step != "init") {
-              show = false;
+            if (
+              (body.step == "accept_employee_sale" &&
+                body.status_payment == "payed") ||
+              body.step == "init"
+            ) {
+              show = true;
             }
+          } else {
+            show = true;
           }
+
           return show;
         },
       },
@@ -215,6 +238,76 @@ export default {
               this.$checkRole(this.$store.state.auth.role.sales_expert) &&
                 body.step == "supervisor_to_employee_sale" &&
                 body.status_payment == "none"
+            )
+          ) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
+
+      {
+        text: "تاریخچه کیف پول",
+        icon: "account_balance_wallet",
+        color: "success darken-2",
+        fun: (body) => {
+          if (body.wallet_transactions.length > 0) {
+            this.show_wallet = true;
+            this.wallet_data = body.wallet_transactions;
+          }
+        },
+        show_fun: (body) => {
+          if (body.wallet_transactions.length > 0) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
+      {
+        text: "برسی سفارش",
+        icon: "account_balance_wallet",
+        color: "teal",
+        fun: (body) => {
+          this.check_order = true;
+          
+          this.basket_id = body.id;
+        },
+        show_fun: (body) => {
+          if (
+            body.step == "pack_and_send" ||
+            this.$store.state.auth.action.indexOf("product_requests/root") > -1
+          ) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
+    ];
+    this.actions_list = [
+      {
+        text: "مشاهده جزییات",
+
+        fun: (body) => {
+          this.show_dialog = true;
+          this.request = false;
+          this.basket_id = body.id;
+        },
+      },
+      {
+        text: "کنسل کردن سفارش",
+        fun: (body) => {
+          this.show_cansel = true;
+          this.get_api = body.id;
+        },
+        show_fun: (body) => {
+          if (
+            Boolean(
+              (body.status == "init" || body.status == "wait") &&
+                (this.$checkAccess("product_requests/root") ||
+                  this.$checkRole(this.$store.state.auth.role.seal_manager))
             )
           ) {
             return true;
@@ -242,57 +335,6 @@ export default {
           } else {
             return false;
           }
-        },
-      },
-      {
-        text: "کنسل کردن سفارش",
-        color: "red darken-1",
-        icon: "cancel",
-        fun: (body) => {
-          this.show_cansel = true;
-          this.get_api = body.id;
-        },
-        show_fun: (body) => {
-          if (
-            Boolean(
-              (body.status == "init" || body.status == "wait") &&
-                (this.$checkAccess("product_requests/root") ||
-                  this.$checkRole(this.$store.state.auth.role.seal_manager))
-            )
-          ) {
-            return true;
-          } else {
-            return false;
-          }
-        },
-      },
-      {
-        text: "تاریخچه کیف پول",
-        icon: "account_balance_wallet",
-        color: "success darken-2",
-        fun: (body) => {
-          if (body.wallet_transactions.length > 0) {
-            this.show_wallet = true;
-            this.wallet_data = body.wallet_transactions;
-          }
-        },
-        show_fun: (body) => {
-          if (body.wallet_transactions.length > 0) {
-            return true;
-          } else {
-            return false;
-          }
-        },
-      },
-    ];
-    this.actions_list = [
-      {
-        text: "مشاهده جزییات",
-
-        fun: (body) => {
-          this.show_dialog = true;
-          this.request = false;
-          this.basket_id = body.id;
         },
       },
     ];

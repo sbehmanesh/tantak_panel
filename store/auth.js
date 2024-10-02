@@ -40,6 +40,10 @@ export const state = () => ({
     courier: "32b21551-05fe-42ad-a769-d1c633efd8e0",
     sales_manager: "3c22da53-9982-4634-81ce-293600e03d97",
     sales_expert: "acf183ec-4b47-4afb-8238-461df51fc4e6",
+superviser_centeral_stock:"023b91d1-392b-4f46-8921-94d87316ddb4",
+employee_centeral_stock:"dbcbc932-552a-4f3b-ad81-5b3a5734b803",
+
+    
   },
 });
 

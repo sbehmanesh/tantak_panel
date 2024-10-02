@@ -730,7 +730,7 @@ let status_invitor = [
 let status_payment_invitor = [
   { text: "تعریف نشده ", value: "none" },
   { text: "منتظر پرداخت ", value: "wait" },
-  { text: "پرداخت دشه ", value: "payed" },
+  { text: "پرداخت شده ", value: "payed" },
   { text: "کنسل شده ", value: "cancel" },
 ];
 let type_invitor = [
@@ -739,6 +739,12 @@ let type_invitor = [
 ];
 let step_invitor = [
   { text: "ثبت اولیه", value: "init" },
+  { text: "  انجام بسته بندی و ارسال   ", value: "pack_and_send" },
+  { text: " درحال بسته بندی سفارش", value: "waiting_packaging" },
+  { text: " مرجوع به سرپرست انبار مرکزی", value: "employee_to_supervisor_stock" },
+  { text: " ارجاع به کارمند انبار مرکزی", value: "supervisor_to_employee_stock" },
+  { text: " مرجوع از سرپرست انبار مرکزی به مدیر نمایندگی", value: "supervisor_stock_to_manager " },
+  { text: "از مدیر نمایندگی به سرپرست انبار مرکزی", value: "manager_to_supervisor_stock" },
   { text: "ارجاع به سرپرست فروش", value: "manager_to_supervisor_sale" },
   {
     text: " سرپرست به مدیر نمایندگی فروش",

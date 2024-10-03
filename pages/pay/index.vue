@@ -34,8 +34,8 @@
               @click="paymentPortal"
               color="success"
               class="ma-2"
-              :loading="loading"
-              :disabled="loading"
+              :loading="loading_pay"
+              :disabled="loading_pay"
             />
           </v-row>
         </v-card-text>
@@ -54,6 +54,7 @@ export default {
       user: "",
       random_id: "",
       loading: true,
+      loading_pay: false,
       title: "پرداخت",
       status: "",
     };
@@ -89,12 +90,16 @@ export default {
         });
     },
     paymentPortal() {
+        this.loading_pay= true
       let url = "product-request/pay";
       this.$reqApi(url, { random_id: this.random_id })
         .then((res) => {
           window.open(res.url, "_blank");
+          this.loading_pay = false
         })
-        .catch((err) => {});
+        .catch((err) => {
+            this.loading_pay = false
+        });
     },
   },
 };

@@ -34,7 +34,7 @@
               @click="paymentPortal"
               color="success"
               class="ma-2"
-              :loading="loading"
+              :loading="loading_pay"
               :disabled="loading"
             />
           </v-row>
@@ -54,6 +54,7 @@ export default {
       user: "",
       random_id: "",
       loading: true,
+      loading_pay: false,
       title: "پرداخت",
       status: "",
     };
@@ -61,13 +62,13 @@ export default {
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);
     if (Boolean(this.$route.params.pay)) {
-      this.random_id = this.$route.query.pay;
+      this.random_id = this.$route.params.pay;
       this.showDetails(this.random_id);
     }
   },
   methods: {
     showDetails(id) {
-      this.$reqApi("/shop/payment/show", { link_id: id })
+      this.$reqApi("/shop/payment/show", { id: id })
         .then((res) => {
           this.data = res.data;
           if (Object.keys(this.data.user).length > 0) {

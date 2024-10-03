@@ -146,18 +146,7 @@
                     console.log(error);
                   });
               }
-              ////////////////////////////////// this function maybe add in the future
-              // if (res.count_work > 0) {
-              //   let items = [];
-              //   for (let index = 0; index < res.array_work.length; index++) {
-              //     const element = this.res.array_work[index];
-              //     console.log(333333333333);
-  
-              //     items.push(element);
-              //   }
-              //   this.count_works = items;
-              //   console.log(this.count_works);
-              // }
+
             })
   
             .catch((error) => {

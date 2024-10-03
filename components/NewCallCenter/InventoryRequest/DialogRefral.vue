@@ -1,14 +1,13 @@
 <template>
   <v-row justify="center">
     <v-dialog v-model="dialog" persistent max-width="450">
-      <v-card style="overflow: hidden" class="pa-3">
+      <v-card style="overflow: hidden" >
         <v-col cols="12" class="pa-0 ma-0">
-          <v-alert dense prominent icon="event_repeat" class="pa-0 ma-0">
-            <h1 class="font_18">‌برسی روند ارجاع</h1>
+          <v-alert dense prominent icon="event_repeat" class=" grey lighten-2" >
+            <h1 class="font_17">‌برسی روند ارجاع</h1>
           </v-alert>
-          <v-divider class="my-3"></v-divider>
         </v-col>
-        <v-form v-model="valid">
+        <v-form v-model="valid" class="pa-3">
           <v-col cols="12" class="pa-0 ma-0">
             <amp-select
               :disabled="set_items.length == 1"

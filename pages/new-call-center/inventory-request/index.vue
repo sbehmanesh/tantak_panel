@@ -21,6 +21,7 @@
       />
       <CheckOrder
         :dialog="check_order"
+        :data="data"
         :basketId="basket_id"
         v-if="check_order"
         @closeDialog="check_order = false"
@@ -107,6 +108,7 @@ export default {
       items: null,
     },
     status_payment: "",
+    data:{}
   }),
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);
@@ -246,27 +248,7 @@ export default {
           }
         },
       },
-      {
-        text: "مشاهده  تراکنش",
-        color: "teal darkeb-2",
-        icon: "receipt_long",
-        fun: (body) => {
-          this.add_transaction = true;
-          this.all_data = body;
-          this.$reqApi("/product-request");
-        },
-        show_fun: (body) => {
-          let show = false
-          if (
-            body.payments &&
-            body.payments.length > 0
-          ) {
-            show =  true;
-          } 
-          return show
 
-        },
-      },
       {
         text: "تاریخچه کیف پول",
         icon: "account_balance_wallet",
@@ -292,11 +274,11 @@ export default {
         fun: (body) => {
           this.check_order = true;
           this.basket_id = body.id;
+          this.data = body
         },
         show_fun: (body) => {
           if (
-            body.step == "pack_and_send" && 
-            this.$store.state.auth.action.indexOf("product_requests/root") > -1
+            body.step == "pack_and_send" 
           ) {
             return true;
           } else {

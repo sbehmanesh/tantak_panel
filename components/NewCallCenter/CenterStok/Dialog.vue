@@ -1,0 +1,369 @@
+<template>
+    <v-row justify="center">
+      <v-dialog v-model="dialog" persistent width="1200" :fullscreen="$vuetify.breakpoint.mdAndUp ? false : true">
+        <v-card>
+          <v-card-title class="primary mb-10">
+            <span class="font_20 white--text">موجودی انبار</span>
+            <v-spacer></v-spacer>
+            <v-icon color="white" @click="closeDialog"> close </v-icon>
+          </v-card-title>
+          <v-card-text>
+            <v-window v-model="step">
+              <v-window-item :value="1">
+                <v-row class="d-flex justify-center">
+                  <v-col cols="12" md="10">
+                    <v-expansion-panels v-model="panel">
+                      <v-expansion-panel>
+                        <v-expansion-panel-header class="primary lighten-1">
+                          <span class="white--text font_18">
+                            تعریف موجودی
+                            <small v-if="update">
+                              *** ( {{ product_var_info }} )
+                            </small>
+                          </span>
+                        </v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                          <v-form
+                            v-model="valid"
+                            @submit.prevent="submit()"
+                            class="mt-4 pa-5"
+                            v-if="!loading"
+                          >
+                            <SelectVariation
+                              @validVariations="continue_form = $event"
+                              v-if="!update"
+                              @productId="form.product_var_id = $event"
+                              :productInfo="product"
+                              :response="response"
+                              :clear_vaue="continue_form"
+                            />
+                            <v-row v-if="check_continue">
+                              <v-col cols="12" md="4">
+                                <amp-input
+                                  text="موجودی"
+                                  rules="require,number"
+                                  v-model="form.skock"
+                                />
+                              </v-col>
+                              <v-col cols="12" md="4">
+                                <amp-input
+                                  text="موجودی  در انبار"
+                                  rules="require,number"
+                                  v-model="form.save_skock"
+                                />
+                              </v-col>
+                              <v-col cols>
+                                <amp-textarea
+                                  :rows="1"
+                                  text="توضیحات"
+                                  v-model="form.description"
+                                ></amp-textarea>
+                              </v-col>
+                            </v-row>
+                            <v-row class="d-flex justify-center mt-5">
+                              <v-col cols="6" md="2">
+                                <amp-button
+                                  block
+                                  height="40"
+                                  text="تایید"
+                                  color="green darken-1"
+                                  @click="submit"
+                                  :loading="loading"
+                                  :disabled="!Boolean(check_continue) || !valid || loading"
+                                />
+                              </v-col>
+                              <v-col cols="6" md="2">
+                                <amp-button
+                                  block
+                                  height="40"
+                                  text="انصراف"
+                                  color="red darken-1"
+                                  @click="canceld"
+                                />
+                              </v-col>
+                            </v-row>
+                          </v-form>
+                          <div class="text-center my-10" v-else>
+                            <v-progress-circular
+                              :size="50"
+                              :width="6"
+                              indeterminate
+                              color="primary"
+                            />
+                          </div>
+                        </v-expansion-panel-content>
+                      </v-expansion-panel>
+                    </v-expansion-panels>
+                  </v-col>
+                </v-row>
+  
+                <BaseTable
+                  ref="Refresh"
+                  url="/sale-agency-stock"
+                  :headers="headers"
+                  :root-body="root_body"
+                  autoDelete="sale-agency-stock/delete"
+                  :actionsList="actions_list"
+                  :BTNactions="btn_actions"
+                />
+              </v-window-item>
+  
+              <v-window-item :value="2">
+                <History :branchId="branchId" v-if="show_history"  :productVarId="product_var_id" :productVarInfo="send_prop" @backStep="step--"/>
+              </v-window-item>
+            </v-window>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+    </v-row>
+  </template>
+  <script>
+  import SelectVariation from "@/components/Product/Representative/SelectVariation.vue";
+  import History from "@/components/Product/Representative/History.vue";
+  export default {
+    components: {
+      SelectVariation,
+      History,
+    },
+    props: {
+      branchId: {
+        require: false,
+        default: false,
+      },
+      dialog: {
+        require: false,
+        default: false,
+      },
+    },
+    data() {
+      return {
+        panel: 1,
+        step: 1,
+        continue_form: false,
+        show_history: false,
+        loading: false,
+        actions_list: [],
+        response: [],
+        headers: [],
+        btn_actions: [],
+        product: { product_id: "" },
+        root_body: "",
+        send_prop: "",
+        url: "",
+        product_var_id: "",
+        product_var_info: "",
+        valid: true,
+        update: false,
+        form: {
+          skock: "",
+          description: "",
+          save_skock: "",
+          sale_agency_id: "",
+          product_var_id: "",
+        },
+      };
+    },
+    computed: {
+      check_continue() {
+        let check = false;
+        if (Boolean(this.update)) {
+          check = true;
+        } else if (Boolean(!this.update) && Boolean(this.continue_form)) {
+          check = true;
+        }
+        return check;
+      },
+    },
+    mounted() {
+      this.root_body = { sale_agency_id: this.branchId };
+      this.headers = [
+        {
+          text: "زمان ثبت",
+          filterType: "date",
+          filterCol: "created_at",
+          value: (body) => {
+            if (body.created_at) {
+              return this.$toJalali(body.created_at);
+            }
+            return "";
+          },
+        },
+        {
+          text: "محصول",
+          filtrabel: false,
+          value: (body) => {
+            let text = "";
+            let product_name = "";
+            let var_1 = "";
+            let var_2 = "";
+            let var_3 = "";
+            if (body.product_var && body.product_var.product) {
+              product_name = body.product_var.product.name;
+            }
+            if (body.product_var.variation1) {
+              var_1 = body.product_var.variation1.value;
+            }
+            if (body.product_var.variation2) {
+              var_2 = body.product_var.variation2.value;
+            }
+            if (body.product_var.variation3) {
+              var_3 = body.product_var.variation3.value;
+            }
+            text = `${product_name}  ( ${var_1} - ${var_2} - ${var_3} )`;
+            return text;
+          },
+        },
+        {
+          text: "موجودی",
+          filterable: false,
+          value: (body) => {
+            let items = [];
+            items.push(
+              `<span class="teal--text font_11"> موجودی  : ${body.skock.toLocaleString()} </span>`
+            )
+    
+               items.push(
+              `<span class="primary--text font_11">موجودی  انبار   : ${body.save_skock.toLocaleString()} </span>`
+            );
+            return items.join("<br>");
+          },
+        },
+  
+        {
+          text: "توضیحات",
+          filterCol: "description",
+          type: "tooltip",
+          function: (body) => {
+            if (body.description) {
+              return body.description;
+            }
+          },
+          value: (body) => {
+            if (typeof body.description == "string") {
+              if (body.description.length < 25) {
+                return body.description;
+              }
+              return body.description.slice(0, 25) + "...";
+            } else {
+              return "-";
+            }
+          },
+        },
+      ];
+      this.actions_list = [
+        {
+          text: "بروزرسانی",
+          fun: (body) => {
+            this.loadData(body.id);
+          },
+        },
+      ];
+      this.btn_actions = [
+        {
+          text: "تاریخچه انبار",
+          icon: "history",
+          color: "teal",
+          fun: (body) => {
+            this.step++;
+            this.show_history = true;
+            this.product_var_id = body.product_var_id
+            let text = "";
+            let product_name = "";
+            let var_1 = "";
+            let var_2 = "";
+            let var_3 = "";
+            if (body.product_var) {
+              product_name = body.product_var.product.name;
+            }
+            if (body.product_var.variation1) {
+              var_1 = body.product_var.variation1.value;
+            }
+            if (body.product_var.variation2) {
+              var_2 = body.product_var.variation2.value;
+            }
+            if (body.product_var.variation3) {
+              var_3 = body.product_var.variation3.value;
+            }
+            text = `${product_name} ( ${var_1} - ${var_2} - ${var_3} )`;
+           this.send_prop = text
+          },
+        },
+      ];
+    },
+    methods: {
+      closeDialog() {
+        this.$emit("closeDialog");
+      },
+      submit() {
+        this.loading = true;
+        let form = { ...this.form };
+        form.sale_agency_id = this.branchId;
+        let url = this.update
+          ? "sale-agency-stock/update"
+          : "sale-agency-stock/insert";
+        this.$reqApi(url, form)
+          .then((response) => {
+            this.step == 1;
+            this.$toast.success("عملیات با موفقیت انجام شده");
+            this.loading = false;
+            this.$refs.Refresh.getDataFromApi();
+            this.canceld()
+          })
+          .catch((err) => {
+            this.loading = false;
+          });
+      },
+      canceld() {
+        this.url = "sale-agency-stock/insert";
+        this.form.description = "";
+        this.form.product_var_id = "";
+        this.form.save_skock = "";
+        this.form.skock = "";
+        this.panel = 1;
+        this.update = false;
+        this.continue_form = false;
+      },
+      loadData(id) {
+        this.loading = true;
+        this.update = true;
+        this.$reqApi("sale-agency-stock/show", { id: id })
+          .then((response) => {
+            let data = response.data;
+            this.response = data;
+            for (let key in data) {
+              this.form[key] = data[key];
+            }
+            this.product.product_id = data.product_var.product_id;
+  
+            let text = "";
+            let product_name = "";
+            let var_1 = "";
+            let var_2 = "";
+            let var_3 = "";
+            if (data.product_var) {
+              product_name = data.product_var.product.name;
+            }
+            if (data.product_var.variation1) {
+              var_1 = data.product_var.variation1.value;
+            }
+            if (data.product_var.variation2) {
+              var_2 = data.product_var.variation2.value;
+            }
+            if (data.product_var.variation3) {
+              var_3 = data.product_var.variation3.value;
+            }
+            text = `${product_name}  ( ${var_1} - ${var_2} - ${var_3} )`;
+            this.product_var_info = text;
+  
+            this.panel = 0;
+            this.loading = false;
+          })
+          .catch((err) => {
+            this.loader = false;
+            this.loading = false;
+          });
+      },
+    },
+  };
+  </script>
+  

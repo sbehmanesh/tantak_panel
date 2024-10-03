@@ -22,7 +22,7 @@
 import BaseTable from "~/components/DataTable/BaseTable";
 import Dialog from "@/components/Product/Representative/Dialog.vue";
 export default {
-  components: { Dialog },
+  components: { Dialog  ,BaseTable},
   data: () => ({
     headers: [],
     btn_actions: [],

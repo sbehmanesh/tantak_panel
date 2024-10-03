@@ -45,6 +45,7 @@ export const state = () => ({
   prepaid_type,
   status_payment_invitor,
   status_transactions,
+  status_req_money,
 });
 
 let mnue_tree = [
@@ -132,7 +133,7 @@ let mnue_tree = [
       {
         id: 6185145,
         name: "نمایندگی های فروش",
-        access: "sale_agencies/index",
+        access: "center_stocks/index",
         route: "/product/sale-agency",
       },
       {
@@ -140,6 +141,11 @@ let mnue_tree = [
         name: "ناحیه ها",
         access: "region/index",
         route: "/region",
+      },      {
+        id: 5461236,
+        name: "انبار مرکزی",
+        access: "region/index",
+        route: "/new-call-center/center-stocks",
       },
     ],
   },
@@ -303,6 +309,12 @@ let mnue_tree = [
         route: "/new-call-center/referral-history",
       },
     ],
+  },
+  {
+    id: 75874785532,
+    access: "money-request/index",
+    name: " درخواست وجه",
+    route: "/money-request",
   },
   {
     id: 18,
@@ -715,6 +727,11 @@ let menu_type = [
   { text: "فعال", value: "active" },
   { text: "غیرفعال", value: "hidden" },
 ];
+let status_req_money = [
+  { text: "تایید شده", value: "done" },
+  { text: "رد شده", value: "reject" },
+  { text: " منتظر برسی", value: "wait" },
+];
 let notif_type = [
   { text: "پیامک", value: "sms" },
   { text: "اعلان", value: "notification" },
@@ -729,9 +746,13 @@ let status_invitor = [
 
 let status_payment_invitor = [
   { text: "تعریف نشده ", value: "none" },
-  { text: "منتظر پرداخت ", value: "wait" },
-  { text: "پرداخت شده ", value: "payed" },
   { text: "کنسل شده ", value: "cancel" },
+  {text:"منتظر پرداخت" , value:"wait"},
+  {text:"پرداخت شده" , value:"payed"},
+  {text:"پرداخت نشده" , value:"unpayed"},
+  {text:"برگشت داده شده" , value:"reject"},
+  {text:"کنسل شده" , value:"cancled"},
+  {text:"عودت وجه" , value:"owdat"},
 ];
 let type_invitor = [
   { text: "عادی ", value: "normal" },
@@ -763,3 +784,6 @@ let status_transactions =[
   { text: "برگشت ", value: "reject" },
   { text: "کنسل شده", value: "cancled" },
 ]
+
+
+

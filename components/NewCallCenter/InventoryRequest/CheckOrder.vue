@@ -1,32 +1,51 @@
 <template>
   <v-row justify="center">
-    <v-dialog v-model="dialog" persistent max-width="550">
-      <v-card style="overflow: hidden" class="grey lighten-3">
-        <v-card-title>
-          برسی سفارش
-          <v-spacer></v-spacer>
-          <v-btn icon text @click="closeDialog">
-            <v-icon>close</v-icon>
-          </v-btn>
-        </v-card-title>
-        <v-card class="pa-5 grey lighten-3" :disabled="loading">
-          <v-col cols="12">
-            <v-card-text
-              class="pa-2 text-center elevation-3 card-select"
-              @click="ckekStep('complete')"
-            >
-              <h1 class="font_12">تایید سفارش</h1>
-            </v-card-text>
-          </v-col>
-          <v-col cols="12">
-            <v-card-text
-              class="pa-2 text-center elevation-3 card-select"
-              @click="ckekStep('defect')"
-            >
-              <h1 class="font_12">نقص سفارش سفارش</h1>
-            </v-card-text>
-          </v-col>
+    <v-dialog v-model="dialog" persistent max-width="450">
+      <v-card style="overflow: hidden">
+        <v-alert prominent icon="text_snippet" class="grey lighten-2" >
+          <strong class="font_18">برسی سفارش</strong>
+          <br />
+          <strong class="font_12"> شماره فاکتور ‌: {{ data.order_number }} </strong>
+          <br />
+          <strong class="font_12"> کد نمایندگی ‌: {{ data.agency_code }} </strong>
+          <br />
+
+          <strong class="font_12">
+            مجموع قیمت ‌: {{ $price(data.total_price) }} ریال
+          </strong>
+          <br />
+        </v-alert>
+      
+        <v-card class="pa-5" :disabled="loading">
+          <v-row class="d-flex justify-center">
+            <v-col cols="6" md="4">
+              <v-card-text
+                class="pa-2 text-center elevation-3 card-select"
+                @click="ckekStep('complete')"
+              >
+                <span class="font_12">تایید سفارش</span>
+              </v-card-text>
+            </v-col>
+            <v-col cols="6" md="4">
+              <v-card-text
+                class="pa-2 text-center elevation-3 card-select"
+                @click="ckekStep('defect')"
+              >
+                <span class="font_12">نقص سفارش سفارش</span>
+              </v-card-text>
+            </v-col>
+            <v-col cols="6" md="4">
+              <v-card-text
+                class="pa-2 text-center elevation-3 close-dialog"
+                @click="closeDialog"
+              >
+                <span class="font_12"> انصراف</span>
+              </v-card-text>
+            </v-col>
+          </v-row>
+
           <ShowListVar
+            class="mt-4"
             v-if="form.type == 'defect'"
             :basketId="basketId"
             @defectivBasket="doneDefectiv()"
@@ -58,6 +77,10 @@ import ShowListVar from "@/components/NewCallCenter/InventoryRequest/ShowListVar
 export default {
   components: { ShowListVar },
   props: {
+    data: {
+      require: false,
+      default: false,
+    },
     dialog: {
       require: false,
       default: false,
@@ -96,7 +119,9 @@ export default {
   },
   methods: {
     ckekStep(type) {
+
       this.form.type = type;
+
       switch (type) {
         case "complete":
           this.submit(type);
@@ -106,7 +131,6 @@ export default {
       }
     },
     getList(event) {
-      console.log("defectivOrder", event);
       this.product_varcom_ids = event;
     },
 
@@ -149,10 +173,18 @@ export default {
 <style scoped>
 .card-select {
   border-radius: 5px !important;
-  background-color: #ffffff !important;
+  background-color: #919191 !important;
+  color: #ffffff;
+  cursor: pointer;
+}
+.close-dialog {
+  border-radius: 5px !important;
+  background-color: #fd3838e5 !important;
+  color: #ffffff;
   cursor: pointer;
 }
 .card-select:hover {
-  background-color: #eeeaea !important;
+  background-color: #c0c0c0 !important;
+  color: #000000;
 }
 </style>

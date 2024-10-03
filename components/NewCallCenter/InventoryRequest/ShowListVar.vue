@@ -1,9 +1,9 @@
 <template>
   <div border="left" text>
-    <v-row class="d-flex justify-center align-center">
-      <v-col cols="12" md="12">
-        <div v-for="(item, index) in variations_list" :key="index" class="mx-3">
-          <v-card class="elvation-2 pa-2 mt-2 px-3">
+    <v-row class="d-flex justify-center align-center mt-2">
+      <v-col cols="12" md="12" v-if="!loading">
+        <div v-for="(item, index) in variations_list" :key="index">
+          <v-card class="elvation-0 pa-2 mt-2 px-4 border-card">
             <v-row class="align-center">
               <small class="mr-3">
                 {{ index + 1 }} -
@@ -43,16 +43,28 @@
           </v-card>
         </div>
       </v-col>
-
-      <v-col cols="12" md="10" class="text-center">
-        <amp-button
+      <v-col cols="12" v-if="loading">
+        <v-skeleton-loader
+          class="mx-auto"
+          type="card"
+          height="40"
+        ></v-skeleton-loader>
+      </v-col>
+      <v-col cols="12" md="12" class="text-center mt-3" v-if="!loading">
+        <v-card-text
+          class="pa-2 text-center elevation-3 btn-submit"
+          @click="callSubmit"
+        >
+          <span class="font_12"> تایید نقص موارد انتخاب شده </span>
+        </v-card-text>
+        <!-- <amp-button
           :loading="loading"
           :disabled="loading"
           text="تایید نقص سفارش "
           @click="callSubmit"
           color="success"
           icon="done"
-        ></amp-button>
+        ></amp-button> -->
       </v-col>
     </v-row>
   </div>
@@ -208,6 +220,7 @@ export default {
   },
   methods: {
     loadItems() {
+      this.loading = true;
       this.$reqApi("product-request/show", { id: this.basketId })
         .then((res) => {
           this.$emit("data", res.data);
@@ -221,6 +234,7 @@ export default {
               variation2: x.pro_var_com.variation2,
               variation3: x.pro_var_com.variation3,
               id: x.pro_var_com.id,
+              img: x.pro_var_com.variation1.product.main_image,
               defect: false,
             });
           }
@@ -479,4 +493,16 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.border-card {
+  border: 1px solid #bbbbbb !important;
+  border-radius: 7px !important;
+}
+.btn-submit {
+  border-radius: 5px !important;
+  background-color: #919191 !important;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+</style>

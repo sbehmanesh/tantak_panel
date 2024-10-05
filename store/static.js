@@ -760,9 +760,7 @@ let type_invitor = [
 ];
 let step_invitor = [
   { text: "ثبت اولیه", value: "init" },
-<<<<<<< HEAD
   { text: "ارجاع به سرپرست انبار مرکزی", value: "manager_to_supervisor_stock" },
-=======
   { text: "  انجام بسته بندی و ارسال   ", value: "pack_and_send" },
   { text: " درحال بسته بندی سفارش", value: "waiting_packaging" },
   { text: " مرجوع به سرپرست انبار مرکزی", value: "employee_to_supervisor_stock" },
@@ -770,7 +768,6 @@ let step_invitor = [
   { text: " مرجوع از سرپرست انبار مرکزی به مدیر نمایندگی", value: "supervisor_stock_to_manager " },
   { text: "از مدیر نمایندگی به سرپرست انبار مرکزی", value: "manager_to_supervisor_stock" },
   { text: "ارجاع به سرپرست فروش", value: "manager_to_supervisor_sale" },
->>>>>>> a1902476649e4cc699aa3b0046adb5053737d01f
   {
     text: " سرپرست به مدیر نمایندگی فروش",
     value: "supervisor_to_manager_sale",

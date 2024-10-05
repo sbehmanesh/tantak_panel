@@ -120,12 +120,10 @@ export default {
     set_items() {
       let items = [];
       if (this.$checkRole(this.$store.state.auth.role.agency_manager)) {
-<<<<<<< HEAD
-        this.form.step = "manager_to_supervisor_stock";
-        items = [
-          { text: "ارجاع به سرپرست", value: "manager_to_supervisor_stock" },
-        ];
-=======
+        // this.form.step = "manager_to_supervisor_stock";
+        // items = [
+        //   { text: "ارجاع به سرپرست", value: "manager_to_supervisor_stock" },
+        // ];
         if (this.statusPayment == "payed") {
           this.form.step = "manager_to_supervisor_stock";
           items = [
@@ -140,7 +138,6 @@ export default {
             { text: "ارجاع به سرپرست", value: "manager_to_supervisor_sale" },
           ];
         }
->>>>>>> a1902476649e4cc699aa3b0046adb5053737d01f
       }
 
       if (this.$checkRole(this.$store.state.auth.role.sales_manager)) {

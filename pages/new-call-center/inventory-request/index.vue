@@ -194,20 +194,13 @@ export default {
       },
       {
         text: "‌بررسی روند ارجاع ",
-<<<<<<< HEAD
-        color: "blue darkeb-1",
-=======
         color: "blue darken-1",
->>>>>>> a1902476649e4cc699aa3b0046adb5053737d01f
         icon: "event_repeat",
         fun: (body) => {
           this.show_refral = true;
           this.basket_id = body.id;
           this.status_payment = body.status_payment;
-<<<<<<< HEAD
-=======
           this.step_invitor = body.step;
->>>>>>> a1902476649e4cc699aa3b0046adb5053737d01f
         },
         show_fun: (body) => {
           let show = false;
@@ -221,22 +214,16 @@ export default {
             Boolean(this.$checkRole(this.$store.state.auth.role.agency_manager))
           ) {
             if (
-<<<<<<< HEAD
               body.step == "init" ||
               (body.step == "accept_employee_sale" &&
                 body.status_payment == "payed")
-=======
-              (body.step == "accept_employee_sale" &&
-                body.status_payment == "payed") ||
-              body.step == "init"
->>>>>>> a1902476649e4cc699aa3b0046adb5053737d01f
+
             ) {
               show = true;
             }
           } else {
             show = true;
           }
-<<<<<<< HEAD
           if (
             !Boolean(
               this.$checkRole(this.$store.state.auth.role.agency_manager)
@@ -245,9 +232,7 @@ export default {
           ) {
             show = true;
           }
-=======
 
->>>>>>> a1902476649e4cc699aa3b0046adb5053737d01f
           return show;
         },
       },

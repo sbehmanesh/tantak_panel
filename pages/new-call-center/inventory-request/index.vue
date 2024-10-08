@@ -196,6 +196,7 @@ export default {
       {
         text: "‌بررسی روند ارجاع ",
         color: "blue darkeb-1",
+        color: "blue darken-1",
         icon: "event_repeat",
         fun: (body) => {
           this.show_refral = true;
@@ -227,17 +228,10 @@ export default {
           ) {
             show = true;
           } 
-          // else {
-          //   show = true;
-          // }
-          // if (
-          //   !Boolean(
-          //     this.$checkRole(this.$store.state.auth.role.agency_manager)
-          //   ) &&
-          //   !Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))
-          // ) {
-          //   show = true;
-          // }
+
+
+    
+
 
           return show;
         },

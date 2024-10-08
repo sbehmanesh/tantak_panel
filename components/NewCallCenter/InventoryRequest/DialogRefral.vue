@@ -121,6 +121,7 @@ export default {
       let items = [];
       if (this.$checkRole(this.$store.state.auth.role.agency_manager)) {
   
+
         if (this.statusPayment == "payed") {
           this.form.step = "manager_to_supervisor_stock";
           items = [

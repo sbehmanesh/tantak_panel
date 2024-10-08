@@ -88,12 +88,7 @@ export default {
       switch (this.tab) {
         case "all":
           if (!Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))) {
-            this.filter = {
-              start_task: {
-                op: "<=",
-                value: jmoment().format("YYYY-MM-DD"),
-              },
-            };
+            this.filter = {};
           } else {
             this.filter = {};
           }

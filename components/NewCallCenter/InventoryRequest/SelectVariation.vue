@@ -289,14 +289,16 @@
                   <img :src="$getImage(pack.logo)" />
                 </v-avatar>
               </v-col>
-              <v-col cols="3" class="text-end">
-                <h1 class="mr-3">
-                  {{ pack.text }}
+              <v-col cols="1" class="text-end">
+                <h1 >
+                  <small>
+                    {{ pack.text }}
+
+                  </small>
                 </h1>
               </v-col>
               <v-col
-                cols="4"
-                class="text-end"
+              cols
                 v-if="pack.products && pack.products.length > 0"
               >
                 <div v-for="(item, index) in pack.products" :key="index">

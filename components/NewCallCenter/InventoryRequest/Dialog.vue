@@ -1,6 +1,6 @@
 <template>
   <v-row justify="center">
-    <v-dialog v-model="dialog" persistent max-width="750">
+    <v-dialog v-model="dialog" persistent max-width="780">
       <v-card style="overflow: hidden;">
         <v-card-title class="primary d-flex justify-center py-5">
       

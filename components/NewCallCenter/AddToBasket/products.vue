@@ -1,53 +1,183 @@
 <template>
-  <div>
-    <v-col cols="12">
-      <v-row cols="12" class="center-div mt-1">
-        <v-chip
-          dark
-          label
-          class="ma-2 px-3"
-          color="teal"
-          v-for="item in items"
-          :key="item.key"
-          @click="tab = item.key"
-          :outlined="tab != item.key"
+  <v-row class="d-flex justify-center align-center">
+    <v-col cols="12" md="12" class="mt-8 px-4">
+      <v-autocomplete
+        v-if="
+          this.$store.state.auth.action.indexOf('product_requests/update') > -1
+        "
+        class="mx-2"
+        prepend-inner-icon="search"
+        v-model="product_varcomb_id"
+        :items="products"
+        outlined
+        dense
+        :disabled="Boolean(load_item)"
+        :loading="Boolean(load_item)"
+        label="جستوجوی سریع محصول"
+        placeholder="نام محصول مورد نظر را وارد کنید ..."
+      />
+      <v-col
+        v-if="Boolean(check) && !loading"
+        class="justify-center text-center"
+        cols="12"
+      >
+        <v-icon color="red" size="80"> production_quantity_limits </v-icon>
+        <br />
+        <small class="red--text"> عدم موجودی محصول </small>
+      </v-col>
+      <v-form v-model="valid_variations" v-if="!loading">
+        <v-row>
+          <v-col cols="12" md="3">
+            <amp-select
+              v-if="
+                Boolean(step_var_1) &&
+                Boolean(product_sort_1) &&
+                Boolean(product_varcomb_id)
+              "
+              :text="product_sort_1.title"
+              rules="require"
+              v-model="var_id_1"
+              :items="product_sort_1.items"
+              :loading="loading"
+              :disabled="
+                loading && !Boolean(step_var_1) && !Boolean(product_sort_1)
+              "
+          /></v-col>
+          <v-col cols="12" md="3">
+            <amp-select
+              v-if="
+                Boolean(step_var_2) &&
+                Boolean(product_sort_2) &&
+                Boolean(product_varcomb_id)
+              "
+              :text="product_sort_2.title"
+              rules="require"
+              v-model="var_id_2"
+              :items="available_items_2"
+              :loading="loading"
+              :disabled="!Boolean(var_id_1) || loading"
+          /></v-col>
+          <v-col cols="12" md="3">
+            <amp-select
+              v-if="
+                Boolean(step_var_3) &&
+                Boolean(product_sort_3) &&
+                Boolean(product_varcomb_id)
+              "
+              :text="product_sort_3.title"
+              rules="require"
+              v-model="var_id_3"
+              :items="available_items_3"
+              :loading="loading"
+              :disabled="!Boolean(var_id_2) || loading"
+            />
+          </v-col>
+          <v-col cols="12" md="3">
+            <amp-button
+              v-if="
+                Boolean(step_var_1) &&
+                Boolean(product_sort_1) &&
+                Boolean(product_varcomb_id)
+              "
+              block
+              height="40"
+              :disabled="
+                !Boolean(valid_variations) ||
+                !Boolean(product_varcomb_id) ||
+                loading
+              "
+              class="mt-7"
+              color="orange darken-4"
+              text="افزودن"
+              @click="addVariation()"
+            />
+          </v-col>
+        </v-row>
+        <v-col
+          class="text-center"
+          cols="12"
+          v-if="
+            Boolean(valid_variations) && Boolean(product_varcomb_id) && !loading
+          "
         >
-          <span class="font_16">
-            {{ item.text }}
-          </span>
-          <v-icon class="mr-1">
-            {{ item.icon }}
-          </v-icon>
-        </v-chip>
+        </v-col>
+      </v-form>
+
+      <v-row class="mt-8" v-if="loading">
+        <v-col cols="12" md="4">
+          <v-skeleton-loader type="text@2"></v-skeleton-loader>
+        </v-col>
+        <v-col cols="12" md="4">
+          <v-skeleton-loader type="text@2"></v-skeleton-loader>
+        </v-col>
+        <v-col cols="12" md="4">
+          <v-skeleton-loader type="text@2"></v-skeleton-loader>
+        </v-col>
+        <v-col cols="12" md="12">
+          <v-skeleton-loader type="text@1"></v-skeleton-loader>
+        </v-col>
       </v-row>
     </v-col>
-    <v-window v-model="step">
-      <v-window-item :value="1">
-        <products
-          :basketId="basketId"
-          @data="getData($event, 'product')"
-        />
-      </v-window-item>
+    <v-col cols="12" md="12">
+      <v-card
+        v-for="(item, index) in variations_list"
+        :key="index"
+        class="mx-3"
+      >
+        <v-alert dense outlined color="grey darken-1">
+          <v-row class="align-center">
+            <v-col cols="2" class="text-end">
+              <v-avatar size="55">
+                <img :src="$getImage(item.variation1.product.main_image)" />
+              </v-avatar>
+            </v-col>
+            <v-col cols="3" class="text-end">
+              <h1 class="mr-3">
+                {{ item.variation1.product.name }}
+              </h1>
+            </v-col>
+            <v-col cols="4" class="text-center">
+              <h1>
+                {{ item.variation1.value }} / {{ item.variation2.value }} /
+                {{ item.variation3.value }}
+              </h1>
+            </v-col>
+            <v-col cols="3" md="2" class="text-center">
+              <v-row class="d-flex justify-center">
+                <v-btn text @click="addNumber(item, true, 'list')" x-small>
+                  <h1 class="font_18 mx-1 mt-1">+</h1>
+                </v-btn>
+                <h1 class="font_14 mx-1">
+                  {{ item.count }}
+                </h1>
+                <v-btn
+                  :disabled="item.count == 1"
+                  @click="addNumber(item, false, 'list')"
+                  text
+                  x-small
+                >
+                  <h1 class="font_20 mx-1">-</h1>
+                </v-btn>
+              </v-row>
+            </v-col>
+            <v-col cols="1" class="text-start">
+              <v-btn @click="deletVar(index)" text icon>
+                <v-icon color=""> cancel </v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-alert>
+      </v-card>
+    </v-col>
 
-      <v-window-item :value="2">
-        <Packages
-          :basketId="basketId"
-          @data="getData($event, 'package')"
-        />
-      </v-window-item>
-    </v-window>
-  </div>
+    <v-row class="d-flex justify-center">
+      <v-col cols="12" md="10"> </v-col>
+    </v-row>
+  </v-row>
 </template>
 
 <script>
-import Packages from "@/components/NewCallCenter/AddToBasket/Packages.vue";
-import products from "@/components/NewCallCenter/AddToBasket/products.vue";
-
 export default {
-  components: {
-    Packages,
-    products,
-  },
   props: {
     basketId: {
       require: false,
@@ -55,13 +185,6 @@ export default {
     },
   },
   data: () => ({
-    step: 1,
-
-    tab: "products",
-    items: [
-      { text: "محصول", key: "products", icon: "local_mall" },
-      { text: "پکیج ", key: "packages", icon: "bento" },
-    ],
     number: 1,
     valid_variations: true,
     load_form: true,
@@ -81,13 +204,12 @@ export default {
     product_sort_2: [],
     product_sort_3: [],
     products: [],
-    products_items: [],
+    variations_list: [],
     available_items_2: [],
     available_items_3: [],
     variations_Product: [],
     var_products: [],
     all_variatons_product: [],
-    packages_items: [],
     list_basket: [],
     parent_2: "",
     parent_3: "",
@@ -108,29 +230,11 @@ export default {
   }),
   beforeMount() {
     this.loadProduct();
-    this.loadPackages();
     if (Boolean(this.basketId)) {
       this.loadItems();
     }
   },
   watch: {
-    tab() {
-      if (this.step == 1) {
-        this.step++;
-      } else {
-        this.step--;
-      }
-    },
-    package_id() {
-      if (Boolean(this.package_id)) {
-        let selected_package = this.packages_list.find(
-          (f) => f.value == this.package_id
-        );
-        if (Boolean(selected_package)) {
-          this.selected_package = selected_package;
-        }
-      }
-    },
     product_varcomb_id() {
       let id = "";
       this.var_id_1 = "";
@@ -225,29 +329,10 @@ export default {
           this.$emit("data", res.data);
           let data = res.data.items;
 
-          let packages = [];
           let item = [];
           for (let index = 0; index < data.length; index++) {
             const x = data[index];
-
-            if (x.section_name == "Package") {
-              let sub_product = JSON.parse(x.product_json);
-              let new_data = [];
-              for (let index = 0; index < sub_product.length; index++) {
-                const element = sub_product[index];
-                element["product"] = {};
-                element.product["name"] = element.name;
-                new_data.push(element);
-              }
-
-              packages.push({
-                text: x.information,
-                value: x.section_id,
-                products: new_data,
-                logo: x.package.logo,
-                count: x.number,
-              });
-            } else if (x.section_name == "ProductVariationCombination") {
+            if (x.section_name == "ProductVariationCombination") {
               item.push({
                 count: x.number,
                 variation1: x.pro_var_com.variation1,
@@ -258,8 +343,7 @@ export default {
             }
           }
 
-          this.products_items = item;
-          this.packages_items = packages;
+          this.variations_list = item;
 
           this.loading = false;
         })
@@ -284,9 +368,9 @@ export default {
           item.count -= 1;
         }
       }
-      let arry = this.products_items;
-      this.products_items = [];
-      this.products_items = arry;
+      let arry = this.variations_list;
+      this.variations_list = [];
+      this.variations_list = arry;
     },
     loadProduct() {
       this.load_item = true;
@@ -399,33 +483,10 @@ export default {
           this.load_form = false;
         });
     },
-    loadPackages() {
-      this.loading_package = true;
-      this.$reqApi("/package", { row_number: 50000 })
-        .then((res) => {
-          let data = res.model.data;
-          let items = [];
-          for (let index = 0; index < data.length; index++) {
-            const x = data[index];
-            items.push({
-              text: x.name,
-              value: x.id,
-              products: x.product_varcoms,
-              description: x.description,
-              logo: x.logo,
-              count: 1,
-            });
-          }
-          this.packages_list = items;
-          this.loading_package = false;
-        })
-        .catch((error) => {
-          this.loading_package = false;
-        });
-    },
+
     addVariation() {
-      if (Array.isArray(this.products_items)) {
-        let check = this.products_items.find(
+      if (Array.isArray(this.variations_list)) {
+        let check = this.variations_list.find(
           (f) => f.id == this.selected_product.id
         );
         if (Boolean(check)) {
@@ -433,7 +494,7 @@ export default {
           return;
         } else {
           this.selected_product["count"] = this.number;
-          this.products_items.unshift(this.selected_product);
+          this.variations_list.unshift(this.selected_product);
           this.number = 1;
 
           this.$toast.success(" محصول  اضافه شد");
@@ -444,24 +505,22 @@ export default {
           this.main_price = "";
           this.product_varcomb_id = "";
           this.number = 1;
+          this.$emit("data", this.variations_list);
         }
       }
     },
     deletVar(key) {
-      let items = this.products_items;
+      let items = this.variations_list;
       items.splice(key, 1);
-      this.products_items = items;
+      this.variations_list = items;
+      this.$emit("data", this.variations_list);
     },
-    deletPack(key) {
-      let items = this.packages_items;
-      items.splice(key, 1);
-      this.packages_items = items;
-    },
+
     sendVariation() {
       let variation_array = [];
       let ids = [];
-      for (let index = 0; index < this.products_items.length; index++) {
-        const x = this.products_items[index];
+      for (let index = 0; index < this.variations_list.length; index++) {
+        const x = this.variations_list[index];
         ids.push({
           id: x.id,
           count: x.count,
@@ -515,91 +574,6 @@ export default {
         .catch((rej) => {
           console.log(rej);
         });
-    },
-
-    addPackage() {
-      if (this.packages_items.length == 0) {
-        this.packages_items.push(this.selected_package);
-        this.package_id = "";
-        this.selected_package = {};
-      } else {
-        let dublicate = this.packages_items.find(
-          (f) => f.value == this.selected_package.value
-        );
-        if (Boolean(dublicate)) {
-          this.$toast.info(`پکیج قبلا اضافه شده`);
-        } else {
-          this.packages_items.push(this.selected_package);
-          this.$toast.success(`پکیج  اضافه  شد`);
-          this.package_id = "";
-          this.selected_package = {};
-        }
-      }
-    },
-    addNumberPack(item, add) {
-      if (Boolean(item)) {
-        if (Boolean(add)) {
-          item.count++;
-        } else {
-          item.count--;
-        }
-      }
-    },
-    getData(data, type) {
-      if (type == "package") {
-        this.packages_items = data;
-      } else if (type == "product") {
-        this.products_items = data;
-      }
-      console.log("data >>>>", data, type);
-    },
-    callSubmit() {
-      let form = {};
-      if (
-        this.products_items &&
-        Array.isArray(this.products_items) &&
-        this.products_items.length > 0
-      ) {
-        let items = [];
-        for (let index = 0; index < this.products_items.length; index++) {
-          const element = this.products_items[index];
-          items.push({
-            id: element.id,
-            count: element.count,
-          });
-        }
-        form["product_varcom_ids"] = items;
-      }
-      if (this.packages_items.length > 0) {
-        let packages = [];
-        for (let index = 0; index < this.packages_items.length; index++) {
-          const element = this.packages_items[index];
-          packages.push({
-            id: element.value,
-            count: element.count,
-          });
-        }
-        form["package_ids"] = packages;
-      }
-      if (this.packages_items.length > 0 || this.products_items.length > 0) {
-        let url = this.basketId
-          ? "product-request/update"
-          : "product-request/insert";
-
-        if (Boolean(this.basketId)) {
-          form["id"] = this.basketId;
-        }
-        this.$reqApi(url, form).then((res) => {
-          this.$emit("submit", true);
-          if (Boolean(this.basketId)) {
-            this.$toast.success("اطلاعات با موفقیت ویرایش شد");
-          } else {
-            this.$toast.success("درخواست با موفقیت ثبت شد");
-          }
-        });
-      } else {
-        this.$toast.error("موردی انتخواب نشده !");
-      }
     },
   },
 };

@@ -1,7 +1,7 @@
 <template>
   <v-row justify="center">
-    <v-dialog v-model="dialog" persistent max-width="780">
-      <v-card style="overflow: hidden;">
+    <v-dialog v-model="dialog" persistent max-width="900">
+      <v-card style="overflow: hidden;" class=" b-color">
         <v-card-title class="primary d-flex justify-center py-5">
       
           <span class="white--text font_20">
@@ -88,3 +88,6 @@ export default {
   },
 };
 </script>
+<style scoped>
+
+</style>

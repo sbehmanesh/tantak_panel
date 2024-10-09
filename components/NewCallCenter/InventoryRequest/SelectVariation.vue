@@ -227,50 +227,51 @@
         class="pa-4"
       >
         <v-col cols="12">
-          <v-card outlined class="d-flex align-center pa-3">
-            <v-col cols="12" md="6">
-              <v-row class="align-center">
-                <v-avatar size="50" class="mx-2">
-                  <img :src="$getImage(selected_package.logo)" />
-                </v-avatar>
-                <h1>
-                  {{ selected_package.text }}
-                  <br />
-                  <small v-if="Boolean(selected_package.description)">
-                    توضیحات ‌: {{ selected_package.description }}
-                  </small>
-                </h1>
-              </v-row>
-            </v-col>
-
-            <v-col
-              md="6"
-              class="text-center"
-              v-if="
-                selected_package.products &&
-                selected_package.products.length > 0
-              "
-              cols="12"
-            >
-              <h1>محصولات موجود در پکیج :</h1>
-              <div
-                v-for="(item, index) in selected_package.products"
-                :key="index"
+          <v-card outlined class="elevation-2" >
+            <v-card class="d-flex align-center pa-3 elevation-0" >
+              <v-col cols="12" md="6">
+                <v-row class="align-center">
+                  <v-avatar size="50" class="mx-2">
+                    <img :src="$getImage(selected_package.logo)" />
+                  </v-avatar>
+                  <h1>
+                    {{ selected_package.text }}
+                    <br />
+                    <small v-if="Boolean(selected_package.description)">
+                      # {{ selected_package.description }}
+                    </small>
+                  </h1>
+                </v-row>
+              </v-col>
+              <v-col
+                md="6"
+                class="text-end"
+                v-if="
+                  selected_package.products &&
+                  selected_package.products.length > 0
+                "
+                cols="12"
               >
-                <small v-if="item.product">
-                  <v-icon class="mx-1"> arrow_left </v-icon>
-                  {{ item.product.name }} :
-                  {{ item.product_variation_1.value }} /
-                  {{ item.product_variation_2.value }} /
-                  {{ item.product_variation_3.value }}
-                </small>
-                <br />
-              </div>
+                <h1>محصولات موجود در پکیج :</h1>
+                <div
+                  v-for="(item, index) in selected_package.products"
+                  :key="index"
+                >
+                  <small v-if="item.product">
+                    <v-icon class="mx-1"> arrow_left </v-icon>
+                    {{ item.product.name }} :
+                    {{ item.product_variation_1.value }} /
+                    {{ item.product_variation_2.value }} /
+                    {{ item.product_variation_3.value }}
+                  </small>
+                  <br />
+                </div>
+              </v-col>
+            </v-card>
+            <v-col cols="12" class="text-center">
+              <amp-button text="افزودن پکیج" height="37"  @click="addPackage" />
             </v-col>
           </v-card>
-          <v-col cols="12" class="text-center">
-            <amp-button text="افزودن پکیج" icon="add" @click="addPackage" />
-          </v-col>
         </v-col>
       </v-row>
       <v-col
@@ -279,56 +280,63 @@
         v-for="(pack, index) in list_selected_packages"
         :key="index"
       >
-      <v-card>
-        <v-alert dense outlined color="grey darken-1">
-          <v-row class="align-center">
-            <v-col cols="2" class="text-end">
-              {{ index + 1 }} -
-              <v-avatar size="55">
-                <img :src="$getImage(pack.logo)" />
-              </v-avatar>
-            </v-col>
-            <v-col cols="3" class="text-end">
-              <h1 class="mr-3">
-                {{ pack.text }}
-              </h1>
-            </v-col>
-            <v-col cols="4" class="text-center" v-if="pack.products && pack.products.length > 0">
-              <div v-for="(item, index) in pack.products" :key="index">
-                <small v-if="item.product">
-                  <v-icon class="mx-1"> arrow_left </v-icon>
-                  {{ item.product.name }}
-                </small>
-                <br />
-              </div>
-            </v-col>
-            <v-col cols="3" md="2" class="text-center">
-              <v-row class="d-flex justify-center">
-                <v-btn text @click="addNumberPack(pack, true, 'list')" x-small>
-                  <h1 class="font_18 mx-1 mt-1">+</h1>
-                </v-btn>
-                <h1 class="font_14 mx-1">
-                  {{ pack.count }}
+        <v-card>
+          <v-alert dense outlined color="grey darken-1">
+            <v-row class="align-center">
+              <v-col cols="2" class="text-end">
+                {{ index + 1 }} -
+                <v-avatar size="55">
+                  <img :src="$getImage(pack.logo)" />
+                </v-avatar>
+              </v-col>
+              <v-col cols="3" class="text-end">
+                <h1 class="mr-3">
+                  {{ pack.text }}
                 </h1>
-                <v-btn
-                  :disabled="pack.count == 1"
-                  @click="addNumber(pack, false, 'list')"
-                  text
-                  x-small
-                >
-                  <h1 class="font_20 mx-1">-</h1>
+              </v-col>
+              <v-col
+                cols="4"
+                class="text-end"
+                v-if="pack.products && pack.products.length > 0"
+              >
+                <div v-for="(item, index) in pack.products" :key="index">
+                  <small v-if="item.product">
+                    <v-icon class="mx-1"> arrow_left </v-icon>
+                    {{ item.product.name }}
+                  </small>
+                  <br />
+                </div>
+              </v-col>
+              <v-col cols="3" md="2" class="text-center">
+                <v-row class="d-flex justify-center">
+                  <v-btn
+                    text
+                    @click="addNumberPack(pack, true, 'list')"
+                    x-small
+                  >
+                    <h1 class="font_18 mx-1 mt-1">+</h1>
+                  </v-btn>
+                  <h1 class="font_14 mx-1">
+                    {{ pack.count }}
+                  </h1>
+                  <v-btn
+                    :disabled="pack.count == 1"
+                    @click="addNumber(pack, false, 'list')"
+                    text
+                    x-small
+                  >
+                    <h1 class="font_20 mx-1">-</h1>
+                  </v-btn>
+                </v-row>
+              </v-col>
+              <v-col cols="1" class="text-start">
+                <v-btn @click="deletPack(index)" text icon>
+                  <v-icon color=""> cancel </v-icon>
                 </v-btn>
-              </v-row>
-            </v-col>
-            <v-col cols="1" class="text-start">
-              <v-btn @click="deletPack(index)" text icon>
-                <v-icon color=""> cancel </v-icon>
-              </v-btn>
-            </v-col>
-          </v-row>
-        </v-alert>
-      </v-card>
-     
+              </v-col>
+            </v-row>
+          </v-alert>
+        </v-card>
       </v-col>
     </v-row>
   </div>
@@ -507,7 +515,6 @@ export default {
     loadItems() {
       this.$reqApi("product-request/show", { id: this.basketId })
         .then((res) => {
-
           this.$emit("data", res.data);
           let data = res.data.items;
 
@@ -517,13 +524,13 @@ export default {
             const x = data[index];
 
             if (x.section_name == "Package") {
-              let sub_product = JSON.parse(x.product_json)
-              let new_data= []
+              let sub_product = JSON.parse(x.product_json);
+              let new_data = [];
               for (let index = 0; index < sub_product.length; index++) {
                 const element = sub_product[index];
-                element["product"] ={}
-                element.product["name"]  = element.name
-                new_data.push(element)
+                element["product"] = {};
+                element.product["name"] = element.name;
+                new_data.push(element);
               }
 
               packages.push({
@@ -533,17 +540,15 @@ export default {
                 logo: x.package.logo,
                 count: x.number,
               });
-              
             } else if (x.section_name == "ProductVariationCombination") {
               item.push({
-              count: x.number,
-              variation1: x.pro_var_com.variation1,
-              variation2: x.pro_var_com.variation2,
-              variation3: x.pro_var_com.variation3,
-              id: x.pro_var_com.id,
-            });
+                count: x.number,
+                variation1: x.pro_var_com.variation1,
+                variation2: x.pro_var_com.variation2,
+                variation3: x.pro_var_com.variation3,
+                id: x.pro_var_com.id,
+              });
             }
-
           }
 
           this.variations_list = item;

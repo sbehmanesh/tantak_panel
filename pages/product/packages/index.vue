@@ -50,6 +50,9 @@ export default {
       {
         text: "عنوان پکیج",
         value: "name",
+      },          {
+        text: "شماره پکیج",
+        value: "package_number",
       },     
 
       {

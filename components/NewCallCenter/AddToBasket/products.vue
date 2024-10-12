@@ -27,7 +27,7 @@
       </v-col>
       <v-form v-model="valid_variations" v-if="!loading">
         <v-row>
-          <v-col cols="12" md="3">
+          <v-col cols="12" md="4">
             <amp-select
               v-if="
                 Boolean(step_var_1) &&
@@ -43,7 +43,7 @@
                 loading && !Boolean(step_var_1) && !Boolean(product_sort_1)
               "
           /></v-col>
-          <v-col cols="12" md="3">
+          <v-col cols="12" md="4">
             <amp-select
               v-if="
                 Boolean(step_var_2) &&
@@ -57,7 +57,7 @@
               :loading="loading"
               :disabled="!Boolean(var_id_1) || loading"
           /></v-col>
-          <v-col cols="12" md="3">
+          <v-col cols="12" md="4">
             <amp-select
               v-if="
                 Boolean(step_var_3) &&
@@ -72,35 +72,48 @@
               :disabled="!Boolean(var_id_2) || loading"
             />
           </v-col>
-          <v-col cols="12" md="3">
+
+          <v-row
+            class="align-center align-center"
+            cols="12"
+            v-if="
+              Boolean(valid_variations) &&
+              Boolean(step_var_1) &&
+              Boolean(product_varcomb_id) &&
+              !loading
+            "
+          >
+            <v-spacer></v-spacer>
+            <v-avatar size="80" class="mx-2">
+              <img :src="$getImage(selected_product.img)" />
+            </v-avatar>
+            <v-spacer></v-spacer>
+            <h1 :class="$vuetify.breakpoint.mdAndUp ? 'font_17' : 'font_13'">
+              قیمت محصول :‌
+              {{ $price(selected_product.product_price) }} ریال
+            </h1>
+            <v-spacer></v-spacer>
             <amp-button
+              :block="$vuetify.breakpoint.mdAndUp ? false : true"
               v-if="
                 Boolean(step_var_1) &&
                 Boolean(product_sort_1) &&
                 Boolean(product_varcomb_id)
               "
-              block
               height="40"
               :disabled="
                 !Boolean(valid_variations) ||
                 !Boolean(product_varcomb_id) ||
-                loading
+                loading_add
               "
-              class="mt-7"
               color="orange darken-4"
               text="افزودن"
               @click="addVariation()"
             />
-          </v-col>
+            <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
+          </v-row>
         </v-row>
-        <v-col
-          class="text-center"
-          cols="12"
-          v-if="
-            Boolean(valid_variations) && Boolean(product_varcomb_id) && !loading
-          "
-        >
-        </v-col>
+        <v-col> </v-col>
       </v-form>
 
       <v-row class="mt-8" v-if="loading">
@@ -118,55 +131,106 @@
         </v-col>
       </v-row>
     </v-col>
+
+    <v-col cols="12" v-if="loading_add">
+      <v-card class="elevation-0">
+        <v-skeleton-loader height="120" class="mx-auto" type="card" />
+      </v-card>
+    </v-col>
     <v-col cols="12" md="12">
       <v-card
+        outlined
+        class="pa-5 my-4 card-style"
         v-for="(item, index) in variations_list"
         :key="index"
-        class="mx-3"
       >
-        <v-alert dense outlined color="grey darken-1">
-          <v-row class="align-center">
-            <v-col cols="2" class="text-end">
-              <v-avatar size="55">
-                <img :src="$getImage(item.variation1.product.main_image)" />
-              </v-avatar>
-            </v-col>
-            <v-col cols="3" class="text-end">
-              <h1 class="mr-3">
-                {{ item.variation1.product.name }}
-              </h1>
-            </v-col>
-            <v-col cols="4" class="text-center">
-              <h1>
-                {{ item.variation1.value }} / {{ item.variation2.value }} /
-                {{ item.variation3.value }}
-              </h1>
-            </v-col>
-            <v-col cols="3" md="2" class="text-center">
-              <v-row class="d-flex justify-center">
-                <v-btn text @click="addNumber(item, true, 'list')" x-small>
-                  <h1 class="font_18 mx-1 mt-1">+</h1>
+        <v-row class="align-center">
+          <v-avatar size="55">
+            <img :src="$getImage(item.variation1.product.main_image)" />
+          </v-avatar>
+          <v-spacer></v-spacer>
+
+          <h1  :class="$vuetify.breakpoint.mdAndUp ? '':'font_11'" class="mr-3">
+            {{ item.variation1.product.name }}
+          </h1>
+          <v-spacer></v-spacer>
+
+          <h1 :class="$vuetify.breakpoint.mdAndUp ? '':'font_11'">
+            {{ item.variation1.value }} / {{ item.variation2.value }} /
+            {{ item.variation3.value }}
+          </h1>
+          <v-spacer></v-spacer>
+
+          <v-btn @click="deletVar(index)" text icon>
+            <v-icon color=""> cancel </v-icon>
+          </v-btn>
+          <v-col cols="12" class="text-center">
+            <v-divider class="mb-4"></v-divider>
+            <v-row class="pa-2" v-if="$vuetify.breakpoint.mdAndUp">
+              <strong  :class="$vuetify.breakpoint.mdAndUp ? '':'font_11'">
+                قیمت محصول :
+                {{ $price(item.product_price) }} ریال
+              </strong>
+              <v-spacer></v-spacer>
+              <v-row class="d-flex justify-center mt-1">
+                <v-btn icon @click="addNumber(item, true, 'list')" x-small>
+                  <v-chip>
+                    <h1 class="font_18 mx-1 mt-1">+</h1>
+                  </v-chip>
                 </v-btn>
-                <h1 class="font_14 mx-1">
+                <h1 class="font_18 mx-5">
                   {{ item.count }}
                 </h1>
                 <v-btn
                   :disabled="item.count == 1"
                   @click="addNumber(item, false, 'list')"
-                  text
+                  icon
                   x-small
                 >
-                  <h1 class="font_20 mx-1">-</h1>
+                  <v-chip>
+                    <h1 class="font_20 mx-1">-</h1>
+                  </v-chip>
                 </v-btn>
               </v-row>
+              <v-spacer></v-spacer>
+              <strong :class="$vuetify.breakpoint.mdAndUp ? '':'font_11'">
+                قیمت کل :
+                {{ $price(item.count * item.product_price) }} ریال
+              </strong>
+            </v-row>
+            <v-col cols="12" v-else class="text-center">
+              <strong :class="$vuetify.breakpoint.mdAndUp ? '':'font_11'">
+                قیمت محصول :
+                {{ $price(item.product_price) }} ریال
+              </strong>
+              <v-spacer></v-spacer>
+              <v-row class="d-flex justify-center mt-1 my-2">
+                <v-btn icon @click="addNumber(item, true, 'list')" x-small>
+                  <v-chip>
+                    <h1 class="font_18 mx-1 mt-1">+</h1>
+                  </v-chip>
+                </v-btn>
+                <h1 class="font_18 mx-5">
+                  {{ item.count }}
+                </h1>
+                <v-btn
+                  :disabled="item.count == 1"
+                  @click="addNumber(item, false, 'list')"
+                  icon
+                  x-small
+                >
+                  <v-chip>
+                    <h1 class="font_20 mx-1">-</h1>
+                  </v-chip>
+                </v-btn>
+              </v-row>
+              <strong :class="$vuetify.breakpoint.mdAndUp ? '':'font_11'">
+                قیمت کل :
+                {{ $price(item.count * item.product_price) }} ریال
+              </strong>
             </v-col>
-            <v-col cols="1" class="text-start">
-              <v-btn @click="deletVar(index)" text icon>
-                <v-icon color=""> cancel </v-icon>
-              </v-btn>
-            </v-col>
-          </v-row>
-        </v-alert>
+          </v-col>
+        </v-row>
       </v-card>
     </v-col>
 
@@ -195,6 +259,7 @@ export default {
     show_basket_items: false,
     step_var_1: false,
     step_var_2: false,
+    loading_add: false,
     step_var_3: false,
     packages_list: [],
     package_id: "",
@@ -313,11 +378,22 @@ export default {
               product = f;
             }
           }
-          this.selected_product = product;
-          this.main_price;
-          let price = product.price ? product.price : this.main_price;
-          this.main_price = price;
-          this.sumb_price = price;
+          if (Boolean(product) && Object.keys(product).length > 0) {
+            this.selected_product = product;
+            this.selected_product["product_price"] = "";
+            this.selected_product["img"] =
+              product.variation1.product.main_image;
+            if (
+              Boolean(product.variation1) &&
+              Boolean(product.variation1.product) &&
+              Boolean(product.variation1.product.base_price)
+            ) {
+              this.selected_product.product_price =
+                product.variation1.product.base_price;
+            } else {
+              this.selected_product.product_price = product.price;
+            }
+          }
         });
       }
     },
@@ -332,18 +408,31 @@ export default {
           let item = [];
           for (let index = 0; index < data.length; index++) {
             const x = data[index];
+
             if (x.section_name == "ProductVariationCombination") {
+              let price = "";
+              if (
+                Boolean(x.variation1) &&
+                Boolean(x.variation1.product) &&
+                Boolean(x.variation1.product.base_price)
+              ) {
+                price = x.variation1.product.base_price;
+              } else {
+                price = x.price;
+              }
               item.push({
                 count: x.number,
                 variation1: x.pro_var_com.variation1,
                 variation2: x.pro_var_com.variation2,
                 variation3: x.pro_var_com.variation3,
                 id: x.pro_var_com.id,
+                product_price: price,
               });
             }
           }
 
           this.variations_list = item;
+          this.$emit("data", this.variations_list);
 
           this.loading = false;
         })
@@ -371,6 +460,7 @@ export default {
       let arry = this.variations_list;
       this.variations_list = [];
       this.variations_list = arry;
+      this.$emit("data", this.variations_list);
     },
     loadProduct() {
       this.load_item = true;
@@ -485,15 +575,18 @@ export default {
     },
 
     addVariation() {
-      if (Array.isArray(this.variations_list)) {
-        let check = this.variations_list.find(
-          (f) => f.id == this.selected_product.id
-        );
-        if (Boolean(check)) {
-          this.$toast.info("این محصولا قبلا اضافه شده");
-          return;
-        } else {
+      let check = this.variations_list.find(
+        (f) => f.id == this.selected_product.id
+      );
+
+      if (Boolean(check)) {
+        this.$toast.info("این محصولا قبلا اضافه شده");
+        return;
+      } else {
+        this.loading_add = true;
+        setTimeout(() => {
           this.selected_product["count"] = this.number;
+
           this.variations_list.unshift(this.selected_product);
           this.number = 1;
 
@@ -506,7 +599,11 @@ export default {
           this.product_varcomb_id = "";
           this.number = 1;
           this.$emit("data", this.variations_list);
-        }
+          this.loading_add = false;
+        }, 1000);
+      }
+
+      if (Array.isArray(this.variations_list)) {
       }
     },
     deletVar(key) {
@@ -579,4 +676,9 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.card-style {
+  border: 1px solid #5c5c5c6c !important;
+  border-radius: 7px !important;
+}
+</style>

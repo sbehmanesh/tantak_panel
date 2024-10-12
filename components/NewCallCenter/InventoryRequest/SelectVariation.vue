@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <v-card class="elevation-0" :disabled="loading">
     <v-col cols="12">
       <v-row cols="12" class="center-div mt-1">
         <v-chip
           dark
           label
-          class="ma-2 px-3"
-          color="teal"
+          class="ma-2 "
+          color="grey darken-1"
           v-for="item in items"
           :key="item.key"
           @click="tab = item.key"
@@ -23,20 +23,14 @@
     </v-col>
     <v-window v-model="step">
       <v-window-item :value="1">
-        <products
-          :basketId="basketId"
-          @data="getData($event, 'product')"
-        />
+        <products :basketId="basketId" @data="getData($event, 'product')" />
       </v-window-item>
 
       <v-window-item :value="2">
-        <Packages
-          :basketId="basketId"
-          @data="getData($event, 'package')"
-        />
+        <Packages :basketId="basketId" @data="getData($event, 'package')" />
       </v-window-item>
     </v-window>
-  </div>
+  </v-card>
 </template>
 
 <script>
@@ -106,13 +100,7 @@ export default {
 
     selected_product: {},
   }),
-  beforeMount() {
-    this.loadProduct();
-    this.loadPackages();
-    if (Boolean(this.basketId)) {
-      this.loadItems();
-    }
-  },
+  beforeMount() {},
   watch: {
     tab() {
       if (this.step == 1) {
@@ -121,342 +109,8 @@ export default {
         this.step--;
       }
     },
-    package_id() {
-      if (Boolean(this.package_id)) {
-        let selected_package = this.packages_list.find(
-          (f) => f.value == this.package_id
-        );
-        if (Boolean(selected_package)) {
-          this.selected_package = selected_package;
-        }
-      }
-    },
-    product_varcomb_id() {
-      let id = "";
-      this.var_id_1 = "";
-      this.var_id_2 = "";
-      this.var_id_3 = "";
-      this.sumb_price = "";
-      this.main_price = "";
-      this.number = 1;
-      id = this.product_varcomb_id;
-      if (Boolean(id)) {
-        this.loadInfoProduct(id);
-      }
-    },
-    var_id_1() {
-      let items = [];
-      this.product_sort_2.items.filter((x) => {
-        if (x.parent == this.var_id_1) {
-          items.push({
-            text: x.text,
-            value: x.value,
-          });
-        }
-      });
-      this.available_items_2 = items;
-      if (Boolean(this.valid_variations)) {
-        this.findSelectedProduct();
-      }
-    },
-    var_id_2() {
-      let items = [];
-      this.product_sort_3.items.filter((x) => {
-        if (x.parent == this.var_id_2) {
-          items.push({
-            text: x.text,
-            value: x.value,
-          });
-        }
-      });
-      this.available_items_3 = items;
-      if (Boolean(this.valid_variations)) {
-        this.findSelectedProduct();
-      }
-    },
-    var_id_3() {
-      if (Boolean(this.valid_variations)) {
-        this.findSelectedProduct();
-      }
-    },
-    valid_variations() {
-      if (Boolean(this.valid_variations)) {
-        let product = {};
-        this.all_variatons_product.filter((f) => {
-          if (Boolean(this.step_var_3)) {
-            if (
-              this.var_id_1 == f.variation_1_id &&
-              this.var_id_2 == f.variation_2_id &&
-              this.var_id_3 == f.variation_3_id
-            ) {
-              product = f;
-            }
-          }
-          if (Boolean(this.step_var_2) && !Boolean(this.step_var_3)) {
-            if (
-              this.var_id_1 == f.variation_3_id &&
-              this.var_id_2 == f.variation_2_id
-            ) {
-              product = f;
-            }
-          }
-          if (
-            Boolean(this.step_var_1) &&
-            !Boolean(this.step_var_2) &&
-            !Boolean(this.step_var_3)
-          ) {
-            if (this.var_id_1 == f.variation_1_id) {
-              product = f;
-            }
-          }
-          this.selected_product = product;
-          this.main_price;
-          let price = product.price ? product.price : this.main_price;
-          this.main_price = price;
-          this.sumb_price = price;
-        });
-      }
-    },
   },
   methods: {
-    loadItems() {
-      this.$reqApi("product-request/show", { id: this.basketId })
-        .then((res) => {
-          this.$emit("data", res.data);
-          let data = res.data.items;
-
-          let packages = [];
-          let item = [];
-          for (let index = 0; index < data.length; index++) {
-            const x = data[index];
-
-            if (x.section_name == "Package") {
-              let sub_product = JSON.parse(x.product_json);
-              let new_data = [];
-              for (let index = 0; index < sub_product.length; index++) {
-                const element = sub_product[index];
-                element["product"] = {};
-                element.product["name"] = element.name;
-                new_data.push(element);
-              }
-
-              packages.push({
-                text: x.information,
-                value: x.section_id,
-                products: new_data,
-                logo: x.package.logo,
-                count: x.number,
-              });
-            } else if (x.section_name == "ProductVariationCombination") {
-              item.push({
-                count: x.number,
-                variation1: x.pro_var_com.variation1,
-                variation2: x.pro_var_com.variation2,
-                variation3: x.pro_var_com.variation3,
-                id: x.pro_var_com.id,
-              });
-            }
-          }
-
-          this.products_items = item;
-          this.packages_items = packages;
-
-          this.loading = false;
-        })
-        .catch((err) => {
-          this.loading = false;
-        });
-    },
-    addNumber(item, add, key) {
-      if (key == "main") {
-        if (Boolean(add)) {
-          item++;
-        } else {
-          item--;
-        }
-
-        this.number = item;
-      }
-      if (key == "list") {
-        if (Boolean(add)) {
-          item.count += 1;
-        } else {
-          item.count -= 1;
-        }
-      }
-      let arry = this.products_items;
-      this.products_items = [];
-      this.products_items = arry;
-    },
-    loadProduct() {
-      this.load_item = true;
-      this.$reqApi("/product/low-search", { row_number: 50000 })
-        .then((response) => {
-          let items = [];
-          for (let index = 0; index < response.model.data.length; index++) {
-            const x = response.model.data[index];
-            items.push({
-              text: x.name,
-              value: x.id,
-            });
-          }
-          this.products = items;
-          this.load_item = false;
-        })
-        .catch((error) => {
-          this.load_item = false;
-        });
-    },
-    loadInfoProduct(id) {
-      this.loading = true;
-      this.step_var_1 = false;
-      this.step_var_2 = false;
-      this.step_var_3 = false;
-      this.check = false;
-      this.$reqApi("product-variation-combination/variety-list", {
-        product_id: id,
-      })
-        .then((response) => {
-          let set_title = [];
-          this.all_variatons_product = response.model.data;
-          // ساختار کلی variations
-
-          if (Boolean(response.model.data[0])) {
-            if (response.model.data[0].variation1) {
-              this.step_var_1 = true;
-              set_title[
-                `var_${response.model.data[0].variation1.variation_type.sort}`
-              ] = {
-                title: response.model.data[0].variation1.variation_type.value,
-              };
-            }
-            if (response.model.data[0].variation2) {
-              this.step_var_2 = true;
-              set_title[
-                `var_${response.model.data[0].variation2.variation_type.sort}`
-              ] = {
-                title: response.model.data[0].variation2.variation_type.value,
-              };
-            }
-            if (response.model.data[0].variation3) {
-              this.step_var_3 = true;
-              set_title[
-                `var_${response.model.data[0].variation3.variation_type.sort}`
-              ] = {
-                title: response.model.data[0].variation3.variation_type.value,
-              };
-            }
-          } else {
-            this.check = true;
-          }
-
-          // set items variations
-          let items_var_1 = [];
-          let items_var_2 = [];
-          let items_var_3 = [];
-          for (let index = 0; index < response.model.data.length; index++) {
-            const element = response.model.data[index];
-            if (Boolean(this.step_var_1)) {
-              items_var_1.push({
-                text: element.variation1.value,
-                value: element.variation1.id,
-              });
-            }
-
-            if (Boolean(this.step_var_2)) {
-              items_var_2.push({
-                text: element.variation2.value,
-                value: element.variation2.id,
-                parent: element.variation_1_id,
-              });
-            }
-            if (Boolean(this.step_var_3)) {
-              items_var_3.push({
-                text: element.variation3.value,
-                value: element.variation3.id,
-                parent: element.variation_2_id,
-              });
-            }
-          }
-          if (Boolean(this.step_var_1)) {
-            this.product_sort_1["title"] = set_title.var_1.title;
-            this.product_sort_1["items"] = items_var_1;
-          }
-          if (Boolean(this.step_var_2)) {
-            this.product_sort_2["title"] = set_title.var_2.title;
-            this.product_sort_2["items"] = items_var_2;
-          }
-          if (Boolean(this.step_var_3)) {
-            this.product_sort_3["title"] = set_title.var_3.title;
-            this.product_sort_3["items"] = items_var_3;
-          }
-
-          this.loading = false;
-          this.load_form = false;
-        })
-        .catch((error) => {
-          this.loading = false;
-          this.load_form = false;
-        });
-    },
-    loadPackages() {
-      this.loading_package = true;
-      this.$reqApi("/package", { row_number: 50000 })
-        .then((res) => {
-          let data = res.model.data;
-          let items = [];
-          for (let index = 0; index < data.length; index++) {
-            const x = data[index];
-            items.push({
-              text: x.name,
-              value: x.id,
-              products: x.product_varcoms,
-              description: x.description,
-              logo: x.logo,
-              count: 1,
-            });
-          }
-          this.packages_list = items;
-          this.loading_package = false;
-        })
-        .catch((error) => {
-          this.loading_package = false;
-        });
-    },
-    addVariation() {
-      if (Array.isArray(this.products_items)) {
-        let check = this.products_items.find(
-          (f) => f.id == this.selected_product.id
-        );
-        if (Boolean(check)) {
-          this.$toast.info("این محصولا قبلا اضافه شده");
-          return;
-        } else {
-          this.selected_product["count"] = this.number;
-          this.products_items.unshift(this.selected_product);
-          this.number = 1;
-
-          this.$toast.success(" محصول  اضافه شد");
-          this.var_id_1 = "";
-          this.var_id_2 = "";
-          this.var_id_3 = "";
-          this.sumb_price = "";
-          this.main_price = "";
-          this.product_varcomb_id = "";
-          this.number = 1;
-        }
-      }
-    },
-    deletVar(key) {
-      let items = this.products_items;
-      items.splice(key, 1);
-      this.products_items = items;
-    },
-    deletPack(key) {
-      let items = this.packages_items;
-      items.splice(key, 1);
-      this.packages_items = items;
-    },
     sendVariation() {
       let variation_array = [];
       let ids = [];
@@ -470,90 +124,16 @@ export default {
       variation_array = ids;
       this.$emit("variation_array", variation_array);
     },
-    findSelectedProduct() {
-      return new Promise((res, rej) => {
-        if (Boolean(this.valid_variations)) {
-          let product = {};
-          this.all_variatons_product.filter((f) => {
-            if (Boolean(this.step_var_3)) {
-              if (
-                this.var_id_1 == f.variation_1_id &&
-                this.var_id_2 == f.variation_2_id &&
-                this.var_id_3 == f.variation_3_id
-              ) {
-                product = f;
-              }
-            }
-            if (Boolean(this.step_var_2) && !Boolean(this.step_var_3)) {
-              if (
-                this.var_id_1 == f.variation_3_id &&
-                this.var_id_2 == f.variation_2_id
-              ) {
-                product = f;
-              }
-            }
-            if (
-              Boolean(this.step_var_1) &&
-              !Boolean(this.step_var_2) &&
-              !Boolean(this.step_var_3)
-            ) {
-              if (this.var_id_1 == f.variation_1_id) {
-                product = f;
-              }
-            }
-            if (Object.keys(product).length > 0) {
-              res(product);
-            }
-          });
-        }
-      })
-        .then((res) => {
-          this.selected_product = res;
-          this.main_price = res.price ? res.price : res.product.base_price;
-          this.sumb_price = this.main_price;
-        })
-        .catch((rej) => {
-          console.log(rej);
-        });
-    },
 
-    addPackage() {
-      if (this.packages_items.length == 0) {
-        this.packages_items.push(this.selected_package);
-        this.package_id = "";
-        this.selected_package = {};
-      } else {
-        let dublicate = this.packages_items.find(
-          (f) => f.value == this.selected_package.value
-        );
-        if (Boolean(dublicate)) {
-          this.$toast.info(`پکیج قبلا اضافه شده`);
-        } else {
-          this.packages_items.push(this.selected_package);
-          this.$toast.success(`پکیج  اضافه  شد`);
-          this.package_id = "";
-          this.selected_package = {};
-        }
-      }
-    },
-    addNumberPack(item, add) {
-      if (Boolean(item)) {
-        if (Boolean(add)) {
-          item.count++;
-        } else {
-          item.count--;
-        }
-      }
-    },
     getData(data, type) {
       if (type == "package") {
         this.packages_items = data;
       } else if (type == "product") {
         this.products_items = data;
       }
-      console.log("data >>>>", data, type);
     },
     callSubmit() {
+      this.loading = true
       let form = {};
       if (
         this.products_items &&
@@ -581,7 +161,12 @@ export default {
         }
         form["package_ids"] = packages;
       }
-      if (this.packages_items.length > 0 || this.products_items.length > 0) {
+
+   
+      if (this.packages_items.length < 1 && this.products_items.length < 1) {
+        this.$toast.error("موردی انتخواب نشده ");
+        this.loading = false
+      } else {
         let url = this.basketId
           ? "product-request/update"
           : "product-request/insert";
@@ -590,15 +175,17 @@ export default {
           form["id"] = this.basketId;
         }
         this.$reqApi(url, form).then((res) => {
+        
           this.$emit("submit", true);
           if (Boolean(this.basketId)) {
             this.$toast.success("اطلاعات با موفقیت ویرایش شد");
           } else {
             this.$toast.success("درخواست با موفقیت ثبت شد");
           }
-        });
-      } else {
-        this.$toast.error("موردی انتخواب نشده !");
+          this.loading = false
+        }).catch((err)=>{
+          this.loading = false
+        })
       }
     },
   },

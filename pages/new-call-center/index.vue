@@ -1,11 +1,16 @@
 <template>
   <div>
     <v-row class="d-flex justify-center px-4">
-      <v-col col="12" md="10">
+      <v-col col="12" md="10" class="mt-5">
         <v-expansion-panels variant="poput" v-model="panel" accordion>
           <v-expansion-panel class="class-bg">
             <v-expansion-panel-header dark expand-icon="published_with_changes">
-              <span class="font_18 white--text"> برسی پیام ها </span>
+              <div>
+                <span class="font_18 white--text"> برسی پیام ها </span>
+     
+
+              </div>
+       
             </v-expansion-panel-header>
 
             <v-expansion-panel-content class="pb-3 px-8">
@@ -60,11 +65,11 @@
           v-if="dialog_customer.show"
           :DialogCustomer="dialog_customer"
           :customer="customer"
-        /> 
+        />
         <BasketDialog
           v-if="dialog_basket.show"
           :BasketDialog="dialog_basket"
-          :user_basket="user_basket" 
+          :user_basket="user_basket"
         />
         <ChangeStatus
           v-if="dialog_change_status.show"
@@ -159,7 +164,7 @@ export default {
       },
       {
         text: "ارسال کننده",
-        type:"phone",
+        type: "phone",
         value: (body) => {
           if (body.user) {
             if (
@@ -180,7 +185,6 @@ export default {
       {
         text: "گیرنده",
         value: "receptor",
-       
       },
       {
         text: "شناسه پیام",
@@ -210,7 +214,7 @@ export default {
           }
         },
         value: (body) => {
-          if (typeof body.message == "string") { 
+          if (typeof body.message == "string") {
             if (body.message.length < 25) {
               return body.message;
             }
@@ -346,7 +350,7 @@ export default {
             text: "ارسال کننده",
             value: (body) => {
               if (body.user) {
-                return body.user.username
+                return body.user.username;
               }
             },
           },

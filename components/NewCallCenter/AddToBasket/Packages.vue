@@ -173,15 +173,15 @@
               <v-icon color=""> delete </v-icon>
             </v-btn>
           </v-col>
-          <v-col cols="12" class="text-center">
+          <v-col cols="12" class="text-center ">
             <v-divider class="mb-4"></v-divider>
-            <v-row class="pa-2" v-if="$vuetify.breakpoint.mdAndUp">
+            <v-row class="pa-2 " v-if="$vuetify.breakpoint.mdAndUp">
               <strong>
                 قیمت پکیج :
                 {{ $price(pack.discount_value) }} ریال
               </strong>
               <v-spacer></v-spacer>
-              <v-row class="d-flex justify-center mt-1" >
+              <v-row class="d-flex justify-center mt-1 " >
                 <v-btn icon @click="addNumberPack(pack, true, 'list')" x-small>
                   <v-chip>
                     <h1 class="font_18 mx-1 mt-1">+</h1>

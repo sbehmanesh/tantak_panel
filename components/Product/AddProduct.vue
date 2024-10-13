@@ -3,7 +3,7 @@
     persistent
     v-model="DialogAdd.show"
     :model-id="DialogAdd.items"
-    width="750"
+    width="850"
   >
     <v-card style="overflow: hidden">
       <v-row class="primary pt-5 mb-6 pb-2 px-4">
@@ -53,7 +53,7 @@
             </v-col>
             <v-row
               v-if="Boolean(step_var_1) && Boolean(product_sort_1) && !loading"
-              class="d-flex justify-center"
+              class="d-flex justify-center pa-10"
             >
               <v-col cols="12" md="10">
                 <v-form v-model="valid_variations">
@@ -104,7 +104,7 @@
                 </v-form>
               </v-col>
               <v-col cols="10" v-if="product_varcomb_id">
-                <v-row class="d-flex justify-center">
+                <v-row class="d-flex justify-center align-center">
                   <v-col cols="12" md="2" calss="pa-3">
                     <v-img
                       calss="pa-3"
@@ -112,22 +112,19 @@
                       height="auto"
                     />
                   </v-col>
-                  <v-spacer></v-spacer>
 
-                  <v-col class="text-center pt-11" cols="4">
+                  <v-col class="text-center pt-11" cols="4" md="3">
                     <span
                       >قیمت محصول : {{ $price(main_price) }}
                       <small> ریال </small>
                     </span>
                   </v-col>
-                  <v-spacer></v-spacer>
-                  <v-col class="text-center pt-11" cols="4">
+                  <v-col class="text-center pt-11" cols="4" md="3">
                     <span>
                       مجموع قیمت : {{ $price(sumb_price) }}
                       <small> ریال </small>
                     </span>
                   </v-col>
-                  <v-spacer></v-spacer>
 
                   <v-col class="text-center pt-8" cols="2">
                     <v-row class="d-flex justify-center py-5">

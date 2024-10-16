@@ -408,6 +408,7 @@ export default {
           let item = [];
           for (let index = 0; index < data.length; index++) {
             const x = data[index];
+console.log("x --- > " , x);
 
             if (x.section_name == "ProductVariationCombination") {
               let price = "";
@@ -426,7 +427,7 @@ export default {
                 variation2: x.pro_var_com.variation2,
                 variation3: x.pro_var_com.variation3,
                 id: x.pro_var_com.id,
-                product_price: price,
+                product_price: x.base_price,
               });
             }
           }

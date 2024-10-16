@@ -408,8 +408,6 @@ export default {
           let item = [];
           for (let index = 0; index < data.length; index++) {
             const x = data[index];
-console.log("x --- > " , x);
-
             if (x.section_name == "ProductVariationCombination") {
               let price = "";
               if (

@@ -30,19 +30,21 @@
                   v-if="type == 'defect'"
                 ></v-checkbox>
                 <v-col cols="12" v-if="Boolean(item.is_package)" class="mt-3">
-                <small
-                  v-for="(p, index) in item.items_product"
-                  :key="index"
-                  :class="index % 2 == 0 ? 'grey lighten-4' : 'blue lighten-4'"
-                  class="pa-2"
-                >
-                  <v-icon small> local_mall </v-icon>
-                  {{ p.name }} -- تعداد :‌ {{ p.count }} -- جمع قیمت :
-                  {{ $price(p.sum_price) }}
-                </small>
-              </v-col>
+                  <v-card
+                    v-for="(p, index) in item.items_product"
+                    :key="index"
+                    class="pa-2 my-1"
+                    outlined
+                  >
+                  <small>
+                    <v-icon small> local_mall </v-icon>
+                    {{ p.name }} -- تعداد :‌ {{ p.count }} -- جمع قیمت :
+                    {{ $price(p.sum_price) }}
+                  </small>
+                  </v-card>
+         
+                </v-col>
               </v-row>
-     
 
               <v-col cols="12" class="mt-3">
                 <v-divider></v-divider>
@@ -94,14 +96,6 @@
         >
           <span class="font_12"> تایید نقص موارد انتخاب شده </span>
         </v-card-text>
-        <!-- <amp-button
-          :loading="loading"
-          :disabled="loading"
-          text="تایید نقص سفارش "
-          @click="callSubmit"
-          color="success"
-          icon="done"
-        ></amp-button> -->
       </v-col>
     </v-row>
   </div>
@@ -284,7 +278,6 @@ export default {
                 defect: false,
                 is_package: true,
               });
-
             } else {
               products.push({
                 count: x.number,
@@ -521,24 +514,32 @@ export default {
         });
     },
     callSubmit() {
-      let items = [];
+      let form = {};
+      form["package_ids"] = [];
+      form["product_varcom_ids"] = [];
       for (let index = 0; index < this.variations_list.length; index++) {
         const element = this.variations_list[index];
+
         if (element.defect == true) {
-          items.push({
-            id: element.id,
-            count: element.count,
-          });
+          if (element.is_package && Boolean(element.is_package)) {
+            form.package_ids.push({
+              id: element.id,
+              count: element.count,
+            });
+          } else {
+            form.product_varcom_ids.push({
+              id: element.id,
+              count: element.count,
+            });
+          }
         }
       }
-      if (items.length < 1) {
+      if (form.package_ids.length < 1 && form.product_varcom_ids.length < 1) {
         this.$toast.error("محصولی انتخاب نشده");
-      } else if (items.length > 0) {
+      } else {
         this.loading = true;
-        let form = {};
         form["type"] = "defect";
         form["id"] = this.basketId;
-        form["product_varcom_ids"] = items;
         this.$reqApi("product-request/deliver-order", form)
           .then((res) => {
             this.$toast.success("نقص سفارش با موفقیت انجام شد");

@@ -63,9 +63,8 @@
                       <v-divider></v-divider>
                     </v-col>
                   </v-col>
-                  <v-col cols="12">
+                  <v-col cols="12"  class="text-center">
                     <amp-button
-                      block
                       height="37"
                       v-if="
                         $checkRole($store.state.auth.role.sales_expert) &&
@@ -77,7 +76,6 @@
                       "
                       text="تغییر تاریخ
             چک"
-                      width="100px"
                       @click="changeTime(item)"
                       color="grey "
                       icon="today"
@@ -117,18 +115,17 @@
                       </v-col>
                     </div>
                     <amp-button
-                      block
                       v-if="
                         item.status == 'payed' &&
                         Boolean(item.receipt_img) &&
                         Boolean(item.show_img)
                       "
                       text="نمایش چک"
-                      height="37"
                       icon="visibility"
+
+                      height="38"
                       color="grey "
                       :disabled="!valid || loading"
-                      width="70"
                       @click="showImg(item)"
                     />
 

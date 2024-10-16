@@ -1,17 +1,16 @@
 <template>
   <v-row justify="center">
     <v-dialog v-model="dialog" persistent max-width="650">
-      <v-card class="pa-5 ">
+      <v-card class="pa-5">
         <v-card style="overflow: hidden" class="card-style elevation-0 pa-2">
           <v-col cols="12" class="text-center">
             <v-row class="pa-2 align-center">
               <v-spacer></v-spacer>
               <div>
                 <strong class="font_20"> لیست تراکنش </strong>
-                <h1 class="font_12"> شماره فاکتور {{ data.order_number }}#</h1>
+                <h1 class="font_12">شماره فاکتور {{ data.order_number }}#</h1>
               </div>
-    
-    
+
               <v-spacer></v-spacer>
               <v-btn @click="closeDialog" text icon>
                 <v-icon size="26"> close </v-icon>
@@ -22,7 +21,7 @@
             <v-col cols="12" v-for="(item, index) in items" :key="index">
               <v-card class="pa-5 card-style2 elevation-1">
                 <v-row class="align-center">
-                  <v-col cols="12" >
+                  <v-col cols="12">
                     <h1 class="my-1 font_14">
                       {{ index + 1 }} -
                       {{ item.text }}
@@ -63,7 +62,7 @@
                       <v-divider></v-divider>
                     </v-col>
                   </v-col>
-                  <v-col cols="12"  class="text-center">
+                  <v-col cols="12" class="text-center">
                     <amp-button
                       height="37"
                       v-if="
@@ -87,7 +86,6 @@
                       class="align-end d-flex justify-center"
                       v-if="
                         $checkRole($store.state.auth.role.seal_manager) &&
-                        item.kind_set == 'demand_note' &&
                         item.status == 'wait' &&
                         data.step == 'accept_employee_sale' &&
                         data.status == 'wait' &&
@@ -98,7 +96,11 @@
                       <v-col cols="9">
                         <AmpUploadFileNew
                           v-model="item.receipt_img"
-                          title="بارگذاری چک "
+                          :text="
+                            item.kind_set == 'demand_note'
+                              ? 'بارگذاری چک '
+                              : 'بارگذاری رسید'
+                          "
                           :label="false"
                         />
                       </v-col>
@@ -120,9 +122,12 @@
                         Boolean(item.receipt_img) &&
                         Boolean(item.show_img)
                       "
-                      text="نمایش چک"
+                      :text="
+                        item.kind_set == 'demand_note'
+                          ? 'مشاهده چک '
+                          : 'مشاهده رسید'
+                      "
                       icon="visibility"
-
                       height="38"
                       color="grey "
                       :disabled="!valid || loading"
@@ -225,7 +230,6 @@ export default {
     };
   },
   mounted() {
-
     this.newData();
     setTimeout(() => {
       this.change = false;
@@ -320,7 +324,6 @@ strong {
 }
 .card-style {
   border: 6px double #0000004b !important;
-
 }
 .card-style2 {
   background-color: #f0f8ff1f;

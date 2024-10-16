@@ -40,10 +40,14 @@ export const state = () => ({
     courier: "32b21551-05fe-42ad-a769-d1c633efd8e0",
     sales_manager: "3c22da53-9982-4634-81ce-293600e03d97",
     sales_expert: "acf183ec-4b47-4afb-8238-461df51fc4e6",
-superviser_centeral_stock:"023b91d1-392b-4f46-8921-94d87316ddb4",
-employee_centeral_stock:"dbcbc932-552a-4f3b-ad81-5b3a5734b803",
+    superviser_centeral_stock: "023b91d1-392b-4f46-8921-94d87316ddb4",
+    employee_centeral_stock: "dbcbc932-552a-4f3b-ad81-5b3a5734b803",
+    fiscal_manager: "f013ea6f-78ed-44c5-ab38-6ed3ff9a4145",
 
-    
+    fiscal_supervisor: "d4d80c65-15fd-42e6-b578-594280168664",
+    fiscal: "920976fd-423f-413a-8dba-eead45af9dea",
+
+    sefir :"19418275-309c-440f-a067-c77368e2b785"
   },
 });
 

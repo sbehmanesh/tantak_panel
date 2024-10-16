@@ -172,14 +172,14 @@ export default {
     },
   },
   beforeMount() {
-    if (!Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))) {
-      this.filter = {
-        start_task: {
-          op: "<=",
-          value: jmoment().format("YYYY-MM-DD"),
-        },
-      };
-    }
+    // if (!Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))) {
+    //   this.filter = {
+    //     start_task: {
+    //       op: "<=",
+    //       value: jmoment().format("YYYY-MM-DD"),
+    //     },
+    //   };
+    // }
     this.$store.dispatch("setPageTitle", this.title);
     if (this.$route.query.filter == "task_today") {
       this.tab = "task_today";

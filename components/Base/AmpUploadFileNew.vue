@@ -1,11 +1,13 @@
 <template>
   <div class="px-3">
-    <amp-labale :text="title" />
+    <amp-labale :text="title" v-if="label" />
      <v-btn outlined color="#837b7b"  block @click="openDialog()" height="40" >
-      <span>
+      <strong v-if="!label">{{ title }}</strong>
+      <strong v-else>
 بارگذاری
-        <v-icon size="20" class="mx-2">attach_file</v-icon>
-      </span>
+   
+      </strong>
+      <v-icon size="20" class="mx-2">attach_file</v-icon>
 
      </v-btn>
     <v-dialog persistent v-model="dialog" width="800">
@@ -103,6 +105,7 @@ export default {
     title: { default: 'بارگذاری تصویر' },
     checkAcceptType: { default: 'image/*' },
     multiple: { type: Boolean, default: false },
+    label: { type: Boolean, default: true },
     value: { type: String | Array, require: true },
     reSize:{type:Boolean , default:false}
   },

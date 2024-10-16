@@ -218,7 +218,8 @@ export default {
             if (
               body.step == "init" ||
               (body.step == "accept_employee_sale" &&
-                body.status_payment == "payed")
+                body.status_payment == "payed") ||
+              body.step == "accept_fiscal"
             ) {
               show = true;
             }
@@ -301,7 +302,7 @@ export default {
           this.data = body;
         },
         show_fun: (body) => {
-          if (body.step == "pack_and_send") {
+          if (body.step == "sefir_to_agency_manager" && Boolean(this.$checkRole(this.$store.state.auth.role.agency_manager))) {
             return true;
           } else {
             return false;

@@ -13,6 +13,12 @@
       createUrl="/product/insert"
     >
     </BaseTable>
+    <ProductCatalogDialog
+      :dialog="show_catalog"
+      v-if="show_catalog"
+      :productId="product_id"
+      @closeDialog="show_catalog = false"
+    />
 
     <v-dialog persistent v-model="removeDialog" width="400">
       <v-card class="pa-4" v-if="removeDialog">
@@ -34,7 +40,12 @@
             @click="removeRecords()"
             :disabled="time != 0 || loading"
           />
-          <amp-button block class="ma-0" text="بستن" @click="closeDeleteAllDialog()" />
+          <amp-button
+            block
+            class="ma-0"
+            text="بستن"
+            @click="closeDeleteAllDialog()"
+          />
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -43,18 +54,22 @@
 
 <script>
 import BaseTable from "~/components/DataTable/BaseTable";
+import ProductCatalogDialog from "~/components/Product/Catalog/ProductCatalogDialog.vue";
+
 export default {
-  components: { BaseTable },
+  components: { BaseTable, ProductCatalogDialog },
   data: () => ({
     headers: [],
     btn_actions: [],
     selected_item: [],
     removeDialog: false,
+    show_catalog: false,
     loading: false,
     time: 3,
     timeInterval: null,
     extraBtn: [],
     title: "فهرست محصولات",
+    product_id: "",
   }),
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);
@@ -131,12 +146,14 @@ export default {
         },
       },
       { text: "قیمت پایه (ریال)", value: "base_price", type: "price" },
-      { text: "قیمت فروش عمده (ریال)", value: "base_wholesale_price" , type: "price"  },
+      {
+        text: "قیمت فروش عمده (ریال)",
+        value: "base_wholesale_price",
+        type: "price",
+      },
       { text: "بازدید", value: "view", disableSort: "true", filterable: false },
       { text: "لایک", value: "like", disableSort: "true", filterable: false },
       { text: "ستاره", value: "star", disableSort: "true", filterable: false },
-
-
     ];
 
     this.extraBtn = [
@@ -160,6 +177,27 @@ export default {
               clearInterval(this.timeInterval);
             }
           }, 1000);
+        },
+      },
+    ];
+    this.btn_actions = [
+      {
+        color: "orange",
+        text: "کاتالوگ محصول",
+        fun: (body) => {
+          this.show_catalog = true;
+          this.product_id = body.id;
+        },
+        show_fun: () => {
+          if (
+            this.$store.state.auth.action.indexOf(
+              "product/catalog_variation_combination"
+            ) > -1
+          ) {
+            return true;
+          } else {
+            return false;
+          }
         },
       },
     ];

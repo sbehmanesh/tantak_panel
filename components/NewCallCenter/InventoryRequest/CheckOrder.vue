@@ -1,6 +1,6 @@
 <template>
   <v-row justify="center">
-    <v-dialog v-model="dialog" persistent max-width="450">
+    <v-dialog v-model="dialog" persistent max-width="650">
       <v-card style="overflow: hidden">
         <v-alert prominent icon="text_snippet" class="grey lighten-2" >
           <strong class="font_18">برسی سفارش</strong>
@@ -46,7 +46,7 @@
 
           <ShowListVar
             class="mt-4"
-            v-if="form.type == 'defect'"
+            :type="form.type"
             :basketId="basketId"
             @defectivBasket="doneDefectiv()"
           />
@@ -106,6 +106,12 @@ export default {
       },
     };
   },
+  watch:{
+  "form.type"(){
+    
+    
+  }
+  },
   computed: {
     loading() {
       let show = true;
@@ -119,9 +125,7 @@ export default {
   },
   methods: {
     ckekStep(type) {
-
       this.form.type = type;
-
       switch (type) {
         case "complete":
           this.submit(type);

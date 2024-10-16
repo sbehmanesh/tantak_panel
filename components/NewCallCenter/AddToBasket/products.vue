@@ -1,110 +1,243 @@
 <template>
-  <div border="left" text>
-    <v-row class="d-flex justify-center align-center mt-2">
-      <v-col cols="12" md="12" v-if="!loading">
-        <div v-for="(item, index) in variations_list" :key="index">
-          <v-card class="elvation-0 pa-2 mt-2 px-4 border-card">
-            <v-col cols="12">
-              <v-row class="align-center">
-                <h1 v-if="Boolean(item.is_package)">
-                  {{ index + 1 }} - {{ item.name }}إ
-                </h1>
-
-                <h1 class="mr-3" v-if="!Boolean(item.is_package)">
-                  {{ index + 1 }} -
-                  {{ item.variation1.product.name }}
-                </h1>
-                <v-spacer v-if="!Boolean(item.is_package)"></v-spacer>
-                <h1 v-if="!Boolean(item.is_package)">
-                  {{ item.variation1.value }} / {{ item.variation2.value }} /
-                  {{ item.variation3.value }}
-                </h1>
-
-                <v-spacer></v-spacer>
-
-                <!-- <v-btn @click="deletVar(index)" text icon>
-                  <v-icon color=""> cancel </v-icon>
-                </v-btn> -->
-                <v-checkbox
-                  v-model="item.defect"
-                  v-if="type == 'defect'"
-                ></v-checkbox>
-                <v-col cols="12" v-if="Boolean(item.is_package)" class="mt-3">
-                <small
-                  v-for="(p, index) in item.items_product"
-                  :key="index"
-                  :class="index % 2 == 0 ? 'grey lighten-4' : 'blue lighten-4'"
-                  class="pa-2"
-                >
-                  <v-icon small> local_mall </v-icon>
-                  {{ p.name }} -- تعداد :‌ {{ p.count }} -- جمع قیمت :
-                  {{ $price(p.sum_price) }}
-                </small>
-              </v-col>
-              </v-row>
-     
-
-              <v-col cols="12" class="mt-3">
-                <v-divider></v-divider>
-                <v-row class="d-flex justify-center align-center mt-4">
-                  <small>قیمت :‌ {{ $price(item.price) }} ریال</small>
-                  <v-spacer></v-spacer>
-                  <v-row class="d-flex justify-center">
-                    <v-btn text @click="addNumber(item, true, 'list')" x-small>
-                      <h1 class="font_15">+</h1>
-                    </v-btn>
-                    <h1 class="font_12">
-                      {{ item.count }}
-                    </h1>
-                    <v-btn
-                      :disabled="item.count == 1"
-                      @click="addNumber(item, false, 'list')"
-                      text
-                      x-small
-                    >
-                      <h1 class="font_20">-</h1>
-                    </v-btn>
-                  </v-row>
-                  <v-spacer></v-spacer>
-                  <small>
-                    جمع کل : {{ $price(item.price * item.count) }}
-                  </small>
-                </v-row>
-              </v-col>
-            </v-col>
-          </v-card>
-        </div>
-      </v-col>
-      <v-col cols="12" v-if="loading">
-        <v-skeleton-loader
-          class="mx-auto"
-          type="card"
-          height="40"
-        ></v-skeleton-loader>
-      </v-col>
+  <v-row class="d-flex justify-center align-center">
+    <v-col cols="12" md="12" class="mt-8 px-4">
+      <v-autocomplete
+        v-if="
+          this.$store.state.auth.action.indexOf('product_requests/update') > -1
+        "
+        class="mx-2"
+        prepend-inner-icon="search"
+        v-model="product_varcomb_id"
+        :items="products"
+        outlined
+        dense
+        :disabled="Boolean(load_item)"
+        :loading="Boolean(load_item)"
+        label="جستوجوی سریع محصول"
+        placeholder="نام محصول مورد نظر را وارد کنید ..."
+      />
       <v-col
+        v-if="Boolean(check) && !loading"
+        class="justify-center text-center"
         cols="12"
-        md="12"
-        class="text-center mt-3"
-        v-if="!loading && type == 'defect'"
       >
-        <v-card-text
-          class="pa-2 text-center elevation-3 btn-submit"
-          @click="callSubmit"
-        >
-          <span class="font_12"> تایید نقص موارد انتخاب شده </span>
-        </v-card-text>
-        <!-- <amp-button
-          :loading="loading"
-          :disabled="loading"
-          text="تایید نقص سفارش "
-          @click="callSubmit"
-          color="success"
-          icon="done"
-        ></amp-button> -->
+        <v-icon color="red" size="80"> production_quantity_limits </v-icon>
+        <br />
+        <small class="red--text"> عدم موجودی محصول </small>
       </v-col>
+      <v-form v-model="valid_variations" v-if="!loading">
+        <v-row>
+          <v-col cols="12" md="4">
+            <amp-select
+              v-if="
+                Boolean(step_var_1) &&
+                Boolean(product_sort_1) &&
+                Boolean(product_varcomb_id)
+              "
+              :text="product_sort_1.title"
+              rules="require"
+              v-model="var_id_1"
+              :items="product_sort_1.items"
+              :loading="loading"
+              :disabled="
+                loading && !Boolean(step_var_1) && !Boolean(product_sort_1)
+              "
+          /></v-col>
+          <v-col cols="12" md="4">
+            <amp-select
+              v-if="
+                Boolean(step_var_2) &&
+                Boolean(product_sort_2) &&
+                Boolean(product_varcomb_id)
+              "
+              :text="product_sort_2.title"
+              rules="require"
+              v-model="var_id_2"
+              :items="available_items_2"
+              :loading="loading"
+              :disabled="!Boolean(var_id_1) || loading"
+          /></v-col>
+          <v-col cols="12" md="4">
+            <amp-select
+              v-if="
+                Boolean(step_var_3) &&
+                Boolean(product_sort_3) &&
+                Boolean(product_varcomb_id)
+              "
+              :text="product_sort_3.title"
+              rules="require"
+              v-model="var_id_3"
+              :items="available_items_3"
+              :loading="loading"
+              :disabled="!Boolean(var_id_2) || loading"
+            />
+          </v-col>
+
+          <v-row
+            class="align-center align-center"
+            cols="12"
+            v-if="
+              Boolean(valid_variations) &&
+              Boolean(step_var_1) &&
+              Boolean(product_varcomb_id) &&
+              !loading
+            "
+          >
+            <v-spacer></v-spacer>
+            <v-avatar size="80" class="mx-2">
+              <img :src="$getImage(selected_product.img)" />
+            </v-avatar>
+            <v-spacer></v-spacer>
+            <h1 :class="$vuetify.breakpoint.mdAndUp ? 'font_17' : 'font_13'">
+              قیمت محصول :‌
+              {{ $price(selected_product.product_price) }} ریال
+            </h1>
+            <v-spacer></v-spacer>
+            <amp-button
+              :block="$vuetify.breakpoint.mdAndUp ? false : true"
+              v-if="
+                Boolean(step_var_1) &&
+                Boolean(product_sort_1) &&
+                Boolean(product_varcomb_id)
+              "
+              height="40"
+              :disabled="
+                !Boolean(valid_variations) ||
+                !Boolean(product_varcomb_id) ||
+                loading_add
+              "
+              color="orange darken-4"
+              text="افزودن"
+              @click="addVariation()"
+            />
+            <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
+          </v-row>
+        </v-row>
+        <v-col> </v-col>
+      </v-form>
+
+      <v-row class="mt-8" v-if="loading">
+        <v-col cols="12" md="4">
+          <v-skeleton-loader type="text@2"></v-skeleton-loader>
+        </v-col>
+        <v-col cols="12" md="4">
+          <v-skeleton-loader type="text@2"></v-skeleton-loader>
+        </v-col>
+        <v-col cols="12" md="4">
+          <v-skeleton-loader type="text@2"></v-skeleton-loader>
+        </v-col>
+        <v-col cols="12" md="12">
+          <v-skeleton-loader type="text@1"></v-skeleton-loader>
+        </v-col>
+      </v-row>
+    </v-col>
+
+    <v-col cols="12" v-if="loading_add">
+      <v-card class="elevation-0">
+        <v-skeleton-loader height="120" class="mx-auto" type="card" />
+      </v-card>
+    </v-col>
+    <v-col cols="12" md="12">
+      <v-card
+        outlined
+        class="pa-5 my-4 card-style"
+        v-for="(item, index) in variations_list"
+        :key="index"
+      >
+        <v-row class="align-center">
+          <v-avatar size="55">
+            <img :src="$getImage(item.variation1.product.main_image)" />
+          </v-avatar>
+          <v-spacer></v-spacer>
+
+          <h1  :class="$vuetify.breakpoint.mdAndUp ? '':'font_11'" class="mr-3">
+            {{ item.variation1.product.name }}
+          </h1>
+          <v-spacer></v-spacer>
+
+          <h1 :class="$vuetify.breakpoint.mdAndUp ? '':'font_11'">
+            {{ item.variation1.value }} / {{ item.variation2.value }} /
+            {{ item.variation3.value }}
+          </h1>
+          <v-spacer></v-spacer>
+
+          <v-btn @click="deletVar(index)" text icon>
+            <v-icon color=""> cancel </v-icon>
+          </v-btn>
+          <v-col cols="12" class="text-center">
+            <v-divider class="mb-4"></v-divider>
+            <v-row class="pa-2" v-if="$vuetify.breakpoint.mdAndUp">
+              <strong  :class="$vuetify.breakpoint.mdAndUp ? '':'font_11'">
+                قیمت محصول :
+                {{ $price(item.product_price) }} ریال
+              </strong>
+              <v-spacer></v-spacer>
+              <v-row class="d-flex justify-center mt-1">
+                <v-btn icon @click="addNumber(item, true, 'list')" x-small>
+                  <v-chip>
+                    <h1 class="font_18 mx-1 mt-1">+</h1>
+                  </v-chip>
+                </v-btn>
+                <h1 class="font_18 mx-5">
+                  {{ item.count }}
+                </h1>
+                <v-btn
+                  :disabled="item.count == 1"
+                  @click="addNumber(item, false, 'list')"
+                  icon
+                  x-small
+                >
+                  <v-chip>
+                    <h1 class="font_20 mx-1">-</h1>
+                  </v-chip>
+                </v-btn>
+              </v-row>
+              <v-spacer></v-spacer>
+              <strong :class="$vuetify.breakpoint.mdAndUp ? '':'font_11'">
+                قیمت کل :
+                {{ $price(item.count * item.product_price) }} ریال
+              </strong>
+            </v-row>
+            <v-col cols="12" v-else class="text-center">
+              <strong :class="$vuetify.breakpoint.mdAndUp ? '':'font_11'">
+                قیمت محصول :
+                {{ $price(item.product_price) }} ریال
+              </strong>
+              <v-spacer></v-spacer>
+              <v-row class="d-flex justify-center mt-1 my-2">
+                <v-btn icon @click="addNumber(item, true, 'list')" x-small>
+                  <v-chip>
+                    <h1 class="font_18 mx-1 mt-1">+</h1>
+                  </v-chip>
+                </v-btn>
+                <h1 class="font_18 mx-5">
+                  {{ item.count }}
+                </h1>
+                <v-btn
+                  :disabled="item.count == 1"
+                  @click="addNumber(item, false, 'list')"
+                  icon
+                  x-small
+                >
+                  <v-chip>
+                    <h1 class="font_20 mx-1">-</h1>
+                  </v-chip>
+                </v-btn>
+              </v-row>
+              <strong :class="$vuetify.breakpoint.mdAndUp ? '':'font_11'">
+                قیمت کل :
+                {{ $price(item.count * item.product_price) }} ریال
+              </strong>
+            </v-col>
+          </v-col>
+        </v-row>
+      </v-card>
+    </v-col>
+
+    <v-row class="d-flex justify-center">
+      <v-col cols="12" md="10"> </v-col>
     </v-row>
-  </div>
+  </v-row>
 </template>
 
 <script>
@@ -114,30 +247,25 @@ export default {
       require: false,
       default: false,
     },
-    type: {
-      type: String,
-      default: "",
-    },
   },
   data: () => ({
-    e1: 2,
-    attrs: {
-      class: "mb-6",
-      boilerplate: true,
-      elevation: 2,
-    },
     number: 1,
     valid_variations: true,
     load_form: true,
     load_item: true,
     loading: false,
-    check_box: false,
     check: false,
+    loading_package: false,
     show_basket_items: false,
     step_var_1: false,
     step_var_2: false,
+    loading_add: false,
     step_var_3: false,
+    packages_list: [],
+    package_id: "",
+
     product_sort_1: {},
+    selected_package: {},
     product_sort_2: [],
     product_sort_3: [],
     products: [],
@@ -250,56 +378,62 @@ export default {
               product = f;
             }
           }
-          this.selected_product = product;
-          this.main_price;
-          let price = product.price ? product.price : this.main_price;
-          this.main_price = price;
-          this.sumb_price = price;
+          if (Boolean(product) && Object.keys(product).length > 0) {
+            this.selected_product = product;
+            this.selected_product["product_price"] = "";
+            this.selected_product["img"] =
+              product.variation1.product.main_image;
+            if (
+              Boolean(product.variation1) &&
+              Boolean(product.variation1.product) &&
+              Boolean(product.variation1.product.base_price)
+            ) {
+              this.selected_product.product_price =
+                product.variation1.product.base_price;
+            } else {
+              this.selected_product.product_price = product.price;
+            }
+          }
         });
       }
     },
   },
   methods: {
     loadItems() {
-      this.loading = true;
       this.$reqApi("product-request/show", { id: this.basketId })
         .then((res) => {
           this.$emit("data", res.data);
           let data = res.data.items;
-          let packages = [];
-          let products = [];
+
+          let item = [];
           for (let index = 0; index < data.length; index++) {
             const x = data[index];
 
-            if (x.section_name == "Package") {
-              let product = JSON.parse(x.product_json);
-
-              packages.push({
-                name: x.information,
-                count: x.number,
-                items_product: product,
-                price: x.package.price,
-                img: x.package.logo,
-                id: x.id,
-                defect: false,
-                is_package: true,
-              });
-
-            } else {
-              products.push({
+            if (x.section_name == "ProductVariationCombination") {
+              let price = "";
+              if (
+                Boolean(x.variation1) &&
+                Boolean(x.variation1.product) &&
+                Boolean(x.variation1.product.base_price)
+              ) {
+                price = x.variation1.product.base_price;
+              } else {
+                price = x.price;
+              }
+              item.push({
                 count: x.number,
                 variation1: x.pro_var_com.variation1,
                 variation2: x.pro_var_com.variation2,
                 variation3: x.pro_var_com.variation3,
-                price: x.price,
                 id: x.pro_var_com.id,
-                img: x.pro_var_com.variation1.product.main_image,
-                defect: false,
-                false: true,
+                product_price: price,
               });
             }
           }
-          this.variations_list = [...products, ...packages];
+
+          this.variations_list = item;
+          this.$emit("data", this.variations_list);
+
           this.loading = false;
         })
         .catch((err) => {
@@ -326,6 +460,7 @@ export default {
       let arry = this.variations_list;
       this.variations_list = [];
       this.variations_list = arry;
+      this.$emit("data", this.variations_list);
     },
     loadProduct() {
       this.load_item = true;
@@ -440,27 +575,44 @@ export default {
     },
 
     addVariation() {
-      if (Array.isArray(this.variations_list)) {
-        let check = this.variations_list.find(
-          (f) => f.id == this.selected_product.id
-        );
-        if (Boolean(check)) {
-          this.$toast.info("این محصولا قبلا اضافه شده");
-          return;
-        } else {
+      let check = this.variations_list.find(
+        (f) => f.id == this.selected_product.id
+      );
+
+      if (Boolean(check)) {
+        this.$toast.info("این محصولا قبلا اضافه شده");
+        return;
+      } else {
+        this.loading_add = true;
+        setTimeout(() => {
           this.selected_product["count"] = this.number;
+
           this.variations_list.unshift(this.selected_product);
           this.number = 1;
 
           this.$toast.success(" محصول  اضافه شد");
-        }
+          this.var_id_1 = "";
+          this.var_id_2 = "";
+          this.var_id_3 = "";
+          this.sumb_price = "";
+          this.main_price = "";
+          this.product_varcomb_id = "";
+          this.number = 1;
+          this.$emit("data", this.variations_list);
+          this.loading_add = false;
+        }, 1000);
+      }
+
+      if (Array.isArray(this.variations_list)) {
       }
     },
     deletVar(key) {
       let items = this.variations_list;
       items.splice(key, 1);
       this.variations_list = items;
+      this.$emit("data", this.variations_list);
     },
+
     sendVariation() {
       let variation_array = [];
       let ids = [];
@@ -520,49 +672,13 @@ export default {
           console.log(rej);
         });
     },
-    callSubmit() {
-      let items = [];
-      for (let index = 0; index < this.variations_list.length; index++) {
-        const element = this.variations_list[index];
-        if (element.defect == true) {
-          items.push({
-            id: element.id,
-            count: element.count,
-          });
-        }
-      }
-      if (items.length < 1) {
-        this.$toast.error("محصولی انتخاب نشده");
-      } else if (items.length > 0) {
-        this.loading = true;
-        let form = {};
-        form["type"] = "defect";
-        form["id"] = this.basketId;
-        form["product_varcom_ids"] = items;
-        this.$reqApi("product-request/deliver-order", form)
-          .then((res) => {
-            this.$toast.success("نقص سفارش با موفقیت انجام شد");
-            this.$emit("defectivBasket");
-            this.loading = false;
-          })
-          .catch((rej) => {
-            this.loading = false;
-          });
-      }
-    },
   },
 };
 </script>
 
 <style>
-.border-card {
-  border: 1px solid #bbbbbb !important;
+.card-style {
+  border: 1px solid #5c5c5c6c !important;
   border-radius: 7px !important;
-}
-.btn-submit {
-  border-radius: 5px !important;
-  background-color: #919191 !important;
-  color: #ffffff;
-  cursor: pointer;
 }
 </style>

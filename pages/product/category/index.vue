@@ -15,12 +15,10 @@
               {{ text.text }}
             </h1>
             <v-spacer></v-spacer>
-            <v-btn text @click="clearAll" class="mr-10" color="grey darken-2" >
-              <h1 class="font_12" >
+            <v-btn text @click="clearAll" class="mr-10" color="grey darken-2">
+              <h1 class="font_12">
                 بازگشت به صفحه اصلی
-                <v-icon size="19">
-                  refresh
-                </v-icon>
+                <v-icon size="19"> refresh </v-icon>
               </h1>
             </v-btn>
           </v-row>
@@ -29,7 +27,14 @@
         <v-divider></v-divider>
       </v-col>
     </v-row>
-
+    <CategoryCatalogDialog
+      :dialog="show_catalog"
+      :createdAt="created_at"
+      v-if="show_catalog"
+      :catgoryId="catgory_id"
+      :catgorysName="catgory_catalog"
+      @cloasDialog="closeDialog()"
+    />
     <BaseTable
       :filters="filters"
       ref="baseTable"
@@ -78,9 +83,9 @@
 
 <script>
 import BaseTable from "~/components/DataTable/BaseTable";
-import SelectCategory from "~/components/Product/SelectCategory.vue";
+import CategoryCatalogDialog from "~/components/Product/Catalog/CategoryCatalogDialog.vue";
 export default {
-  components: { BaseTable },
+  components: { BaseTable, CategoryCatalogDialog },
   data: () => ({
     headers: [],
     btn_actions: [],
@@ -89,13 +94,17 @@ export default {
     removeDialog: false,
     show_catgory_list: false,
     loading: false,
+    show_catalog: false,
     time: 3,
     timeInterval: null,
     extraBtn: [],
     main_catgory: [],
     all_data: [],
     catgory_id: "",
+    created_at: "",
     catgory_name: [],
+    catgory_catalog: [],
+
     filters: {},
   }),
   beforeMount() {
@@ -186,6 +195,32 @@ export default {
           this.findSubCatgoryes(body.id);
         },
       },
+      {
+        color: "orange",
+        text: "کاتالوگ",
+        fun: (body) => {
+          this.show_catalog = true;
+          this.created_at = body.created_at;
+          this.catgory_id = body.id;
+          this.catgory_catalog = JSON.parse(JSON.stringify(this.catgory_name));
+          this.catgory_catalog.push({
+            text: body.name,
+            value: body.id,
+            icon: "arrow_left",
+          });
+        },
+        show_fun: () => {
+          if (
+            this.$store.state.auth.action.indexOf(
+              "product/catalog_categories"
+            ) > -1
+          ) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
     ];
 
     this.extraBtn = [
@@ -268,7 +303,6 @@ export default {
       }
 
       if (Boolean(category)) {
-
         this.catgory_name.push({
           text: category.name,
           value: category.id,
@@ -296,6 +330,10 @@ export default {
           value: 1,
         },
       };
+    },
+    closeDialog() {
+      this.show_catalog = false;
+      this.catgory_catalog = [];
     },
   },
 };

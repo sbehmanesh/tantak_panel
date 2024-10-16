@@ -1,9 +1,9 @@
 <template>
   <v-row justify="center">
     <v-dialog v-model="dialog" persistent max-width="450">
-      <v-card style="overflow: hidden" >
+      <v-card style="overflow: hidden">
         <v-col cols="12" class="pa-0 ma-0">
-          <v-alert dense prominent icon="event_repeat" class=" grey lighten-2" >
+          <v-alert dense prominent icon="event_repeat" class="grey lighten-2">
             <h1 class="font_17">‌برسی روند ارجاع</h1>
           </v-alert>
         </v-col>
@@ -99,6 +99,8 @@ export default {
       },
     };
   },
+  mounted() {
+  },
   watch: {
     "form.step"() {
       switch (this.form.step) {
@@ -110,6 +112,20 @@ export default {
           this.show_select_user = true;
           this.select_user_title = "انتخاب کارمند انبار مرکزی ";
           break;
+        case "fiscal_manager_to_supervisor":
+          this.show_select_user = true;
+          this.select_user_title = "انتخاب   سرپرست واحد مالی ";
+          break;
+        case "fiscal_supervisor_to_fiscal":
+          this.show_select_user = true;
+          this.select_user_title = "انتخاب    واحد مالی ";
+          break;   
+              case "pack_and_send":
+          this.show_select_user = true;
+          this.select_user_title = "انتخاب سفیر";
+          this.url = "user/sefir"
+          break;
+
         default:
           this.show_select_user = false;
           break;
@@ -120,9 +136,7 @@ export default {
     set_items() {
       let items = [];
       if (this.$checkRole(this.$store.state.auth.role.agency_manager)) {
-  
-
-        if (this.statusPayment == "payed") {
+        if (this.stepInvitor == "accept_fiscal") {
           this.form.step = "manager_to_supervisor_stock";
           items = [
             {
@@ -130,10 +144,24 @@ export default {
               value: "manager_to_supervisor_stock",
             },
           ];
-        } else {
+        } else if (
+          this.stepInvitor == "init" ||
+          this.stepInvitor == "supervisor_to_manager_sale"
+        ) {
           this.form.step = "manager_to_supervisor_sale";
           items = [
-            { text: "ارجاع به سرپرست", value: "manager_to_supervisor_sale" },
+            {
+              text: "ارجاع به سرپرست فروش",
+              value: "manager_to_supervisor_sale",
+            },
+          ];
+        } else if (this.stepInvitor == "accept_employee_sale") {
+          this.form.step = "manager_to_fiscal_manager";
+          items = [
+            {
+              text: "ارجاع به  مدیر واحد مالی",
+              value: "manager_to_fiscal_manager",
+            },
           ];
         }
       }
@@ -201,6 +229,54 @@ export default {
           ];
         }
       }
+      if (this.$checkRole(this.$store.state.auth.role.fiscal_manager)) {
+        items = [
+          {
+            text: "ارجاع  به سرپرست واحد مالی",
+            value: "fiscal_manager_to_supervisor",
+          },
+          {
+            text: "مرجوع کردن (ارجاع به مدیر نمایندگی فروش)",
+            value: "fiscal_manager_to_manager",
+          },
+        ];
+      }
+      if (this.$checkRole(this.$store.state.auth.role.fiscal_supervisor)) {
+        items = [
+          {
+            text: "ارجاع  به  واحد مالی",
+            value: "fiscal_supervisor_to_fiscal",
+          },
+          {
+            text: "مرجوع کردن (ارجاع به مدیر واحد مالی)",
+            value: "fiscal_supervisor_to_manager",
+          },
+        ];
+      }
+      if (this.$checkRole(this.$store.state.auth.role.fiscal)) {
+        items = [
+          {
+            text: "تایید سفارش",
+            value: "accept_fiscal",
+          },
+          {
+            text: "مرجوع کردن (ارجاع به سرپرست واحد مالی)",
+            value: "fiscal_to_fiscal_supervisor",
+          },
+        ];
+      }   
+        if (this.$checkRole(this.$store.state.auth.role.sefir)) {
+        items = [
+          {
+            text: " مدیر نمایندگی فروش",
+            value: "sefir_to_agency_manager",
+          },
+          {
+            text: "مرجوع کردن (ارجاع به کارمند انبار مرکزی)",
+            value: "sefir_to_employee_stock",
+          },
+        ];
+      }
       return items;
     },
   },
@@ -209,15 +285,21 @@ export default {
       this.loading = true;
       let form = { ...this.form };
       form.id = this.basketId;
-
       switch (this.form.step) {
         case "supervisor_to_employee_sale":
           form["user_refer_id"] = this.user[0].id;
-
           break;
         case "supervisor_to_employee_stock":
           form["user_refer_id"] = this.user[0].id;
-
+          break;
+        case "fiscal_manager_to_supervisor":
+          form["user_refer_id"] = this.user[0].id;
+          break;
+        case "fiscal_supervisor_to_fiscal":
+          form["user_refer_id"] = this.user[0].id;
+          break;  
+          case "pack_and_send":
+          form["user_refer_id"] = this.user[0].id;
           break;
 
         default:

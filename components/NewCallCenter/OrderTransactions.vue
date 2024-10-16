@@ -9,7 +9,13 @@
             <v-icon color="white"> close </v-icon>
           </v-btn>
         </v-card-title>
-
+        <ChangeStatusPayment
+          :dialog="show_pay_dialog"
+          v-if="show_pay_dialog"
+          :paymentId="payment_id"
+          @cloasDialog="show_pay_dialog = false"
+          @relod="relod"
+        />
         <div class="text-center mt-3">
           <v-chip
             dark
@@ -27,9 +33,11 @@
         <v-card-text>
           <BaseTable
             url="shop/payment"
+            :BTNactions="btn_actions"
             :headers="headers"
             :filters="filters"
             v-if="tab == 'payment'"
+            ref="reloadTransactions"
           />
 
           <BaseTable
@@ -44,7 +52,11 @@
   </v-row>
 </template>
 <script>
+import ChangeStatusPayment from "@/components/NewCallCenter/ChangeStatusPayment.vue";
 export default {
+  components: {
+    ChangeStatusPayment,
+  },
   props: {
     sectionId: {
       default: "",
@@ -58,10 +70,13 @@ export default {
   data() {
     return {
       headers: [],
+      show_pay_dialog: false,
       headers_wallet: [],
+      btn_actions: [],
       filters: {},
       step: 1,
       tab: "payment",
+      payment_id: "",
       items: [
         { text: " لیست  پرداختی های کاربر", value: "payment" },
         { text: " تراکنش های انجام شده", value: "wallet" },
@@ -120,6 +135,43 @@ export default {
         items: this.$store.state.static.wallet_type,
       },
     ];
+    this.btn_actions = [
+      {
+        color: "success",
+        icon: "change_circle",
+        text: "تغییر وضعیت",
+        fun: (body) => {
+          if (body.id) {
+            this.show_pay_dialog = true;
+            this.payment_id = body.id;
+          }
+        },
+        show_fun: (body) => {
+          if (body.status == "wait" && body.kind_set == "cardToCard") {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
+      {
+        color: "primary",
+        icon: "image",
+        text: "فایل",
+        fun: (body) => {
+          if (body.receipt_img) {
+            window.open(`${this.$store.state.file_url}/${body.receipt_img}`);
+          }
+        },
+        show_fun: (body) => {
+          if (Boolean(body.receipt_img)) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
+    ];
   },
   watch: {
     tab() {
@@ -141,6 +193,9 @@ export default {
     },
     selectItem(item) {
       this.tab = item.value;
+    },
+    relod() {
+      this.$refs.reloadTransactions.getDataFromApi();
     },
   },
 };

@@ -141,7 +141,8 @@ let mnue_tree = [
         name: "ناحیه ها",
         access: "region/index",
         route: "/region",
-      },      {
+      },
+      {
         id: 5461236,
         name: "انبار مرکزی",
         access: "region/index",
@@ -208,6 +209,18 @@ let mnue_tree = [
         access: "payments/root",
         name: "لیست پرداخت ها",
         route: "/product/pay",
+      },
+      {
+        id: 5457878,
+        access: "special_discounts/index",
+        name: "تخفیفات ويژه",
+        route: "/product/special-discount",
+      },
+      {
+        id: 13731452006,
+        name: "رنگ های محصولات",
+        access: "setting/index",
+        route: "/setting/color-products",
       },
       //    {
       //   id: 84512,
@@ -315,6 +328,12 @@ let mnue_tree = [
     access: "money-request/index",
     name: " درخواست وجه",
     route: "/money-request",
+  }, 
+   {
+    id: 7532,
+    access: "debts/index",
+    name: "بدهکاری ها",
+    route: "/indebtedness",
   },
   {
     id: 18,
@@ -423,10 +442,10 @@ let mnue_tree = [
         route: "/setting/payment",
       },
       {
-        id:13731006,
+        id: 13731006,
         name: "تغییر روزهای چک",
         access: "setting/index",
-        route: "/setting/change-check-days"
+        route: "/setting/change-check-days",
       },
     ],
   },
@@ -747,25 +766,37 @@ let status_invitor = [
 let status_payment_invitor = [
   { text: "تعریف نشده ", value: "none" },
   { text: "کنسل شده ", value: "cancel" },
-  {text:"منتظر پرداخت" , value:"wait"},
-  {text:"پرداخت شده" , value:"payed"},
-  {text:"پرداخت نشده" , value:"unpayed"},
-  {text:"برگشت داده شده" , value:"reject"},
-  {text:"کنسل شده" , value:"cancled"},
-  {text:"عودت وجه" , value:"owdat"},
+  { text: "منتظر پرداخت", value: "wait" },
+  { text: "پرداخت شده", value: "payed" },
+  { text: "پرداخت نشده", value: "unpayed" },
+  { text: "برگشت داده شده", value: "reject" },
+  { text: "کنسل شده", value: "cancled" },
+  { text: "عودت وجه", value: "owdat" },
 ];
 let type_invitor = [
   { text: "عادی ", value: "normal" },
-  { text: "نقص موجودی", value: "deficit" }
+  { text: "نقص موجودی", value: "deficit" },
 ];
 let step_invitor = [
   { text: "ثبت اولیه", value: "init" },
   { text: "  انجام بسته بندی و ارسال   ", value: "pack_and_send" },
   { text: " درحال بسته بندی سفارش", value: "waiting_packaging" },
-  { text: " مرجوع به سرپرست انبار مرکزی", value: "employee_to_supervisor_stock" },
-  { text: " ارجاع به کارمند انبار مرکزی", value: "supervisor_to_employee_stock" },
-  { text: " مرجوع از سرپرست انبار مرکزی به مدیر نمایندگی", value: "supervisor_stock_to_manager " },
-  { text: "از مدیر نمایندگی به سرپرست انبار مرکزی", value: "manager_to_supervisor_stock" },
+  {
+    text: " مرجوع به سرپرست انبار مرکزی",
+    value: "employee_to_supervisor_stock",
+  },
+  {
+    text: " ارجاع به کارمند انبار مرکزی",
+    value: "supervisor_to_employee_stock",
+  },
+  {
+    text: " مرجوع از سرپرست انبار مرکزی به مدیر نمایندگی",
+    value: "supervisor_stock_to_manager ",
+  },
+  {
+    text: "از مدیر نمایندگی به سرپرست انبار مرکزی",
+    value: "manager_to_supervisor_stock",
+  },
   { text: "ارجاع به سرپرست فروش", value: "manager_to_supervisor_sale" },
   {
     text: " سرپرست به مدیر نمایندگی فروش",
@@ -775,15 +806,45 @@ let step_invitor = [
   { text: "کارشناس فروش به سرپرست فروش", value: "employee_to_supervisor_sale" },
   { text: "کنسل شده", value: "cancel" },
   { text: "تایید کارمند فروش", value: "accept_employee_sale" },
-  { text: "تایید شده", value: "done" }
+  { text: "تایید شده", value: "done" },
+  {
+    text: "ارجاع از مدیر نمایندگی فروش به مدیر واحد مالی",
+    value: "manager_to_fiscal_manager",
+  },
+  {
+    text: "مرجوع از مدیر واحد مالی به مدیر نمایندگی فروش",
+    value: "fiscal_manager_to_manager",
+  },
+  {
+    text: "ارجاع از مدیر واحد مالی به سرپرست واحد مالی",
+    value: "fiscal_manager_to_supervisor",
+  },
+  {
+    text: "مرجوع از سرپرست واحد مالی به مدیر واحد مالی",
+    value: "fiscal_supervisor_to_manager",
+  },
+  {
+    text: "ارجاع از سرپرست واحد مالی به واحد مالی",
+    value: "fiscal_supervisor_to_fiscal",
+  },
+  {
+    text: "مرجوع از واحد مالی به سرپرست واحد مالی",
+    value: "fiscal_to_fiscal_supervisor",
+  },
+  { text: "تایید واحد مالی", value: "accept_fiscal" },
+  {
+    text: "ارجاع از سفیر مدیر نمایندگی فروش" ,
+    value: "sefir_to_agency_manager",
+  },
+  {
+    text: "  ارجاع  از سفیر به کارمند انبار مرکزی",
+    value: "sefir_to_employee_stock",
+  },
 ];
-let status_transactions =[
+let status_transactions = [
   { text: "منتظر پرداخت", value: "wait" },
   { text: "پرداخت شده", value: "payed" },
   { text: " پرداخت نشده", value: "unpayed" },
   { text: "برگشت ", value: "reject" },
   { text: "کنسل شده", value: "cancled" },
-]
-
-
-
+];

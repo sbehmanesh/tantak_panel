@@ -35,7 +35,7 @@
 
 <script>
 import Packages from "@/components/NewCallCenter/AddToBasket/Packages.vue";
-import Products from "@/components/NewCallCenter/AddToBasket/Products.vue";
+import Products from "@/components/NewCallCenter/AddToBasket/products.vue";
 
 export default {
   components: {

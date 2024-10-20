@@ -162,7 +162,7 @@ export default {
     select_type_send: [],
     step_items: [],
     superviser_list: "user/list-employee",
-    oprator_list: "user/list-employe",
+    oprator_list: "user/list-employee",
     type_send: "",
     step_ref: "",
     valid_step1: true,

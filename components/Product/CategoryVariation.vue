@@ -192,14 +192,24 @@ export default {
       this.loading = true;
       this.$reqApi(this.showUrl, { id: this.modelId })
         .then((response) => {
-          response = response.model;
-          this.form["id"] = response.id;
-          this.form.sort = response.sort;
-          this.form.value = response.value;
-          this.form.category_id = response.category_id;
-          this.form.product_id = response.product_id;
-          this.form.variation_type_id = response.variation_type_id;
-          this.images = response.images;
+         let data =  response.model;
+          console.log("response >>> " , data);
+          
+          if (Boolean(data.colors)) {
+            this.select_color = true
+            console.log( "json", JSON.parse(data.value));
+            let array = JSON.parse(data.value)
+    array.map((x) => {
+      this.color_ids.push(x)
+    })
+          }
+          this.form["id"] = data.id;
+          this.form.sort = data.sort;
+          this.form.value = data.value;
+          this.form.category_id = data.category_id;
+          this.form.product_id = data.product_id;
+          this.form.variation_type_id = data.variation_type_id;
+          this.images = data.images;
           this.loading = false;
         })
         .catch((error) => {

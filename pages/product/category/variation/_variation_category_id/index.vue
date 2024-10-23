@@ -89,7 +89,13 @@ export default {
       },
       {
         text: "مقدار",
-        value: "value",
+        value:(body)=>{
+          if (Boolean(body.colors)) {
+            return body.colors
+          }else{
+            return body.value
+          }
+        },
         disableSort: "true",
         disableSort: true,
         filterable: false,

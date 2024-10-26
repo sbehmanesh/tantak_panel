@@ -9,6 +9,26 @@
           <v-col cols="12">
             <v-divider v-for="i in 4" :key="i"></v-divider>
           </v-col>
+
+          <v-row class="">
+            <v-chip
+              dark
+              label
+              class="ma-2 mr-7 mt-4"
+              color="red"
+              v-for="item in items"
+              :key="item.key"
+              @click="tab = item.key"
+              :outlined="tab != item.key"
+            >
+              <strong>
+                {{ item.text }}
+                <v-icon small class="mr-1">
+                  {{ item.icon }}
+                </v-icon>
+              </strong>
+            </v-chip>
+          </v-row>
           <v-row>
             <template v-if="showAddVairiation">
               <v-col cols="12" md="3">
@@ -98,17 +118,12 @@
             </v-col>
           </v-row>
 
-          <v-row>
-            <v-col cols="12">
-              <amp-title
-                class="d-flex align-center"
-                text="ویژگی های محصول"
-              ></amp-title>
-            </v-col>
-          </v-row>
-
           <div v-for="(v, index) in variations" :key="'v' + index">
-            <v-card class="d-flex align-center elevation-2" outlined>
+            <v-card class="d-flex align-center style-card my-3 elevation-3">
+              <v-btn icon class="grey lighten-3 white--black mr-2" small>
+                <h1>{{ index + 1 }}</h1>
+              </v-btn>
+
               <v-col
                 cols="12"
                 md="2"
@@ -120,17 +135,61 @@
                 v-for="i in 3"
                 :key="i"
               >
-                <amp-input v-model="v.value" :text="v.variation_type.value" />
+                <amp-autocomplete
+                  v-model="v.value[i]"
+                  :items="colors"
+                  :text="`${v.variation_type.value} ${i}`"
+                  :rules="i == 1 ? 'require' : ''"
+                />
               </v-col>
-              <v-col cols="12" md="2" class="text-center"     v-if="
+              <v-col
+                cols="12"
+                md="2"
+                class="text-center"
+                v-if="
                   v.variation_type &&
                   v.variation_type.value_2 != 'product_colors'
-                ">
+                "
+              >
                 <amp-input v-model="v.value" :text="v.variation_type.value" />
               </v-col>
 
               <v-col cols="12" md="1" class="text-center"
                 ><amp-input v-model="v.sort" text="ترتیب" rules="number" />
+              </v-col>
+              <v-col
+                cols
+                v-if="v.codes && v.codes.length > 0"
+                class="text-center"
+              >
+                <v-progress-circular
+                  v-if="v.codes[0]"
+                  value="33"
+                  :rotate="360"
+                  class="pa-2"
+                  :size="35"
+                  :width="18"
+                  :color="v.codes[0]"
+                >
+                  <v-progress-circular
+                    v-if="v.codes[1]"
+                    value="33"
+                    :rotate="240"
+                    :size="35"
+                    :width="18"
+                    :color="v.codes[2]"
+                  >
+                    <v-progress-circular
+                      v-if="v.codes[3]"
+                      value="33"
+                      :rotate="120"
+                      :size="35"
+                      :width="18"
+                      :color="v.codes[3]"
+                    >
+                    </v-progress-circular>
+                  </v-progress-circular>
+                </v-progress-circular>
               </v-col>
               <v-col
                 cols="12"
@@ -145,10 +204,11 @@
                   <v-icon>image</v-icon>
                 </v-btn>
               </v-col>
+              <v-spacer></v-spacer>
               <v-col cols="12" md="3" class="text-center">
                 <amp-button
                   small
-                  text="به روز رسانی"
+                  text="بروز رسانی"
                   color="success"
                   :loading="loading"
                   @click="update(index)"
@@ -165,6 +225,7 @@
               </v-col>
             </v-card>
           </div>
+          <v-col cols="12" class="mt-3"></v-col>
 
           <v-dialog
             v-model="deleteDiaolog"
@@ -221,6 +282,10 @@ export default {
     product_categories: [],
     products: [],
     images: [],
+    total_variations: [],
+    colors_ids: [],
+
+    colors: [],
     form: {
       id: "",
       sort: 1,
@@ -233,15 +298,22 @@ export default {
       images: [],
       code: "",
     },
+    tab: "all",
+    items: [
+      { text: "  همه ویژگی ها", key: "all", icon: "format_list_bulleted" },
+      { text: " رنگ ", key: "color", icon: "palette" },
+      { text: "سایز", key: "size", icon: "straighten" },
+      { text: "کیفیت", key: "quality", icon: "stars" },
+    ],
   }),
 
   mounted() {
     console.log("c");
     console.log("c");
-
     this.loadData();
     this.getCategories();
     this.getProducts();
+    this.getColors();
   },
   watch: {
     "form.category_id"() {
@@ -259,6 +331,25 @@ export default {
         });
       }
     },
+    tab() {
+      let data = JSON.parse(JSON.stringify(this.total_variations));
+      let items = [];
+      if (this.tab == "color") {
+        items = data.filter(
+          (f) => f.variation_type.value_2 == "product_colors"
+        );
+      }
+      if (this.tab == "size") {
+        items = data.filter((f) => f.variation_type.value_2 == "size");
+      }
+      if (this.tab == "quality") {
+        items = data.filter((f) => f.variation_type.value_2 == "quality");
+      }
+      if (this.tab == "all") {
+        items = data;
+      }
+      this.variations = items;
+    },
   },
   methods: {
     loadData() {
@@ -272,23 +363,54 @@ export default {
 
           let data = response.model.data;
           let items = [];
-          console.log("1111");
-          console.log("1111");
+          let color_ids = [];
+          let color_codes = [];
+
           for (let index = 0; index < data.length; index++) {
             const x = data[index];
-            items.push({
-              id: x.id,
-              value: x.value,
-              variation_type: x.variation_type,
-              product_id: x.product_id,
-              sort: x.sort,
-              code: x.code,
-              variation_type_id: x.variation_type_id,
-              images: x.product_images,
-            });
+            if (x.variation_type.value_2 == "product_colors") {
+              if (x.value.startsWith("[")) {
+                console.log("x", x);
+                color_ids = JSON.parse(x.value);
+
+                if (Boolean(x.codes)) {
+                  color_codes = x.codes;
+                  console.log("");
+                }
+                console.log("sSS", x);
+
+                items.push({
+                  id: x.id,
+                  value: color_ids,
+                  variation_type: x.variation_type,
+                  product_id: x.product_id,
+                  sort: x.sort,
+                  code: x.code,
+                  variation_type_id: x.variation_type_id,
+                  images: x.product_images,
+                  codes: color_codes,
+                });
+              }
+              // else {
+              //   console.log("ssssss");
+              // }
+            } else {
+              items.push({
+                id: x.id,
+                value: x.value,
+                variation_type: x.variation_type,
+                product_id: x.product_id,
+                sort: x.sort,
+                code: x.code,
+                variation_type_id: x.variation_type_id,
+                images: x.product_images,
+              });
+            }
           }
-          console.log("      items.items  >> ", items);
+          console.log(" >>> ", items);
+
           this.variations = items;
+          this.total_variations = items;
 
           this.loading = false;
         })
@@ -430,6 +552,27 @@ export default {
         this.update(event[1], event[0]);
       }
     },
+    getColors() {
+      let filter = {
+        op: "=",
+        key: "product_colors",
+      };
+      this.$reqApi("/setting", { filters: filter, row_number: 30000 })
+        .then((res) => {
+          let data = res.model.data;
+          let items = [];
+          for (let index = 0; index < data.length; index++) {
+            const x = data[index];
+            items.push({
+              text: x.value,
+              value: x.id,
+              value_2: x.value_2,
+            });
+          }
+          this.colors = items;
+        })
+        .catch((err) => {});
+    },
   },
 };
 </script>
@@ -439,12 +582,12 @@ export default {
   z-index: 300;
 }
 .style-class {
-  border: 9px double #00000048;
+  border: 4px double #0000005d;
   border-radius: 10px !important;
 }
-
-.card-style {
-  border: 1px solid #00000023 !important;
-  border-radius: 10px !important;
+.style-card {
+  border-radius: 5px !important;
+  border-right: 5px solid #ee7e1c6c !important;
+  background-color: #fdfdfdd8 !important;
 }
 </style>

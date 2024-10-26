@@ -126,7 +126,6 @@ export default {
     "form.variation_type_id": {
       deep: true,
       handler() {
-        console.log("form.variation_type_id", this.allVariations);
         let find = this.allVariations.find(
           (f) => f.value == this.form.variation_type_id
         );
@@ -193,11 +192,9 @@ export default {
       this.$reqApi(this.showUrl, { id: this.modelId })
         .then((response) => {
          let data =  response.model;
-          console.log("response >>> " , data);
           
           if (Boolean(data.colors)) {
             this.select_color = true
-            console.log( "json", JSON.parse(data.value));
             let array = JSON.parse(data.value)
     array.map((x) => {
       this.color_ids.push(x)

@@ -1,14 +1,37 @@
 <template>
   <v-card class="pa-1 ma-0 elevation-0">
-    <v-expansion-panels variant="popout" class="my-4 elevation-5">
-      <v-expansion-panel>
+    <v-expansion-panels
+      variant="popout"
+      class="my-4 elevation-0 style-class"
+      focusable
+    >
+      <v-expansion-panel class="">
         <v-expansion-panel-header
-          expand-icon="webhook"
-          class="primary lighten-4"
+          expand-icon="tune"
+          class="text-center primary lighten-4"
         >
-          ویژگی ها
+          <strong class="font_17"> ویژگی ها</strong>
         </v-expansion-panel-header>
-        <v-expansion-panel-content class="primary lighten-5">
+        <v-expansion-panel-content>
+          <v-row class="mt-4 center-div">
+            <v-chip
+              dark
+              label
+              class="ma-2 mr-7 mt-4"
+              color="primary lighten-1"
+              v-for="item in items"
+              :key="item.key"
+              @click="tab = item.key"
+              :outlined="tab != item.key"
+            >
+              <span>
+                {{ item.text }}
+                <v-icon small class="mr-1">
+                  {{ item.icon }}
+                </v-icon>
+              </span>
+            </v-chip>
+          </v-row>
           <v-row>
             <template v-if="showAddVairiation">
               <v-col cols="12" md="3">
@@ -98,73 +121,116 @@
             </v-col>
           </v-row>
 
-          <v-row>
-            <v-col cols="12">
-              <amp-title
-                class="d-flex align-center"
-                text="ویژگی های محصول"
-              ></amp-title>
-            </v-col>
-          </v-row>
-
-          <v-row class="pa-2 mt-1">
-            <v-col cols="12" md="3" class="text-center"> ویژگی </v-col>
-            <v-col cols="12" md="3" class="text-center"> مقدار </v-col>
-            <!-- <v-col cols="12" md="2" class="text-center"> بارکد </v-col> -->
-            <v-col cols="12" md="1" class="text-center"> ترتیب </v-col>
-            <v-col cols="12" md="2" class="text-center"> گالری</v-col>
-            <v-col cols="12" md="3" class="text-center"> عملیات </v-col>
-          </v-row>
-   
-            <v-row
-              v-for="(v, index) in variations"
-              :key="'v' + index"
-              :class="index % 2 == 0 ? 'odd-row' : ''"
+          <div v-for="(v, index) in variations" :key="'v' + index">
+            <v-card
+              class="d-flex align-center style-card my-3 elevation-1"
+              outlined
             >
-            
-              <v-col cols="12" md="3" class="text-center">
-                {{ v.variation_type.value }}
+              <v-btn icon class="grey lighten-3 white--black mr-2" small>
+                <h1>{{ index + 1 }}</h1>
+              </v-btn>
+
+              <v-col
+                cols="12"
+                md="2"
+                class="text-center"
+                v-if="
+                  v.variation_type &&
+                  v.variation_type.value_2 == 'product_colors'
+                "
+                v-for="i in 3"
+                :key="i"
+              >
+                <amp-autocomplete
+                  v-model="v.value[i - 1]"
+                  :items="colors"
+                  :text="`${v.variation_type.value} ${i}`"
+                  :rules="i == 1 ? 'require' : ''"
+                />
               </v-col>
-              <v-col cols="12" md="3" class="text-center"
-                ><amp-input v-model="v.value" />
+              <v-col
+                cols="12"
+                md="2"
+                class="text-center"
+                v-if="
+                  v.variation_type &&
+                  v.variation_type.value_2 != 'product_colors'
+                "
+              >
+                <amp-input v-model="v.value" :text="v.variation_type.value" />
               </v-col>
-              <!-- <v-col cols="12" md="2" class="text-center"
-        ><amp-input v-model="v.barcode"
-      /></v-col> -->
+
               <v-col cols="12" md="1" class="text-center"
-                ><amp-input v-model="v.sort" rules="number" />
+                ><amp-input v-model="v.sort" text="ترتیب" rules="number" />
+              </v-col>
+              <v-col
+                cols
+                v-if="v.codes && v.codes.length > 0"
+                class="text-center"
+              >
+                <v-progress-circular
+                  v-if="v.codes.length > 0"
+                  :value="v.percent"
+                  :rotate="120"
+                  class="pa-2"
+                  :size="25"
+                  :width="13"
+                  :color="v.codes[0]"
+                >
+                  <v-progress-circular
+                    v-if="v.codes.length > 1"
+                    :value="v.percent"
+                    :rotate="240"
+                    :size="25"
+                    :width="13"
+                    :color="v.codes[2]"
+                  >
+                    <v-progress-circular
+                      v-if="v.codes.length > 2"
+                      :value="v.percent"
+                      :rotate="360"
+                      :size="25"
+                      :width="13"
+                      :color="v.codes[3]"
+                    >
+                    </v-progress-circular>
+                  </v-progress-circular>
+                </v-progress-circular>
               </v-col>
               <v-col
                 cols="12"
                 md="2"
                 class="d-flex justify-center"
-                v-if="v.variation_type && v.variation_type.value == 'رنگ'"
+                v-if="
+                  v.variation_type &&
+                  v.variation_type.value_2 == 'product_colors'
+                "
               >
                 <v-btn color="primary" @click="GalleryDialog(true, v, index)">
                   <v-icon>image</v-icon>
                 </v-btn>
               </v-col>
-              <v-col cols="12" md="2" v-else></v-col>
-              <v-col cols="12" md="3" class="text-center">
-                <amp-button
+              <v-spacer></v-spacer>
+              <v-col cols="12" md="2" class="text-center">
+                <v-btn
                   small
-                  text="به روز رسانی"
                   color="success"
                   :loading="loading"
                   @click="update(index)"
                 >
-                </amp-button>
-                <amp-button
+                  بروز رسانی
+                </v-btn>
+                <v-btn
                   small
-                  text="حذف"
                   color="error"
                   :loading="loading"
                   @click="deleteDialog(true, index)"
                 >
-                </amp-button>
+                  حذف
+                </v-btn>
               </v-col>
-            </v-row>
-
+            </v-card>
+          </div>
 
           <v-dialog
             v-model="deleteDiaolog"
@@ -221,6 +287,10 @@ export default {
     product_categories: [],
     products: [],
     images: [],
+    total_variations: [],
+    colors_ids: [],
+
+    colors: [],
     form: {
       id: "",
       sort: 1,
@@ -233,13 +303,22 @@ export default {
       images: [],
       code: "",
     },
+    tab: "all",
+    items: [
+      { text: "  همه ویژگی ها", key: "all", icon: "format_list_bulleted" },
+      { text: " رنگ ", key: "color", icon: "palette" },
+      { text: "سایز", key: "size", icon: "straighten" },
+      { text: "کیفیت", key: "quality", icon: "stars" },
+    ],
   }),
 
   mounted() {
     this.loadData();
     this.getCategories();
     this.getProducts();
+    this.getColors();
   },
+
   watch: {
     "form.category_id"() {
       if (this.form.category_id) {
@@ -256,6 +335,26 @@ export default {
         });
       }
     },
+
+    tab() {
+      let data = JSON.parse(JSON.stringify(this.total_variations));
+      let items = [];
+      if (this.tab == "color") {
+        items = data.filter(
+          (f) => f.variation_type.value_2 == "product_colors"
+        );
+      }
+      if (this.tab == "size") {
+        items = data.filter((f) => f.variation_type.value_2 == "size");
+      }
+      if (this.tab == "quality") {
+        items = data.filter((f) => f.variation_type.value_2 == "quality");
+      }
+      if (this.tab == "all") {
+        items = data;
+      }
+      this.variations = items;
+    },
   },
   methods: {
     loadData() {
@@ -263,21 +362,62 @@ export default {
       this.$reqApi("/product-variation", {
         filters: { product_id: this.$route.params.id },
       })
-        .then(async (response) => {
+        .then((response) => {
           this.variations = [];
-          response = response.model.data;
-          for (let i = 0; response.length; i++) {
-            this.variations.push({
-              id: response[i].id,
-              value: response[i].value,
-              variation_type: response[i].variation_type,
-              product_id: response[i].product_id,
-              sort: response[i].sort,
-              code: response[i].code,
-              variation_type_id: response[i].variation_type_id,
-              images: response[i].product_images,
-            });
+
+          let data = response.model.data;
+          let items = [];
+          let color_ids = [];
+          let color_codes = [];
+          let percent = "100";
+
+          for (let index = 0; index < data.length; index++) {
+            const x = data[index];
+            if (x.variation_type.value_2 == "product_colors") {
+              if (x.value.startsWith("[")) {
+                color_ids = JSON.parse(x.value);
+                if (Boolean(x.codes)) {
+                  color_codes = x.codes;
+                  if (color_codes.length > 2) {
+                    percent = "33.333";
+                  } else if (color_codes.length == 2) {
+                    percent = "50";
+                  } else if (color_codes.length == 1) {
+                    percent = "100";
+                  }
+                }
+                console.log("ssa");
+
+                items.push({
+                  id: x.id,
+                  value: color_ids,
+                  variation_type: x.variation_type,
+                  product_id: x.product_id,
+                  sort: x.sort,
+                  code: x.code,
+                  variation_type_id: x.variation_type_id,
+                  images: x.product_images,
+                  codes: color_codes,
+                  percent: percent,
+                });
+              }
+            } else {
+              items.push({
+                id: x.id,
+                value: x.value,
+                variation_type: x.variation_type,
+                product_id: x.product_id,
+                sort: x.sort,
+                code: x.code,
+                variation_type_id: x.variation_type_id,
+                images: x.product_images,
+              });
+            }
           }
+
+          this.variations = items;
+          this.total_variations = items;
+
           this.loading = false;
         })
         .catch((error) => {
@@ -418,6 +558,28 @@ export default {
         this.update(event[1], event[0]);
       }
     },
+    getColors() {
+      console.log("sss");
+      let filter = {
+        op: "=",
+        key: "product_colors",
+      };
+      this.$reqApi("/setting", { filters: filter, row_number: 30000 })
+        .then((res) => {
+          let data = res.model.data;
+          let items = [];
+          for (let index = 0; index < data.length; index++) {
+            const x = data[index];
+            items.push({
+              text: x.value,
+              value: x.id,
+              value_2: x.value_2,
+            });
+          }
+          this.colors = items;
+        })
+        .catch((err) => {});
+    },
   },
 };
 </script>
@@ -425,5 +587,13 @@ export default {
 .senced_dialog {
   position: relative;
   z-index: 300;
+}
+.style-class {
+  border-radius: 10px !important;
+}
+.style-card {
+  border-radius: 5px !important;
+  border-right: 5px solid #ee7e1c6c !important;
+  background-color: #fdfdfdd8 !important;
 }
 </style>

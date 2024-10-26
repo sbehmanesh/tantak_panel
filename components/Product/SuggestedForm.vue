@@ -146,7 +146,6 @@ export default {
       this.$reqApi("best-buy-product/show", { id: this.modelId })
         .then((response) => {
           let data = response.data;
-          console.log(data);
           for (let key in data) {
             this.form[key] = data[key];
           }

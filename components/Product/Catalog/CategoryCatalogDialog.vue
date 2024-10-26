@@ -43,7 +43,7 @@
           <v-row class="d-flex justify-center">
             <v-card
               v-if="!loading"
-              class=" card-style mx-1 mb-2 pa-2 elevation-0 "
+              class="card-style mx-1 mb-2 pa-2 elevation-0"
               :width="products.length == 1 ? '97%' : '48%'"
               v-for="(item, index) in products"
               :key="index"
@@ -74,9 +74,14 @@
                 </v-row>
               </v-col>
             </v-card>
+            <v-card v-if="!loading && products.length == 0" class="text-center pa-10 elevation-0" >
+          <strong class="font_18">
+            برای این محصول دسته بندی تعریف نشده
+          </strong>  
+            </v-card>
             <v-card
               v-if="loading"
-              class="elevation-0 mx-1 mb-2 pa-2 "
+              class="elevation-0 mx-1 mb-2 pa-2"
               width="48%"
               v-for="i in 4"
               :key="`skeleton-${i}`"
@@ -125,7 +130,6 @@ export default {
     };
   },
   mounted() {
-
     if (Boolean(this.catgoryId)) {
       this.loadCatalogs();
     }

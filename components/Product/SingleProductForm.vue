@@ -1,7 +1,7 @@
 <template>
   <div>
-    <v-row>
-      <v-col cols="12" md="12">
+    <v-row class=" justify-center ">
+      <v-col cols="12" md="9">
         <CombinationForm
           :product_id="product.id"
           @closeAddCombination="closeAddCombination()"
@@ -9,7 +9,7 @@
           :dataItems="product.category_ids"
         />
       </v-col>
-      <v-col cols="12" md="12">
+      <v-col cols="12" md="9">
         <VariationForm
           :product_id="product.id"
           @closeVariationForm="closeVariationForm()"
@@ -200,6 +200,8 @@ export default {
       form["has_single_sell"] = parseInt(form["has_single_sell"]);
       form["has_whole_sell"] = parseInt(form["has_whole_sell"]);
       form["mixturable"] = parseInt(form["mixturable"]);
+ 
+      
 
       this.loading = true;
       let url = this.createUrl;

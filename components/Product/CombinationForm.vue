@@ -1,23 +1,23 @@
 <template>
   <v-card class="pa-1 ma-0 elevation-0">
-    <v-expansion-panels variant="popout" class="my-4 elevation-5">
+    <v-expansion-panels class="my-4 elevation-0 style-class" focusable>
       <v-expansion-panel>
         <v-expansion-panel-header
-          expand-icon="precision_manufacturing"
-          class="primary lighten-4"
+          expand-icon="add_circle"
+          class="primary lighten-4 text-center"
         >
-          ترکیب جدید
+          <strong class="font_17"> ایجاد ترکیب جدید</strong>
         </v-expansion-panel-header>
-        <v-expansion-panel-content class="primary lighten-5">
-          <v-form v-model="valid" @submit.prevent="submit()" >
-            <v-card class="elevation-0 primary lighten-5 mt-4 " :disabled="loading">
+        <v-expansion-panel-content>
+          <v-form v-model="valid" @submit.prevent="submit()">
+            <v-card class="elevation-0 mt-4" :disabled="loading">
               <v-row v-if="!loading">
                 <v-col cols="12">
                   <amp-title
                     text="افزودن تنوع فروش جدید برای این محصول"
                   ></amp-title>
                 </v-col>
-                <v-col cols="2" v-for="(v, index) in variations" :key="v.id">
+                <v-col cols="12" md="3" v-for="(v, index) in variations" :key="v.id">
                   <amp-select
                     v-if="index == 0"
                     :text="v.text.value"
@@ -49,7 +49,7 @@
                     rules="require"
                   />
                 </v-col>
-                <v-col cols="2">
+                <v-col cols="12" md="3">
                   <amp-input
                     is-price
                     text="قیمت تومان"
@@ -58,7 +58,7 @@
                   />
                 </v-col>
 
-                <v-col cols="2">
+                <v-col cols="12" md="3">
                   <amp-input
                     is-price
                     text="تخفیف"
@@ -66,7 +66,7 @@
                     rules="percent"
                   />
                 </v-col>
-                <v-col cols="2">
+                <v-col cols="12" md="3">
                   <amp-input
                     is-price
                     text="حداقل"
@@ -74,7 +74,7 @@
                     :rules="sellType == 'single' ? '' : 'require'"
                   />
                 </v-col>
-                <v-col cols="2">
+                <v-col cols="12" md="3">
                   <amp-input
                     is-price
                     text="حداکثر"
@@ -104,17 +104,20 @@
               </v-row>
             </v-card>
           </v-form>
-          <v-card :disabled="loading"  class="elevation-0 primary lighten-5 mt-4 " v-if="loading" >
-            <v-col cols="12" class="text-center py-10" >
-            <v-progress-circular
-              :width="5"
-              :size="45"
-              color="grey"
-              indeterminate
-            ></v-progress-circular>
-          </v-col>
+          <v-card
+            :disabled="loading"
+            class="elevation-0 primary lighten-5 mt-4"
+            v-if="loading"
+          >
+            <v-col cols="12" class="text-center py-10">
+              <v-progress-circular
+                :width="5"
+                :size="45"
+                color="grey"
+                indeterminate
+              ></v-progress-circular>
+            </v-col>
           </v-card>
-
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -177,6 +180,7 @@ export default {
       })
         .then(async (response) => {
           let re = response.model.data;
+
           re.map((x) => {
             this.all_variations.push({
               text: x.value,
@@ -217,19 +221,36 @@ export default {
         this.$reqApi("/product-variation", { filters: filters })
           .then(async (response) => {
             let re = response.model.data;
+
             for (let i = 0; i < re.length; i++) {
               if (!this.variations_ids.includes(re[i].variation_type_id)) {
                 let items = [];
                 this.variations_ids.push(re[i].variation_type_id);
                 for (let j = 0; j < re.length; j++) {
                   if (re[j].variation_type_id == re[i].variation_type_id) {
-                    items.push({
-                      text: re[j].value,
-                      value: re[j].id,
-                      id: re[j].id,
-                    });
+                    if (re[j].variation_type.value_2 == "product_colors") {
+                      let value_json = [];
+                      if (re[j].value.startsWith("[")) {
+                        value_json = JSON.parse(re[j].value);
+                      }
+                      let text = re[j].colors ? re[j].colors : re[j].value;
+                      items.push({
+                        text: text,
+                        value: value_json,
+                        id: re[j].id,
+                        type: re[j].variation_type.value_2,
+                      });
+                    } else {
+                      items.push({
+                        text: re[j].value,
+                        value: re[j].id,
+                        id: re[j].id,
+                        type: re[j].variation_type.value_2,
+                      });
+                    }
                   }
                 }
+
                 this.variations.push({
                   text: re[i].variation_type,
                   value: re[i].variation_type_id,
@@ -237,6 +258,7 @@ export default {
                 });
               }
             }
+
             this.loading = false;
           })
           .catch((error) => {
@@ -263,16 +285,24 @@ export default {
       return ids;
     },
     setVariationId(value, sort, variation_type_id, v) {
+      let items = {};
       if (Boolean(v)) {
-        let find_text = v.items.find((t) => t.id == value);
-        if (Boolean(find_text)) {
-          let items = {};
+
+        if (typeof value == "object") {
           items["sort"] = sort;
-          items["value"] = find_text.text;
+          items["type"] = value[0].type;
           items["value_id"] = value;
           items["variation_type_id"] = variation_type_id;
-          this.selected_variations.push(items);
+        } else {
+          let find = v.items.find((t) => t.id == value);
+          if (Boolean(find)) {
+            items["sort"] = sort;
+            items["type"] = value[0].type;
+            items["value_id"] = find.text;
+            items["variation_type_id"] = variation_type_id;
+          }
         }
+        this.selected_variations.push(items);
       }
     },
     createNewVariation(id, count) {
@@ -310,18 +340,32 @@ export default {
       return new Promise((res, rej) => {
         let form = {};
         let variation = this.selected_variations.find((x) => x.sort == 1);
+
         if (Boolean(variation)) {
-          form = {
-            variation_type_id: variation.variation_type_id,
-            product_id: this.product_id,
-            value: variation.value,
-          };
+          if (variation.type == "product_colors") {
+            let id = [];
+            id.push(variation.value_id);
+            form = {
+              variation_type_id: variation.variation_type_id,
+              product_id: this.product_id,
+              value: id,
+            };
+          } else {
+            form = {
+              variation_type_id: variation.variation_type_id,
+              product_id: this.product_id,
+              value: variation.value_id,
+            };
+          }
+
           this.$reqApi("/product-variation/insert", form)
             .then((response) => {
               this.form["variation_1_id"] = response.id;
               res(response.id);
             })
-            .catch((err) => {});
+            .catch((err) => {
+              this.loading = false;
+            });
         }
       })
         .then((res) => {
@@ -339,14 +383,16 @@ export default {
           form = {
             variation_type_id: variation.variation_type_id,
             product_id: this.product_id,
-            value: variation.value,
+            value: variation.value_id,
           };
           this.$reqApi("/product-variation/insert", form)
             .then((response) => {
               this.form["variation_2_id"] = response.id;
               res(response.id);
             })
-            .catch((err) => {});
+            .catch((err) => {
+              this.loading = false;
+            });
         }
       })
         .then((res) => {
@@ -364,14 +410,16 @@ export default {
           form = {
             variation_type_id: variation.variation_type_id,
             product_id: this.product_id,
-            value: variation.value,
+            value: variation.value_id,
           };
           this.$reqApi("/product-variation/insert", form)
             .then((response) => {
               this.form["variation_3_id"] = response.id;
               res(response.id);
             })
-            .catch((err) => {});
+            .catch((err) => {
+              this.loading = false;
+            });
         }
       })
         .then((res) => {
@@ -384,3 +432,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+.style-class {
+  border-radius: 10px !important;
+}
+</style>

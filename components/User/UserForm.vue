@@ -262,7 +262,7 @@ export default {
             -1
         )
       ) {
-        this.$store.dispatch("setting/setgetRegion");
+        this.$store.dispatch("setting/setgetRegion")
         return true;
       } else {
         return false;

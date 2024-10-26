@@ -279,7 +279,6 @@ export default {
     updateAll(data) {
       try {
       } catch (error) {
-        console.log(error);
       }
     },
     emitDataTable(data) {

@@ -8,7 +8,7 @@
         >
           ترکیب جدید
         </v-expansion-panel-header>
-        <v-expansion-panel-content class="primary lighten-5">
+        <v-expansion-panel-content class="grey lighten-5">
           <v-form v-model="valid" @submit.prevent="submit()" >
             <v-card class="elevation-0 primary lighten-5 mt-4 " :disabled="loading">
               <v-row v-if="!loading">
@@ -164,8 +164,11 @@ export default {
   },
   watch: {
     dataItems() {
+      console.log("(this.dataItems",this.dataItems);
+      
       if (this.dataItems) {
         this.loadVariationItems();
+        console.log("variations >>>>" , this.variations);
       }
     },
   },
@@ -177,6 +180,9 @@ export default {
       })
         .then(async (response) => {
           let re = response.model.data;
+          console.log("))------------------------------->", x);
+          console.log("))------------------------------->", x);
+          
           re.map((x) => {
             this.all_variations.push({
               text: x.value,
@@ -237,6 +243,8 @@ export default {
                 });
               }
             }
+
+            
             this.loading = false;
           })
           .catch((error) => {

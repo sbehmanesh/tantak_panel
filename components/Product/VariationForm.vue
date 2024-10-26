@@ -1,7 +1,7 @@
 <template>
   <v-card class="pa-1 ma-0 elevation-0">
     <v-expansion-panels variant="popout" class="my-4 elevation-0 style-class">
-      <v-expansion-panel>
+      <v-expansion-panel class="primary lighten-4">
         <v-expansion-panel-header expand-icon="webhook">
           ویژگی ها
         </v-expansion-panel-header>
@@ -162,34 +162,36 @@
                 v-if="v.codes && v.codes.length > 0"
                 class="text-center"
               >
-                <v-progress-circular
-                  v-if="v.codes[0]"
-                  value="33"
-                  :rotate="360"
-                  class="pa-2"
-                  :size="35"
-                  :width="18"
-                  :color="v.codes[0]"
-                >
+   
                   <v-progress-circular
-                    v-if="v.codes[1]"
+                    v-if="v.codes[0]"
                     value="33"
-                    :rotate="240"
-                    :size="35"
-                    :width="18"
-                    :color="v.codes[2]"
+                    :rotate="360"
+                    class="pa-2"
+                    :size="25"
+                    :width="13"
+                    :color="v.codes[0]"
                   >
                     <v-progress-circular
-                      v-if="v.codes[3]"
+                      v-if="v.codes[1]"
                       value="33"
-                      :rotate="120"
-                      :size="35"
-                      :width="18"
-                      :color="v.codes[3]"
+                      :rotate="240"
+                      :size="25"
+                      :width="13"
+                      :color="v.codes[2]"
                     >
+                      <v-progress-circular
+                        v-if="v.codes[3]"
+                        value="33"
+                        :rotate="120"
+                        :size="25"
+                        :width="13"
+                        :color="v.codes[3]"
+                      >
+                      </v-progress-circular>
                     </v-progress-circular>
                   </v-progress-circular>
-                </v-progress-circular>
+         
               </v-col>
               <v-col
                 cols="12"
@@ -308,6 +310,8 @@ export default {
   }),
 
   mounted() {
+    console.log("c");
+    console.log("c");
     console.log("c");
     console.log("c");
     this.loadData();

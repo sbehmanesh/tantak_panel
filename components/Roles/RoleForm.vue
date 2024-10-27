@@ -2,7 +2,7 @@
   <v-form
     v-model="valid"
     @submit.prevent="submit()"
-    :disabled="loader"
+    :disabled="loading"
     class="rounded-0 pa-2 d-flex flex-column"
   >
     <v-row class="ma-2">
@@ -42,7 +42,7 @@
         type="submit"
         icon="done"
         class="ma-1"
-        :loading="loader"
+        :loading="loading"
       ></amp-button>
     </v-row>
   </v-form>
@@ -62,7 +62,7 @@ export default {
   data() {
     return {
       valid: true,
-      loader: false,
+      loading: false,
       panel: [],
       form: {
         name: "",
@@ -100,29 +100,31 @@ export default {
   },
   methods: {
     submit() {
-      this.loader = true;
+      this.loading = true;
       let form = { ...this.form };
+      const unique_ids = [...new Set(form.action_id)];
+      form.action_id = unique_ids;
       let url = this.modelId ? this.updateUrl : this.createUrl;
       this.$reqApi(url, form)
         .then((response) => {
-          this.loader = false;
+          this.loading = false;
           this.back();
         })
         .catch((err) => {
-          this.loader = false;
+          this.loading = false;
         });
     },
     loadData() {
-      this.loader = true;
+      this.loading = true;
       this.$reqApi(this.showUrl, { id: this.modelId })
         .then((response) => {
           this.form.id = this.modelId;
           this.form.name = response.model.name;
           this.setActions(response.model.actions);
-          this.loader = false;
+          this.loading = false;
         })
         .catch((error) => {
-          this.loader = false;
+          this.loading = false;
         });
     },
     setActions(data) {

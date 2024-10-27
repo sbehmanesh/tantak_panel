@@ -414,6 +414,7 @@ export default {
   },
   methods: {
     addBasket(event) {
+      
       this.loading = true;
       let repetitious_item = false;
 
@@ -425,13 +426,15 @@ export default {
           this.$toast.success(`${event.name} بروزرسانی شد `);
         }
       }
-
+      let set_var_1 = Boolean(event.product.variation1.colors)
+          ? event.product.variation1.colors
+          : event.product.variation1.colors.value;
       if (!Boolean(repetitious_item)) {
         this.list_basket.items.unshift({
           information:
             event.product.variation1.variation_type.value +
             " " +
-            event.product.variation1.value +
+            set_var_1 +
             " - " +
             event.product.variation2.variation_type.value +
             " " +

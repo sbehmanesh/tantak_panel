@@ -150,13 +150,22 @@
           </v-avatar>
           <v-spacer></v-spacer>
 
-          <h1  :class="$vuetify.breakpoint.mdAndUp ? '':'font_11'" class="mr-3">
+          <h1
+            :class="$vuetify.breakpoint.mdAndUp ? '' : 'font_11'"
+            class="mr-3"
+          >
             {{ item.variation1.product.name }}
           </h1>
           <v-spacer></v-spacer>
 
-          <h1 :class="$vuetify.breakpoint.mdAndUp ? '':'font_11'">
-            {{ item.variation1.value }} / {{ item.variation2.value }} /
+          <h1 :class="$vuetify.breakpoint.mdAndUp ? '' : 'font_11'">
+            <span v-if="Boolean(item.variation1.colors)">
+              {{ item.variation1.colors }}
+            </span>
+            <span v-else>
+              {{ item.variation1.value }}
+            </span>
+            / {{ item.variation2.value }} /
             {{ item.variation3.value }}
           </h1>
           <v-spacer></v-spacer>
@@ -167,7 +176,7 @@
           <v-col cols="12" class="text-center">
             <v-divider class="mb-4"></v-divider>
             <v-row class="pa-2" v-if="$vuetify.breakpoint.mdAndUp">
-              <strong  :class="$vuetify.breakpoint.mdAndUp ? '':'font_11'">
+              <strong :class="$vuetify.breakpoint.mdAndUp ? '' : 'font_11'">
                 قیمت محصول :
                 {{ $price(item.product_price) }} ریال
               </strong>
@@ -193,13 +202,13 @@
                 </v-btn>
               </v-row>
               <v-spacer></v-spacer>
-              <strong :class="$vuetify.breakpoint.mdAndUp ? '':'font_11'">
+              <strong :class="$vuetify.breakpoint.mdAndUp ? '' : 'font_11'">
                 قیمت کل :
                 {{ $price(item.count * item.product_price) }} ریال
               </strong>
             </v-row>
             <v-col cols="12" v-else class="text-center">
-              <strong :class="$vuetify.breakpoint.mdAndUp ? '':'font_11'">
+              <strong :class="$vuetify.breakpoint.mdAndUp ? '' : 'font_11'">
                 قیمت محصول :
                 {{ $price(item.product_price) }} ریال
               </strong>
@@ -224,7 +233,7 @@
                   </v-chip>
                 </v-btn>
               </v-row>
-              <strong :class="$vuetify.breakpoint.mdAndUp ? '':'font_11'">
+              <strong :class="$vuetify.breakpoint.mdAndUp ? '' : 'font_11'">
                 قیمت کل :
                 {{ $price(item.count * item.product_price) }} ریال
               </strong>
@@ -420,6 +429,7 @@ export default {
               } else {
                 price = x.price;
               }
+
               item.push({
                 count: x.number,
                 variation1: x.pro_var_com.variation1,
@@ -494,7 +504,6 @@ export default {
           let set_title = [];
           this.all_variatons_product = response.model.data;
           // ساختار کلی variations
-
           if (Boolean(response.model.data[0])) {
             if (response.model.data[0].variation1) {
               this.step_var_1 = true;
@@ -528,23 +537,30 @@ export default {
           let items_var_1 = [];
           let items_var_2 = [];
           let items_var_3 = [];
-          for (let index = 0; index < response.model.data.length; index++) {
-            const element = response.model.data[index];
-            if (Boolean(this.step_var_1)) {
+          let data = response.model.data;
+          for (let index = 0; index < data.length; index++) {
+            const element = data[index];
+            if (Boolean(this.step_var_1) && Boolean(element.variation1)) {
+              let text = Boolean(element.variation1.colors)
+                ? element.variation1.colors
+                : element.variation1.value;
+              let value = element.variation1.value.startsWith("[/")
+                ? JSON.parse(element.variation1.value)
+                : element.variation1.id;
               items_var_1.push({
-                text: element.variation1.value,
-                value: element.variation1.id,
+                text: text,
+                value: value,
               });
             }
 
-            if (Boolean(this.step_var_2)) {
+            if (Boolean(this.step_var_2) && Boolean(element.variation2)) {
               items_var_2.push({
                 text: element.variation2.value,
                 value: element.variation2.id,
                 parent: element.variation_1_id,
               });
             }
-            if (Boolean(this.step_var_3)) {
+            if (Boolean(this.step_var_3) && Boolean(element.variation3)) {
               items_var_3.push({
                 text: element.variation3.value,
                 value: element.variation3.id,
@@ -552,6 +568,7 @@ export default {
               });
             }
           }
+
           if (Boolean(this.step_var_1)) {
             this.product_sort_1["title"] = set_title.var_1.title;
             this.product_sort_1["items"] = items_var_1;
@@ -575,6 +592,7 @@ export default {
     },
 
     addVariation() {
+
       let check = this.variations_list.find(
         (f) => f.id == this.selected_product.id
       );
@@ -586,7 +604,11 @@ export default {
         this.loading_add = true;
         setTimeout(() => {
           this.selected_product["count"] = this.number;
-
+          this.selected_product.variation1.value = Boolean(
+            this.selected_product.variation1.colors
+          )
+            ? this.selected_product.variation1.colors
+            : this.selected_product.variation1.value;
           this.variations_list.unshift(this.selected_product);
           this.number = 1;
 
@@ -669,7 +691,6 @@ export default {
           this.sumb_price = this.main_price;
         })
         .catch((rej) => {
-          console.log(rej);
         });
     },
   },

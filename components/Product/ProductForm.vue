@@ -581,7 +581,6 @@ export default {
             this.form.sort = response.sort;
             this.loading = false;
           } catch (error) {
-            console.log(error);
           }
         })
         .catch((error) => {

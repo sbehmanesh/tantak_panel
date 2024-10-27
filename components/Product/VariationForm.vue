@@ -1,10 +1,6 @@
 <template>
   <v-card class="pa-1 ma-0 elevation-0">
-    <v-expansion-panels
-      variant="popout"
-      class="my-4 elevation-0 style-class"
-      focusable
-    >
+    <v-expansion-panels variant="popout" class="my-4 elevation-0 style-class">
       <v-expansion-panel class="">
         <v-expansion-panel-header
           expand-icon="tune"
@@ -18,7 +14,7 @@
               dark
               label
               class="ma-2 mr-7 mt-4"
-              color="primary lighten-1"
+              color="primary darken-1"
               v-for="item in items"
               :key="item.key"
               @click="tab = item.key"
@@ -386,8 +382,6 @@ export default {
                     percent = "100";
                   }
                 }
-                console.log("ssa");
-
                 items.push({
                   id: x.id,
                   value: color_ids,
@@ -559,7 +553,6 @@ export default {
       }
     },
     getColors() {
-      console.log("sss");
       let filter = {
         op: "=",
         key: "product_colors",

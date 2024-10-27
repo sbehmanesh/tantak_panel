@@ -226,7 +226,6 @@ this.location.push(res.long);
           }
         })
         .catch((rej) => {
-          console.log(rej);
           this.loading = false;
         });
     },

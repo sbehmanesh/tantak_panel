@@ -655,6 +655,7 @@ export default {
         });
     },
     addBasket(event) {
+      
       this.loading = true;
       let repetitious_item = false;
       for (let index = 0; index < this.list_basket.items.length; index++) {

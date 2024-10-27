@@ -143,23 +143,12 @@ export default {
                   this.username_employee = response.model.data[0].username;
                 })
                 .catch((error) => {
-                  console.log(error);
                 });
             }
-            ////////////////////////////////// this function maybe add in the future
-            // if (res.count_work > 0) {
-            //   let items = [];
-            //   for (let index = 0; index < res.array_work.length; index++) {
-            //     const element = this.res.array_work[index];
-
-            //     items.push(element);
-            //   }
-            //   this.count_works = items;
-            // }
+ 
           })
 
           .catch((error) => {
-            console.log(error);
           });
       }
     },

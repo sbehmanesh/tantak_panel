@@ -585,7 +585,6 @@ export default {
         this.$reqApi(event[1], form)
           .then((res) => {})
           .catch((err) => {
-            console.log(err);
             return err;
           });
       }

@@ -1201,7 +1201,6 @@ export default {
 
       //   }
       // ).catch((err)=>{
-      //   console.log(err);
       // })
       // this.call_dialog.show = true;
       // this.call_dialog.item = username;

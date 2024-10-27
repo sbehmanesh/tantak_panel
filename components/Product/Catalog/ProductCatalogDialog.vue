@@ -59,21 +59,26 @@
                 v-for="(item, index) in variations"
                 :key="index"
               >
-                <v-spacer></v-spacer>
-                <strong>{{ item.var1.value }} {{ item.var2.value }}</strong>
-                <v-spacer></v-spacer>
-                <v-col cols="5" class="text-center">
+                <v-col cols="3">
+                  <h1 v-if="Boolean(item.var1.colors)">
+                    {{ item.var1.colors }} {{ item.var2.value }}
+                  </h1>
+                  <h1 v-else>{{ item.var1.value }} {{ item.var2.value }}</h1>
+                </v-col>
+                <v-col cols="3">
+                  <small>
+                    {{ item.full_barcode }}
+                  </small>
+                </v-col>
+
+                <v-col cols="3" class="text-center">
                   <strong v-if="item.price"
                     >{{ $price(item.price) }} ریال</strong
                   >
                 </v-col>
-                <v-spacer></v-spacer>
-                <small>
-                  {{ item.full_barcode }}
-                </small>
-                <v-spacer></v-spacer>
-
-                <Qrcode width="60" :barcode="item.full_barcode" />
+                <v-col cols="3">
+                  <Qrcode width="60" :barcode="item.full_barcode" />
+                </v-col>
               </v-card>
             </v-col>
           </v-col>
@@ -138,6 +143,8 @@ export default {
       })
         .then((res) => {
           this.variations = res.model.data;
+          console.log("variations >>>>", this.variations);
+
           if (res.model.data.length > 0) {
             this.product = res.model.data[0].product;
             this.images = res.model.data[0].var1.product_images;

@@ -277,7 +277,7 @@ export default {
               product_name = body.product_var.product.name;
             }
             if (body.product_var.variation1) {
-              var_1 = body.product_var.variation1.value;
+              var_1 = Boolean(body.product_var.variation1.colors) ?  body.product_var.variation1.colors : body.product_var.variation1.value;
             }
             if (body.product_var.variation2) {
               var_2 = body.product_var.variation2.value;

@@ -19,7 +19,6 @@ export default {
     };
   },
   mounted() {
-    console.log(this.error);
     this.$router.push("/error");
     setTimeout(() => {
       document.getElementById("landing-parent").style.display = "none";

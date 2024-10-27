@@ -107,7 +107,6 @@ export default {
           }, 3000);
         })
         .catch((err) => {
-          console.log(err);
         });
     },
     closeDialog() {

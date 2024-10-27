@@ -279,6 +279,7 @@ export default {
       this.step_var_2 = false;
       this.step_var_3 = false;
       this.check = false;
+
       this.$reqApi("product-variation-combination/variety-list", {
         product_id: id,
       })
@@ -323,24 +324,30 @@ export default {
           let items_var_1 = [];
           let items_var_2 = [];
           let items_var_3 = [];
-          for (let index = 0; index < response.model.data.length; index++) {
-            const element = response.model.data[index];
-
-            if (Boolean(this.step_var_1)) {
+          let data = response.model.data;
+          for (let index = 0; index < data.length; index++) {
+            const element = data[index];
+            if (Boolean(this.step_var_1) && Boolean(element.variation1)) {
+              let text = Boolean(element.variation1.colors)
+                ? element.variation1.colors
+                : element.variation1.value;
+              let value = element.variation1.value.startsWith("[/")
+                ? JSON.parse(element.variation1.value)
+                : element.variation1.id;
               items_var_1.push({
-                text: element.variation1.value,
-                value: element.variation1.id,
+                text: text,
+                value: value,
               });
             }
 
-            if (Boolean(this.step_var_2)) {
+            if (Boolean(this.step_var_2) && Boolean(element.variation2)) {
               items_var_2.push({
                 text: element.variation2.value,
                 value: element.variation2.id,
                 parent: element.variation_1_id,
               });
             }
-            if (Boolean(this.step_var_3)) {
+            if (Boolean(this.step_var_3) && Boolean(element.variation3)) {
               items_var_3.push({
                 text: element.variation3.value,
                 value: element.variation3.id,
@@ -462,7 +469,6 @@ export default {
           this.$emit("productId", res.id);
         })
         .catch((rej) => {
-          console.log(rej);
         });
     },
   },

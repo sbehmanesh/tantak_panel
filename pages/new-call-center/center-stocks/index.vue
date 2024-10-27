@@ -18,12 +18,13 @@
       v-if="show_dialog"
       @closeDialog="closeDialog"
     />
+
   </v-row>
 </template>
 
 <script>
 import BaseTable from "~/components/DataTable/BaseTable";
-import Dialog from "~/components/NewCallCenter/CenterStok/Dialog.vue";
+import Dialog from "@/components/Product/Representative/Dialog.vue";
 export default {
   components: { BaseTable , Dialog },
   data: () => ({
@@ -72,9 +73,9 @@ export default {
     ];
     this.btn_actions = [
       {
-        text: "موجودی تعریف",
+        text: " تعریف موجودی ",
         icon: "storefront",
-        color: "primary",
+        color: "red",
         fun: (body) => {
           this.id = body.id;
           this.show_dialog = true;

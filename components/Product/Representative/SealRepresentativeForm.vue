@@ -438,7 +438,6 @@ export default {
           }
         })
         .catch((rej) => {
-          console.log(rej);
           this.loading = false;
         });
     },

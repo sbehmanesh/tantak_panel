@@ -133,15 +133,21 @@
       </v-col>
 
       <v-col cols="12" md="8" class="mt-8">
-        <v-card v-for="(item, index) in variations_list" :key="index" class=" pa-3 ma-5 grey lighten-3" >
+        <v-card
+          v-for="(item, index) in variations_list"
+          :key="index"
+          outlined
+          class="pa-3 ma-5 grey lighten-2 elevation-0"
+        >
           <v-row class="px-5 py-4 mr-3 align-center">
-            <h1 >
-              {{ index + 1 }} - {{ item.variation1.product.name }}
-            </h1>
+            <h1>{{ index + 1 }} - {{ item.variation1.product.name }}</h1>
             <v-spacer></v-spacer>
-            <h1> {{ item.variation1.value }} </h1>
-            <h1 class="mx-2"> {{ item.variation2.value }} </h1>
-            <h1> {{ item.variation3.value }} </h1>
+            <h1 v-if="Boolean(item.variation1.colors)">
+              {{ item.variation1.colors }}
+            </h1>
+            <h1 v-else>{{ item.variation1.value }}</h1>
+            <h1 class="mx-2">{{ item.variation2.value }}</h1>
+            <h1>{{ item.variation3.value }}</h1>
             <v-spacer></v-spacer>
             <v-row class="d-flex justify-center mt-1">
               <v-btn text @click="addNumber(item, true, 'list')" x-small>
@@ -369,6 +375,7 @@ export default {
       this.step_var_2 = false;
       this.step_var_3 = false;
       this.check = false;
+
       this.$reqApi("product-variation-combination/variety-list", {
         product_id: id,
       })
@@ -410,23 +417,30 @@ export default {
           let items_var_1 = [];
           let items_var_2 = [];
           let items_var_3 = [];
-          for (let index = 0; index < response.model.data.length; index++) {
-            const element = response.model.data[index];
-            if (Boolean(this.step_var_1)) {
+          let data = response.model.data;
+          for (let index = 0; index < data.length; index++) {
+            const element = data[index];
+            if (Boolean(this.step_var_1) && Boolean(element.variation1)) {
+              let text = Boolean(element.variation1.colors)
+                ? element.variation1.colors
+                : element.variation1.value;
+              let value = element.variation1.value.startsWith("[/")
+                ? JSON.parse(element.variation1.value)
+                : element.variation1.id;
               items_var_1.push({
-                text: element.variation1.value,
-                value: element.variation1.id,
+                text: text,
+                value: value,
               });
             }
 
-            if (Boolean(this.step_var_2)) {
+            if (Boolean(this.step_var_2) && Boolean(element.variation2)) {
               items_var_2.push({
                 text: element.variation2.value,
                 value: element.variation2.id,
                 parent: element.variation_1_id,
               });
             }
-            if (Boolean(this.step_var_3)) {
+            if (Boolean(this.step_var_3) && Boolean(element.variation3)) {
               items_var_3.push({
                 text: element.variation3.value,
                 value: element.variation3.id,
@@ -556,7 +570,6 @@ export default {
           this.sumb_price = this.main_price;
         })
         .catch((rej) => {
-          console.log(rej);
         });
     },
   },

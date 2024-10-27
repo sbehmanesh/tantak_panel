@@ -140,13 +140,11 @@ export default {
                   this.username_employee = response.model.data[0].username;
                 })
                 .catch((error) => {
-                  console.log(error);
                 });
             }
           })
 
           .catch((error) => {
-            console.log(error);
           });
       }
     },

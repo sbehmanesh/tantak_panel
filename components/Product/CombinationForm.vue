@@ -1,6 +1,6 @@
 <template>
   <v-card class="pa-1 ma-0 elevation-0">
-    <v-expansion-panels class="my-4 elevation-0 style-class" focusable>
+    <v-expansion-panels class="my-4 elevation-0 style-class" >
       <v-expansion-panel>
         <v-expansion-panel-header
           expand-icon="add_circle"

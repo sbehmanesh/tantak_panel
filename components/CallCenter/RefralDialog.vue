@@ -256,7 +256,7 @@ export default {
           this.loading = false;
           this.closeDialog();
           this.relod();
-          this.$toast.success("سفارش با موفقیت به هماهنگ کننده ارجاع داده شد");
+          this.$toast.success("سفارش با موفقیت ارجاع داده شد");
         })
         .catch((err) => {
           this.loading = false;

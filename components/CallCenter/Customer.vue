@@ -726,6 +726,7 @@
     <OrderTransactions
       @cloasDialog="show_transactions = false"
       :sectionId="section_id"
+      @relod="refresh"
       :dialog="show_transactions"
       v-if="show_transactions"
     />

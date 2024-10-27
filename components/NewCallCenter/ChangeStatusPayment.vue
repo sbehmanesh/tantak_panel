@@ -31,7 +31,7 @@
             text="توضیحات"
             v-model="form.description"
             rules="require"
-            v-if="change_staus == 'payed'"
+        
           />
           <v-card-actions class="center-div">
             <amp-button

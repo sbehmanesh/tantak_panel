@@ -109,7 +109,12 @@ export default {
 
       { text: "عنوان", value: "text" },
       { text: "مبلغ به تومان", value: "price", type: "price" },
-      { text: "وضعیت", value: "description" },
+      {
+        text: "وضعیت",
+        value: "status",
+        filterType: "select",
+        items: this.$store.state.static.status_transactions,
+      },
     ];
     this.headers_wallet = [
       {
@@ -126,7 +131,7 @@ export default {
 
       { text: "عنوان", value: "pay_text" },
       { text: "مبلغ به تومان", value: "amount", type: "price" },
-      { text: "وضعیت", value: "description" },
+
       {
         text: "نوع ",
         filterType: "select",
@@ -195,6 +200,7 @@ export default {
       this.tab = item.value;
     },
     relod() {
+      this.$emit("relod")
       this.$refs.reloadTransactions.getDataFromApi();
     },
   },

@@ -110,7 +110,7 @@
         <v-row>
           <v-col cols="12" md="6">
             <UserSelectForm
-              v-if="!is_admin_call_center"
+              v-if="!admin_id"
               :text="
                 is_admin_call_center ? ' انتخاب مرکز تماس' : 'انتخاب فروشنده'
               "
@@ -121,7 +121,7 @@
             />
 
             <UserSelectForm
-              v-if="is_admin_call_center"
+              v-if="admin_id"
               text=" انتخاب مرکز تماس"
               v-model="user"
               url="user/searchByRole"
@@ -183,6 +183,7 @@ export default {
     valid_comment: true,
     is_superviser: false,
     is_oprator: false,
+    admin_id: false,
     is_admin_call_center: false,
     e1: 1,
     url_list: "",
@@ -190,7 +191,10 @@ export default {
     loading: false,
   }),
   beforeMount() {
-    this.superviser_role_id = [this.$store.state.auth.role.superviser_id ];
+    if (Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))) {
+      this.admin_id = true
+    }
+    this.superviser_role_id = [this.$store.state.auth.role.superviser_id];
     if (this.$checkRole(this.$store.state.auth.role.superviser_id)) {
       this.is_superviser = true;
       this.step_items = [

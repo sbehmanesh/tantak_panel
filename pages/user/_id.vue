@@ -21,8 +21,13 @@
     <Payment v-if="tab == 'payment'" :model-id="$route.params.id" />
     <Basket v-if="tab == 'Basket'" :model-id="$route.params.id" />
     <UserWallet v-if="tab == 'wallet'" :model-id="$route.params.id" />
+
     <InventoryRequestUser
-      v-if="tab == 'inventory-request'"
+      v-if="tab == 'inventory_request'"
+      :model-id="$route.params.id"
+    />
+    <SpecialCredit
+      v-if="tab == 'special_credit'"
       :model-id="$route.params.id"
     />
   </div>
@@ -34,8 +39,9 @@ import AddressUser from "@/components/User/AddressUser.vue";
 import Payment from "@/components/User/Payment.vue";
 import Comment from "@/components/User/Comment.vue";
 import Basket from "@/components/User/Basket.vue";
-import UserWallet from "~/components/User/UserWallet.vue";
-import InventoryRequestUser from "~/components/User/InventoryRequestUser.vue";
+import UserWallet from "@/components/User/UserWallet.vue";
+import InventoryRequestUser from "@/components/User/InventoryRequestUser.vue";
+import SpecialCredit from "@/components/User/SpecialCredit.vue";
 export default {
   components: {
     UserForm,
@@ -45,6 +51,7 @@ export default {
     Basket,
     UserWallet,
     InventoryRequestUser,
+    SpecialCredit,
   },
   data: () => ({
     tab: "edit",
@@ -55,7 +62,8 @@ export default {
       { text: "تراکنش های  کیف پول ", value: "wallet" },
       { text: "پرداخت ها", value: "payment" },
       { text: "سبد خرید", value: "Basket" },
-      { text: "لیست درخواست موجودی", value: "inventory-request" },
+      { text: "لیست درخواست موجودی", value: "inventory_request" },
+      { text: "اعتبار ویژه", value: "special_credit" },
     ],
     title: "ویرایش کاربر",
   }),

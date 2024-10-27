@@ -426,9 +426,10 @@ export default {
           this.$toast.success(`${event.name} بروزرسانی شد `);
         }
       }
+      
       let set_var_1 = Boolean(event.product.variation1.colors)
           ? event.product.variation1.colors
-          : event.product.variation1.colors.value;
+          : event.product.variation1.value;
       if (!Boolean(repetitious_item)) {
         this.list_basket.items.unshift({
           information:

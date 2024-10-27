@@ -739,7 +739,7 @@ export default {
       if (!Boolean(repetitious_item)) {
         let set_var_1 = Boolean(event.product.variation1.colors)
           ? event.product.variation1.colors
-          : event.product.variation1.colors.value;
+          : event.product.variation1.value;
         this.list_basket.items.unshift({
           information:
             event.product.variation1.variation_type.value +

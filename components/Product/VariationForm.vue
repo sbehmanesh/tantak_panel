@@ -1,5 +1,12 @@
 <template>
   <v-card class="pa-1 ma-0 elevation-0">
+    <AddNewVariationDialog
+      v-if="insert_variation"
+      :dialog="insert_variation"
+      :productId="product_id"
+      @cloasDialog="insert_variation = false"
+      @reload="loadAgain()"
+    />
     <v-expansion-panels variant="popout" class="my-4 elevation-0 style-class">
       <v-expansion-panel class="">
         <v-expansion-panel-header
@@ -27,6 +34,13 @@
                 </v-icon>
               </span>
             </v-chip>
+            <v-spacer></v-spacer>
+            <div class="ml-7">
+              <v-btn @click="showInsertDialog" color="red" class="white--text">
+                ایجاد ویژگی
+                <v-icon color="white" class="mr-1" small> add_circle</v-icon>
+              </v-btn>
+            </div>
           </v-row>
           <v-row>
             <template v-if="showAddVairiation">
@@ -117,7 +131,11 @@
             </v-col>
           </v-row>
 
-          <div v-for="(v, index) in variations" :key="'v' + index">
+          <div
+            v-if="!loading"
+            v-for="(v, index) in variations"
+            :key="'v' + index"
+          >
             <v-card
               class="d-flex align-center style-card my-3 elevation-1"
               outlined
@@ -168,7 +186,7 @@
                   v-if="v.codes.length > 0"
                   :value="v.percent"
                   :rotate="120"
-                  class="pa-2"
+               
                   :size="25"
                   :width="13"
                   :color="v.codes[0]"
@@ -179,7 +197,7 @@
                     :rotate="240"
                     :size="25"
                     :width="13"
-                    :color="v.codes[2]"
+                    :color="v.codes[1]"
                   >
                     <v-progress-circular
                       v-if="v.codes.length > 2"
@@ -187,7 +205,7 @@
                       :rotate="360"
                       :size="25"
                       :width="13"
-                      :color="v.codes[3]"
+                      :color="v.codes[2]"
                     >
                     </v-progress-circular>
                   </v-progress-circular>
@@ -226,6 +244,15 @@
                 </v-btn>
               </v-col>
             </v-card>
+          </div>
+          <div v-if="loading">
+            <v-col cols="12" v-for="i in 4" :key="i">
+              <v-skeleton-loader
+                class="mx-auto"
+                height="100"
+                type="card"
+              ></v-skeleton-loader>
+            </v-col>
           </div>
 
           <v-dialog
@@ -266,8 +293,9 @@
 
 <script>
 import VariationGallery from "@/components/Product/VariationGallery.vue";
+import AddNewVariationDialog from "@/components/Product/AddNewVariationDialog.vue";
 export default {
-  components: { VariationGallery },
+  components: { VariationGallery, AddNewVariationDialog },
   props: {
     product_id: { default: null },
   },
@@ -278,6 +306,7 @@ export default {
     allVariations: [],
     selected_item: "",
     deleteDiaolog: false,
+    insert_variation: false,
     showAddVairiation: false,
     gallery_diaolog: { items: null, show: false },
     product_categories: [],
@@ -333,27 +362,11 @@ export default {
     },
 
     tab() {
-      let data = JSON.parse(JSON.stringify(this.total_variations));
-      let items = [];
-      if (this.tab == "color") {
-        items = data.filter(
-          (f) => f.variation_type.value_2 == "product_colors"
-        );
-      }
-      if (this.tab == "size") {
-        items = data.filter((f) => f.variation_type.value_2 == "size");
-      }
-      if (this.tab == "quality") {
-        items = data.filter((f) => f.variation_type.value_2 == "quality");
-      }
-      if (this.tab == "all") {
-        items = data;
-      }
-      this.variations = items;
+      this.setChip();
     },
   },
   methods: {
-    loadData() {
+    loadData(set_chip) {
       this.loading = true;
       this.$reqApi("/product-variation", {
         filters: { product_id: this.$route.params.id },
@@ -411,6 +424,9 @@ export default {
 
           this.variations = items;
           this.total_variations = items;
+          if (Boolean(set_chip)) {
+            this.setChip();
+          }
 
           this.loading = false;
         })
@@ -437,6 +453,7 @@ export default {
       this.$reqApi("/product-variation/update", form)
         .then((response) => {
           this.$toast.success("اطلاعات ویرایش شد");
+          this.loadData(true);
           this.loading = false;
         })
         .catch((error) => {
@@ -572,6 +589,36 @@ export default {
           this.colors = items;
         })
         .catch((err) => {});
+    },
+    showInsertDialog() {
+      this.insert_variation = true;
+      if (Boolean(this.modelId)) {
+        this.product_id = this.modelId;
+      } else {
+      }
+    },
+    setChip() {
+      let data = JSON.parse(JSON.stringify(this.total_variations));
+      let items = [];
+      if (this.tab == "color") {
+        items = data.filter(
+          (f) => f.variation_type.value_2 == "product_colors"
+        );
+      }
+      if (this.tab == "size") {
+        items = data.filter((f) => f.variation_type.value_2 == "size");
+      }
+      if (this.tab == "quality") {
+        items = data.filter((f) => f.variation_type.value_2 == "quality");
+      }
+      if (this.tab == "all") {
+        items = data;
+      }
+      this.variations = items;
+    },
+    loadAgain() {
+      this.loadData(true);
+      this.$emit("getOnlyProduct")
     },
   },
 };

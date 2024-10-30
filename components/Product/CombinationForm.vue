@@ -1,6 +1,6 @@
 <template>
   <v-card class="pa-1 ma-0 elevation-0">
-    <v-expansion-panels class="my-4 elevation-0 style-class" >
+    <v-expansion-panels class="my-4 elevation-0 style-class">
       <v-expansion-panel>
         <v-expansion-panel-header
           expand-icon="add_circle"
@@ -17,34 +17,56 @@
                     text="افزودن تنوع فروش جدید برای این محصول"
                   ></amp-title>
                 </v-col>
-                <v-col cols="12" md="3" v-for="(v, index) in variations" :key="v.id">
+                <v-col
+                  cols="12"
+                  md="3"
+                  v-for="(v, index) in variations"
+                  :key="v.index"
+                >
                   <amp-select
-                    v-if="index == 0"
-                    :text="v.text.value"
+                    multiple
+                    v-if="v.sort == 1"
+                    :text="v.title"
                     :items="v.items"
                     v-model="variation_1_id"
                     @change="
-                      setVariationId(variation_1_id, v.text.sort, v.text.id, v)
+                      setVariationId(
+                        variation_1_id,
+                        v.sort,
+                        v.variation_type_id,
+                        v
+                      )
                     "
                     rules="require"
                   />
                   <amp-select
-                    v-if="index == 1"
-                    :text="v.text.value"
+                    multiple
+                    v-if="v.sort == 2"
+                    :text="v.title"
                     :items="v.items"
                     v-model="variation_2_id"
                     @change="
-                      setVariationId(variation_2_id, v.text.sort, v.text.id, v)
+                      setVariationId(
+                        variation_2_id,
+                        v.sort,
+                        v.variation_type_id,
+                        v
+                      )
                     "
                     rules="require"
                   />
                   <amp-select
-                    v-if="index == 2"
-                    :text="v.text.value"
+                    v-if="v.sort == 3"
+                    :text="v.title"
                     :items="v.items"
                     v-model="variation_3_id"
                     @change="
-                      setVariationId(variation_3_id, v.text.sort, v.text.id, v)
+                      setVariationId(
+                        variation_3_id,
+                        v.sort,
+                        v.variation_type_id,
+                        v
+                      )
                     "
                     rules="require"
                   />
@@ -147,15 +169,16 @@ export default {
     variation_id3: "",
     variatoins_items: [],
     all_variations: [],
-    variation_1_id: "",
-    variation_2_id: "",
+    variation_1_ids: [],
+    variation_2_ids: [],
     variation_3_id: "",
     form: {
       id: "",
       sort: 1,
       price: "",
       weight: "",
-
+      variation_1_ids: [],
+      variation_2_ids: [],
       min: "",
       max: "",
       is_default: 0,
@@ -164,14 +187,9 @@ export default {
   }),
   mounted() {
     this.form.sell_type = this.sellType;
+    this.loadVariationItems();
   },
-  watch: {
-    dataItems() {
-      if (this.dataItems) {
-        this.loadVariationItems();
-      }
-    },
-  },
+
   methods: {
     loadData() {
       this.loading = true;
@@ -201,6 +219,7 @@ export default {
         .then((response) => {
           this.$toast.success("اطلاعات ثبت شد");
           this.$emit("closeAddCombination");
+          this.$emit("reloadCombinations");
           this.$emit("reloadVaritoinsForm");
           this.loadData();
           this.loading = false;
@@ -212,52 +231,84 @@ export default {
     loadVariationItems(value) {
       if (this.dataItems) {
         this.loading = true;
-        let filters = {
-          category_id: {
-            op: "in",
-            value: this.dataItems,
-          },
-        };
-        this.$reqApi("/product-variation", { filters: filters })
+        // let filters = {
+        //   category_id: {
+        //     op: "in",
+        //     value: this.dataItems,
+        //   },
+        // };
+        this.$reqApi("product-variation/only-product", {
+          product_id: this.product_id,
+        })
           .then(async (response) => {
-            let re = response.model.data;
+            let colors = [];
+            let sizes = [];
+            let qualityes = [];
+            let value_json = "";
 
-            for (let i = 0; i < re.length; i++) {
-              if (!this.variations_ids.includes(re[i].variation_type_id)) {
-                let items = [];
-                this.variations_ids.push(re[i].variation_type_id);
-                for (let j = 0; j < re.length; j++) {
-                  if (re[j].variation_type_id == re[i].variation_type_id) {
-                    if (re[j].variation_type.value_2 == "product_colors") {
-                      let value_json = [];
-                      if (re[j].value.startsWith("[")) {
-                        value_json = JSON.parse(re[j].value);
-                      }
-                      let text = re[j].colors ? re[j].colors : re[j].value;
-                      items.push({
-                        text: text,
-                        value: value_json,
-                        id: re[j].id,
-                        type: re[j].variation_type.value_2,
-                      });
-                    } else {
-                      items.push({
-                        text: re[j].value,
-                        value: re[j].id,
-                        id: re[j].id,
-                        type: re[j].variation_type.value_2,
-                      });
-                    }
+            let data = JSON.parse(JSON.stringify(response.model));
+
+            let find_var1 = data.find((f) => f.variation_type.sort == 1);
+            let find_var2 = data.find((f) => f.variation_type.sort == 2);
+            let find_var3 = data.find((f) => f.variation_type.sort == 3);
+
+            if (
+              Boolean(find_var1) &&
+              Boolean(find_var2) &&
+              Boolean(find_var3)
+            ) {
+              for (let index = 0; index < data.length; index++) {
+                const x = data[index];
+
+                let key = x.variation_type_id;
+                if (key == find_var1.variation_type_id) {
+                  if (x.value.startsWith("[")) {
+                    value_json = JSON.parse(x.value);
+                  } else {
+                    value_json = x.id;
                   }
-                }
 
-                this.variations.push({
-                  text: re[i].variation_type,
-                  value: re[i].variation_type_id,
-                  items: items,
-                });
+                  colors.push({
+                    text: Boolean(x.colors) ? x.colors : x.value,
+                    value: value_json,
+                  });
+                } else if (key == find_var2.variation_type_id) {
+                  sizes.push({
+                    text: x.value,
+                    value: x.value,
+                  });
+                } else if (key == find_var3.variation_type_id) {
+                  qualityes.push({
+                    text: x.value,
+                    value: x.id,
+                  });
+                }
               }
             }
+            let variation1 = {};
+            let variation2 = {};
+            let variation3 = {};
+
+            variation1["title"] = find_var1.variation_type.value;
+            variation1["value_2"] = find_var1.variation_type.value_2;
+            variation1["sort"] = find_var1.variation_type.sort;
+            variation1["variation_type_id"] = find_var1.variation_type_id;
+            variation1["items"] = colors;
+
+            this.variations.push(variation1);
+            variation2["title"] = find_var2.variation_type.value;
+            variation2["value_2"] = find_var2.variation_type.value_2;
+            variation2["sort"] = find_var2.variation_type.sort;
+            variation2["variation_type_id"] = find_var2.variation_type_id;
+            variation2["items"] = sizes;
+            this.variations.push(variation2);
+
+            variation3["title"] = find_var3.variation_type.value;
+            variation3["value_2"] = find_var3.variation_type.value_2;
+            variation3["sort"] = find_var3.variation_type.sort;
+            variation3["variation_type_id"] = find_var3.variation_type_id;
+            variation3["items"] = qualityes;
+            this.variations.push(variation3);
 
             this.loading = false;
           })
@@ -285,19 +336,20 @@ export default {
       return ids;
     },
     setVariationId(value, sort, variation_type_id, v) {
+      
       let items = {};
       if (Boolean(v)) {
-
         if (typeof value == "object") {
           items["sort"] = sort;
-          items["type"] = value[0].type;
+          items["type"] = v.value_2;
           items["value_id"] = value;
           items["variation_type_id"] = variation_type_id;
         } else {
-          let find = v.items.find((t) => t.id == value);
+          let find = v.items.find((t) => t.value == value);
+
           if (Boolean(find)) {
             items["sort"] = sort;
-            items["type"] = value[0].type;
+            items["type"] = v.value_2;
             items["value_id"] = find.text;
             items["variation_type_id"] = variation_type_id;
           }
@@ -337,36 +389,39 @@ export default {
 
     createVariatoin_1() {
       this.loading = true;
-      return new Promise((res, rej) => {
+      return new Promise(async (res, rej) => {
         let form = {};
-        let variation = this.selected_variations.find((x) => x.sort == 1);
 
-        if (Boolean(variation)) {
-          if (variation.type == "product_colors") {
-            let id = [];
-            id.push(variation.value_id);
-            form = {
-              variation_type_id: variation.variation_type_id,
-              product_id: this.product_id,
-              value: id,
-            };
-          } else {
-            form = {
-              variation_type_id: variation.variation_type_id,
-              product_id: this.product_id,
-              value: variation.value_id,
-            };
-          }
+        let variations = this.selected_variations.filter((x) => x.sort == 1);
+        for (let i = 0; i < variations.length; i++) {
+          const variation = variations[i];
+          if (Boolean(variation)) {
+            if (variation.type == "product_colors") {
+              let id = [];
+              id.push(variation.value_id);
+              form = {
+                variation_type_id: variation.variation_type_id,
+                product_id: this.product_id,
+                value: id,
+              };
+            } else {
+              form = {
+                variation_type_id: variation.variation_type_id,
+                product_id: this.product_id,
+                value: variation.value_id,
+              };
+            }
 
-          this.$reqApi("/product-variation/insert", form)
-            .then((response) => {
-              this.form["variation_1_id"] = response.id;
-              res(response.id);
-            })
-            .catch((err) => {
-              this.loading = false;
+            let response = await this.$reqApi("/product-variation/insert", {
+              ...form,
+              value: form.value[0][i],
             });
+            this.form["variation_1_ids"].push(response.id);
+          }
         }
+        this.loading = false;
+
+        res();
       })
         .then((res) => {
           this.createVariatoin_2(res);
@@ -376,24 +431,35 @@ export default {
         });
     },
     createVariatoin_2(id) {
-      return new Promise((res, rej) => {
+      return new Promise(async (res, rej) => {
         let form = {};
-        let variation = this.selected_variations.find((x) => x.sort == 2);
-        if (Boolean(variation)) {
-          form = {
-            variation_type_id: variation.variation_type_id,
-            product_id: this.product_id,
-            value: variation.value_id,
-          };
-          this.$reqApi("/product-variation/insert", form)
-            .then((response) => {
-              this.form["variation_2_id"] = response.id;
-              res(response.id);
-            })
-            .catch((err) => {
-              this.loading = false;
+        let variations = this.selected_variations.filter((x) => x.sort == 2);
+        for (let i = 0; i < variations.length; i++) {
+          const variation = variations[i];
+          
+          if (Boolean(variation)) {
+            form = {
+              variation_type_id: variation.variation_type_id,
+              product_id: this.product_id,
+              value: variation.value_id,
+            };
+            if (
+              !Boolean(variation.value_id) ||
+              variation.value_id.length < i + 1 ||
+              !Boolean(variation.value_id[i])
+            ) {
+              continue;
+            }
+
+            let response = await this.$reqApi("/product-variation/insert", {
+              ...form,
+              value: form.value[i],
             });
+
+            this.form["variation_2_ids"].push(response.id);
+          }
         }
+        res();
       })
         .then((res) => {
           this.createVariatoin_3();
@@ -406,12 +472,14 @@ export default {
       return new Promise((res, rej) => {
         let form = {};
         let variation = this.selected_variations.find((x) => x.sort == 3);
+
         if (Boolean(variation)) {
           form = {
             variation_type_id: variation.variation_type_id,
             product_id: this.product_id,
             value: variation.value_id,
           };
+
           this.$reqApi("/product-variation/insert", form)
             .then((response) => {
               this.form["variation_3_id"] = response.id;

@@ -1,8 +1,8 @@
 <template>
-  <div class="amp_section">
+  <div class="amp_section align-center">
     <div v-if="text" class="text_item">
-      <v-flex class="pa-1 mr-1 warning rounded-circle d-inline-block"></v-flex>
-      <span class="font_20" v-html="text"></span>
+      <v-flex class="pa-1 mr-1 warning rounded-circle d-inline-block" ></v-flex>
+      <strong :class="fontSize" v-html="text"></strong>
     </div>
     <div xs12 md12 class="border_item"></div>
   </div>
@@ -14,6 +14,9 @@ export default {
     text: {
       type: String,
       required: false,
+    },    fontSize: {
+      type: String,
+     default:"font_20"
     },
   },
 }

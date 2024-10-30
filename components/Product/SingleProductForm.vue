@@ -1,39 +1,153 @@
 <template>
   <div>
-    <v-row class=" justify-center ">
+    <v-row class="justify-center">
       <v-col cols="12" md="9">
         <CombinationForm
           :product_id="product.id"
           @closeAddCombination="closeAddCombination()"
+          @reloadCombinations="getCombinations"
           @reloadVaritoinsForm="reloadVriations()"
           :dataItems="product.category_ids"
+          ref="combinationForm"
         />
       </v-col>
       <v-col cols="12" md="9">
         <VariationForm
           :product_id="product.id"
           @closeVariationForm="closeVariationForm()"
+          @getOnlyProduct="callOnlyProduct"
           ref="variationsFormSingleSeal"
           :dataItems="product.category_ids"
         />
       </v-col>
     </v-row>
 
-    <v-row class="pa-2 mt-10">
-      <v-col cols="12" md="2" class="text-center"> محصول </v-col>
-      <v-col cols="12" md="1" class="text-center"> قیمت به تومان</v-col>
-      <!-- <v-col cols="12" md="1" class="text-center"> قیمت با تخفیف </v-col> -->
-      <v-col cols="12" md="1" class="text-center"> بارکد </v-col>
-      <v-col cols="12" md="2" class="text-center"> بارکد کامل </v-col>
-      <v-col cols="12" md="1" class="text-center"> تخفیف </v-col>
-      <v-col cols="12" md="1" class="text-center"> حداقل </v-col>
-      <v-col cols="12" md="1" class="text-center"> حداکثر </v-col>
-      <v-col cols="12" md="1" class="text-center"> ترتیب نمایش </v-col>
-      <!-- <v-col cols="12" md="1" class="text-center"> موجودی </v-col>
-      <v-col cols="12" md="3" class="text-center"> عملیات </v-col> -->
-    </v-row>
+    <v-col cols="12" class="ma-0 pa-0 mt-8">
+      <v-card outlined class="elevation-0">
+        <v-card-title class="d-flex primary lighten-4 pa-0 ma-0">
+          <v-col cols="12" md="2" class="text-center">
+            <h1>ترکیب</h1>
+          </v-col>
+          <v-col cols="12" md="2" class="text-center">
+            <h1>قیمت به تومان</h1>
+          </v-col>
+          <v-col cols="12" md="1" class="text-center">
+            <h1>بارکد</h1>
+          </v-col>
+          <v-col cols="12" md="1" class="text-center">
+            <h1>بارکد کامل</h1>
+          </v-col>
+          <v-col cols="12" md="1" class="text-center">
+            <h1>تخفیف</h1>
+          </v-col>
+          <v-col cols="12" md="1" class="text-center">
+            <h1>حداقل</h1>
+          </v-col>
+          <v-col cols="12" md="1" class="text-center">
+            <h1>حداکثر</h1>
+          </v-col>
+          <v-col cols="12" md="1" class="text-center">
+            <h1>ترتیب نمایش</h1>
+          </v-col>
+        </v-card-title>
+        <v-card-text
+          v-if="!loading"
+          v-for="(item, index) in variations"
+          :key="index"
+          class="card-style pa-0 ma-0"
+        >
+          <v-row class="align-center">
+            <v-col cols="2" class="d-flex align-center">
+              <v-btn icon class="grey lighten-3 white--black mr-3" small>
+                <h1>{{ index + 1 }}</h1>
+              </v-btn>
+              <div class="mr-3">
+                <h1>
+                  <small> {{ item.var1 }} </small>
+                  <br />
+                  <small> {{ item.var2 }} </small>
+                  <br />
+                  <small> {{ item.var3 }} </small>
+                  <br />
+                </h1>
+              </div>
+            </v-col>
+            <v-col cols="12" md="2" class="text-center">
+              <amp-input is-price v-model="item.price" class="mt-8" />
+            </v-col>
+            <v-col cols="12" md="1" class="text-center">
+              <h1>
+                {{ item.barcode }}
+              </h1>
+            </v-col>
+            <v-col cols="12" md="1" class="text-center">
+              <h1>
+                {{ item.full_barcode }}
+              </h1>
+            </v-col>
+            <v-col cols="12" md="1" class="text-center">
+              <amp-input is-price v-model="item.discount" class="mt-8" />
+            </v-col>
+            <v-col cols="12" md="1" class="text-center">
+              <amp-input
+                cClass="ltr-item"
+                rules="number"
+                v-model="item.maximum"
+                class="mt-8"
+              />
+            </v-col>
+            <v-col cols="12" md="1" class="text-center">
+              <amp-input
+                cClass="ltr-item"
+                v-model="item.minimum"
+                class="mt-8"
+                rules="number"
+              />
+            </v-col>
+            <v-col cols="12" md="1" class="text-center">
+              <h1>
+                {{ item.sort }}
+              </h1>
+            </v-col>
+            <v-spacer></v-spacer>
 
-    <v-col cols="12" v-if="product.product_variation_combinations.length == 0">
+            <v-col cols="12" md="1" class="text-center">
+              <amp-button
+                block
+                height="36"
+                text="به روز رسانی"
+                color="green darken-1"
+                :loading="loading"
+                @click="update(item.id)"
+              >
+              </amp-button>
+              <amp-button
+                block
+                height="36"
+                class="mt-2"
+                text="حذف"
+                color="red darken-1"
+                :loading="loading"
+                @click="deleteDialog(true, index)"
+              >
+              </amp-button>
+            </v-col>
+            <v-spacer></v-spacer>
+          </v-row>
+        </v-card-text>
+        <div v-if="loading">
+          <v-col cols="12" v-for="i in 4" :key="i">
+            <v-skeleton-loader
+              class="mx-auto"
+              height="100"
+              type="card"
+            ></v-skeleton-loader
+          ></v-col>
+        </div>
+      </v-card>
+    </v-col>
+
+    <v-col cols="12" v-if="variations.length == 0 && !loading">
       <v-alert
         outlined
         type="warning"
@@ -44,75 +158,6 @@
         هنوز برنامه فروشی برای این محصول درج نشده است.
       </v-alert>
     </v-col>
-
-    <v-row
-      v-for="(sv, index) in product.product_variation_combinations.filter(
-        (x) => x.sell_type == 'single'
-      )"
-      :key="'sv' + index"
-      :class="index % 2 == 0 ? 'odd-row' : ''"
-    >
-
-      <v-col cols="12" md="2" class="text-center mt-3">
-        {{product.name}}
-      </v-col>
-      <v-col cols="12" md="1" class="text-center mt-3">
-        <amp-input is-price v-model="sv.price" />
-      </v-col>
-      <!-- <v-col cols="12" md="1" class="text-center"> <amp-input is-price v-model="sv.discounted_price" /></v-col> -->
-      <v-col cols="12" md="1" class="text-center mt-3">
-        <!-- <amp-input is-price v-model="sv.barcode" /> -->
-        <span>{{ sv.barcode }} </span>
-        <!-- <span v-if="sv.variation_2_id">{{ sv.variation_2_id.barcode }} | </span>
-        <span v-if="sv.variation_3_id">{{ sv.variation_3_id.barcode }} </span> -->
-      </v-col>
-      <v-col cols="12" md="2" class="text-center mt-5">
-        <span>{{ sv.full_barcode }} </span>
-        <!-- <span v-if="sv.variation_2_id">{{ sv.variation_2_id.barcode }} | </span>
-        <span v-if="sv.variation_3_id">{{ sv.variation_3_id.barcode }} </span> -->
-      </v-col>
-      <v-col cols="12" md="1" class="text-center mt-3">
-        <amp-input is-price v-model="sv.discount" />
-        <!-- <span v-if="sv.variation_2_id">{{ sv.variation_2_id.barcode }} | </span>
-        <span v-if="sv.variation_3_id">{{ sv.variation_3_id.barcode }} </span> -->
-      </v-col>
-      <v-col cols="12" md="1" class="text-center mt-3">
-        <amp-input is-price v-model="sv.maximum" />
-        <!-- <span v-if="sv.variation_2_id">{{ sv.variation_2_id.barcode }} | </span>
-        <span v-if="sv.variation_3_id">{{ sv.variation_3_id.barcode }} </span> -->
-      </v-col>
-      <v-col cols="12" md="1" class="text-center mt-3">
-        <amp-input is-price v-model="sv.minimum" />
-        <!-- <span v-if="sv.variation_2_id">{{ sv.variation_2_id.barcode }} | </span>
-        <span v-if="sv.variation_3_id">{{ sv.variation_3_id.barcode }} </span> -->
-      </v-col>
-
-      <v-col cols="12" md="1" class="text-center mt-3">
-        <span>{{ sv.sort }} </span>
-        <!-- <span v-if="sv.variation_2_id">|{{ sv.sort }} | </span>
-        <span v-if="sv.variation_3_id">{{ sv.sort }} </span>  -->
-      </v-col>
-      <!-- <v-col cols="12" md="1" class="text-center"><amp-input  is-number  v-model="sv.max"></amp-input></v-col>
-      <v-col cols="12" md="1" class="text-center"><amp-input  is-number v-model="sv.weight"></amp-input></v-col> -->
-      <v-col cols="12" md="2" class="text-center mt-3">
-        <amp-button
-          small
-          text="به روز رسانی"
-          color="success"
-          :loading="loading"
-          @click="update(index)"
-        >
-        </amp-button>
-        <amp-button
-          small
-          text="حذف"
-          color="error"
-          :loading="loading"
-          @click="deleteDialog(true, index)"
-        >
-        </amp-button>
-      </v-col>
-    </v-row>
 
     <v-dialog
       v-model="deleteDiaolog"
@@ -157,10 +202,12 @@ export default {
       require: true,
     },
   },
-  mounted() {
-  },
+
   data: () => ({
     loading: false,
+    variations: [],
+    total_data: [],
+
     deleteDiaolog: false,
     variationDiaolog: {
       show: false,
@@ -190,18 +237,18 @@ export default {
       medias: [],
       description: "",
       seo_description: "",
-      sort: 1,
+      sort: "",
     },
   }),
-
+  mounted() {
+    this.getCombinations();
+  },
   methods: {
     submit() {
       let form = this.$copyForm(this.form);
       form["has_single_sell"] = parseInt(form["has_single_sell"]);
       form["has_whole_sell"] = parseInt(form["has_whole_sell"]);
       form["mixturable"] = parseInt(form["mixturable"]);
- 
-      
 
       this.loading = true;
       let url = this.createUrl;
@@ -222,30 +269,37 @@ export default {
           this.loading = false;
         });
     },
-    update(index) {
+    update(id) {
       this.loading = true;
-      let form = this.product.product_variation_combinations[index];
-      form.minimum =
-        +this.product.product_variation_combinations[index].minimum;
-      form.maximum =
-        +this.product.product_variation_combinations[index].maximum;
-      form.price = +this.product.product_variation_combinations[index].price;
-      form.discount =
-        +this.product.product_variation_combinations[index].discount;
-      if (!form.price && !form.barcode) {
-        this.$toast.error("لطفا ورودی ها را کنترل کنید.");
-        this.loading = false;
-        return;
+      let data = this.total_data;
+      let selected_item = {};
+      let find_changed_combination = {};
+      selected_item = data.find((f) => f.id == id);
+      find_changed_combination = this.variations.find((f) => (f.id = id));
+
+      if (Boolean(selected_item) && Boolean(find_changed_combination)) {
+        let form = selected_item;
+
+        form.minimum = find_changed_combination.minimum;
+        form.maximum = find_changed_combination.maximum;
+        form.price = find_changed_combination.price;
+        form.discount = find_changed_combination.discount;
+        form.sort = find_changed_combination.sort;
+        if (!form.price && !form.barcode) {
+          this.$toast.error("لطفا ورودی ها را کنترل کنید.");
+          this.loading = false;
+          return;
+        }
+        form.sort = 0;
+        this.$reqApi("/product-variation-combination/update", form)
+          .then((response) => {
+            this.$toast.success("اطلاعات ویرایش شد");
+            this.getCombinations();
+          })
+          .catch((error) => {
+            this.loading = false;
+          });
       }
-      form.sort = 0;
-      this.$reqApi("/product-variation-combination/update", form)
-        .then((response) => {
-          this.$toast.success("اطلاعات ویرایش شد");
-          this.loading = false;
-        })
-        .catch((error) => {
-          this.loading = false;
-        });
     },
     deleteDialog(flag, index) {
       this.deleteDiaolog = flag;
@@ -256,8 +310,7 @@ export default {
     },
     deleteItem() {
       this.loading = true;
-      let selected_id =
-        this.product.product_variation_combinations[this.selected_item].id;
+      let selected_id = this.variations[this.selected_item].id;
       this.$reqApi("/product-variation-combination/delete", { id: selected_id })
         .then((response) => {
           this.$toast.success("ویژگی مد نظر با موفقیت حذف شد");
@@ -281,6 +334,68 @@ export default {
       this.addCombinationDiaolog.show = true;
       this.addCombinationDiaolog.item = this.product;
     },
+    getCombinations() {
+      this.loading = true;
+      let product_id = this.product.id;
+      this.$reqApi("product-variation-combination/variety-list", {
+        product_id: product_id,
+      })
+        .then((res) => {
+          let data = res.model.data;
+          let items = [];
+          this.total_data = data.sort((a, b) => {
+            return a.sort - b.sort;
+          });
+          try {
+            for (let i = 0; i < data.length; i++) {
+              const x = data[i];
+              let var1 = Boolean(x.variation1.codes)
+                ? x.variation1.variation_type.value + " " + x.variation1.colors
+                : x.variation1.variation_type.value + " " + x.variation1.value;
+              let var2 =
+                x.variation2.variation_type.value + " " + x.variation2.value;
+              let var3 =
+                x.variation3.variation_type.value + " " + x.variation3.value;
+              items.push({
+                var1: var1,
+                var2: var2,
+                var3: var3,
+                price: x.price,
+                id: x.id,
+                barcode: x.barcode,
+                full_barcode: x.full_barcode,
+                discount: x.discount,
+                maximum: x.maximum,
+                minimum: x.minimum,
+                sort: x.sort,
+              });
+            }
+          } catch (error) {
+          }
+
+          this.variations = items.sort((a, b) => {
+            return a.sort - b.sort;
+          });
+
+          this.loading = false;
+        })
+
+        .catch((err) => {
+          this.loading = false;
+        });
+    },
+    // callOnlyProduct(){
+    //   this.$refs.combinationForm.loadVariationItems()
+    // }
   },
 };
 </script>
+<style scoped>
+.card-style {
+  border: 1px solid #1d1c1c13 !important;
+}
+.card-style:hover {
+  background-color: #ffcb776b;
+  cursor: pointer;
+}
+</style>

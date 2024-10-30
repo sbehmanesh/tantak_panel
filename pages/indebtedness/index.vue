@@ -32,6 +32,20 @@
       @closeDialog="show_refral = false"
       @reload="refresh"
     />
+    <AddTransactions
+      :dialog="create_transactions"
+      :requestId="id"
+      v-if="create_transactions"
+      @closeDialog="create_transactions = false"
+      @reload="refresh"
+    />
+    <DialogTransactions
+        :dialog="add_transaction"
+        :data="respons"
+        v-if="add_transaction"
+        @closeDialog="add_transaction = false"
+        @reload="refresh"
+      />
   </div>
 </template>
 
@@ -39,20 +53,28 @@
 import History from "@/components/NewCallCenter/Debt/History.vue";
 import DebtDialog from "@/components/NewCallCenter/Debt/DebtDialog.vue";
 import DialogRefral from "@/components/NewCallCenter/Debt/DialogRefral.vue";
+import AddTransactions from "~/components/NewCallCenter/Debt/AddTransactions.vue";
+import DialogTransactions from "@/components/NewCallCenter/Debt/DialogTransactions.vue";
+
 export default {
   components: {
     DebtDialog,
     History,
     DialogRefral,
+    AddTransactions,
+    DialogTransactions,
   },
   data: () => ({
     headers: [],
     data: [],
+    respons: [],
     btn_actions: [],
     title: "لیست بدهکاری ها ",
     show_debt: false,
     show_history: false,
     show_refral: false,
+    add_transaction: false,
+    create_transactions: false,
     id: "",
     step_order: "",
     step: 1,
@@ -182,6 +204,18 @@ export default {
             )
           ) {
             if (
+              this.$checkRole(
+                this.$store.state.auth.role.superviser_centeral_stock
+              )
+            ) {
+              if (body.payments.length > 0) {
+                return true;
+              } else {
+                return false;
+              }
+            }
+
+            if (
               this.$checkRole(this.$store.state.auth.role.sefir) &&
               (body.step == "init" ||
                 body.step == "reviewer_to_debtor" ||
@@ -195,6 +229,43 @@ export default {
             } else {
               return false;
             }
+          } else {
+            return false;
+          }
+        },
+      },
+      {
+        text: "ایجاد تراکنش",
+        color: "red",
+        icon: "post_add",
+        fun: (body) => {
+          this.create_transactions = true;
+          this.id = body.id;
+        },
+        show_fun: (body) => {
+          if (
+            Boolean(
+              this.$checkRole(this.$store.state.auth.role.sales_expert) &&
+                body.step == "debtor_to_reviewer" &&
+                body.payments.length == 0
+            )
+          ) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
+      {
+        text: "لیست تراکنش ها",
+        color: "red",
+        fun: (body) => {
+          this.add_transaction = true;
+          this.respons = body;
+        },
+        show_fun: (body) => {
+          if (body.status_payment != "none" && body.payments.length > 0) {
+            return true;
           } else {
             return false;
           }

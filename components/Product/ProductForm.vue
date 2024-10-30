@@ -271,9 +271,9 @@
       <v-stepper-content step="3">
         <v-row>
           <v-col cols="12" class="d-flex align-center">
-            <v-row class="mt-5">
+            <v-row class="mt-5" v-if='step_number == 3'>
               <v-col>
-                <SingleProductForm @reloadPage="reloadPage()" :product="form" />
+                <SingleProductForm @reloadPage="reloadPage()" :product="form"/>
               </v-col>
             </v-row>
           </v-col>

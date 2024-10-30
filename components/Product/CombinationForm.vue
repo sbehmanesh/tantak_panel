@@ -28,10 +28,10 @@
                     v-if="v.sort == 1"
                     :text="v.title"
                     :items="v.items"
-                    v-model="variation_1_id"
+                    v-model="variation_1_ids"
                     @change="
                       setVariationId(
-                        variation_1_id,
+                        variation_1_ids,
                         v.sort,
                         v.variation_type_id,
                         v
@@ -44,10 +44,10 @@
                     v-if="v.sort == 2"
                     :text="v.title"
                     :items="v.items"
-                    v-model="variation_2_id"
+                    v-model="variation_2_ids"
                     @change="
                       setVariationId(
-                        variation_2_id,
+                        variation_2_ids,
                         v.sort,
                         v.variation_type_id,
                         v
@@ -86,6 +86,23 @@
                     text="تخفیف"
                     v-model="form.discount"
                     rules="percent"
+                  />
+                </v-col>             
+                   <v-col cols="12" md="3">
+                  <amp-input
+                  cClass="ltr-item"
+                    text="نقطه سفارش در نمایندگی"
+                    v-model="form.order_point_agency"
+                    rules="number"
+                  />
+                </v-col>             
+                    <v-col cols="12" md="3">
+                  <amp-input
+                  cClass="ltr-item"
+
+                    text="نقطه سفارش در انبار مرکزی"
+                    v-model="form.order_point_center"
+                    rules="number"
                   />
                 </v-col>
                 <v-col cols="12" md="3">
@@ -176,6 +193,8 @@ export default {
       id: "",
       sort: 1,
       price: "",
+      order_point_agency: "",
+      order_point_center: "",
       weight: "",
       variation_1_ids: [],
       variation_2_ids: [],

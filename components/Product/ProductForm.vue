@@ -29,6 +29,12 @@
                   v-model="form.name"
                   rules="require"
                 />
+              </v-col>           
+                 <v-col cols="12" md="3">
+                <amp-input
+                  text="نام  نمایشی محصول"
+                  v-model="form.show_name "
+                />
               </v-col>
               <v-col cols="12" md="2">
                 <amp-input text="لینک" v-model="form.slug" rules="" />
@@ -373,6 +379,7 @@ export default {
       wholesale_unit: "",
       id: "",
       name: "",
+      show_name : "",
       slug: "",
       code: "",
       online_sale: false,
@@ -515,6 +522,7 @@ export default {
             //  this.
 
             this.form.name = response.name;
+            this.form.show_name  = response.show_name ;
             this.form.main_image = response.main_image;
             this.form.wholesale_unit = response.wholesale_unit;
             let items = [];

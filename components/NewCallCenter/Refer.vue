@@ -274,7 +274,25 @@ export default {
       this.$reqApi("/message/refer", form)
         .then((response) => {
           this.loading = false;
-          this.$toast.success(" عملیات با موفقیت انجام شد");
+          let name =""
+          if (Boolean(this.user) && Boolean(this.user[0])) {
+            if (
+              Boolean(this.user[0].first_name) &&
+              Boolean(this.user[0].last_name)
+            ) {
+              name = this.user[0].first_name + " " + this.user[0].last_name;
+            } else {
+              name = this.user[0].username;
+            }
+            this.$toast.success(
+              ` سفارش با موفقیت به 
+              ${name} 
+               ارجاع داده شد
+              `
+            );
+          } else {
+            this.$toast.success("عملیات با موفقیت  انجام شد");
+          }
           this.e1 = 1;
           this.relod();
         })

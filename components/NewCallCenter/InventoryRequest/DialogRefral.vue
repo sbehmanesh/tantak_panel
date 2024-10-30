@@ -99,8 +99,7 @@ export default {
       },
     };
   },
-  mounted() {
-  },
+  mounted() {},
   watch: {
     "form.step"() {
       switch (this.form.step) {
@@ -119,11 +118,11 @@ export default {
         case "fiscal_supervisor_to_fiscal":
           this.show_select_user = true;
           this.select_user_title = "انتخاب    واحد مالی ";
-          break;   
-              case "pack_and_send":
+          break;
+        case "pack_and_send":
           this.show_select_user = true;
           this.select_user_title = "انتخاب سفیر";
-          this.url = "user/sefir"
+          this.url = "user/sefir";
           break;
 
         default:
@@ -146,7 +145,7 @@ export default {
           ];
         } else if (
           this.stepInvitor == "init" ||
-          this.stepInvitor == "supervisor_to_manager_sale"
+          this.stepInvitor == "supervisor_to_manager_sale" 
         ) {
           this.form.step = "manager_to_supervisor_sale";
           items = [
@@ -155,7 +154,7 @@ export default {
               value: "manager_to_supervisor_sale",
             },
           ];
-        } else if (this.stepInvitor == "accept_employee_sale") {
+        } else if (this.stepInvitor == "accept_employee_sale" ||   this.stepInvitor == "fiscal_manager_to_manager" ) {
           this.form.step = "manager_to_fiscal_manager";
           items = [
             {
@@ -264,8 +263,8 @@ export default {
             value: "fiscal_to_fiscal_supervisor",
           },
         ];
-      }   
-        if (this.$checkRole(this.$store.state.auth.role.sefir)) {
+      }
+      if (this.$checkRole(this.$store.state.auth.role.sefir)) {
         items = [
           {
             text: " مدیر نمایندگی فروش",
@@ -283,6 +282,10 @@ export default {
   methods: {
     submit() {
       this.loading = true;
+      if (!Boolean(  this.show_select_user)) {
+        this.user = []
+        
+      }
       let form = { ...this.form };
       form.id = this.basketId;
       switch (this.form.step) {
@@ -297,8 +300,8 @@ export default {
           break;
         case "fiscal_supervisor_to_fiscal":
           form["user_refer_id"] = this.user[0].id;
-          break;  
-          case "pack_and_send":
+          break;
+        case "pack_and_send":
           form["user_refer_id"] = this.user[0].id;
           break;
 
@@ -306,9 +309,28 @@ export default {
           break;
       }
 
+
       this.$reqApi("product-request/referral", form)
         .then((res) => {
-          this.$toast.success("عملیات با موفقیت انجام شد");
+          let name = "";
+          if (Boolean(this.user) && Boolean(this.user[0])) {
+            if (
+              Boolean(this.user[0].first_name) &&
+              Boolean(this.user[0].last_name)
+            ) {
+              name = this.user[0].first_name + " " + this.user[0].last_name;
+            } else {
+              name = this.user[0].username;
+            }
+            this.$toast.success(
+              `  با موفقیت به 
+              ${name} 
+               ارجاع داده شد
+              `
+            );
+          } else {
+            this.$toast.success("عملیات با موفقیت  انجام شد");
+          }
           this.$emit("reload");
           this.closeDialog();
           this.loading = false;

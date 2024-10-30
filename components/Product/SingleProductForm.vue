@@ -15,7 +15,6 @@
         <VariationForm
           :product_id="product.id"
           @closeVariationForm="closeVariationForm()"
-          @getOnlyProduct="callOnlyProduct"
           ref="variationsFormSingleSeal"
           :dataItems="product.category_ids"
         />
@@ -28,7 +27,7 @@
           <v-col cols="12" md="2" class="text-center">
             <h1>ترکیب</h1>
           </v-col>
-          <v-col cols="12" md="2" class="text-center">
+          <v-col cols="12" md="1" class="text-center">
             <h1>قیمت به تومان</h1>
           </v-col>
           <v-col cols="12" md="1" class="text-center">
@@ -47,7 +46,18 @@
             <h1>حداکثر</h1>
           </v-col>
           <v-col cols="12" md="1" class="text-center">
-            <h1>ترتیب نمایش</h1>
+            <h1>
+                نقطه سفارش
+                <br />
+                در نمایندگی
+            </h1>
+          </v-col>
+          <v-col cols="12" md="1" class="text-center">
+            <h1>
+                نقطه سفارش
+                <br />
+                در انبار مرکزی
+            </h1>
           </v-col>
         </v-card-title>
         <v-card-text
@@ -72,7 +82,7 @@
                 </h1>
               </div>
             </v-col>
-            <v-col cols="12" md="2" class="text-center">
+            <v-col cols="12" md="1" class="text-center">
               <amp-input is-price v-model="item.price" class="mt-8" />
             </v-col>
             <v-col cols="12" md="1" class="text-center">
@@ -105,10 +115,23 @@
               />
             </v-col>
             <v-col cols="12" md="1" class="text-center">
-              <h1>
-                {{ item.sort }}
-              </h1>
+              <amp-input
+                cClass="ltr-item"
+                v-model="item.order_point_agency"
+                class="mt-8"
+                rules="number"
+              />
             </v-col>
+
+            <v-col cols="12" md="1" class="text-center">
+              <amp-input
+                cClass="ltr-item"
+                v-model="item.order_point_center"
+                class="mt-8"
+                rules="number"
+              />
+            </v-col>
+
             <v-spacer></v-spacer>
 
             <v-col cols="12" md="1" class="text-center">
@@ -241,6 +264,13 @@ export default {
     },
   }),
   mounted() {
+    console.log("sss");
+    console.log("sss");
+    console.log("sss");
+    console.log("sss");
+    console.log("sss");
+    console.log("sss");
+
     this.getCombinations();
   },
   methods: {
@@ -368,10 +398,11 @@ export default {
                 maximum: x.maximum,
                 minimum: x.minimum,
                 sort: x.sort,
+                order_point_agency: x.order_point_agency,
+                order_point_center: x.order_point_center,
               });
             }
-          } catch (error) {
-          }
+          } catch (error) {}
 
           this.variations = items.sort((a, b) => {
             return a.sort - b.sort;

@@ -245,7 +245,7 @@ export default {
         show_fun: (body) => {
           if (
             Boolean(
-              this.$checkRole(this.$store.state.auth.role.sales_expert) &&
+              this.$checkRole(this.$store.state.auth.role.superviser_centeral_stock) &&
                 body.step == "debtor_to_reviewer" &&
                 body.payments.length == 0
             )

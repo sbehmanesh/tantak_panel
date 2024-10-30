@@ -232,8 +232,10 @@ export default {
   methods: {
     submit() {
       this.loading = true;
-    
       let form = {};
+      if (!Boolean(this.show_select_user)) {
+        this.user = [];
+      }
       form = { ...this.form };
       if (Boolean(this.courier)) {
         if (form.step == "cancel") {
@@ -256,7 +258,24 @@ export default {
           this.loading = false;
           this.closeDialog();
           this.relod();
-          this.$toast.success("سفارش با موفقیت ارجاع داده شد");
+          let name = "";
+          if (Boolean(this.user) && Boolean(this.user[0])) {
+            if (
+              Boolean(this.user[0].first_name) &&
+              Boolean(this.user[0].last_name)
+            ) {
+              name = this.user[0].first_name + " " + this.user[0].last_name;
+            } else {
+              name = this.user[0].username;
+            }
+            this.$toast.success(
+              ` سفارش با به 
+              ${name} 
+              موفقیت ارجاع داده شد`
+            );
+          } else {
+            this.$toast.success("سفارش با موفقیت ارجاع داده شد");
+          }
         })
         .catch((err) => {
           this.loading = false;

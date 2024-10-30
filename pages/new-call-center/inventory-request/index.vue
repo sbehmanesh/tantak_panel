@@ -205,34 +205,36 @@ export default {
           this.step_invitor = body.step;
         },
         show_fun: (body) => {
-          let show = false;
+          console.log(
+            "sss",
+            body,
+            Boolean(this.$checkRole(this.$store.state.auth.role.seal_manager))
+          );
+
           if (Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))) {
-            show = false;
+            return false;
           } else if (
             Boolean(this.$checkRole(this.$store.state.auth.role.sale_manager))
           ) {
-            show = true;
+            return true;
           } else if (
             Boolean(this.$checkRole(this.$store.state.auth.role.agency_manager))
           ) {
             if (
               body.step == "init" ||
-              (body.step == "accept_employee_sale" &&
-                body.status_payment == "payed") ||
-              body.step == "accept_fiscal"
+              ((body.step == "accept_employee_sale" ||body.step == "fiscal_manager_to_manager" )  &&
+                body.status_payment == "payed")
             ) {
-              show = true;
+              return true;
             }
           } else if (
             this.$checkRole(this.$store.state.auth.role.sales_expert) &&
             body.status_payment == "wait"
           ) {
-            show = true;
+            return true;
           } else {
-            show = true;
+            return true;
           }
-
-          return show;
         },
       },
       {
@@ -302,7 +304,10 @@ export default {
           this.data = body;
         },
         show_fun: (body) => {
-          if (body.step == "sefir_to_agency_manager" && Boolean(this.$checkRole(this.$store.state.auth.role.agency_manager))) {
+          if (
+            body.step == "sefir_to_agency_manager" &&
+            Boolean(this.$checkRole(this.$store.state.auth.role.agency_manager))
+          ) {
             return true;
           } else {
             return false;

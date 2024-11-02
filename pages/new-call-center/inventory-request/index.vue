@@ -137,7 +137,7 @@ export default {
         },
       },
       {
-        text: "مجموع قیمت (ریال)",
+        text: " قیمت (ریال)",
         type: "price",
         value: "total_price",
       },

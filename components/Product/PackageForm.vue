@@ -4,7 +4,13 @@
       <v-row class="mb-6"> </v-row>
       <v-row dense>
         <v-col cols="12" md="3">
-          <amp-input text="عنوان پکیج" v-model="form.name" rules="require" />
+          <amp-input
+            :text="
+              this.$route.query.type == 'Package' ? 'عنوان پکیج' : 'عنوان جعبه'
+            "
+            v-model="form.name"
+            rules="require"
+          />
         </v-col>
 
         <v-col cols="12" md="3">
@@ -86,7 +92,11 @@
         </v-col>
         <v-col md="3" cols="12">
           <amp-select
-            text="پکیج برای همه قابل شکستن است ؟"
+            :text="
+              this.$route.query.type == 'Package'
+                ? ' پکیج برای همه قابل شکستن است '
+                : ' جعبه برای همه قابل شکستن است  '
+            "
             rules="require"
             :items="bool_text"
             v-model="form.licence_break"
@@ -198,6 +208,7 @@ export default {
       discount_type: "none",
       status: "active",
       description: "",
+      type: "",
       product_varcom_ids: [],
       role_ids: [],
     },
@@ -211,8 +222,11 @@ export default {
       }
     },
   },
-  beforeMount() {},
+
   mounted() {
+    if (Boolean(this.$route.query.type)) {
+      this.form.type = this.$route.query.type;
+    }
     this.$store.dispatch("setting/getRoleServer");
     if (this.modelId) {
       this.loadData();
@@ -279,10 +293,14 @@ export default {
             rej(true);
             this.loading = false;
           });
-      }).then((res) => {
-        this.getVariationIds();
-        this.loading = false;
-      });
+      })
+        .then((res) => {
+          this.getVariationIds();
+          this.loading = false;
+        })
+        .catch((error) => {
+          this.loading = false;
+        });
     },
     loadData() {
       this.loading = true;
@@ -297,14 +315,14 @@ export default {
               response.roles.map((x) => this.form.role_ids.push(x.id));
             }
             this.form.licence_break = this.form.licence_break ? "yes" : "no";
-    
+
             if (response.prepay_type != "none") {
               this.prepayment = response.prepay_amount;
             }
             if (response.discount_type != "none") {
               this.discount_value = response.discount_amount;
             }
-      
+
             if (
               response.product_varcoms &&
               response.product_varcoms.length > 0

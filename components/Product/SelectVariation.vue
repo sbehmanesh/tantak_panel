@@ -1,7 +1,7 @@
 <template>
-  <v-card style="overflow: hidden; border-radius: 10px" class="elevation-5">
+  <v-card style="overflow: hidden; border-radius: 7px" class="elevation-1">
     <v-col cols="12" class="primary">
-      <span class="white--text font_20 mr-3"> محصولات پکیچ </span>
+      <span class="white--text font_20 mr-3"> محصولات </span>
     </v-col>
     <v-row class="d-flex justify-center mx-8 pb-8">
       <v-col
@@ -24,7 +24,7 @@
         />
         <v-col
           v-if="Boolean(check) && !loading"
-          class="justify-center text-center"
+          class="justify-center text-center "
           cols="12"
         >
           <v-icon color="red" size="80"> production_quantity_limits </v-icon>
@@ -32,7 +32,7 @@
           <small class="red--text"> عدم موجودی محصول </small>
         </v-col>
         <v-form v-model="valid_variations" v-if="!loading">
-          <v-row>
+          <v-row  v-if="Boolean(step_var_1) ">
             <v-col cols="12" md="4">
               <amp-select
                 v-if="Boolean(step_var_1) && Boolean(product_sort_1)"
@@ -133,45 +133,82 @@
       </v-col>
 
       <v-col cols="12" md="8" class="mt-8">
-        <v-card
+        <v-card-text
           v-for="(item, index) in variations_list"
           :key="index"
           outlined
-          class="pa-3 ma-5 grey lighten-2 elevation-0"
+          class="pa-3 ma-4 elevation-1 card-style d-flex align-center"
         >
-          <v-row class="px-5 py-4 mr-3 align-center">
-            <h1>{{ index + 1 }} - {{ item.variation1.product.name }}</h1>
+ 
+        <div v-if="Boolean(item.variation1) && Boolean(item.variation2) ">
+          <v-img
+                  class="ma-1"
+                  width="60"
+                  height="65"
+                  contain
+                  :src="$getImage(item.variation1.product.main_image)"
+                />
+        </div>
+          <v-row class="px-5 py-4 mr-3 align-center" v-if="Boolean(item.variation1) && Boolean(item.variation2) ">
+            <h1 v-if="Boolean(item.variation1) &&Boolean(item.variation1.product)  ">
+              {{ item.variation1.product.name }}
+            </h1>
             <v-spacer></v-spacer>
+
             <h1 v-if="Boolean(item.variation1.colors)">
+              {{ item.variation1.variation_type.value }}
               {{ item.variation1.colors }}
             </h1>
-            <h1 v-else>{{ item.variation1.value }}</h1>
-            <h1 class="mx-2">{{ item.variation2.value }}</h1>
-            <h1>{{ item.variation3.value }}</h1>
+            <h1 v-else>
+              {{ item.variation1.variation_type.value }}
+              {{ item.variation1.value }}
+            </h1>
             <v-spacer></v-spacer>
-            <v-row class="d-flex justify-center mt-1">
-              <v-btn text @click="addNumber(item, true, 'list')" x-small>
-                <h1 class="font_18 primary--text mt-2 mx-1">+</h1>
-              </v-btn>
-              <h1 class="font_14 primary--text mt-1 mx-1">{{ item.count }}</h1>
-              <v-btn
-                color="primary"
-                :disabled="item.count == 1"
-                @click="addNumber(item, false, 'list')"
-                text
-                x-small
-              >
-                <h1 class="font_20 primary--text mb-2 mx-1">_</h1>
-              </v-btn>
-            </v-row>
+
+            <h1>
+                {{ item.variation2.variation_type.value }}
+                {{ item.variation2.value }}
+            </h1>
+            <v-spacer></v-spacer>
+
+            <h1>
+                {{ item.variation3.variation_type.value }}
+                {{ item.variation3.value }}
+            </h1>
+
             <v-spacer></v-spacer>
             <v-btn @click="deletVar(index)" small icon>
-              <v-icon small> close </v-icon>
+              <v-icon small> delete </v-icon>
             </v-btn>
-          </v-row>
+            <v-col cols="12" class="ma-0 pa-0 my-2">
+              <v-divider></v-divider>
+              <v-divider></v-divider>
+            </v-col>
+            <v-col
+              cols="12"
+              class="d-flex justify-center align-center pa-0 ma-0 mt-3"
+            >
+              <h1>قیمت محصول {{ $price(item.price) }}ریال</h1>
+              <v-spacer></v-spacer>
+              <v-chip small @click="addNumber(item, true, 'list')">
+                <h1 class="font_17">+</h1>
+              </v-chip>
+              <h1 class="font_18 mx-3">
+                {{ item.count }}
+              </h1>
+              <v-chip
+                small
+                :disabled="item.count == 1"
+                @click="addNumber(item, false, 'list')"
+              >
+                <h1 class="font_17">-</h1>
+              </v-chip>
+              <v-spacer></v-spacer>
 
-          <div></div>
-        </v-card>
+              <h1>جمع کل : {{ $price(item.price * item.count) }} ریال</h1>
+            </v-col>
+          </v-row>
+        </v-card-text>
       </v-col>
 
       <v-row class="d-flex justify-center">
@@ -336,6 +373,8 @@ export default {
         } else {
           item--;
         }
+console.log("sddsdssd");
+console.log("sddsdssd");
 
         this.number = item;
       }
@@ -505,6 +544,9 @@ export default {
         this.selected_product["count"] = this.number;
         this.variations_list.push(this.selected_product);
         this.number = 1;
+        this.step_var_1 = false
+        this.step_var_2 = false
+        this.step_var_3 = false
         this.product_varcomb_id = "";
         this.$toast.success(" محصول  اضافه شد");
       }
@@ -569,11 +611,19 @@ export default {
           this.main_price = res.price ? res.price : res.product.base_price;
           this.sumb_price = this.main_price;
         })
-        .catch((rej) => {
-        });
+        .catch((rej) => {});
     },
   },
 };
 </script>
 
-<style></style>
+<style scoped>
+h1{
+  font-size: 13px !important;
+}
+.card-style{
+  border: 1px solid #0000002d;
+  border-radius: 7px;
+}
+
+</style>

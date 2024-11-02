@@ -77,7 +77,11 @@
                 <small v-if="item.product">
                   <v-icon class="mx-1"> arrow_left </v-icon>
                   {{ item.product.name }} :
-                  {{ item.product_variation_1.value }} /
+                  <span v-if="Boolean(item.product_variation_1.colors)">
+                    {{ item.product_variation_1.colors }}</span
+                  >
+                  <span v-else> {{ item.product_variation_1.value }}</span>
+                  /
                   {{ item.product_variation_2.value }} /
                   {{ item.product_variation_3.value }}
                 </small>

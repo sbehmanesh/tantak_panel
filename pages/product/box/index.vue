@@ -4,11 +4,11 @@
       <BaseTable
         url="/package"
         :headers="headers"
-         :createUrl="'/product/packages/insert?type=' + type"
+         :createUrl="'/product/box/insert?type=' + type"
 
         :filters="filters"
         :autoLoad="false"
-        autoUpdate="/product/packages"
+        autoUpdate="/product/box"
         :BTNactions="btn_actions"
         autoDelete="/package/delete"
       />
@@ -25,8 +25,8 @@ export default {
     items: [],
     filters: {},
     btn_actions: [],
-    title: " لیست پکیج ها",
-    type:"Package"
+    title: " لیست جعبه  ها",
+    type:"Box"
   }),
   beforeMount() {
     this.filters = {

@@ -1,171 +1,151 @@
 <template>
-  <v-row justify="center">
-    <v-dialog
-      v-model="dialog"
-      persistent
-      fullscreen
-      hide-overlay
-      transition="dialog-bottom-transition"
-    >
-      <v-card>
-        <v-card-title class="primary mb-10">
-          <span class="font_20 white--text">موجودی انبار</span>
-          <v-spacer></v-spacer>
-          <v-icon color="white" @click="closeDialog"> close </v-icon>
-        </v-card-title>
-        <v-card-text>
-          <v-window v-model="step">
-            <v-window-item :value="1">
-              <v-row class="d-flex justify-center">
-                <v-col cols="12" md="6">
-                  <v-expansion-panels
-                    v-model="panel"
-                    class="card-style elevation-0"
-                    focusable
-                  >
-                    <v-expansion-panel>
-                      <v-expansion-panel-header expand-icon="add_circle">
-                        <span class="font_18">
-                          تعریف موجودی
-                          <small v-if="update">
-                            *** ( {{ set_title_card }} )
-                          </small>
+  <v-col cols="12"  class="mt-5">
+    <v-window v-model="step">
+      <v-window-item :value="1">
+        <v-row class="d-flex justify-center">
+          <v-col cols="12" md="6">
+            <v-expansion-panels
+              v-model="panel"
+              class="card-style elevation-0"
+              focusable
+            >
+              <v-expansion-panel>
+                <v-expansion-panel-header expand-icon="add_circle">
+                  <span class="font_18">
+                    تعریف موجودی
+                    <small v-if="update"> *** ( {{ set_title_card }} ) </small>
+                  </span>
+                </v-expansion-panel-header>
+
+                <v-expansion-panel-content>
+                  <v-col cols="12">
+                    <v-row cols="12" class="mt-3 justify-center">
+                      <v-chip
+                        :disabled="update"
+                        dark
+                        label
+                        class="ma-2"
+                        color="grey darken-1"
+                        v-for="item in items"
+                        :key="item.key"
+                        @click="tab = item.key"
+                        :outlined="tab != item.key"
+                      >
+                        <span class="font_16">
+                          {{ item.text }}
                         </span>
-                      </v-expansion-panel-header>
+                        <v-icon class="mr-1">
+                          {{ item.icon }}
+                        </v-icon>
+                      </v-chip>
+                    </v-row>
+                  </v-col>
+                  <v-form
+                    v-model="valid"
+                    @submit.prevent="submit()"
+                    class="mt-4 pa-5"
+                    v-if="!loading"
+                  >
+                    <Products
+                      @validVariations="continue_form = $event"
+                      v-if="!update && tab == 'products'"
+                      @section="setSections($event)"
+                      :productInfo="product"
+                      :response="response"
+                      :clear_vaue="continue_form"
+                    />
+                    <Packages
+                      @validVariations="continue_form = $event"
+                      v-if="!update && tab == 'packages'"
+                      @section="setSections($event)"
+                      :productInfo="product"
+                      :response="response"
+                      :clear_vaue="continue_form"
+                    />
+                    <v-row v-if="check_continue">
+                      <v-col cols="12" md="4">
+                        <amp-input
+                          text="موجودی"
+                          rules="require,number"
+                          v-model="form.skock"
+                        />
+                      </v-col>
+                      <v-col cols="12" md="4">
+                        <amp-input
+                          text="موجودی  در انبار"
+                          rules="require,number"
+                          v-model="form.save_skock"
+                        />
+                      </v-col>
+                      <v-col cols>
+                        <amp-textarea
+                          :rows="1"
+                          text="توضیحات"
+                          v-model="form.description"
+                        ></amp-textarea>
+                      </v-col>
+                    </v-row>
+                    <v-row class="d-flex justify-center mt-5">
+                      <v-col cols="6" md="2">
+                        <amp-button
+                          block
+                          height="40"
+                          text="تایید"
+                          color="green darken-1"
+                          @click="submit"
+                          :loading="loading"
+                          :disabled="
+                            !Boolean(check_continue) || !valid || loading
+                          "
+                        />
+                      </v-col>
+                      <v-col cols="6" md="2">
+                        <amp-button
+                          block
+                          height="40"
+                          text="انصراف"
+                          color="red darken-1"
+                          @click="canceld"
+                        />
+                      </v-col>
+                    </v-row>
+                  </v-form>
+                  <div class="text-center my-10" v-else>
+                    <v-progress-circular
+                      :size="30"
+                      :width="4"
+                      indeterminate
+                      color="grey"
+                    />
+                  </div>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
+          </v-col>
+        </v-row>
 
-                      <v-expansion-panel-content>
-                        <v-col cols="12">
-                          <v-row cols="12" class="mt-3 justify-center">
-                            <v-chip
-                              :disabled="update"
-                              dark
-                              label
-                              class="ma-2"
-                              color="grey darken-1"
-                              v-for="item in items"
-                              :key="item.key"
-                              @click="tab = item.key"
-                              :outlined="tab != item.key"
-                            >
-                              <span class="font_16">
-                                {{ item.text }}
-                              </span>
-                              <v-icon class="mr-1">
-                                {{ item.icon }}
-                              </v-icon>
-                            </v-chip>
-                          </v-row>
-                        </v-col>
-                        <v-form
-                          v-model="valid"
-                          @submit.prevent="submit()"
-                          class="mt-4 pa-5"
-                          v-if="!loading"
-                        >
-                          <Products
-                            @validVariations="continue_form = $event"
-                            v-if="!update && tab == 'products'"
-                            @section="setSections($event)"
-                            :productInfo="product"
-                            :response="response"
-                            :clear_vaue="continue_form"
-                          />
-                          <Packages
-                            @validVariations="continue_form = $event"
-                            v-if="!update && tab == 'packages'"
-                            @section="setSections($event)"
-                            :productInfo="product"
-                            :response="response"
-                            :clear_vaue="continue_form"
-                          />
-                          <v-row v-if="check_continue">
-                            <v-col cols="12" md="4">
-                              <amp-input
-                                text="موجودی"
-                                rules="require,number"
-                                v-model="form.skock"
-                              />
-                            </v-col>
-                            <v-col cols="12" md="4">
-                              <amp-input
-                                text="موجودی  در انبار"
-                                rules="require,number"
-                                v-model="form.save_skock"
-                              />
-                            </v-col>
-                            <v-col cols>
-                              <amp-textarea
-                                :rows="1"
-                                text="توضیحات"
-                                v-model="form.description"
-                              ></amp-textarea>
-                            </v-col>
-                          </v-row>
-                          <v-row class="d-flex justify-center mt-5">
-                            <v-col cols="6" md="2">
-                              <amp-button
-                                block
-                                height="40"
-                                text="تایید"
-                                color="green darken-1"
-                                @click="submit"
-                                :loading="loading"
-                                :disabled="
-                                  !Boolean(check_continue) || !valid || loading
-                                "
-                              />
-                            </v-col>
-                            <v-col cols="6" md="2">
-                              <amp-button
-                                block
-                                height="40"
-                                text="انصراف"
-                                color="red darken-1"
-                                @click="canceld"
-                              />
-                            </v-col>
-                          </v-row>
-                        </v-form>
-                        <div class="text-center my-10" v-else>
-                          <v-progress-circular
-                            :size="30"
-                            :width="4"
-                            indeterminate
-                            color="grey"
-                          />
-                        </div>
-                      </v-expansion-panel-content>
-                    </v-expansion-panel>
-                  </v-expansion-panels>
-                </v-col>
-              </v-row>
+        <BaseTable
+          ref="Refresh"
+          url="/sale-agency-stock/manager-list"
+          :headers="headers"
+          autoDelete="sale-agency-stock/delete"
+          :actionsList="actions_list"
+          :BTNactions="btn_actions"
+        />
+      </v-window-item>
 
-              <BaseTable
-                ref="Refresh"
-                url="/sale-agency-stock"
-                :headers="headers"
-                :root-body="root_body"
-                autoDelete="sale-agency-stock/delete"
-                :actionsList="actions_list"
-                :BTNactions="btn_actions"
-              />
-            </v-window-item>
-
-            <v-window-item :value="2">
-              <History
-                :branchId="branchId"
-                v-if="show_history && step == 2"
-                :productVarId="product_var_id"
-                :productVarInfo="send_prop"
-                :sectionId="section_id"
-                @backStep="step--"
-              />
-            </v-window-item>
-          </v-window>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
-  </v-row>
+      <v-window-item :value="2">
+        <History
+          :branchId="branchId"
+          v-if="show_history && step == 2"
+          :productVarId="product_var_id"
+          :productVarInfo="send_prop"
+          :sectionId="section_id"
+          @backStep="step--"
+        />
+      </v-window-item>
+    </v-window>
+  </v-col>
 </template>
 <script>
 import Packages from "@/components/Product/Representative/AddToBasket/Packages.vue";
@@ -194,6 +174,7 @@ export default {
         { text: "محصول", key: "products", icon: "local_mall" },
         { text: "پکیج ", key: "packages", icon: "bento" },
       ],
+      title: "موجودی انبار",
       panel: 1,
       step: 1,
       continue_form: false,
@@ -238,8 +219,9 @@ export default {
       this.continue_form = false;
     },
   },
-  mounted() {
-    this.root_body = { sale_agency_id: this.branchId };
+  beforeMount() {
+    this.$store.dispatch("setPageTitle", this.title);
+
     this.headers = [
       {
         text: "زمان ثبت",
@@ -277,7 +259,9 @@ export default {
               product_name = body.product_var.product.name;
             }
             if (body.product_var.variation1) {
-              var_1 = Boolean(body.product_var.variation1.colors) ?  body.product_var.variation1.colors : body.product_var.variation1.value;
+              var_1 = Boolean(body.product_var.variation1.colors)
+                ? body.product_var.variation1.colors
+                : body.product_var.variation1.value;
             }
             if (body.product_var.variation2) {
               var_2 = body.product_var.variation2.value;
@@ -363,7 +347,7 @@ export default {
               product_name = body.product_var.product.name;
             }
             if (body.product_var.variation1) {
-              var_1 =data.product_var.variation1.codes ?   data.product_var.variation1.colors : data.product_var.variation1.value;
+              var_1 = body.product_var.variation1.value;
             }
             if (body.product_var.variation2) {
               var_2 = body.product_var.variation2.value;
@@ -376,7 +360,7 @@ export default {
           } else if (body.section_name == "Package") {
             this.send_prop = body.package.name;
           }
-          this.section_id = body.section_id
+          this.section_id = body.section_id;
         },
       },
     ];
@@ -439,7 +423,7 @@ export default {
               product_name = data.product_var.product.name;
             }
             if (data.product_var.variation1) {
-              var_1 = data.product_var.variation1.value;
+              var_1 =data.product_var.variation1.codes ?   data.product_var.variation1.colors : data.product_var.variation1.value;
             }
             if (data.product_var.variation2) {
               var_2 = data.product_var.variation2.value;

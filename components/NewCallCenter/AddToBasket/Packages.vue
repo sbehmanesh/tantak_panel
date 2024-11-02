@@ -76,7 +76,11 @@
                 <small v-if="item.product">
                   <v-icon class="mx-1"> arrow_left </v-icon>
                   {{ item.product.name }} :
-                  {{ item.product_variation_1.value }} /
+                  <span v-if="Boolean(item.product_variation_1.colors)">
+                    {{ item.product_variation_1.colors }}</span
+                  >
+                  <span v-else> {{ item.product_variation_1.value }}</span>
+                  /
                   {{ item.product_variation_2.value }} /
                   {{ item.product_variation_3.value }}
                 </small>
@@ -99,7 +103,7 @@
       </v-col>
     </v-row>
     <v-col cols="12" class="ma-0 pa-0 mt-5" v-if="loading_add">
-      <v-card class=" elevation-0 " >
+      <v-card class="elevation-0">
         <v-skeleton-loader height="200" class="mx-auto" type="card" />
       </v-card>
     </v-col>
@@ -110,15 +114,17 @@
       v-for="(pack, index) in list_selected_packages"
       :key="index"
     >
-      <v-card class="pa-5 elevation-0 card-style"  >
-        <div  v-if="!$vuetify.breakpoint.mdAndUp"  class="d-flex justify-center align-center">
+      <v-card class="pa-5 elevation-0 card-style">
+        <div
+          v-if="!$vuetify.breakpoint.mdAndUp"
+          class="d-flex justify-center align-center"
+        >
           <h1 class="mx-2">
-            {{ pack.text }} 
-            
+            {{ pack.text }}
           </h1>
           <v-btn @click="deletPack(index)" text icon>
-              <v-icon color=""> delete </v-icon>
-            </v-btn>
+            <v-icon color=""> delete </v-icon>
+          </v-btn>
         </div>
         <v-row class="align-center">
           <v-col cols="1" class="text-end" v-if="$vuetify.breakpoint.mdAndUp">
@@ -126,7 +132,11 @@
               <img :src="$getImage(pack.logo)" />
             </v-avatar>
           </v-col>
-          <v-col cols="1" class="text-center" v-if="$vuetify.breakpoint.mdAndUp">
+          <v-col
+            cols="1"
+            class="text-center"
+            v-if="$vuetify.breakpoint.mdAndUp"
+          >
             <h1>
               <br />
               <small>
@@ -168,20 +178,20 @@
             </v-card>
           </v-col>
 
-          <v-col cols="1" class="text-start" v-if="$vuetify.breakpoint.mdAndUp" >
+          <v-col cols="1" class="text-start" v-if="$vuetify.breakpoint.mdAndUp">
             <v-btn @click="deletPack(index)" text icon>
               <v-icon color=""> delete </v-icon>
             </v-btn>
           </v-col>
-          <v-col cols="12" class="text-center ">
+          <v-col cols="12" class="text-center">
             <v-divider class="mb-4"></v-divider>
-            <v-row class="pa-2 " v-if="$vuetify.breakpoint.mdAndUp">
+            <v-row class="pa-2" v-if="$vuetify.breakpoint.mdAndUp">
               <strong>
                 قیمت پکیج :
                 {{ $price(pack.discount_value) }} ریال
               </strong>
               <v-spacer></v-spacer>
-              <v-row class="d-flex justify-center mt-1 " >
+              <v-row class="d-flex justify-center mt-1">
                 <v-btn icon @click="addNumberPack(pack, true, 'list')" x-small>
                   <v-chip>
                     <h1 class="font_18 mx-1 mt-1">+</h1>
@@ -390,11 +400,10 @@ export default {
           this.package_id = "";
           this.loading_add = false;
           this.$toast.success(`پکیج  اضافه  شد`);
-    
-        this.list_selected_packages.unshift(this.selected_package);
-       
-        this.selected_package = {};
 
+          this.list_selected_packages.unshift(this.selected_package);
+
+          this.selected_package = {};
         }, 1000);
       }
     },
@@ -405,8 +414,7 @@ export default {
         } else {
           item.count--;
         }
-      this.$emit("data", this.list_selected_packages);
-
+        this.$emit("data", this.list_selected_packages);
       }
     },
   },

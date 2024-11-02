@@ -145,6 +145,12 @@ let mnue_tree = [
         name: "پکیج ها",
         access: "packages/root",
         route: "/product/packages",
+      },   
+         {
+        id: 11257845,
+        name: "جعبه  ها",
+        access: "packages/root",
+        route: "/product/box",
       },
       {
         id: 40,
@@ -169,11 +175,18 @@ let mnue_tree = [
         access: "special_discounts/index",
         name: "تخفیفات ويژه",
         route: "/product/special-discount",
-      },      {
+      },
+      {
         id: 545787558,
         access: "best_buy_products/index",
         name: "محصولات پیشنهادی",
         route: "/product/suggested",
+      },
+      {
+        id: 98963,
+        access: "reduce_products/index",
+        name: "محصولات روبه اتمام",
+        route: "/product/running-out",
       },
       {
         id: 13731452006,
@@ -293,11 +306,18 @@ let mnue_tree = [
     access: "debts/index",
     name: "بدهکاری ها",
     route: "/indebtedness",
-  },  {
+  },
+  {
     id: 75365742,
     access: "debts/logs",
     name: "تاریخچه فعالیت های بدهکاری",
     route: "/indebtedness/all-history",
+  },
+  {
+    id: 618558145,
+    name: "موجودی انبار",
+    access: "sale_agency_stocks/manager_list",
+    route: "/warehouses-stock/agency",
   },
   {
     id: 18,

@@ -1,6 +1,6 @@
 <template>
     <div class="mt-3">
-        <v-row class="d-flex justify-center">
+        <v-row class="d-flex justify-center mb-1">
             <v-col cols="12" md="12">
                 <v-autocomplete clearable outlined dense prepend-inner-icon="outgoing_mail" v-model="sender"
                     :items="sender_list" label=" ارجاع دهنده">
@@ -81,7 +81,7 @@
 
             </v-col>
 
-            <v-row class="d-flex justify-center  mb-1">
+            <v-row class="d-flex justify-center  ">
                 <v-col cols="12">
                     <v-divider></v-divider>
                     <v-divider></v-divider>

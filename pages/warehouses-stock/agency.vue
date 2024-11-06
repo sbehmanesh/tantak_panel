@@ -321,7 +321,6 @@ export default {
         icon: "history",
         color: "teal",
         fun: (body) => {
-          this.step++;
           this.show_history = true;
           this.product_var_id = body.product_var_id;
           let text = "";
@@ -334,7 +333,7 @@ export default {
               product_name = body.product_var.product.name;
             }
             if (body.product_var.variation1) {
-              var_1 = body.product_var.variation1.value;
+              var_1 = body.product_var.variation1.colors ? body.product_var.variation1.colors :body.product_var.variation1.value;
             }
             if (body.product_var.variation2) {
               var_2 = body.product_var.variation2.value;
@@ -348,6 +347,8 @@ export default {
             this.send_prop = body.package.name;
           }
           this.section_id = body.section_id;
+          this.step++;
+
         },
       },
     ];
@@ -431,10 +432,7 @@ export default {
           this.loading = false;
         });
     },
-    setSections(data) {
-      this.form.section_id = data.id;
-      this.form.section_name = data.section_name;
-    },
+
   },
 };
 </script>

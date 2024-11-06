@@ -69,6 +69,8 @@ export default {
       },
 
       {
+        filterable: false,
+        disableSort: true,
         text: "شماره فاکتور",
         value: "factor_number"
 

@@ -117,8 +117,15 @@
                     ( {{ item.product.info }} )
                   </small>
                 </small>
-                <small v-if="item.product_variation_1">
-                  - {{ item.product_variation_1.value }}</small>
+                <div v-if="item.product_variation_1">
+                <small v-if="item.product_variation_1.colors">
+                  - {{ item.product_variation_1.colors }}
+                </small> 
+
+                     <small v-else>
+                  - {{ item.product_variation_1.value }}
+                </small>
+                </div>
                 <small v-if="item.product_variation_2">
                   - {{ item.product_variation_2.value }}</small>
                 <small v-if="item.product_variation_3">

@@ -1,44 +1,75 @@
 <template>
-  <v-row class="justify-center">
+  <v-row class="justify-center mt-15">
+    <v-col cols="12" md="5" class="pa-0 ma-0 ma-5">
+      <v-card-text v-if="!loading" class="pa-10">
+        <v-item-group>
+          <v-col cols="12">
+            <v-item v-slot="{ active, toggle }">
+              <v-card class="align-center pa-11 elevation-3 card-style" @click="toggle">
+                <v-col cols="12" class="text-center mb-4">
+                  <img
+                    :src="$store.state.logo"
+                    width="auto"
+                    height="65"
+                    class="bg_image"
+                  />
+                </v-col>
+                <v-scroll-y-transition>
+                  <v-col cols="12" v-if="!active" class="text-center">
+                    <h1 class="font-class">
+                      {{
+                        $getItemEnum(
+                          $store.state.static.status_payment_invitor,
+                          data.status
+                        )
+                      }}
+                    </h1>
+                    <h1>
+                      برای مشاهده جزییات کلیک
+                      <v-icon small> ads_click </v-icon>
+                      کنید
+                    </h1>
+                  </v-col>
+                  <v-col cols="12" v-if="active">
+                    <strong class="font_20">
+                      <v-icon x-large> account_circle </v-icon>
+                      {{ user }}
+                    </strong>
+                    <h1>
+                      <v-icon> arrow_left </v-icon>
+                      {{ data.text }}
+                    </h1>
+                    <h1>
+                      <v-icon> arrow_left </v-icon>
+                      مبلغ پرداختی :‌
+                      {{ $price(data.price) }} ریال
+                    </h1>
 
-    <v-col cols="12" md="4" class="pa-0 ma-0 ma-5">
-      <v-card class="elevation-3 card-style">
-        <v-alert icon="account_circle" class="primary lighten-1" dark prominent>
-          <strong class="font_16">
-            {{ user }}
-          </strong>
-        </v-alert>
-        <v-card-text v-if="!loading">
-          <h1>
-            #
-            {{ data.text }}
-          </h1>
-          <h1>
-            مبلغ پرداختی :‌
-            {{ $price(data.price) }} ریال
-          </h1>
-
-          <h1>شماره تراکنش : {{ data.transaction_number }}</h1>
-          <h1>
-            وضعیت تراکنش :
-            {{ $getItemEnum($store.state.static.status_payment_invitor, data.status) }}
-          </h1>
-          <v-row class="mt-1 justify-center" v-if="this.status == 'wait'">
-            <amp-button
-              text="ادامه پرداخت"
-              icon="task_alt"
-              @click="paymentPortal"
-              color="success"
-              class="ma-2"
-              :loading="loading_pay"
-              :disabled="loading"
-            />
-          </v-row>
-        </v-card-text>
-        <div v-else class="text-center my-15">
-          <v-progress-circular color="grey" indeterminate></v-progress-circular>
-        </div>
-      </v-card>
+                    <h1>
+                      <v-icon> arrow_left </v-icon>
+                      شماره تراکنش : {{ data.transaction_number }}
+                    </h1>
+                  </v-col>
+                  <v-row class="mt-1 justify-center" v-if="status == 'wait'">
+                    <amp-button
+                      text="ادامه پرداخت"
+                      icon="task_alt"
+                      @click="paymentPortal"
+                      color="success"
+                      class="ma-2"
+                      :loading="loading_pay"
+                      :disabled="loading"
+                    />
+                  </v-row>
+                </v-scroll-y-transition>
+              </v-card>
+            </v-item>
+          </v-col>
+        </v-item-group>
+      </v-card-text>
+      <div v-else class="text-center my-15">
+        <v-progress-circular color="grey" indeterminate></v-progress-circular>
+      </div>
     </v-col>
   </v-row>
 </template>
@@ -100,7 +131,11 @@ h1 {
   font-size: 13px !important;
 }
 .card-style {
-  border: 1px solid #8080807a !important;
-  border-radius: 12px;
+  border: 1px solid #80808060 !important;
+  background: linear-gradient(to top, #d1d1d1e0, #f0dddbb6, #ff660085) !important;
+  border-radius: 8px;
+}
+.font-class {
+  font-size: 25px !important;
 }
 </style>

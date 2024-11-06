@@ -1,72 +1,92 @@
 <template>
-  <div class="mt-15 pt-15 main_contact">
-    <v-row class="justify-center align-center">
-      <v-col cols="12" md="6">
-        <v-card class="d-flex align-center">
-          <div>
-            <img :src="$store.state.logo" width="auto" height="60" class="bg_image" />
-          </div>
+  <v-row class="justify-center mt-15">
+    <v-col cols="12" md="5" class="pa-0 ma-0 ma-5">
+      <v-card-text v-if="!loading" class="pa-10">
+        <v-item-group>
+          <v-col cols="12">
+            <v-item v-slot="{ active, toggle }">
+              <v-card class="align-center pa-11 elevation-3 card-style" @click="toggle">
+                <v-col cols="12" class="text-center mb-4">
+                  <img
+                    :src="$store.state.logo"
+                    width="auto"
+                    height="65"
+                    class="bg_image"
+                  />
+                </v-col>
+                <v-scroll-y-transition>
+                  <v-col cols="12" v-if="!active" class="text-center">
+                    <h1 class="font-class">
+                      {{
+                        $getItemEnum(
+                          $store.state.static.status_payment_invitor,
+                          data.status
+                        )
+                      }}
+                    </h1>
+                    <h1>
+                      برای مشاهده جزییات کلیک
+                      <v-icon small> ads_click </v-icon>
+                      کنید
+                    </h1>
+                  </v-col>
+                  <v-col cols="12" v-if="active">
+                    <strong class="font_20">
+                      <v-icon x-large> account_circle </v-icon>
+                      {{ user }}
+                    </strong>
+                    <h1>
+                      <v-icon> arrow_left </v-icon>
+                      {{ data.text }}
+                    </h1>
+                    <h1>
+                      <v-icon> arrow_left </v-icon>
+                      مبلغ پرداختی :‌
+                      {{ $price(data.price) }} ریال
+                    </h1>
 
-          <v-card width="100%" outlined class="elevation-0">
-            <v-col cols="12" class="text-center 3">
-              <v-icon> </v-icon>
-              <h1 class="my-3">
-                {{ user }}
-              </h1>
-              <v-divider v-for="i in 2" :key="i"></v-divider>
-            </v-col>
-            <!-- <v-alert icon="account_circle" class="primary lighten-1" dark prominent>
-      <strong class="font_16">
-    
-      </strong>
-    </v-alert> -->
-            <v-card-text v-if="!loading">
-              <v-card class="pa-2 my-2 elevation-1" outlined>
-                <h1>
-                  #
-                  {{ data.text }}
-                </h1></v-card
-              >
-              <v-card class="pa-2 my-2 elevation-1" outlined>
-                <h1>
-                  مبلغ پرداختی :‌
-                  {{ $price(data.price) }} ریال
-                </h1>
-              </v-card>
-              <v-card class="pa-2 my-2 elevation-1" outlined>
-                <h1>شماره تراکنش : {{ data.transaction_number }}</h1>
-              </v-card>
-              <v-card class="pa-2 my-2 elevation-1" outlined>
-                <h1>
-                  وضعیت تراکنش :
-                  {{
-                    $getItemEnum($store.state.static.status_payment_invitor, data.status)
-                  }}
-                </h1>
-              </v-card>
-            </v-card-text>
+                    <h1>
+                      <v-icon> arrow_left </v-icon>
+                      شماره تراکنش : {{ data.transaction_number }}
+                    </h1>
+                  </v-col>
+                  <v-row class="mt-1 justify-center" v-if="status == 'wait'">
+                    <amp-button
+                      text="ادامه پرداخت"
+                      icon="task_alt"
+                      @click="paymentPortal"
+                      color="success"
+                      class="ma-2"
+                      :loading="loading_pay"
+                      :disabled="loading"
+                    />
+                  </v-row>
+                </v-scroll-y-transition>
 
-            <v-row class="mt-3 mb-2 justify-center" v-if="this.status == 'wait'">
-              <amp-button
-                text="ادامه پرداخت"
-                icon="task_alt"
-                @click="paymentPortal"
-                color="success"
-                class="ma-2"
-                :loading="loading_pay"
-                :disabled="loading_pay"
-              />
-            </v-row>
-
-            <div v-else class="text-center my-15">
-              <v-progress-circular color="grey" indeterminate></v-progress-circular>
-            </div>
-          </v-card>
-        </v-card>
-      </v-col>
-    </v-row>
-  </div>
+                <v-row class="mt-3 mb-2 justify-center" v-if="status == 'wait'" >
+                  <amp-button
+                    text="ادامه پرداخت"
+                   block
+                    @click="paymentPortal"
+                    color="primary"
+                    class="ma-2"
+                    :loading="loading_pay"
+                    :disabled="loading_pay"
+                  />
+                </v-row>
+              </v-card>
+            </v-item>
+          </v-col>
+        </v-item-group>
+        
+      </v-card-text>
+      <div v-else class="text-center my-15">
+        <v-progress-circular color="grey" indeterminate></v-progress-circular>
+      </div>
+    </v-col>
+  </v-row>
 </template>
+
 <script>
 export default {
   layout: "empty",
@@ -129,7 +149,11 @@ h1 {
   font-size: 15px !important;
 }
 .card-style {
-  border: 7px double #00000083 !important;
+  border: 1px solid #80808060 !important;
+  background: linear-gradient(to top, #d1d1d1e0, #f0dddbb6, #ff660085) !important;
   border-radius: 8px;
+}
+.font-class {
+  font-size: 25px !important;
 }
 </style>

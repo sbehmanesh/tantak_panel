@@ -1,28 +1,34 @@
 <template>
   <div>
     <v-col>
-
-      <v-row class=" mt-5 justify-center">
+      <v-row class="mt-5 justify-center">
         <v-col cols="12" md="4">
-          <v-expansion-panels v-model="panel" class="elevation-3 ">
+          <v-expansion-panels v-model="panel" class="elevation-3">
             <v-expansion-panel class="card-style">
               <v-expansion-panel-header expand-icon="search">
-                جستوجوی پیشرفته
+                <v-banner single-line>
+                  <span class="font_17">جستوجوی پیشرفته</span>
+                </v-banner>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <SearchHistoryBasket :total-data="totalData" @setFilters="setFiltersBySearch($event)"
-                  @cleareAll="tab == all" />
+                <SearchHistoryBasket
+                  :total-data="totalData"
+                  @setFilters="setFiltersBySearch($event)"
+                  @cleareAll="tab == all"
+                />
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
         </v-col>
       </v-row>
-
-
-
     </v-col>
-    <BaseTable url="/basket/my-referral-history" @getData="getTotalData($event)" :filters="filters" :headers="headers"
-      :BTNactions="btn_actions">
+    <BaseTable
+      url="/basket/my-referral-history"
+      @getData="getTotalData($event)"
+      :filters="filters"
+      :headers="headers"
+      :BTNactions="btn_actions"
+    >
     </BaseTable>
   </div>
 </template>
@@ -47,12 +53,8 @@ export default {
     filters: {},
     title: "تاریخچه سبد های خرید",
   }),
-  watch: {
-
-
-  },
+  watch: {},
   beforeMount() {
-
     this.$store.dispatch("setPageTitle", this.title);
 
     this.headers = [
@@ -72,11 +74,8 @@ export default {
         filterable: false,
         disableSort: true,
         text: "شماره فاکتور",
-        value: "factor_number"
-
+        value: "factor_number",
       },
-
-
 
       {
         text: "مرحله",
@@ -110,41 +109,30 @@ export default {
         disableSort: true,
         text: " روند ارجاع ",
         value: (body) => {
-          let sender = ""
+          let sender = "";
           if (Boolean(body.sender_first_name) && Boolean(body.sender_last_name)) {
-            sender = body.sender_first_name + " " + body.sender_last_name
+            sender = body.sender_first_name + " " + body.sender_last_name;
           } else {
-            sender = body.sender_username
+            sender = body.sender_username;
           }
-          let geter = ""
+          let geter = "";
 
           if (Boolean(body.geter_first_name) && Boolean(body.geter_last_name)) {
-            geter = body.geter_first_name + " " + body.geter_last_name
-          }
-          else if (Boolean(body.geter_username)) {
-            geter = body.geter_username
-          }
-          else {
-            geter = "ندارد"
+            geter = body.geter_first_name + " " + body.geter_last_name;
+          } else if (Boolean(body.geter_username)) {
+            geter = body.geter_username;
+          } else {
+            geter = "ندارد";
           }
 
           return `
           <h1 class="my-2">
-                     <small class="vlack--text">
-                       ارجاع دهنده :       ${sender} 
-</small>
-      
-
+            <small class="vlack--text"> ارجاع دهنده :${sender} </small>
             <br/>
-            <small class="grey--text"> گیرنده  :‌  ${geter}
-          
-   
-            </small>
+            <small class="grey--text"> گیرنده  :‌  ${geter}</small>
             </h1>
- 
-            `
-        }
-
+            `;
+        },
       },
     ];
     this.btn_actions = [
@@ -168,15 +156,13 @@ export default {
   methods: {
     getTotalData(data) {
       if (this.totalData.length < 1) {
-        this.totalData = data.model.data
-
+        this.totalData = data.model.data;
       }
     },
     setFiltersBySearch(filters) {
-      this.filters = { ...filters }
-
-    }
-  }
+      this.filters = { ...filters };
+    },
+  },
 };
 </script>
 <style scoped>

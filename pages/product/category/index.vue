@@ -45,7 +45,7 @@
       :BTNactions="btn_actions"
       autoDelete="/category/delete"
       autoUpdate="/product/category"
-      createUrl="/product/category/insert"
+      :createUrl="`/product/category/insert?catgory_id=${final_catgory}`"
     >
     </BaseTable>
 
@@ -69,12 +69,7 @@
             @click="removeRecords()"
             :disabled="time != 0 || loading"
           />
-          <amp-button
-            block
-            class="ma-0"
-            text="بستن"
-            @click="closeDeleteAllDialog()"
-          />
+          <amp-button block class="ma-0" text="بستن" @click="closeDeleteAllDialog()" />
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -104,7 +99,7 @@ export default {
     created_at: "",
     catgory_name: [],
     catgory_catalog: [],
-
+    final_catgory: "",
     filters: {},
   }),
   beforeMount() {
@@ -210,11 +205,7 @@ export default {
           });
         },
         show_fun: () => {
-          if (
-            this.$store.state.auth.action.indexOf(
-              "product/catalog_categories"
-            ) > -1
-          ) {
+          if (this.$store.state.auth.action.indexOf("product/catalog_categories") > -1) {
             return true;
           } else {
             return false;
@@ -309,7 +300,7 @@ export default {
           icon: "arrow_left",
         });
       }
-
+      this.final_catgory = id;
       this.filters = {
         parent_id: {
           op: "=",

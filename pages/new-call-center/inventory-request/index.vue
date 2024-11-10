@@ -1,25 +1,92 @@
 <template>
   <v-row class="d-flex justify-center mt-5">
+    <v-col>
+      <v-row cols="12" class="center-div mt-5" v-if="Boolean(this.$route.query.filter)">
+        <v-chip
+          dark
+          label
+          class="ma-2 px-3"
+          color="teal"
+          v-for="item in items"
+          :key="item.key"
+          @click="tab = item.key"
+          :outlined="tab != item.key"
+        >
+          {{ item.text }}
+        </v-chip>
+      </v-row>
+    </v-col>
     <v-col cols="12">
-      <BaseTable url="/product-request" :headers="headers" :extraBtn="extra_btn" :BTNactions="btn_actions"
-        :actionsList="actions_list" ref="ProductRequest" />
+      <BaseTable
+        url="/product-request"
+        :headers="headers"
+        :filters="filters"
+        :extraBtn="extra_btn"
+        :BTNactions="btn_actions"
+        :actionsList="actions_list"
+        ref="ProductRequest"
+      />
     </v-col>
     <v-col cols="12" md="8">
-      <Dialog :dialog="show_dialog" :request="request" :basketId="basket_id" v-if="show_dialog"
-        @closeDialog="show_dialog = false" @reload="refresh"  :total-price="total_price" />
-      <CheckOrder :dialog="check_order" :data="data" :basketId="basket_id" v-if="check_order"
-        @closeDialog="check_order = false" @reload="refresh" />
-      <HistoryInventoryRequest v-if="dialog_history.show" :dialogHistory="dialog_history" :messageId="id_message" />
-      <DialogRefral :dialog="show_refral" :basketId="basket_id" :stepInvitor="step_invitor"
-        :statusPayment="status_payment" v-if="show_refral" @closeDialog="show_refral = false" @reload="refresh" />
-      <DialogTransactions :dialog="add_transaction" :data="all_data" v-if="add_transaction"
-        @closeDialog="add_transaction = false" @reload="refresh" />
-      <DialogCancel :dialog="show_cansel" :getApi="get_api" v-if="show_cansel" @closeDialog="show_cansel = false"
-        @reload="refresh" />
-      <HistoryWallet :walletDialog="show_wallet" :walletData="wallet_data" v-if="show_wallet"
-        @closeDialog="show_wallet = false" @reload="refresh" />
-      <AddTransactions :dialog="create_transactions" :requestId="request_id" v-if="create_transactions"
-        @closeDialog="create_transactions = false" @reload="refresh" />
+      <Dialog
+        :dialog="show_dialog"
+        :request="request"
+        :basketId="basket_id"
+        v-if="show_dialog"
+        @closeDialog="show_dialog = false"
+        @reload="refresh"
+        :total-price="total_price"
+      />
+      <CheckOrder
+        :dialog="check_order"
+        :data="data"
+        :basketId="basket_id"
+        v-if="check_order"
+        @closeDialog="check_order = false"
+        @reload="refresh"
+      />
+      <HistoryInventoryRequest
+        v-if="dialog_history.show"
+        :dialogHistory="dialog_history"
+        :messageId="id_message"
+      />
+      <DialogRefral
+        :dialog="show_refral"
+        :basketId="basket_id"
+        :stepInvitor="step_invitor"
+        :statusPayment="status_payment"
+        v-if="show_refral"
+        @closeDialog="show_refral = false"
+        @reload="refresh"
+      />
+      <DialogTransactions
+        :dialog="add_transaction"
+        :data="all_data"
+        v-if="add_transaction"
+        @closeDialog="add_transaction = false"
+        @reload="refresh"
+      />
+      <DialogCancel
+        :dialog="show_cansel"
+        :getApi="get_api"
+        v-if="show_cansel"
+        @closeDialog="show_cansel = false"
+        @reload="refresh"
+      />
+      <HistoryWallet
+        :walletDialog="show_wallet"
+        :walletData="wallet_data"
+        v-if="show_wallet"
+        @closeDialog="show_wallet = false"
+        @reload="refresh"
+      />
+      <AddTransactions
+        :dialog="create_transactions"
+        :requestId="request_id"
+        v-if="create_transactions"
+        @closeDialog="create_transactions = false"
+        @reload="refresh"
+      />
     </v-col>
   </v-row>
 </template>
@@ -33,7 +100,7 @@ import DialogTransactions from "@/components/NewCallCenter/InventoryRequest/Dial
 import HistoryWallet from "~/components/NewCallCenter/InventoryRequest/HistoryWallet.vue";
 import CheckOrder from "~/components/NewCallCenter/InventoryRequest/CheckOrder.vue";
 import AddTransactions from "~/components/NewCallCenter/InventoryRequest/AddTransactions.vue";
-
+let jmoment = require("moment");
 export default {
   components: {
     Dialog,
@@ -70,8 +137,15 @@ export default {
       show: false,
       items: null,
     },
+    tab: "all",
+    items: [
+      { text: "همه", key: "all" },
+      { text: "کارهای امروز من", key: "my_today_work" },
+      { text: "کارهای دارای تاخیر", key: "my_late_work" },
+    ],
     status_payment: "",
     data: {},
+    filters: {},
   }),
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);
@@ -158,16 +232,15 @@ export default {
         show_fun: (body) => {
           if (Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))) {
             return false;
-          } else if (
-            Boolean(this.$checkRole(this.$store.state.auth.role.sale_manager))
-          ) {
+          } else if (Boolean(this.$checkRole(this.$store.state.auth.role.sale_manager))) {
             return true;
           } else if (
             Boolean(this.$checkRole(this.$store.state.auth.role.agency_manager))
           ) {
             if (
               body.step == "init" ||
-              ((body.step == "accept_employee_sale" || body.step == "fiscal_manager_to_manager") &&
+              ((body.step == "accept_employee_sale" ||
+                body.step == "fiscal_manager_to_manager") &&
                 body.status_payment == "payed")
             ) {
               return true;
@@ -194,8 +267,8 @@ export default {
           if (
             Boolean(
               this.$checkRole(this.$store.state.auth.role.sales_expert) &&
-              body.step == "supervisor_to_employee_sale" &&
-              body.status_payment == "none"
+                body.step == "supervisor_to_employee_sale" &&
+                body.status_payment == "none"
             )
           ) {
             return true;
@@ -268,7 +341,7 @@ export default {
           this.show_dialog = true;
           this.request = false;
           this.basket_id = body.id;
-          this.total_price = body.total_price
+          this.total_price = body.total_price;
         },
       },
       {
@@ -281,8 +354,8 @@ export default {
           if (
             Boolean(
               (body.status == "init" || body.status == "wait") &&
-              (this.$checkAccess("product_requests/root") ||
-                this.$checkRole(this.$store.state.auth.role.seal_manager))
+                (this.$checkAccess("product_requests/root") ||
+                  this.$checkRole(this.$store.state.auth.role.seal_manager))
             )
           ) {
             return true;
@@ -296,9 +369,7 @@ export default {
   computed: {
     extra_btn() {
       if (
-        Boolean(
-          this.$store.state.auth.action.indexOf("product_requests/insert") > -1
-        )
+        Boolean(this.$store.state.auth.action.indexOf("product_requests/insert") > -1)
       ) {
         return [
           {
@@ -317,6 +388,42 @@ export default {
       }
     },
   },
+  watch: {
+    tab() {
+      switch (this.tab) {
+        case "all":
+          this.filter = {};
+          break;
+        case "my_today_work":
+          this.filter = {
+            allocation_at: {
+              op: "=",
+              value: (this.now = jmoment().format("YYYY-MM-DD")),
+            },
+          };
+          break;
+        case "my_late_work":
+          this.filter = {
+            allocation_at: {
+              op: "<",
+              value: jmoment(this.now).add(-1, "days").format("YYYY-MM-DD"),
+            },
+          };
+          break;
+      }
+    },
+  },
+  mounted() {
+    if (this.$route.query.filter == "my_today_work") {
+      this.tab = "my_today_work";
+    }
+    if (this.$route.query.filter == "my_late_work") {
+      this.tab = "my_late_work";
+    }
+    if (this.$route.query.filter == "all") {
+      this.tab = "all";
+    }
+  },
   methods: {
     refresh() {
       this.$refs.ProductRequest.getDataFromApi();
@@ -324,4 +431,3 @@ export default {
   },
 };
 </script>
-<style scoped></style>

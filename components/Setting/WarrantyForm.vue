@@ -1,32 +1,14 @@
 <template>
   <v-form v-model="valid" @submit.prevent="submit()" :disabled="loading">
     <v-container fluid class="px-8">
-      <v-row dense>
+      <v-row dense class="d-flex justify-center">
         <v-col cols="12" md="3">
-          <amp-input text="عنوان دسته بندی" v-model="form.name" rules="require" />
-        </v-col>
-
-        <v-col cols="12" md="3">
-          <amp-input text="لینک" v-model="form.slug" rules="" />
-        </v-col>
-
-        <v-col cols="12" md="3">
-          <amp-autocomplete
-            text="دسته بندی والد"
-            v-model="form.parent_id"
-            :disabled="Boolean(this.$route.query.catgory_id)"
-            :items="categories"
-          />
-        </v-col>
-
-        <v-col cols="12" md="3">
-          <amp-input text="ترتیب نمایش" v-model="form.sort" rules="number" />
+          <amp-input text="مدت اعتبار گارانتی" v-model="form.value" rules="require" />
         </v-col>
         <v-col cols="12" md="3">
-          <amp-input text="بارکد" v-model="form.barcode" rules="number,max_4" />
+          <amp-input text="ترتیب" v-model="form.sort" cClass="ltr-item" rules="number" />
         </v-col>
       </v-row>
-
       <v-row dense>
         <v-col cols="12" md="12">
           <v-divider />
@@ -36,7 +18,7 @@
             large
             icon="redo"
             class="my-1"
-            color="error"
+            colsortor="error"
             text="انصراف"
             @click="redirectPage()"
           />
@@ -64,30 +46,26 @@ export default {
   data: () => ({
     valid: false,
     loading: false,
-    createUrl: "/category/insert",
-    updateUrl: "/category/update",
-    showUrl: "/category/show",
-    categories: [],
-
+    createUrl: "/setting/insert",
+    updateUrl: "/setting/update",
+    showUrl: "/setting/show",
+    settings: [],
+    selected: {},
     form: {
       id: "",
-      name: "",
-      slug: "",
-      parent_id: "",
-      barcode: "",
-      sort: 1,
+      key: "warranty",
+      value: "",
+      sort: "",
     },
   }),
 
+  beforeMount() {},
   mounted() {
-    if (Boolean(this.$route.query.catgory_id)) {
-      this.form.parent_id = this.$route.query.catgory_id;
-    }
     if (this.modelId) {
       this.loadData();
     }
-    this.getCategories();
   },
+
   methods: {
     submit() {
       let form = { ...this.form };
@@ -114,13 +92,11 @@ export default {
       this.loading = true;
       this.$reqApi(this.showUrl, { id: this.modelId })
         .then(async (response) => {
-       response = response.model;
+          response = response.model;
           this.form["id"] = response.id;
-          this.form.name = response.name;
-          this.form.slug = response.slug;
-          this.form.parent_id = response.parent_id;
+          this.form.key = response.key;
+          this.form.value = response.value;
           this.form.sort = response.sort;
-          this.form.barcode = response.barcode;
           this.loading = false;
         })
         .catch((error) => {
@@ -134,31 +110,6 @@ export default {
       } else {
         this.$router.push(this.path);
       }
-    },
-    getCategories() {
-      let form = {
-        row_number: 2000,
-      };
-
-      this.$reqApi("/category", form)
-        .then((response) => {
-          this.categories = response.model.data
-            .filter((x) => !x.parent_category_id && this.modelId != x.id)
-            .map((x) => ({
-              value: x.id,
-              text: x.name,
-            }));
-
-          this.categories.push({
-            value: "",
-            text: "بدون والد",
-          });
-
-          this.loading = false;
-        })
-        .catch((error) => {
-          this.loading = false;
-        });
     },
   },
 };

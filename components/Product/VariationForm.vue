@@ -73,12 +73,7 @@
                 <amp-input text="مقدار" v-model="form.value" />
               </v-col>
               <v-col cols="3">
-                <amp-input
-                  text="بارکد"
-                  is-number
-                  v-model="form.barcode"
-                  rules="max_4"
-                />
+                <amp-input text="بارکد" is-number v-model="form.barcode" rules="max_4" />
               </v-col>
               <v-col cols="2">
                 <amp-input text="ترتیب " v-model="form.sort" rules="number" />
@@ -131,15 +126,8 @@
             </v-col>
           </v-row>
 
-          <div
-            v-if="!loading"
-            v-for="(v, index) in variations"
-            :key="'v' + index"
-          >
-            <v-card
-              class="d-flex align-center style-card my-3 elevation-1"
-              outlined
-            >
+          <div v-if="!loading" v-for="(v, index) in variations" :key="'v' + index">
+            <v-card class="d-flex align-center style-card my-3 elevation-1" outlined>
               <v-btn icon class="grey lighten-3 white--black mr-2" small>
                 <h1>{{ index + 1 }}</h1>
               </v-btn>
@@ -148,10 +136,7 @@
                 cols="12"
                 md="2"
                 class="text-center"
-                v-if="
-                  v.variation_type &&
-                  v.variation_type.value_2 == 'product_colors'
-                "
+                v-if="v.variation_type && v.variation_type.value_2 == 'product_colors'"
                 v-for="i in 3"
                 :key="i"
               >
@@ -166,10 +151,7 @@
                 cols="12"
                 md="2"
                 class="text-center"
-                v-if="
-                  v.variation_type &&
-                  v.variation_type.value_2 != 'product_colors'
-                "
+                v-if="v.variation_type && v.variation_type.value_2 != 'product_colors'"
               >
                 <amp-input v-model="v.value" :text="v.variation_type.value" />
               </v-col>
@@ -177,16 +159,11 @@
               <v-col cols="12" md="1" class="text-center"
                 ><amp-input v-model="v.sort" text="ترتیب" rules="number" />
               </v-col>
-              <v-col
-                cols
-                v-if="v.codes && v.codes.length > 0"
-                class="text-center"
-              >
+              <v-col cols v-if="v.codes && v.codes.length > 0" class="text-center">
                 <v-progress-circular
                   v-if="v.codes.length > 0"
                   :value="v.percent"
                   :rotate="120"
-               
                   :size="25"
                   :width="13"
                   :color="v.codes[0]"
@@ -215,10 +192,7 @@
                 cols="12"
                 md="2"
                 class="d-flex justify-center"
-                v-if="
-                  v.variation_type &&
-                  v.variation_type.value_2 == 'product_colors'
-                "
+                v-if="v.variation_type && v.variation_type.value_2 == 'product_colors'"
               >
                 <v-btn color="primary" @click="GalleryDialog(true, v, index)">
                   <v-icon>image</v-icon>
@@ -226,12 +200,7 @@
               </v-col>
               <v-spacer></v-spacer>
               <v-col cols="12" md="2" class="text-center">
-                <v-btn
-                  small
-                  color="success"
-                  :loading="loading"
-                  @click="update(index)"
-                >
+                <v-btn small color="success" :loading="loading" @click="update(index)">
                   بروز رسانی
                 </v-btn>
                 <v-btn
@@ -260,9 +229,7 @@
             :width="$vuetify.breakpoint.mdAndUp ? 380 : 470"
           >
             <v-card class="pa-5">
-              <span class="mb-2 font_xxxl font_bold"
-                >ویژگی انتخابی حذف شود؟</span
-              >
+              <span class="mb-2 font_xxxl font_bold">ویژگی انتخابی حذف شود؟</span>
               <v-row class="pa-3">
                 <v-col cols="6">
                   <amp-button
@@ -594,16 +561,13 @@ export default {
       this.insert_variation = true;
       if (Boolean(this.modelId)) {
         this.product_id = this.modelId;
-      } else {
       }
     },
     setChip() {
       let data = JSON.parse(JSON.stringify(this.total_variations));
       let items = [];
       if (this.tab == "color") {
-        items = data.filter(
-          (f) => f.variation_type.value_2 == "product_colors"
-        );
+        items = data.filter((f) => f.variation_type.value_2 == "product_colors");
       }
       if (this.tab == "size") {
         items = data.filter((f) => f.variation_type.value_2 == "size");
@@ -618,7 +582,7 @@ export default {
     },
     loadAgain() {
       this.loadData(true);
-      this.$emit("getOnlyProduct")
+      this.$emit("getOnlyProduct");
     },
   },
 };

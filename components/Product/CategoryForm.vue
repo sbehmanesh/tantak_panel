@@ -22,9 +22,7 @@
         <v-col cols="12" md="3">
           <amp-input text="ترتیب نمایش" v-model="form.sort" rules="number" />
         </v-col>
-        <v-col cols="12" md="3">
-          <amp-input text="بارکد" v-model="form.barcode" rules="number,max_4" />
-        </v-col>
+ 
       </v-row>
 
       <v-row dense>
@@ -74,7 +72,6 @@ export default {
       name: "",
       slug: "",
       parent_id: "",
-      barcode: "",
       sort: 1,
     },
   }),
@@ -120,7 +117,6 @@ export default {
           this.form.slug = response.slug;
           this.form.parent_id = response.parent_id;
           this.form.sort = response.sort;
-          this.form.barcode = response.barcode;
           this.loading = false;
         })
         .catch((error) => {

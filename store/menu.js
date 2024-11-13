@@ -145,8 +145,8 @@ let mnue_tree = [
         name: "پکیج ها",
         access: "packages/root",
         route: "/product/packages",
-      },   
-         {
+      },
+      {
         id: 11257845,
         name: "جعبه  ها",
         access: "packages/root",
@@ -352,6 +352,12 @@ let mnue_tree = [
         name: "فرم نظر سنجی",
         access: "comment_questions/index",
         route: "/setting/comment-questions",
+      },
+      {
+        id: 101209,
+        name: "گارانتی",
+        access: "setting/index",
+        route: "/setting/warranty",
       },
       {
         id: 20,

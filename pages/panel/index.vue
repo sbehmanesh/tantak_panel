@@ -33,6 +33,15 @@ export default {
       if (this.$checkAccess("access_cartable/cartable_fiscal")) {
         this.$router.push("/panel/financial");
       }
+      if (this.$checkAccess("access_cartable/cartable_sefir")) {
+        this.$router.push("/panel/sefir");
+      }
+      if (this.$checkAccess("access_cartable/cartable_supervisor_center_stock")) {
+        this.$router.push("/panel/center-stock/supervisor");
+      }
+      if (this.$checkAccess("access_cartable/cartable_employee_center_stock")) {
+        this.$router.push("/panel/center-stock/employee");
+      }
     },
   },
 };

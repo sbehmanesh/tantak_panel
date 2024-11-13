@@ -69,7 +69,7 @@
             </v-col>
           </v-card>
           <v-col cols="12" class="text-center">
-            <amp-button text="افزودن پکیج" height="37" @click="addPackage" :disabled="loading_add" />
+            <amp-button text="افزودن جعبه" height="37" @click="addPackage" :disabled="loading_add" />
           </v-col>
         </v-card>
       </v-col>

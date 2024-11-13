@@ -92,7 +92,7 @@
       <v-card outlined class="pa-5 my-4 card-style" v-for="(item, index) in variations_list" :key="index">
         <v-row class="align-center">
           <v-avatar size="55">
-            <img :src="$getImage(item.variation1.product.main_image)" />
+            <img v-if="Boolean(item.variation1) && Boolean(item.variation1.product) " :src="$getImage(item.variation1.product.main_image)" />
           </v-avatar>
           <v-spacer></v-spacer>
 

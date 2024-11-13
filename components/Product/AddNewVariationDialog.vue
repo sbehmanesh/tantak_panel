@@ -178,7 +178,7 @@ export default {
 
       this.$reqApi(url, form)
         .then((response) => {
-          this.$toast.success("ویژگی مورد نظر با موفقیت ویرایش شد");
+          this.$toast.success("ویژگی مورد نظر با موفقیت ثبت شد");
           this.cloasDialog();
           this.$emit("reload")
           this.loading = false;

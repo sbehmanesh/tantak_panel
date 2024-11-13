@@ -47,63 +47,79 @@
       </v-col>
 
       <v-col cols="12" md="12" v-if="searchResult.length > 0">
-        <v-row class="mt-1">
-          <v-col
-            cols="12"
-            md="3"
-            v-for="(i, index) in statistics"
-            :key="index"
-            class="ma-0 pa-0"
-            @click="setStatusFilter(i.value, i.items)"
-          >
-            <v-card
-              height="100"
-              :disabled="loadingItems"
-              outlined
-              class="elevation-3 ma-3 pl-2 align-center rounded-0 d-flex card-style2 text-end"
-              :class="selected == i.value ? ' elevation-4 ' : ''"
-            >
-              <v-card height="100%" width="3" class="line-class line-class-hover elevation-0" :class="selected == i.value ? 'selected-card' : ''"  />
-              <div
-                class="phone-calss pa-3 align-center phone-calss-hover mr-2"
-                :class="selected == i.value ? 'selected-card' : ''"
-              >
-                <v-icon color="white" size="20" class="">
-                  {{ i.icon }}
-                </v-icon>
-              </div>
-
-              <h1 class="mr-2">
-                <small class="font_13">
-                  {{ i.text }}
-                </small>
-                <br />
-
-                <small v-if="Boolean(i.time)">
-                  <v-icon size="19" color="grey"> timer </v-icon>
-                  {{ i.time }}
-                </small>
+        <v-card class="px-4 elevation-0">
+          <v-col cols="12" class="mb-2 text-end">
+            <v-banner>
+              <h1 class="font_18">گزارش عمل کرد کل</h1>
+              <h1 class="grey--text">
+                <small> تماس های ورودی (از سمت تنتاک) </small>
+                <small> و همجنین تماس های خروجی تماس هایی است که ار سمت کاربرانی غیر پرسنل تنتاک گرفته شده</small>
               </h1>
-
-              <v-spacer></v-spacer>
-
-              <v-progress-circular
-                v-if="loadingItems"
-                :width="3"
-                color="grey"
-                :size="15"
-                indeterminate
-              ></v-progress-circular>
-              <div v-else class="d-flex">
-                <v-icon color="orange"> trending_down </v-icon>
-
-                <h1 class="orange--text font_15">
-                  {{ $price(i.count) }}
-                </h1>
-              </div>
-            </v-card>
+            </v-banner>
           </v-col>
-        </v-row>
+          <v-row class="mx-1">
+            <v-col
+              cols="12"
+              md="3"
+              v-for="(i, index) in statistics"
+              :key="index"
+              class="ma-0 pa-0"
+              @click="setStatusFilter(i.value, i.items)"
+            >
+              <v-card
+                height="100"
+                :disabled="loadingItems"
+                outlined
+                class="elevation-3 ma-2 pl-3 align-center rounded-0 d-flex card-style2 text-end"
+                :class="selected == i.value ? ' elevation-4 ' : ''"
+              >
+                <v-card
+                  height="100%"
+                  width="3"
+                  class="line-class line-class-hover elevation-0"
+                  :class="selected == i.value ? 'selected-card' : ''"
+                />
+                <div
+                  class="phone-calss pa-3 align-center phone-calss-hover mr-2"
+                  :class="selected == i.value ? 'selected-card' : ''"
+                >
+                  <v-icon color="white" size="20" class="">
+                    {{ i.icon }}
+                  </v-icon>
+                </div>
+
+                <h1 class="mr-2">
+                  <small class="font_13">
+                    {{ i.text }}
+                  </small>
+                  <br />
+
+                  <small v-if="Boolean(i.time)">
+                    <v-icon size="19" color="grey"> timer </v-icon>
+                    {{ i.time }}
+                  </small>
+                </h1>
+
+                <v-spacer></v-spacer>
+
+                <v-progress-circular
+                  v-if="loadingItems"
+                  :width="3"
+                  color="grey"
+                  :size="15"
+                  indeterminate
+                ></v-progress-circular>
+                <div v-else class="d-flex">
+                  <v-icon color="orange"> trending_down </v-icon>
+
+                  <h1 class="orange--text font_15">
+                    {{ $price(i.count) }}
+                  </h1>
+                </div>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-card>
       </v-col>
     </v-row>
   </div>
@@ -163,8 +179,7 @@ export default {
       },
 
       // { text: "پاسخ داده شده", value: "ANSWERED", icon: "call"      time:"" },
-      // { text: "بدون پاسخ", value: "NO ANSWER", icon: "phone_missed"      time:"" },
-      // { text: "مشغول", value: "BUSY", icon: "settings_phone" },
+      // { text: "پاسخ داده شده", value: "ANSWERED", icon: "call"      time:"" },
       { text: "ازدست رفته", value: "MISSED", icon: "ring_volume" },
       { text: "قطع شده در IVR", value: "s", icon: "pending" },
       // { text: "ناموفق", value: "FAILED", icon: "phone_disabled" },
@@ -186,7 +201,6 @@ export default {
   computed: {
     statistics() {
       let items = [];
-  
 
       let data = JSON.parse(JSON.stringify(this.searchResult));
 
@@ -433,13 +447,10 @@ export default {
   cursor: pointer;
   box-shadow: 2px 0px 8px 8px #c5c5c57c !important;
   transition: all 0.5s ease !important;
-
 }
 
 .selected-card {
   background: linear-gradient(to top, #ff03034f, #ce0e0ed7, #6b0707) !important;
-  
-  
 }
 
 .phone-calss {
@@ -456,5 +467,9 @@ export default {
 .card-style2:hover .line-class-hover {
   background: linear-gradient(to top, #ff03034f, #ce0e0ed7, #6b0707) !important;
 }
-
+.card-text-style {
+  border: 1px solid rgba(0, 0, 0, 0.116);
+  border-radius: 5px !important;
+  background: #ff5e0070;
+}
 </style>

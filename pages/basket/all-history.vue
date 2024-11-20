@@ -22,10 +22,19 @@
         </v-col>
       </v-row>
     </v-col>
+    <ChatDialog
+      :dialog="chat_dilog"
+      v-if="chat_dilog"
+      @closeDialog="chat_dilog = false"
+      :data="totalData"
+      url="/basket/my-referral-history"
+  
+    />
     <BaseTable
       url="/basket/my-referral-history"
       @getData="getTotalData($event)"
       :filters="filters"
+      :extraBtn="extra_btn"
       :headers="headers"
       :BTNactions="btn_actions"
     >
@@ -36,9 +45,10 @@
 <script>
 import BaseTable from "~/components/DataTable/BaseTable";
 import SearchHistoryBasket from "@/components/Product/SearchHistoryBasket.vue";
+import ChatDialog from "@/components/NewCallCenter/ChatDialog.vue";
 
 export default {
-  components: { BaseTable, SearchHistoryBasket },
+  components: { BaseTable, SearchHistoryBasket, ChatDialog },
   data: () => ({
     tab: "all",
     items: [
@@ -46,7 +56,9 @@ export default {
       { text: "فعالیت های من", key: "my_logs" },
     ],
     headers: [],
+    chat_dilog: false,
     btn_actions: [],
+    extra_btn: [],
     totalData: [],
     user_login_id: "",
     panel: "",
@@ -54,7 +66,18 @@ export default {
     title: "تاریخچه سبد های خرید",
   }),
   watch: {},
+
   beforeMount() {
+    this.extra_btn = [
+      {
+        text: "پیام ها",
+        icon: "chat",
+        color: "info darken-1",
+        fun: () => {
+          this.chat_dilog = true;
+        },
+      },
+    ];
     this.$store.dispatch("setPageTitle", this.title);
 
     this.headers = [
@@ -83,34 +106,22 @@ export default {
         value: "step",
         items: this.$store.state.static.step_status_baskets,
       },
-
       {
-        text: "پیام",
-        filterCol: "message",
-        type: "tooltip",
-        function: (body) => {
-          if (body.message) {
-            return body.message;
-          }
-        },
-        value: (body) => {
-          if (typeof body.message == "string") {
-            if (body.message.length < 25) {
-              return body.message;
-            }
-            return body.message.slice(0, 25) + "...";
-          } else {
-            return "-";
-          }
-        },
+        filterable: false,
+        disableSort: true,
+        value: "factor_numbser",
       },
+   
       {
         filterable: false,
         disableSort: true,
         text: " روند ارجاع ",
         value: (body) => {
           let sender = "";
-          if (Boolean(body.sender_first_name) && Boolean(body.sender_last_name)) {
+          if (
+            Boolean(body.sender_first_name) &&
+            Boolean(body.sender_last_name)
+          ) {
             sender = body.sender_first_name + " " + body.sender_last_name;
           } else {
             sender = body.sender_username;

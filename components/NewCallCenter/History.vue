@@ -22,6 +22,7 @@
           :root-body="{ message_id: MessageId }"
         />
       </v-card>
+
       <!-- <v-card class="pa-2 lighten-3">
   
           <v-card-text>
@@ -34,6 +35,9 @@
 
 <script>
 export default {
+  components: {
+    ChatDialog,
+  },
   props: {
     DialogHistory: {
       require: false,
@@ -46,9 +50,9 @@ export default {
   },
 
   data: () => ({
-    valid: true,
-    valid_comment: true,
+    chat_dilog: false,
     headers: [],
+    extra_btn: [],
     loading: false,
   }),
   beforeMount() {
@@ -69,7 +73,9 @@ export default {
         value: (body) => {
           if (body.from_personnel) {
             return body.from_personnel.first_name
-              ? body.from_personnel.first_name + " " + body.from_personnel.last_name
+              ? body.from_personnel.first_name +
+                  " " +
+                  body.from_personnel.last_name
               : "--";
           }
         },
@@ -104,13 +110,14 @@ export default {
         value: "type_send",
         filterType: "select",
         items: [
-            { text: "تخصیص خودکار", value: "auto" },
-            { text: "دستی", value: "multi" },
-            { text: "بر اساس سابقه فروش", value: "sale" },
-            { text: "بستن", value: "close" },
-          ],
+          { text: "تخصیص خودکار", value: "auto" },
+          { text: "دستی", value: "multi" },
+          { text: "بر اساس سابقه فروش", value: "sale" },
+          { text: "بستن", value: "close" },
+        ],
       },
     ];
+ 
   },
   methods: {
     submit() {

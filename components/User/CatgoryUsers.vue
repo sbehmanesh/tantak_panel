@@ -1,15 +1,21 @@
 <template>
   <v-row class="d-flex justify-center mt-4">
-    <v-col cols="12" md="4" v-for="x in catgory_users" :key="x.value">
+    <v-col
+      cols="12"
+      md="4"
+      v-for="x in catgory_users"
+      :key="x.value"
+      v-if="!loading"
+    >
       <v-card
-      height="260"
+        height="260"
         class="text-center main-card align-center justif-center pa-3"
         @click="selectCard(x)"
       >
-        <v-row class="d-flex  pa-3">
+        <v-row class="d-flex pa-3">
           <v-col cols="12" md="4">
             <v-card
-            width="100"
+              width="100"
               class="icon-calss pa-4 mb-3"
               :class="selected_card == x.value ? 'select-card' : ''"
             >
@@ -43,9 +49,9 @@
             </div>
           </v-col>
           <v-spacer></v-spacer>
-          <v-col cols="12" md="7">
-            <v-row class="d-flex justify-center align-center  ">
-              <v-card class="text-center pa-3 elevation-1" outlined width="400" >
+          <v-col cols="12" md="8" v-if="$vuetify.breakpoint.mdAndUp">
+            <v-row class="d-flex justify-center align-center">
+              <v-card class="text-center pa-3 elevation-1" outlined width="400">
                 <v-row class="align-center pa-3">
                   <h1>
                     <small>
@@ -106,6 +112,11 @@
         </v-row>
       </v-card>
     </v-col>
+    <v-col v-if="loading" cols="12" md="4" v-for="i in 2" :key="i">
+      <v-card >
+        <v-skeleton-loader type="card" height="180" ></v-skeleton-loader>
+      </v-card>
+    </v-col>
   </v-row>
 </template>
 
@@ -127,6 +138,7 @@ export default {
   },
   data: () => ({
     start_date: "",
+    loading: true,
     headers: [],
     selected_card: "users",
     now: "",
@@ -216,7 +228,9 @@ export default {
           }
           this.customerList();
         })
-        .catch((err) => {});
+        .catch((err) => {
+          this.loading = false;
+        });
     },
     customerList() {
       this.$reqApi("/user/searchByRole", {
@@ -231,13 +245,15 @@ export default {
               this.$toJalali(x.created_at, "YYYY-MM-DD", "jYYYY/jMM/jDD") ==
               this.now
           );
-          
+
           if (Boolean(new_customer) && new_customer.length > 0) {
             this.catgory_users[0].new = new_customer.length;
           }
           this.createChart(this.last_week);
         })
-        .catch((err) => {});
+        .catch((err) => {
+          this.loading = false;
+        });
     },
     selectCard(data) {
       this.selected_card = data.value;
@@ -259,6 +275,7 @@ export default {
       this.catgory_users[0].labels.unshift(chart.length);
 
       this.catgory_users[0].week.unshift(chart.length);
+      this.loading = false;
     },
     chartPersonal(data) {
       let chart = this.pesonal_list.filter(

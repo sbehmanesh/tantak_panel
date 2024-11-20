@@ -3,7 +3,7 @@
     <v-row dense>
       <v-col cols="12" md="12">
         <v-card max-width="380" class="elevation-0">
-          <div>سرپرست واحد مالی</div>
+          <div>سرپرست انبار مرکزی</div>
           <div class="my-1">به تن تاک خوش اومدی!</div>
           <div class="d-flex align-center">
             <v-icon size="18" color="green">circle</v-icon>
@@ -13,11 +13,7 @@
           <v-divider color="#fd5800" class="mt-3"></v-divider>
         </v-card>
       </v-col>
-      <v-col
-        cols="12"
-        md="3"
-        :class="$vuetify.breakpoint.mdAndUp ? '' : 'd-flex'"
-      >
+      <v-col cols="12" md="3" :class="$vuetify.breakpoint.mdAndUp ? '' : 'd-flex'">
         <!-- کاردهای کناری داشبورد -->
         <SideCard v-for="(card, i) in sides" :key="i" :card="card" />
       </v-col>
@@ -32,18 +28,12 @@
           <div class="mr-3">
             <!-- <img src="/image/default-user.jpg" width="30" class="mt-2" /> -->
             <!-- <h5>
-                {{ firstname_employee }} {{ lastname_employee }} /
-                {{ username_employee }}
-              </h5> -->
+                                {{ firstname_employee }} {{ lastname_employee }} /
+                                {{ username_employee }}
+                              </h5> -->
             <v-tooltip bottom v-if="employee_flag">
               <template v-slot:activator="{ on }">
-                <v-btn
-                  small
-                  v-on="on"
-                  @click="show_employee()"
-                  icon
-                  color="blue"
-                >
+                <v-btn small v-on="on" @click="show_employee()" icon color="blue">
                   <v-avatar color="primary" size="30" small>
                     <span class="white--text text-h7">
                       {{ firstname_employee[0] }}
@@ -81,23 +71,26 @@ export default {
     employee_flag: false,
     // count_works: [],
     sides: [
-      {
+    {
         icon: "/image/dashboard/todolist.svg",
         title: "کارهای امروز من",
-        // backgroundColor: '#8BE014',
         color: "#80CC16B2",
-        // textcolor: '#fff',
         count: 0,
-        route: "/basket/referral-list?filter=my_today_work",
+        // multiple:true,
+        route: "/new-call-center/inventory-request?filter=my_today_work",
+        // my_works:{},
+        filter_key:"my_today_work",
+
       },
       {
         icon: "/image/dashboard/works2.svg",
         title: "کارهای دارای تاخیر",
-        // backgroundColor: '#FFA04DB2',
         color: "#FF7700B2",
-        // textcolor: '#fff',
         count: 0,
-        route: "/basket/referral-list?filter=my_late_work",
+        // multiple:true,
+        // my_works:{},
+        filter_key:"my_late_work",
+        route: "/new-call-center/inventory-request?filter=my_late_work",
       },
       // {
       //   icon: "/image/dashboard/works3.svg",
@@ -125,15 +118,15 @@ export default {
   },
   methods: {
     getApi() {
-      if (this.$checkAccess("access_cartable/cartable_fiscal_supervisor")) {
-        this.$reqApi("user-cartable/fiscal-supervisor")
+        this.$reqApi("user-cartable/supervisor-sale")
           .then((res) => {
             this.get_data = res;
-
+            // this.sides[0].my_works = res.array_work;
+            // this.sides[1].my_works = res.array_work;
             this.sides[0].count = res.work_today;
             this.sides[1].count = res.work_late;
             this.sides[2].count = res.my_message;
-            // this.sides[3].count = res.my_message;
+            this.sides[3].count = res.my_message;
 
             if (res.list_employee == true) {
               (this.employee_flag = true),
@@ -143,15 +136,11 @@ export default {
                     this.lastname_employee = response.model.data[0].last_name;
                     this.username_employee = response.model.data[0].username;
                   })
-                  .catch((error) => {
-                  });
+                  .catch((error) => {});
             }
-
           })
 
-          .catch((error) => {
-          });
-      }
+          .catch((error) => {});
     },
     show_employee() {
       this.$router.push("/new-call-center/my-staff");

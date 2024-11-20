@@ -7,7 +7,7 @@
       
       autoUpdate="/setting/message-algouritm"
       createUrl="/setting/message-algouritm/insert"
-      autoDelete="/setting/message-algouritm/delete"
+      autoDelete="/setting/delete"
     />
   </div>
 </template>

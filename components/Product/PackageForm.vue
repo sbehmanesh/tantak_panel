@@ -23,7 +23,7 @@
         <v-col cols="12" md="3">
           <AmpUploadFile title="بارگذاری تصویر" v-model="form.logo" />
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="3" v-if="!Boolean(is_box)">
           <amp-select
             text="نوع فروش"
             multiple
@@ -58,7 +58,7 @@
             v-model="discount_value"
           />
         </v-col>
-        <v-col cols="12" md="3" v-if="Boolean(check_sale_type)">
+        <v-col cols="12" md="3" v-if="Boolean(check_sale_type) && !Boolean(is_box)">
           <amp-select
             text="نوع پیش پرداخت "
             rules="require"
@@ -70,7 +70,9 @@
         <v-col
           cols="12"
           md="3"
-          v-if="Boolean(check_sale_type) && form.prepay_type != 'none'"
+          v-if="
+            Boolean(check_sale_type) && form.prepay_type != 'none' && !Boolean(is_box)
+          "
         >
           <amp-input
             v-if="form.prepay_type == 'amount'"
@@ -88,19 +90,15 @@
             v-model="prepayment"
           />
         </v-col>
-        <v-col md="3" cols="12">
+        <v-col md="3" cols="12" v-if="!Boolean(is_box)">
           <amp-select
-            :text="
-              this.$route.query.type == 'Package'
-                ? ' پکیج برای همه قابل شکستن است '
-                : ' جعبه برای همه قابل شکستن است  '
-            "
+            text="پکیج برای همه قابل شکستن است "
             rules="require"
             :items="bool_text"
             v-model="form.licence_break"
           />
         </v-col>
-        <v-col cols="12" md="3" v-if="form.licence_break == 'no'">
+        <v-col cols="12" md="3" v-if="form.licence_break == 'no' && !Boolean(is_box)">
           <amp-autocomplete
             text="نقش های مثتثنا"
             chips
@@ -211,6 +209,13 @@ export default {
         return false;
       }
     },
+    is_box() {
+      if (Boolean(this.$route.query.type == "Box")) {
+        return true;
+      } else {
+        return false;
+      }
+    },
   },
 
   mounted() {
@@ -233,31 +238,34 @@ export default {
       this.$refs.GetVariatonsId.sendVariation();
       return new Promise((res, rej) => {
         let form = { ...this.form };
-        switch (form.licence_break) {
-          case "yes":
-            form.licence_break = true;
-            form.role_ids = [];
-            break;
-
-          default:
-            form.licence_break = false;
-            break;
-        }
 
         form["sale_online"] = false;
         form["sale_phone"] = false;
         form["sale_person"] = false;
-        if (this.sale_type_selected.indexOf("sale_online") > -1) {
-          form.sale_online = true;
-        }
-        if (this.sale_type_selected.indexOf("sale_person") > -1) {
-          form.sale_person = true;
-        }
+        if (!Boolean(this.is_box)) {
+          switch (form.licence_break) {
+            case "yes":
+              form.licence_break = true;
+              form.role_ids = [];
+              break;
 
-        if (this.sale_type_selected.indexOf("sale_phone") > -1) {
-          form.sale_phone = true;
-          if (form.prepay_type != "none") {
-            form["prepay_amount"] = this.prepayment;
+            default:
+              form.licence_break = false;
+              break;
+          }
+
+          if (this.sale_type_selected.indexOf("sale_online") > -1) {
+            form.sale_online = true;
+          }
+          if (this.sale_type_selected.indexOf("sale_person") > -1) {
+            form.sale_person = true;
+          }
+
+          if (this.sale_type_selected.indexOf("sale_phone") > -1) {
+            form.sale_phone = true;
+            if (form.prepay_type != "none") {
+              form["prepay_amount"] = this.prepayment;
+            }
           }
         }
 
@@ -326,6 +334,7 @@ export default {
             if (Boolean(response.sale_phone)) {
               this.sale_type_selected.push("sale_phone");
             }
+
             res(true);
           })
           .catch((rej) => {

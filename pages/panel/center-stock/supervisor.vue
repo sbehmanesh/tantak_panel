@@ -56,8 +56,8 @@
   </v-container>
 </template>
 <script>
-import MainTable from "@/components/dashboard/MainCard";
-import SideCard from "@/components/dashboard/SideCard";
+import MainTable from "@/components/Dashboard/MainCard";
+import SideCard from "@/components/Dashboard/SideCard";
 export default {
   components: { MainTable, SideCard },
   data: () => ({
@@ -71,18 +71,25 @@ export default {
     employee_flag: false,
     // count_works: [],
     sides: [
-      {
+    {
         icon: "/image/dashboard/todolist.svg",
         title: "کارهای امروز من",
         color: "#80CC16B2",
         count: 0,
+        multiple:true,
         route: "/new-call-center/inventory-request?filter=my_today_work",
+        my_works:{},
+        filter_key:"my_today_work",
+
       },
       {
         icon: "/image/dashboard/works2.svg",
         title: "کارهای دارای تاخیر",
         color: "#FF7700B2",
         count: 0,
+        multiple:true,
+        my_works:{},
+        filter_key:"my_late_work",
         route: "/new-call-center/inventory-request?filter=my_late_work",
       },
       // {
@@ -115,7 +122,8 @@ export default {
         this.$reqApi("user-cartable/supervisor-center-stock")
           .then((res) => {
             this.get_data = res;
-            console.log("res >> ", res);
+            this.sides[0].my_works = res.array_work;
+            this.sides[1].my_works = res.array_work;
             this.sides[0].count = res.work_today;
             this.sides[1].count = res.work_late;
             this.sides[2].count = res.my_message;

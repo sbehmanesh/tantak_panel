@@ -7,6 +7,7 @@
       autoUpdate="/product/sale-agency"
       :createUrl="create_url"
       :BTNactions="btn_actions"
+      :extraBtn="extra_btn"
     >
     </BaseTable>
     <Dialog
@@ -15,20 +16,29 @@
       v-if="show_dialog"
       @closeDialog="closeDialog"
     />
+    <VarComExcel
+      :dialog="varcome_excel"
+      v-if="varcome_excel"
+      @closeDialog="closeDialog"
+    />
   </div>
 </template>
 
 <script>
 import BaseTable from "~/components/DataTable/BaseTable";
+import VarComExcel from "@/components/Product/VarComExcel.vue";
 import Dialog from "@/components/Product/Representative/Dialog.vue";
 export default {
-  components: { Dialog  ,BaseTable},
+  components: { Dialog, BaseTable, VarComExcel },
   data: () => ({
     headers: [],
     btn_actions: [],
+    extra_btn: [],
     id: "",
     title: "لیست نمایندگی های فروش",
     show_dialog: false,
+    varcome_excel: false,
+
     create_url: "",
   }),
   beforeMount() {
@@ -159,6 +169,17 @@ export default {
           this.id = body.id;
           this.show_dialog = true;
         },
+      },    
+
+    ];
+    this.extra_btn = [
+      {
+        text: "ترکیبات محصول",
+        icon: "backup",
+        color: "teal darken-2",
+        fun: (body) => {
+          this.varcome_excel = true;
+        },
       },
     ];
     if (this.$store.state.auth.action.indexOf("sale_agencies/root")) {
@@ -168,6 +189,7 @@ export default {
   methods: {
     closeDialog() {
       this.show_dialog = false;
+      this.varcome_excel = false;
     },
   },
 };

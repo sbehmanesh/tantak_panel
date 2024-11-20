@@ -239,7 +239,9 @@ export default {
           ) {
             if (
               body.step == "init" ||
-              ((body.step == "accept_employee_sale" ||
+              ((
+                body.step == "accept_employee_sale" ||
+                body.step == "accept_fiscal" ||
                 body.step == "fiscal_manager_to_manager") &&
                 body.status_payment == "payed")
             ) {
@@ -392,10 +394,10 @@ export default {
     tab() {
       switch (this.tab) {
         case "all":
-          this.filter = {};
+          this.filters = {};
           break;
         case "my_today_work":
-          this.filter = {
+          this.filters = {
             allocation_at: {
               op: "=",
               value: (this.now = jmoment().format("YYYY-MM-DD")),
@@ -403,7 +405,7 @@ export default {
           };
           break;
         case "my_late_work":
-          this.filter = {
+          this.filters = {
             allocation_at: {
               op: "<",
               value: jmoment(this.now).add(-1, "days").format("YYYY-MM-DD"),

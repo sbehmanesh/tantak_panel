@@ -20,20 +20,13 @@
     <v-card-text>
       <v-form v-model="valid">
         <v-row>
-          <v-col
-            cols="12"
-            md="4"
-            v-for="(item, index) in delivery_form"
-            :key="index"
-          >
-            <v-card class="elevation-3 pa-2 grey lighten-3">
-              <v-row class="d-flex justify-start ma-2 alifn-center">
-                <v-spacer></v-spacer>
-                <v-icon class="" @click="deleteFromCard(item, index)" size="20">
+          <v-col cols="12" md="4" v-for="(item, index) in delivery_form" :key="index">
+            <v-card outlined class="elevation-3 pa-4">
+              <v-col cols="12" class="text-start  ">
+                <v-icon  @click="deleteFromCard(item, index)" size="20">
                   delete
                 </v-icon>
-              </v-row>
-
+              </v-col>
               <v-row class="alifn-center">
                 <v-col cols="12" md="12">
                   <amp-select
@@ -44,15 +37,13 @@
                     :items="week_days"
                   />
                 </v-col>
-                <v-col cols="12" md="12">
+                <v-col cols="12" md="12" class="d-flex">
                   <amp-select
                     text="بازه زمانی"
                     rules="require"
                     v-model="item.id"
                     :items="delivery_time"
                   />
-                </v-col>
-                <v-col cols="12" md="12">
                   <amp-input
                     text="تعداد ارسال در بازه زمانی"
                     cClass="ltr-item"
@@ -61,6 +52,7 @@
                   />
                 </v-col>
               </v-row>
+      
             </v-card>
           </v-col>
         </v-row>
@@ -109,12 +101,11 @@ export default {
   watch: {
     delivery_form: {
       deep: true,
-      handler(){
+      handler() {
         this.$emit("validTime", this.valid),
-        this.$emit("deliveryForm", this.delivery_form);
-      }
+          this.$emit("deliveryForm", this.delivery_form);
+      },
     },
-
   },
   methods: {
     timsSend() {
@@ -151,11 +142,10 @@ export default {
     },
     setWeekDayes(data) {
       let items = [];
- 
+
       for (let index = 0; index < data.length; index++) {
         const element = data[index];
         let week = JSON.parse(element.week_days);
-
 
         items.push({
           id: element.id,

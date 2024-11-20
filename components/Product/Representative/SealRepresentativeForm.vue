@@ -87,6 +87,15 @@
             v-model="form.after_sale_service"
             :items="check_have"
           />
+        </v-col>    
+        
+            <v-col cols="12" md="2">
+          <amp-select
+            text="دسترسی تعریف موجودی"
+            rules="require"
+            v-model="form.access_add_product"
+            :items="$store.state.static.access_request_product"
+          />
         </v-col>
 
         <v-col cols="12" md="2">
@@ -219,6 +228,7 @@ export default {
       name: "",
       status: "active",
       after_sale_service: "",
+      access_add_product: "",
       send_good: "",
       address: "",
       sale_online: "",

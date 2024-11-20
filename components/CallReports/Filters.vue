@@ -1,24 +1,7 @@
 <template>
   <div prominent outlined icon="search" class="elevation-0 pa-5" :disabled="loadingItems">
     <v-row class="text-center justify-center">
-      <v-col cols="12" md="2">
-        <amp-autocomplete
-          prepend-inner-icon="person_search"
-          placeholder="نام کاربر یا شماره داخلی را جستجو کنید"
-          v-model="search_dst"
-          :items="user_list_internal"
-          text="  جستوجو داخلی"
-        />
-      </v-col>
-      <v-col cols="12" md="2">
-        <amp-input
-          v-model="dst"
-          cClass="ltr-item"
-          text="مقصد تماس"
-          prepend-inner-icon="call"
-          placeholder=" مقصد مورد نظر را وارد کنید"
-      /></v-col>
-      <v-col cols="12" md="2">
+      <v-col class="d-flex" cols="12" md="5">
         <amp-input
           v-model="src"
           cClass="ltr-item"
@@ -26,13 +9,24 @@
           prepend-inner-icon="phone_callback"
           placeholder=" شماره مورد نظر را وارد کنید"
         />
+        <amp-input
+          v-model="dst"
+          cClass="ltr-item"
+          text="مقصد تماس"
+          prepend-inner-icon="call"
+          placeholder=" مقصد مورد نظر را وارد کنید"
+      />
+
       </v-col>
-      <v-col cols="12" md="2">
+      <v-spacer></v-spacer>
+      <v-col class="d-flex" cols="12" md="5">
         <amp-jdate text="زمان ثبت تماس از" v-model="from" />
+        <amp-jdate text="تا تاریخ" v-model="to" />
+
       </v-col>
-      <v-col cols="12" md="2">
-        <amp-jdate text="نا تاریخ" v-model="to" />
-      </v-col>
+   
+      <v-spacer></v-spacer>
+
       <v-col cols="12" md="2">
         <amp-button
           @click="search"
@@ -48,12 +42,15 @@
 
       <v-col cols="12" md="12" v-if="searchResult.length > 0">
         <v-card class="px-4 elevation-0">
-          <v-col cols="12" class="mb-2 text-end">
-            <v-banner>
+          <v-col cols="12" class="mb-5 text-end">
+            <v-banner single-line>
               <h1 class="font_18">گزارش عمل کرد کل</h1>
               <h1 class="grey--text">
                 <small> تماس های ورودی (از سمت تنتاک) </small>
-                <small> و همجنین تماس های خروجی تماس هایی است که ار سمت کاربرانی غیر پرسنل تنتاک گرفته شده</small>
+                <small>
+                  و همجنین تماس های خروجی تماس هایی است که ار سمت کاربرانی غیر پرسنل تنتاک
+                  گرفته شده</small
+                >
               </h1>
             </v-banner>
           </v-col>
@@ -110,9 +107,9 @@
                   indeterminate
                 ></v-progress-circular>
                 <div v-else class="d-flex">
-                  <v-icon color="orange"> trending_down </v-icon>
+                  <v-icon color="grey"> trending_down </v-icon>
 
-                  <h1 class="orange--text font_15">
+                  <h1 class="grey--text font_15">
                     {{ $price(i.count) }}
                   </h1>
                 </div>
@@ -178,7 +175,6 @@ export default {
         time: "",
       },
 
-      // { text: "پاسخ داده شده", value: "ANSWERED", icon: "call"      time:"" },
       // { text: "پاسخ داده شده", value: "ANSWERED", icon: "call"      time:"" },
       { text: "ازدست رفته", value: "MISSED", icon: "ring_volume" },
       { text: "قطع شده در IVR", value: "s", icon: "pending" },
@@ -440,7 +436,7 @@ export default {
   border: 1px solid #00000034;
 }
 .card-style2 {
-  border-radius: 5px !important;
+  border-radius: 8px !important;
 }
 .card-style2:hover {
   color: #000000bb;
@@ -450,22 +446,21 @@ export default {
 }
 
 .selected-card {
-  background: linear-gradient(to top, #ff03034f, #ce0e0ed7, #6b0707) !important;
+  background: linear-gradient(to top, #4582c783, #245bc2ad, #000000) !important;
+
 }
 
 .phone-calss {
-  background-color: #ff5e00b0;
+  background: linear-gradient(to top, #4582c7a2, #2e68d4ad, #03405c) !important;
   border-radius: 10px !important;
 }
 .card-style2:hover .phone-calss-hover {
-  background: linear-gradient(to top, #ff03034f, #cc2828d7, #960a0a) !important;
-
-  box-shadow: 2px 0px 10px 12px #c5c5c57c !important;
+  background: linear-gradient(to top, #4582c780, #4284fdad, #03405c) !important;
   transition: all 0.8s ease !important;
 }
 
 .card-style2:hover .line-class-hover {
-  background: linear-gradient(to top, #ff03034f, #ce0e0ed7, #6b0707) !important;
+  background: linear-gradient(to top, #4582c783, #245bc2ad, #000000) !important;
 }
 .card-text-style {
   border: 1px solid rgba(0, 0, 0, 0.116);

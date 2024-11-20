@@ -2,9 +2,26 @@
   <div>
     <v-window v-model="step">
       <v-window-item :value="1">
+        <v-col>
+          <v-row cols="12" class="center-div mt-5">
+            <v-chip
+              dark
+              label
+              class="ma-2 px-3"
+              color="teal"
+              v-for="item in items"
+              :key="item.key"
+              @click="tab = item.key"
+              :outlined="tab != item.key"
+            >
+              {{ item.text }}
+            </v-chip>
+          </v-row>
+        </v-col>
         <BaseTable
           url="/debt"
           :headers="headers"
+          :filters="filter"
           autoDelete="/debt/delete"
           :BTNactions="btn_actions"
           ref="DebtsList"
@@ -40,12 +57,12 @@
       @reload="refresh"
     />
     <DialogTransactions
-        :dialog="add_transaction"
-        :data="respons"
-        v-if="add_transaction"
-        @closeDialog="add_transaction = false"
-        @reload="refresh"
-      />
+      :dialog="add_transaction"
+      :data="respons"
+      v-if="add_transaction"
+      @closeDialog="add_transaction = false"
+      @reload="refresh"
+    />
   </div>
 </template>
 
@@ -55,7 +72,7 @@ import DebtDialog from "@/components/NewCallCenter/Debt/DebtDialog.vue";
 import DialogRefral from "@/components/NewCallCenter/Debt/DialogRefral.vue";
 import AddTransactions from "~/components/NewCallCenter/Debt/AddTransactions.vue";
 import DialogTransactions from "@/components/NewCallCenter/Debt/DialogTransactions.vue";
-
+let jmoment = require("moment");
 export default {
   components: {
     DebtDialog,
@@ -68,6 +85,12 @@ export default {
     headers: [],
     data: [],
     respons: [],
+    tab: "all",
+    items: [
+      { text: "همه", key: "all" },
+      { text: "کارهای امروز من", key: "my_today_work" },
+      { text: "کارهای دارای تاخیر", key: "my_late_work" },
+    ],
     btn_actions: [],
     title: "لیست بدهکاری ها ",
     show_debt: false,
@@ -77,9 +100,44 @@ export default {
     create_transactions: false,
     id: "",
     step_order: "",
+    filter: {},
     step: 1,
   }),
+  watch: {
+    tab() {
+      switch (this.tab) {
+        case "all":
+          this.filter = {};
+          break;
+        case "my_today_work":
+          this.filter = {
+            allocation_at: {
+              op: "=",
+              value: (this.now = jmoment().format("YYYY-MM-DD")),
+            },
+          };
+          break;
+        case "my_late_work":
+          this.filter = {
+            allocation_at: {
+              op: "<",
+              value: jmoment(this.now).add(-1, "days").format("YYYY-MM-DD"),
+            },
+          };
+          break;
+      }
+    },
+  },
   beforeMount() {
+    if (this.$route.query.filter == "my_today_work") {
+      this.tab = "my_today_work";
+    }
+    if (this.$route.query.filter == "my_late_work") {
+      this.tab = "my_late_work";
+    }
+    if (this.$route.query.filter == "all") {
+      this.tab = "all";
+    }
     this.$store.dispatch("setPageTitle", this.title);
 
     this.headers = [
@@ -245,7 +303,9 @@ export default {
         show_fun: (body) => {
           if (
             Boolean(
-              this.$checkRole(this.$store.state.auth.role.superviser_centeral_stock) &&
+              this.$checkRole(
+                this.$store.state.auth.role.superviser_centeral_stock
+              ) &&
                 body.step == "debtor_to_reviewer" &&
                 body.payments.length == 0
             )

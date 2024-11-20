@@ -16,13 +16,18 @@
     <div class="my-2 text-center" :style="{ color: card.textcolor }">
       {{ card.title }}
     </div>
-    <div class="font-weight-bold font_18" :style="{ color: card.textcolor }">
+    <div  class="font-weight-bold font_18" :style="{ color: card.textcolor }">
       {{ card.count }}
     </div>
+    <WorkDialog :my-works="card.my_works" :filter-key="card.filter_key" :dialog="show_dialog" v-if="show_dialog" @closeDialog="show_dialog = false" />
   </v-card>
 </template>
 <script>
+import WorkDialog from "@/components/Dashboard/WorkDialog.vue";
 export default {
+  components: {
+    WorkDialog,
+  },
   props: {
     card: {
       type: Object,
@@ -30,6 +35,8 @@ export default {
   },
   data: () => ({
     is_access: false,
+
+    show_dialog: false,
   }),
   mounted() {
     this.checkRole();
@@ -39,10 +46,14 @@ export default {
       this.is_access = true;
     },
     sendRoute(path) {
-      if (path == "messages") {
-        this.$router.push("/message");
+      if (this.card.multiple) {
+        this.show_dialog = true;
       } else {
-        this.$router.push(path);
+        if (path == "messages") {
+          this.$router.push("/message");
+        } else {
+          this.$router.push(path);
+        }
       }
     },
   },

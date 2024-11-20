@@ -1,6 +1,6 @@
 <template>
   <div class="pa-4">
-    <div class="text-left py-2">
+    <div class="text-left py-2 ">
       <amp-button
         icon="add"
         text="جدید"

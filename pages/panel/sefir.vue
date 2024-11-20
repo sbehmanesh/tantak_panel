@@ -1,6 +1,7 @@
 <template>
   <v-container fluid>
     <v-row dense>
+    
       <v-col cols="12" md="12">
         <v-card max-width="380" class="elevation-0">
           <div>سفیر</div>
@@ -56,12 +57,12 @@
   </v-container>
 </template>
 <script>
-import MainTable from "@/components/dashboard/MainCard";
-import SideCard from "@/components/dashboard/SideCard";
+import MainTable from "@/components/Dashboard/MainCard";
+import SideCard from "@/components/Dashboard/SideCard";
 export default {
-  components: { MainTable, SideCard },
+  components: { MainTable, SideCard  },
   data: () => ({
-    title: "کارتابل",
+    title: "کارتابل سفیر",
     // set_filter: true,
     roles: [],
     get_data: [],
@@ -76,13 +77,20 @@ export default {
         title: "کارهای امروز من",
         color: "#80CC16B2",
         count: 0,
+        multiple:true,
         route: "/new-call-center/inventory-request?filter=my_today_work",
+        my_works:{},
+        filter_key:"my_today_work",
+
       },
       {
         icon: "/image/dashboard/works2.svg",
         title: "کارهای دارای تاخیر",
         color: "#FF7700B2",
         count: 0,
+        multiple:true,
+        my_works:{},
+        filter_key:"my_late_work",
         route: "/new-call-center/inventory-request?filter=my_late_work",
       },
       // {
@@ -107,21 +115,22 @@ export default {
   }),
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);
-    // this.getApi();
+    this.getApi();
   },
   methods: {
     getApi() {
-      if (this.$checkAccess("access_cartable/cartable_sefir")) {
         this.$reqApi("user-cartable/sefir")
           .then((res) => {
+          
             this.get_data = res;
-            console.log("res >> ", res);
-
-            // this.sides[0].count = res.work_today;
-            // this.sides[1].count = res.work_late;
-            // this.sides[2].count = res.my_message;
-            // this.sides[3].count = res.my_message;
-
+            this.sides[0].count = res.work_today;
+            this.sides[1].my_works = res.array_work;
+            this.sides[0].my_works = res.array_work;
+            this.sides[1].count = res.work_late;
+            this.sides[2].count = res.my_message;
+            this.sides[3].count = res.my_message;
+       
+            
             if (res.list_employee == true) {
               (this.employee_flag = true),
                 this.$reqApi("user/list-employee")
@@ -135,7 +144,6 @@ export default {
           })
 
           .catch((error) => {});
-      }
     },
     show_employee() {
       this.$router.push("/new-call-center/my-staff");

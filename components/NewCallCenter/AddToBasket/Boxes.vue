@@ -354,7 +354,7 @@ export default {
         setTimeout(() => {
           this.package_id = "";
           this.loading_add = false;
-          this.$toast.success(`پکیج  اضافه  شد`);
+          this.$toast.success(`جعبه  اضافه  شد`);
 
           this.list_selected_packages.unshift(this.selected_package);
 

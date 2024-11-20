@@ -1,12 +1,19 @@
 <template>
   <div>
+    <CatgoryUsers
+      @filterRole="filterRole($event)"
+      :user-count="user_count"
+      :user-list="user_list"
+    />
+
     <BaseTable
-      url="/user"
+      url="/user/searchByRole"
       :headers="headers"
       autoDelete="/user/delete"
       autoUpdate="/user"
       createUrl="/user/insert"
       :extraBtn="extraBtn"
+      :root-body="role_id"
       ref="walletExcel"
     />
     <Excel
@@ -19,17 +26,28 @@
 </template>
 
 <script>
-import BaseTable from "@/components/DataTable/BaseTable";
+import CatgoryUsers from "@/components/User/CatgoryUsers.vue";
+
 import Excel from "@/components/User/Excel.vue";
 export default {
-  components: { BaseTable, Excel },
+  components: { CatgoryUsers, Excel },
   data: () => ({
     headers: [],
     extraBtn: [],
+    role_id: "",
+    show_cards: false,
+    personal_count: "",
+    user_count: "",
+    catgory_users: [],
+    user_list: [],
     dialog: { items: null, show: false },
     title: "همه کاربران",
   }),
   beforeMount() {
+    this.role_id = {
+      role_id: [this.$store.state.auth.role.user_id],
+    };
+
     this.extraBtn = [
       {
         icon: "add_card",
@@ -69,7 +87,11 @@ export default {
         text: "تاریخ تولد",
         value: (body) => {
           if (body.birth_date) {
-            return this.$toJalali(body.birth_date, "YYYY-MM-DD", "jYYYY/jMM/jDD");
+            return this.$toJalali(
+              body.birth_date,
+              "YYYY-MM-DD",
+              "jYYYY/jMM/jDD"
+            );
           }
           return "";
         },
@@ -99,7 +121,7 @@ export default {
         value: "status",
         filterType: "select",
         items: this.$store.state.static.status,
-      },  
+      },
 
       {
         text: "کیف پول",
@@ -129,6 +151,35 @@ export default {
       this.dialog.show = false;
       this.dialog.items = null;
     },
+
+    filterRole(key) {
+      if (key == "users") {
+        this.role_id["condition"] = "in";
+      } else {
+        this.role_id["condition"] = "not_in";
+      }
+      this.relod()
+    },
   },
 };
 </script>
+<style scoped>
+.icon-calss {
+  border-radius: 100%;
+  background: linear-gradient(
+    to top,
+    #e25b2581,
+    rgb(255, 102, 0),
+    #ca3d05
+  ) !important;
+}
+.main-card {
+  border-radius: 10px !important;
+  background-color: #e2e2e234;
+}
+.main-card:hover {
+  cursor: pointer !important;
+  box-shadow: 0px 5px 0px 0px #0c0c0c46 !important;
+  transition: all 0.5s ease !important;
+}
+</style>

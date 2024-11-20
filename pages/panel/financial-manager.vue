@@ -65,8 +65,8 @@
     </v-container>
   </template>
   <script>
-  import MainTable from "@/components/dashboard/MainCard";
-  import SideCard from "@/components/dashboard/SideCard";
+  import MainTable from "@/components/Dashboard/MainCard";
+  import SideCard from "@/components/Dashboard/SideCard";
   export default {
     components: { MainTable, SideCard },
     data: () => ({

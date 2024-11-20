@@ -93,7 +93,15 @@ export default {
       </h1>
     `;
           } else {
-            return body.personal;
+            if (body.personal.length == 12) {
+            let phone_slice = body.personal.slice(1);
+            let phone = phone_slice.replace(/(\d{4})(\d{3})(\d{4})/, "$3$2$1");
+            return phone;
+          } else{
+            return body.personal
+          }
+
+       
           }
         },
       },
@@ -120,7 +128,17 @@ export default {
         filterable: false,
         disableSort: true,
         text: "مقصد تماس",
-        value: "dst",
+        value: (body) => {
+
+          if (body.dst.length == 12) {
+            let phone_slice = body.dst.slice(1);
+            let phone = phone_slice.replace(/(\d{4})(\d{3})(\d{4})/, "$3$2$1");
+            return phone;
+          } 
+          else {
+            return body.dst;
+          }
+        },
       },
 
       {

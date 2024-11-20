@@ -47,6 +47,7 @@ export const state = () => ({
   status_req_money,
   step_debts,
   step_status_baskets,
+  access_request_product,
 });
 
 let status_type = [
@@ -127,10 +128,22 @@ let step_debts = [
   { text: " عدم تایید برسی کننده بدهکاری ", value: "not_accept_reviewer" },
   { text: "از بدهکار به مدیر واحد مالی", value: "debtor_to_fiscal_manager" },
   { text: "از مدیر واحد مالی به بدهکار", value: "fiscal_manager_to_debtor" },
-  { text: "ارجاع از مدیر واحد مالی به سرپرست واحد مالی", value: "fiscal_manager_to_supervisor" },
-  { text: "ارجاع از سرپرست واحد مالی به مدیر واحد مالی", value: "fiscal_supervisor_to_manager" },
-  { text: "ارجاع از سرپرست واحد مالی به واحد مالی", value: "fiscal_supervisor_to_fiscal" },
-  { text: "ارجاع از واحد مالی به سرپرست واحد مالی", value: "fiscal_to_fiscal_supervisor" },
+  {
+    text: "ارجاع از مدیر واحد مالی به سرپرست واحد مالی",
+    value: "fiscal_manager_to_supervisor",
+  },
+  {
+    text: "ارجاع از سرپرست واحد مالی به مدیر واحد مالی",
+    value: "fiscal_supervisor_to_manager",
+  },
+  {
+    text: "ارجاع از سرپرست واحد مالی به واحد مالی",
+    value: "fiscal_supervisor_to_fiscal",
+  },
+  {
+    text: "ارجاع از واحد مالی به سرپرست واحد مالی",
+    value: "fiscal_to_fiscal_supervisor",
+  },
   { text: "انجام شده", value: "done" },
 ];
 let type_message = [
@@ -462,7 +475,7 @@ let status_transactions = [
   { text: "برگشت ", value: "reject" },
   { text: "کنسل شده", value: "cancled" },
 ];
-let step_status_baskets= [
+let step_status_baskets = [
   { text: "ثبت اولیه", value: "init" },
   { text: "بسته شده", value: "reject" },
   { text: "ارجاع به مدیر واحد مالی", value: "refer_fiscal_manager" },
@@ -567,4 +580,11 @@ let step_status_baskets= [
     text: "تحویل داده شده",
     value: "done",
   },
-]
+];
+let access_request_product = [
+
+  { text: " بدون دسترسی تعریف موجودی", value: "no_access" },
+  { text: " تعریف موجودی به صورت دستی", value: "add_manual" },
+  { text: " تعریف موجودی با فایل اکسل", value: "add_excel" },
+  { text: "تعریف موجودی با اکسل و دستی ", value: "both" },
+];

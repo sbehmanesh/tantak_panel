@@ -1,7 +1,8 @@
 <template>
-  <v-row>
+  <v-row class="pa-4">
     <v-col cols="12" md="12">
       <BaseTable
+        :extraBtn="extra_btn"
         url="/center-stock"
         :headers="headers"
         createUrl="/new-call-center/center-stocks/insert"
@@ -17,38 +18,47 @@
       :dialog="show_dialog"
       v-if="show_dialog"
       @closeDialog="closeDialog"
+    />  
+    
+      <VarComExcel
+      :dialog="varcome_excel"
+      v-if="varcome_excel"
+      @closeDialog="closeDialog"
     />
-
   </v-row>
 </template>
 
 <script>
-import BaseTable from "~/components/DataTable/BaseTable";
 import Dialog from "@/components/Product/Representative/Dialog.vue";
+import VarComExcel from "@/components/Product/VarComExcel.vue";
 export default {
-  components: { BaseTable , Dialog },
+  components: { Dialog , VarComExcel },
   data: () => ({
     headers: [],
+    extra_btn: [],
     items: [],
     filters: {},
     btn_actions: [],
     title: "انبار مرکزی",
-    id:"",
-    show_dialog:false
+    id: "",
+    show_dialog: false,
+    varcome_excel: false,
   }),
   beforeMount() {
     this.headers = [
-
-      {text:"نام مدیر" , value:"first_name_manager"},
-      {text:"نام خانوادگی" , value:"last_name_manager"},
-      {text:"نام مرکز" , value:"name"},
-      {text:"کد مرکز" , value:"code"},
-      {text:"شماره همراه" , value:"username_manager"},
-      {text:" نام شهر" , value:(body)=>{
-        if (body.country_division) {
-          return body.country_division .name
-        }
-      }},  
+      { text: "نام مدیر", value: "first_name_manager" },
+      { text: "نام خانوادگی", value: "last_name_manager" },
+      { text: "نام مرکز", value: "name" },
+      { text: "کد مرکز", value: "code" },
+      { text: "شماره همراه", value: "username_manager" },
+      {
+        text: " نام شهر",
+        value: (body) => {
+          if (body.country_division) {
+            return body.country_division.name;
+          }
+        },
+      },
       {
         text: "آدرس دقیق",
         filterCol: "address",
@@ -69,7 +79,6 @@ export default {
           }
         },
       },
-
     ];
     this.btn_actions = [
       {
@@ -82,12 +91,23 @@ export default {
         },
       },
     ];
+    this.extra_btn = [
+      {
+        text: "ترکیبات محصول",
+        icon: "backup",
+        color: "teal darken-2",
+        fun: (body) => {
+          this.varcome_excel = true;
+        },
+      },
+    ];
     this.$store.dispatch("setPageTitle", this.title);
   },
   methods: {
-    closeDialog(){
-      this.show_dialog = false
-    }
+    closeDialog() {
+      this.show_dialog = false;
+      this.varcome_excel = false;
+    },
   },
 };
 </script>

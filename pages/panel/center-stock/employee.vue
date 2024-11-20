@@ -13,7 +13,11 @@
           <v-divider color="#fd5800" class="mt-3"></v-divider>
         </v-card>
       </v-col>
-      <v-col cols="12" md="3" :class="$vuetify.breakpoint.mdAndUp ? '' : 'd-flex'">
+      <v-col
+        cols="12"
+        md="3"
+        :class="$vuetify.breakpoint.mdAndUp ? '' : 'd-flex'"
+      >
         <!-- کاردهای کناری داشبورد -->
         <SideCard v-for="(card, i) in sides" :key="i" :card="card" />
       </v-col>
@@ -33,7 +37,13 @@
                               </h5> -->
             <v-tooltip bottom v-if="employee_flag">
               <template v-slot:activator="{ on }">
-                <v-btn small v-on="on" @click="show_employee()" icon color="blue">
+                <v-btn
+                  small
+                  v-on="on"
+                  @click="show_employee()"
+                  icon
+                  color="blue"
+                >
                   <v-avatar color="primary" size="30" small>
                     <span class="white--text text-h7">
                       {{ firstname_employee[0] }}
@@ -56,8 +66,8 @@
   </v-container>
 </template>
 <script>
-import MainTable from "@/components/dashboard/MainCard";
-import SideCard from "@/components/dashboard/SideCard";
+import MainTable from "@/components/Dashboard/MainCard";
+import SideCard from "@/components/Dashboard/SideCard";
 export default {
   components: { MainTable, SideCard },
   data: () => ({
@@ -76,13 +86,19 @@ export default {
         title: "کارهای امروز من",
         color: "#80CC16B2",
         count: 0,
+        // multiple: true,
         route: "/new-call-center/inventory-request?filter=my_today_work",
+        // my_works: {},
+        filter_key: "my_today_work",
       },
       {
         icon: "/image/dashboard/works2.svg",
         title: "کارهای دارای تاخیر",
         color: "#FF7700B2",
         count: 0,
+        // multiple: true,
+        // my_works: {},
+        filter_key: "my_late_work",
         route: "/new-call-center/inventory-request?filter=my_late_work",
       },
       // {
@@ -111,28 +127,29 @@ export default {
   },
   methods: {
     getApi() {
-        this.$reqApi("user-cartable/employee-center-stock")
-          .then((res) => {
-            this.get_data = res;
-            console.log("res >> ", res);
-            this.sides[0].count = res.work_today;
-            this.sides[1].count = res.work_late;
-            this.sides[2].count = res.my_message;
-            this.sides[3].count = res.my_message;
+      this.$reqApi("user-cartable/employee-center-stock")
+        .then((res) => {
+          this.get_data = res;
+          // this.sides[0].my_works = res.array_work;
+          // this.sides[1].my_works = res.array_work;
+          this.sides[0].count = res.work_today;
+          this.sides[1].count = res.work_late;
+          this.sides[2].count = res.my_message;
+          this.sides[3].count = res.my_message;
 
-            if (res.list_employee == true) {
-              (this.employee_flag = true),
-                this.$reqApi("user/list-employee")
-                  .then((response) => {
-                    this.firstname_employee = response.model.data[0].first_name;
-                    this.lastname_employee = response.model.data[0].last_name;
-                    this.username_employee = response.model.data[0].username;
-                  })
-                  .catch((error) => {});
-            }
-          })
+          if (res.list_employee == true) {
+            (this.employee_flag = true),
+              this.$reqApi("user/list-employee")
+                .then((response) => {
+                  this.firstname_employee = response.model.data[0].first_name;
+                  this.lastname_employee = response.model.data[0].last_name;
+                  this.username_employee = response.model.data[0].username;
+                })
+                .catch((error) => {});
+          }
+        })
 
-          .catch((error) => {});
+        .catch((error) => {});
     },
     show_employee() {
       this.$router.push("/new-call-center/my-staff");

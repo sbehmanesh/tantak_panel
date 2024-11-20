@@ -14,7 +14,7 @@ export const state = () => ({
     is_adming_call_center_id: false,
     seal_manager: "1964bd45-1d8d-4666-9330-0955f8c2c4c6",
     cashier_id: "38d3025b-ed61-4d0d-815f-31c008eb33fc", //  صندوق دار
-    user_id: "5246f14d-1905-4e34-a412-8fb689d20f23",
+    user_id: "5246f14d-1906-4e34-a412-8fb689d20f23",
     warehouseman_id: "1deb3b9b-a4bb-46cd-8c20-592767aa1d22", //انبار گردان
     writers_id: "79b26146-1c0b-4562-b968-21d0e8b5a575",
     store_employee: "dbcbc932-552a-4f3b-ad81-5b3a5734b803", //کارمند انبار

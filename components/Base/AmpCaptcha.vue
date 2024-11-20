@@ -6,7 +6,10 @@
     <v-col class="center-div" v-else cols="6">
       <v-skeleton-loader height="60" width="100%" type="image" />
     </v-col>
-    <v-col cols="6">
+    <v-col cols="6" class="d-flex align-center">
+      <v-icon @click="loadCaptcha" color="white">
+        refresh
+      </v-icon>
       <amp-input
         is-number
         rules="require"
@@ -14,10 +17,8 @@
         v-model="inp_value"
         color="white--text"
         background-color="#fff"
-        append-icon="refresh"
-        
-        @click:append="loadCaptcha()"
       />
+    
     </v-col>
   </v-row>
 </template>

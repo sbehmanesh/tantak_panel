@@ -36,7 +36,6 @@
 <script>
 export default {
   components: {
-    ChatDialog,
   },
   props: {
     DialogHistory: {

@@ -7,10 +7,7 @@
             <v-expansion-panel-header dark expand-icon="published_with_changes">
               <div>
                 <span class="font_18 white--text"> برسی پیام ها </span>
-     
-
               </div>
-       
             </v-expansion-panel-header>
 
             <v-expansion-panel-content class="pb-3 px-8">
@@ -163,13 +160,22 @@ export default {
         },
       },
       {
-        text: "ارسال کننده",
+        text: "کاربر ارسال کننده ",
+        filterable: false,
+        value: (body) => {
+          let name =
+            Boolean(body.user) && Boolean(body.user.first_name)
+              ? body.user.first_name + " " + body.user.last_name
+              : "--";
+          return name;
+        },
+      },
+      {
+        text: "شماره ارسال کننده",
         type: "phone",
         value: (body) => {
           if (body.user) {
-    
-              return body.user.username;
-
+            return body.user.username;
           }
         },
       },
@@ -399,27 +405,7 @@ export default {
               return "";
             },
           },
-          {
-            text: "ارسال کننده",
-            value: (body) => {
-              if (body.user) {
-                if (
-                  this.$checkRole(this.$store.state.auth.role.admin_id) ||
-                  this.$checkRole(
-                    this.$store.state.auth.role.admin_call_center_id
-                  )
-                ) {
-                  return body.user.username;
-                } else {
-                  let start = body.user.username.slice(0, 3);
-                  let end = body.user.username.slice(-4);
 
-                  let phone_number = end + "****" + start;
-                  return phone_number;
-                }
-              }
-            },
-          },
           {
             text: "گیرنده",
             value: "receptor",

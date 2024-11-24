@@ -365,6 +365,7 @@ export default {
         let perPage = this.$store.state.dataTable.pageInfo.paginate_num;
         let from = page * perPage - perPage;
         let to = page * perPage;
+        
         return this.desserts.slice(from, to);
       } else {
         return this.desserts;

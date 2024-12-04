@@ -85,6 +85,7 @@ export default {
         items: this.$store.state.static.status_work,
       },
       { text: "کد ملی", filterCol: "national_code", value: "national_code" },
+      { text: "کد پرسنلی", filterCol: "personnel_code", value: "personnel_code" },
       {
         filterable: false,
         disableSort: true,

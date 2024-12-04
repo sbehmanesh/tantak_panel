@@ -27,9 +27,7 @@
                       <v-expansion-panel-header expand-icon="add_circle">
                         <span class="font_18">
                           تعریف موجودی
-                          <small v-if="update">
-                            *** ( {{ set_title_card }} )
-                          </small>
+                          <small v-if="update"> *** ( {{ set_title_card }} ) </small>
                         </span>
                       </v-expansion-panel-header>
 
@@ -82,38 +80,44 @@
                             <v-col cols="12" md="4">
                               <amp-input
                                 text="موجودی"
-                                Cclass="ltr-item"
                                 rules="require,number"
                                 v-model="form.skock"
                               />
-                            </v-col>            
-                                 <v-col cols="12" md="4">
+                            </v-col>
+                            <v-col cols="12" md="4">
                               <amp-input
-                                text="موجودی انبار"
-                                Cclass="ltr-item"
+                                text="موجودی  در انبار"
                                 rules="require,number"
                                 v-model="form.save_skock"
                               />
-                            </v-col>            
-                                <v-col cols="12" md="4">
-                              <amp-input
+                            </v-col>
+                            <v-col cols>
+                              <amp-textarea
+                                :rows="1"
                                 text="توضیحات"
-                                Cclass="ltr-item"
-                                rules="require,number"
                                 v-model="form.description"
+                              ></amp-textarea>
+                            </v-col>
+                          </v-row>
+                          <v-row class="d-flex justify-center mt-5">
+                            <v-col cols="6" md="2">
+                              <amp-button
+                                block
+                                height="40"
+                                text="تایید"
+                                color="green darken-1"
+                                @click="submit"
+                                :loading="loading"
+                                :disabled="!Boolean(check_continue) || !valid || loading"
                               />
                             </v-col>
                             <v-col cols="6" md="2">
                               <amp-button
                                 block
                                 height="40"
-                                text="افزودن"
-                                color="green darken-1"
-                                @click="addToList()"
-                                :loading="loading"
-                                :disabled="
-                                  !Boolean(check_continue) || !valid || loading
-                                "
+                                text="انصراف"
+                                color="red darken-1"
+                                @click="canceld"
                               />
                             </v-col>
                           </v-row>
@@ -126,7 +130,6 @@
                             color="grey"
                           />
                         </div>
-              
                       </v-expansion-panel-content>
                     </v-expansion-panel>
                   </v-expansion-panels>
@@ -147,14 +150,14 @@
                 :dialog="rotation"
                 @reload="refresh"
                 v-if="rotation"
-                :sale-agency-id="$store.state.auth.user.sale_agenciy_id"
+                :sale-agency-id="branchId"
                 @closeDialog="rotation = false"
               />
             </v-window-item>
 
             <v-window-item :value="2">
               <History
-                :branchId="$store.state.auth.user.sale_agenciy_id"
+                :branchId="branchId"
                 v-if="show_history && step == 2"
                 :productVarId="product_var_id"
                 :productVarInfo="send_prop"
@@ -408,12 +411,12 @@ export default {
     submit() {
       this.loading = true;
       let form = { ...this.form };
-      form.sale_agency_id = this.$store.state.auth.user.sale_agenciy_id;
+      form.sale_agency_id = this.branchId;
       let url = this.update ? "sale-agency-stock/update" : "sale-agency-stock/insert";
       this.$reqApi(url, form)
         .then((response) => {
           this.step == 1;
-          this.$toast.success("عملیات با موفقیت انجام شده و درخواست شما با موفقیت ثبت شد");
+          this.$toast.success("عملیات با موفقیت انجام شده");
           this.loading = false;
           this.update = false;
           this.$refs.Refresh.getDataFromApi();

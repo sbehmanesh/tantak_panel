@@ -165,7 +165,7 @@ export default {
               var_1: var_1,
               var_2: var_2,
               var_3: var_3,
-              count: "0",
+              count: "",
               barcode: x.full_barcode,
               price: this.$price(price),
             });

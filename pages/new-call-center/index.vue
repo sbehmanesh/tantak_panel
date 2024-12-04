@@ -211,6 +211,7 @@ export default {
       {
         text: "شماره ارسال کننده",
         type: "phone",
+        filterCol: "user_username",
         value: (body) => {
           if (body.user_username) {
             return body.user_username;
@@ -322,7 +323,7 @@ export default {
     ];
     this.extra_btn = [
       {
-        color: "info darken-1",
+        color: "blue-grey",
         icon: "call",
         text: "تماس مجدد",
         fun: (body) => {

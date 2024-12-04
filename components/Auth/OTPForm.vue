@@ -61,6 +61,7 @@ export default {
         .then((response) => {
           this.$store.dispatch("auth/login", response).then((data) => {
             this.stopTime();
+            
             if (this.redirect) {
               this.$router.push("/panel");
             }

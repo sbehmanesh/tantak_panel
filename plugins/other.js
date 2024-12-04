@@ -26,6 +26,8 @@ import AmpJsonInput from '~/components/Base/AmpJsonInput.vue'
 import AmpInlineUpload from "~/components/Base/AmpInlineUpload.vue";
 import AmpCaptcha from '~/components/Base/AmpCaptcha'
 import BaseTable from '~/components/DataTable/BaseTable'
+import CoustomLile from '~/components/NewCallCenter/AddToBasket/CoustomLilke.vue'
+import CoustomLikeList from '~/components/NewCallCenter/AddToBasket/CoustomLikeList.vue'
 
 Vue.component('persian-date-picker', VuePersianDatetimePicker)
 
@@ -53,3 +55,5 @@ Vue.component('AmpRatingCircle', AmpRatingCircle)
 Vue.component("amp-new-date-picker", AmpNewDatePicker)
 Vue.component("amp-inline-upload", AmpInlineUpload)
 Vue.component('AmpCaptcha', AmpCaptcha)
+Vue.component('amp-like', CoustomLile)
+Vue.component('amp-like-list', CoustomLikeList)

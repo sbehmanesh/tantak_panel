@@ -31,7 +31,20 @@ let mnue_tree = [
         access: "role/root",
         route: "/role",
       },
+      {
+        id: 7,
+        name: "کاربران برتر",
+        access: "user/root",
+        route: "/user/top-user",
+      },  
+       {
+        id: 56554,
+        name: "نمایندگی برتر",
+        access: "product_requests/root",
+        route: "/user/top-sale-agency",
+      },
     ],
+    
   },
   {
     id: 50,
@@ -111,12 +124,7 @@ let mnue_tree = [
     route: "/user/internal-personnel",
   },
 
-  // {
-  //   id: 7,
-  //   name: "شعبات",
-  //   access: "branch/index",
-  //   route: "/branches",
-  // },
+
 
   // {
   //   id: 200,
@@ -155,7 +163,7 @@ let mnue_tree = [
       {
         id: 40,
         name: "برند ها",
-        access: "brand/index",
+        access: "brand/root",
         route: "/product/brand",
       },
       {
@@ -194,18 +202,24 @@ let mnue_tree = [
         access: "setting/index",
         route: "/setting/color-products",
       },
-      //    {
-      //   id: 84512,
-      //   access: "sale_types/index",
-      //   name: " انواع فروش",
-      //   route: "/product/sale-type",
-      // },
+         {
+        id: 845065212,
+        access: "pending_inventories/index",
+        name: "محصولات منتظر تایید",
+        route: "/product/pending-inventories",
+      },
     ],
   },
   {
     id: 444452,
     name: "سبد های خرید",
     children: [
+      {
+        id: 3475188,
+        name: "سبدهای خرید",
+        access: "basket/index",
+        route: "/product/basket",
+      },
       {
         id: 565,
         name: "لیست سبد های خرید",
@@ -233,6 +247,7 @@ let mnue_tree = [
     access: "tasks/index",
     route: "/tasks",
   },
+
 
   {
     id: 545613,

@@ -17,6 +17,7 @@
       />
 
       <amp-button
+      class="mx-1"
         v-for="btn in extraBtn"
         :key="btn.id"
         :color="btn.color"

@@ -49,6 +49,12 @@ export const state = () => ({
   step_status_baskets,
   access_request_product,
   origin_of_entry,
+  status_basket_refral,
+  status_stock,
+  step_basket_refral,
+  inventory_status,
+  inventory_type,
+  inventory_type_request,
 });
 
 let status_type = [
@@ -587,11 +593,165 @@ let access_request_product = [
   { text: " تعریف موجودی به صورت دستی", value: "add_manual" },
   { text: " تعریف موجودی با فایل اکسل", value: "add_excel" },
   { text: "تعریف موجودی با اکسل و دستی ", value: "both" },
-
 ];
 let origin_of_entry = [
   { text: "آنلاین", value: "login_source" },
   { text: "فروش تلفنی", value: "sale_phone" },
   { text: "  ورود با اکسل یا کاوه نگار", value: "excel_sale_phone" },
   { text: " افزودن در پنل", value: "manual" },
+];
+let status_basket_refral = [
+  {
+    text: "پرداخت شده",
+    value: "payed",
+  },
+  {
+    text: "باز ",
+    value: "open",
+  },
+  {
+    text: "در انتظار",
+    value: "waiting",
+  },
+
+  {
+    text: "تکمیل شده ",
+    value: "completed",
+  },
+  {
+    text: "کنسل شده",
+    value: "canceled",
+  },
+  {
+    text: "ترکیبی ",
+    value: "mixture",
+  },
+  {
+    text: "منتظر تایید تخفیف ",
+    value: "wait_discount",
+  },
+];
+let status_stock = [
+  { text: "منتظر برداشت", value: "wait" },
+  { text: "برداشت انجام شده", value: "done" },
+  { text: "کنسل شده", value: "reject" },
+];
+let step_basket_refral = [
+  { text: "ثبت اولیه", value: "init" },
+  { text: "بسته شده", value: "reject" },
+  { text: "ارجاع به مدیر واحد مالی", value: "refer_fiscal_manager" },
+  { text: "یرگشت از مدیر واحد مالی", value: "reject_fiscal_manager" },
+  {
+    text: "ارجاع از مدیر واحد مالی به سرپرست",
+    value: "manager_supervisor_fiscal",
+  },
+  {
+    text: "برگشت از سرپرست به مدیر واحد مالی",
+    value: "supervisor_manager_fiscal",
+  },
+  { text: "ارجاع از سرپرست به واحد مالی", value: "supervisor_to_fiscal" },
+  { text: "برگشت از واحد مالی به سرپرست", value: "fiscal_to_supervisor" },
+  { text: "تایید واحد مالی", value: "accept_fiscal" },
+  {
+    text: "ارجاع به مدیر هماهنگ کننده",
+    value: "admin_manager_coordinator",
+  },
+  {
+    text: "برگشت از مدیر هماهنگ کننده به ادمین",
+    value: "manager_admin_coordinator",
+  },
+  {
+    text: "ارجاع مدیر به سرپرست هماهنگ کننده",
+    value: "manager_supervisor_coordinator",
+  },
+  {
+    text: "برگشت سرپرست به مدیر هماهنگ کننده",
+    value: "supervisor_manager_coordinator",
+  },
+  {
+    text: "ارجاع سرپرست هماهنگ کننده به هماهنگ کننده",
+    value: "supervisor_to_coordinator",
+  },
+  {
+    text: "برگشت از هماهنگ کننده به سرپرست",
+    value: "coordinator_to_supervisor",
+  },
+
+  {
+    text: "تایید واحد هماهنگی",
+    value: "accept_coordinator",
+  },
+  {
+    text: "ادمین به مدیر هماهنگی ارسال ",
+    value: "admin_manager_send",
+  },
+  {
+    text: "مدیر هماهنگی به ادمین",
+    value: "manager_admin_send",
+  },
+  {
+    text: "مدیر به سرپرست هماهنگی ارسال",
+    value: "manager_supervisor_send",
+  },
+  {
+    text: "سرپست به مدیر هماهنگی ارسال ",
+    value: "supervisor_manager_send",
+  },
+  {
+    text: "سرپرست به هماهنگی ارسال",
+    value: "supervisor_to_send",
+  },
+  {
+    text: " هماهنگی ارسال به سرپرست",
+    value: "send_to_supervisor",
+  },
+  {
+    text: "ارجاع به نمایندگی",
+    value: "send_to_agency",
+  },
+  {
+    text: "برگشت به هماهنگ کننده ارسال",
+    value: "agency_to_send",
+  },
+  {
+    value: "agency_to_stockclerk",
+    text: "ارجاع از نمایندگی به انبار دار",
+  },
+  {
+    text: "برگشت از انبار دار به نمایندگی",
+    value: "stockclerk_to_agency",
+  },
+  {
+    text: "کارمند به انبار دار",
+    value: "employee_to_stockclerk",
+  },
+  {
+    text: "ارجاع انبار دار به کارمند نمایندگی",
+    value: "stockclerk_to_employee",
+  },
+  {
+    text: "ارجاع کارمند به پیک",
+    value: "employee_to_courier",
+  },
+  {
+    text: "ارجاع از پیک به کارمند",
+    value: "courier_to_employee",
+  },
+  {
+    text: "تحویل داده شده",
+    value: "done",
+  },
+];
+let inventory_status = [
+  { text: "منتظر تایید", value: "wait" },
+  { text: "تایید", value: "done" },
+  { text: "رد", value: "reject" },
+];
+let inventory_type = [
+  { text: "اکسل", value: "excel" },
+  { text: "دستی", value: "manual" },
+];
+let inventory_type_request = [
+  { text: "افزودن محصول", value: "insert" },
+  { text: "انبار گردانی", value: "stock_check" },
 ];

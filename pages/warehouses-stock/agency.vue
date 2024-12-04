@@ -4,7 +4,7 @@
       <v-window-item :value="1">
         <v-row class="d-flex justify-center">
           <v-col cols="12" md="6">
-            <!-- <v-expansion-panels
+            <v-expansion-panels
               v-model="panel"
               class="card-style elevation-0"
               focusable
@@ -16,30 +16,32 @@
                     <small v-if="update"> *** ( {{ set_title_card }} ) </small>
                   </span>
                 </v-expansion-panel-header>
-
+                <v-card class="elevation-0 red--text text-center pa-2">
+                  در صورت ثبت درخواست جدید , درخواست قبلی بسته میشود</v-card
+                >
                 <v-expansion-panel-content>
-                  <v-col cols="12">
-                    <v-row cols="12" class="mt-3 justify-center">
-                      <v-chip
-                        :disabled="update"
-                        dark
-                        label
-                        class="ma-2"
-                        color="grey darken-1"
-                        v-for="item in items"
-                        :key="item.key"
-                        @click="tab = item.key"
-                        :outlined="tab != item.key"
-                      >
-                        <span class="font_16">
-                          {{ item.text }}
-                        </span>
-                        <v-icon class="mr-1">
-                          {{ item.icon }}
-                        </v-icon>
-                      </v-chip>
-                    </v-row>
-                  </v-col>
+                  <!-- <v-col cols="12">
+                          <v-row cols="12" class="mt-3 justify-center">
+                            <v-chip
+                              :disabled="update"
+                              dark
+                              label
+                              class="ma-2"
+                              color="grey darken-1"
+                              v-for="item in items"
+                              :key="item.key"
+                              @click="tab = item.key"
+                              :outlined="tab != item.key"
+                            >
+                              <span class="font_16">
+                                {{ item.text }}
+                              </span>
+                              <v-icon class="mr-1">
+                                {{ item.icon }}
+                              </v-icon>
+                            </v-chip>
+                          </v-row>
+                        </v-col> -->
                   <v-form
                     v-model="valid"
                     @submit.prevent="submit()"
@@ -54,58 +56,34 @@
                       :response="response"
                       :clear_vaue="continue_form"
                     />
-                    <Packages
-                      @validVariations="continue_form = $event"
-                      v-if="!update && tab == 'packages'"
-                      @section="setSections($event)"
-                      :productInfo="product"
-                      :response="response"
-                      :clear_vaue="continue_form"
-                    />
-                    <v-row v-if="check_continue">
+                    <!-- <Packages
+                            @validVariations="continue_form = $event"
+                            v-if="!update && tab == 'packages'"
+                            @section="setSections($event)"
+                            :productInfo="product"
+                            :response="response"
+                            :clear_vaue="continue_form"
+                          /> -->
+                    <v-row v-if="check_continue" class="align-center">
                       <v-col cols="12" md="4">
                         <amp-input
                           text="موجودی"
+                          Cclass="ltr-item"
                           rules="require,number"
-                          v-model="form.skock"
+                          v-model="skock"
                         />
                       </v-col>
-                      <v-col cols="12" md="4">
-                        <amp-input
-                          text="موجودی  در انبار"
-                          rules="require,number"
-                          v-model="form.save_skock"
-                        />
-                      </v-col>
-                      <v-col cols>
-                        <amp-textarea
-                          :rows="1"
-                          text="توضیحات"
-                          v-model="form.description"
-                        ></amp-textarea>
-                      </v-col>
-                    </v-row>
-                    <v-row class="d-flex justify-center mt-5">
                       <v-col cols="6" md="2">
                         <amp-button
                           block
                           height="40"
-                          text="تایید"
+                          text="افزودن"
                           color="green darken-1"
-                          @click="submit"
+                          @click="addToList()"
                           :loading="loading"
                           :disabled="
                             !Boolean(check_continue) || !valid || loading
                           "
-                        />
-                      </v-col>
-                      <v-col cols="6" md="2">
-                        <amp-button
-                          block
-                          height="40"
-                          text="انصراف"
-                          color="red darken-1"
-                          @click="canceld"
                         />
                       </v-col>
                     </v-row>
@@ -118,26 +96,110 @@
                       color="grey"
                     />
                   </div>
+                  <v-col cols="12" v-for="(x, i) in products_list" :key="i">
+                    <v-card
+                      class="elevation-1 pa-3 d-flex align-center"
+                      outlined
+                    >
+                      <v-avatar size="45" class="mx-2">
+                        <img
+                          :src="
+                            $getImage(x.product.variation1.product.main_image)
+                          "
+                        />
+                      </v-avatar>
+
+                      <v-col cols="12" md="6">
+                        <h1>
+                          {{ x.product.variation1.product.name }}
+                          <br />
+                          <small
+                            class="grey--text"
+                            v-if="Boolean(x.product.variation1.colors)"
+                          >
+                            {{ x.product.variation1.variation_type.value }}
+                            {{ x.product.variation1.colors }}
+                          </small>
+                          <small class="grey--text" v-else>
+                            {{ x.product.variation1.variation_type.value }}
+                            {{ x.product.variation1.value }}
+                          </small>
+                          <small class="mx-1 grey--text">
+                            {{ x.product.variation2.variation_type.value }}
+                            {{ x.product.variation2.value }}
+                          </small>
+                          <small class="mx-1 grey--text">
+                            {{ x.product.variation3.variation_type.value }}
+                            {{ x.product.variation3.value }}
+                          </small>
+                        </h1>
+                      </v-col>
+                      <v-spacer></v-spacer>
+                      <v-col cols="12" md="3">
+                        <amp-input
+                          class="mt-6"
+                          v-model="x.skock"
+                          cClass="ltr-item"
+                          rules="require,number"
+                        />
+                      </v-col>
+
+                      <v-spacer></v-spacer>
+                      <v-btn text icon @click="deletFromCard(x)">
+                        <v-icon> delete </v-icon>
+                      </v-btn>
+                    </v-card>
+                  </v-col>
+                  <v-row class="d-flex justify-center mt-5">
+                    <v-col cols="6" md="2">
+                      <amp-button
+                        block
+                        height="40"
+                        text="تایید"
+                        color="green darken-1"
+                        @click="submit"
+                        :loading="loading"
+                        :disabled="products_list.length == 0"
+                      />
+                    </v-col>
+                    <v-col cols="6" md="2">
+                      <amp-button
+                        block
+                        height="40"
+                        text="انصراف"
+                        color="red darken-1"
+                        @click="canceld"
+                      />
+                    </v-col>
+                  </v-row>
                 </v-expansion-panel-content>
               </v-expansion-panel>
-            </v-expansion-panels> -->
+            </v-expansion-panels>
           </v-col>
         </v-row>
-        <!-- autoDelete="sale-agency-stock/delete" -->
+
         <BaseTable
           ref="Refresh"
-          :url="url_list"
+          url="/sale-agency-stock"
           :headers="headers"
+          :root-body="root_body"
+          :extraBtn="extra_btn"
+          autoDelete="sale-agency-stock/delete"
           :actionsList="actions_list"
           :BTNactions="btn_actions"
-        :extraBtn="extra_btn"
-
+        />
+        <RotationValue
+          :dialog="rotation"
+          @reload="refresh"
+          v-if="rotation"
+          :sale-agency-id="$store.state.auth.user.sale_agenciy_id"
+          @closeDialog="rotation = false"
         />
       </v-window-item>
 
       <v-window-item :value="2">
         <History
-          :branchId="branch_id"
+          :branchId="$store.state.auth.user.sale_agenciy_id"
           v-if="show_history && step == 2"
           :productVarId="product_var_id"
           :productVarInfo="send_prop"
@@ -159,6 +221,7 @@ import Packages from "@/components/Product/Representative/AddToBasket/Packages.v
 import Products from "@/components/Product/Representative/AddToBasket/Products.vue";
 import History from "@/components/Product/Representative/History.vue";
 import VarComExcel from "@/components/Product/VarComExcel.vue";
+import RotationValue from "@/components/Product/Representative/RotationValue.vue";
 
 export default {
   components: {
@@ -166,6 +229,7 @@ export default {
     Packages,
     History,
     VarComExcel,
+    RotationValue,
   },
   props: {
     branchId: {
@@ -184,15 +248,20 @@ export default {
         { text: "محصول", key: "products", icon: "local_mall" },
         { text: "پکیج ", key: "packages", icon: "bento" },
       ],
-      title: "موجودی انبار",
       panel: 1,
       step: 1,
+      skock: "",
       continue_form: false,
       show_history: false,
+      varcome_excel: false,
+      rotation: false,
       loading: false,
       actions_list: [],
       response: [],
+      extra_btn: [],
       headers: [],
+      slected_product: {},
+      products_list: [],
       btn_actions: [],
       product: { product_id: "" },
       root_body: "",
@@ -200,18 +269,12 @@ export default {
       url: "",
       product_var_id: "",
       set_title_card: "",
-      url_list:"",
       section_id: "",
       valid: true,
       update: false,
-      varcome_excel: false,
       form: {
-        skock: "",
-        description: "",
-        save_skock: "",
         sale_agency_id: "",
-        section_id: "",
-        section_name: "",
+        array_section: [],
       },
     };
   },
@@ -232,15 +295,26 @@ export default {
     },
   },
   beforeMount() {
-    this.url_list  = "/sale-agency-stock/manager-list"
+    this.root_body = {
+      sale_agency_id: this.$store.state.auth.user.sale_agenciy_id,
+    };
+    this.url_list = "/sale-agency-stock/manager-list";
     this.$store.dispatch("setPageTitle", this.title);
     this.extra_btn = [
       {
-        text: "ترکیبات محصول",
+        text: "ترکیبات ",
         icon: "backup",
         color: "teal darken-2",
         fun: (body) => {
           this.varcome_excel = true;
+        },
+      },
+      {
+        text: "بروزرسانی",
+        icon: "sync",
+        color: "orange darken-2",
+        fun: () => {
+          this.rotation = true;
         },
       },
     ];
@@ -396,19 +470,32 @@ export default {
     },
     submit() {
       this.loading = true;
+      let items = [];
+      for (let i = 0; i < this.products_list.length; i++) {
+        const x = this.products_list[i];
+        items.push({
+          section_id: x.section_id,
+          section_name: x.section_name,
+          skock: x.skock,
+        });
+      }
       let form = { ...this.form };
-      form.sale_agency_id = this.branchId;
+      form.sale_agency_id = this.$store.state.auth.user.sale_agenciy_id;
+      form.array_section = items;
       let url = this.update
         ? "sale-agency-stock/update"
-        : "sale-agency-stock/insert";
+        : "sale-agency-stock/insert-manager";
       this.$reqApi(url, form)
         .then((response) => {
           this.step == 1;
-          this.$toast.success("عملیات با موفقیت انجام شده");
+          this.$toast.success(
+            "عملیات با موفقیت انجام شده و درخواست شما با موفقیت ثبت شد"
+          );
           this.loading = false;
           this.update = false;
           this.$refs.Refresh.getDataFromApi();
           this.canceld();
+          this.products_list = [];
         })
         .catch((err) => {
           this.loading = false;
@@ -470,6 +557,40 @@ export default {
           this.update = false;
           this.loading = false;
         });
+    },
+    refresh() {
+      this.$refs.ReloadList.getDataFromApi();
+    },
+    setSections(data) {
+      if (Boolean(data)) {
+        let dublicate = this.products_list.find((f) => f.section_id == data.id);
+        if (Boolean(dublicate)) {
+          this.$toast.info("این محصولا قبلا اضافه شده");
+          this.slected_product = {};
+          this.continue_form = false;
+          this.skock = "";
+          return;
+        }
+        this.slected_product = {
+          section_id: data.id,
+          product: data.product,
+          section_name: data.section_name,
+          skock: "",
+        };
+      }
+    },
+    deletFromCard(item) {
+      let data = this.products_list.filter(
+        (f) => f.section_id != item.section_id
+      );
+      this.products_list = data;
+    },
+    addToList() {
+      this.slected_product.skock = this.skock;
+      this.products_list.push(this.slected_product);
+      this.slected_product = {};
+      this.continue_form = false;
+      this.skock = "";
     },
   },
 };

@@ -9,12 +9,13 @@
             <v-icon> close </v-icon>
           </v-btn>
         </v-row>
+
         <v-col cols="12" md="12" class="center-div">
           <v-chip
             dark
             label
             class="ma-2 px-3 mb-4"
-            color="primary"
+            color="blue-grey"
             v-for="item in items"
             :key="item.key"
             @click="tab = item.key"
@@ -27,9 +28,10 @@
         <v-row v-if="!loading" class="align-center my-3">
           <v-col v-for="(x, i) in call_back_list" :key="i" cols="12" md="6">
             <v-card
-              :color="x.color == 'green' ? '#f1f7f4' : ''"
+              :class="show_cards ? ' befor-style' : 'card-style '"
+              :color="x.color == 'green' ? '#f6fff5' : ''"
               outlined
-              class="card-style pa-5 elevation-2"
+              class="pa-5 elevation-2"
               :style="
                 Boolean(x.color) ? `border-right:2px solid ${x.color}` : ''
               "
@@ -39,12 +41,13 @@
                   fiber_manual_record
                 </v-icon>
                 <span class="font_13" v-if="x.color == 'red'"
-                  >زمان تماس مجدد از زمان موعود رد شده</span
+                  >زمان تعیین از زمان موعود رد شده</span
                 >
                 <span class="font_13" v-if="x.color == 'green'"
                   >زمان موعود فرا رسیده</span
                 >
               </div>
+
               <v-row class="align-center">
                 <v-col cols="12" md="6">
                   <div>
@@ -68,14 +71,14 @@
                       </small>
                     </h1>
                     <h1>
-                      <small> 
-                        شناسه پیام 
+                      <small>
+                        شناسه پیام
                         {{ x.messageid }}
                       </small>
                       <br />
-              
+
                       <small>
-                        زمان تماس مجدد :‌
+                        زمان تعیین شده برای تماس مجدد :‌
                         {{
                           $toJalali(
                             x.call_again_time,
@@ -84,6 +87,12 @@
                           )
                         }}
                       </small>
+                    </h1>
+                    <h1 v-if="x.status == 'call_back'" class="font_12">
+                      * تماس مجدد
+                    </h1>
+                    <h1 v-if="x.status == 'delayed'" class="font_12">
+                      * معوقه
                     </h1>
                   </div>
                 </v-col>
@@ -97,8 +106,9 @@
                       class="ma-2"
                       @click="openCallDialog(x.user_username)"
                     >
-                      تماس </v-btn
-                    ><v-btn
+                      تماس
+                    </v-btn>
+                    <v-btn
                       outlined
                       color="info"
                       small
@@ -106,6 +116,50 @@
                       class="ma-2"
                       @click="changeStatus(x)"
                       >تغییر وضعیت
+                    </v-btn>
+                  </v-row>
+                </v-col>
+                <v-col cols="12">
+                  <v-divider></v-divider>
+                  <v-row class="justify-space-between mt-3">
+                    <v-btn
+                      outlined
+                      color="blue-grey"
+                      small
+                      text
+                      class="ma-2"
+                      @click="manageOpenDialogs(x , 'basket')"
+                    >
+                      ثبت فاکتور
+                    </v-btn>
+                    <v-btn
+                      outlined
+                      color="blue-grey"
+                      small
+                      text
+                      class="ma-2"
+                      @click="manageOpenDialogs(x , 'history_change_status')"
+                      >تاریخچه تغییر وضعیت
+                    </v-btn>
+                    <v-btn
+                      outlined
+                      color="blue-grey"
+                      small
+                      text
+                      class="ma-2"
+                      @click="manageOpenDialogs(x, 'customer')"
+                    >
+                      اطلاعات مشتری
+                    </v-btn>
+                    <v-btn
+                      outlined
+                      color="blue-grey"
+                      small
+                      text
+                      class="ma-2"
+                      @click="manageOpenDialogs(x, 'history_refrall')"
+                    >
+                      تاریخچه ارجاعات
                     </v-btn>
                   </v-row>
                 </v-col>
@@ -118,7 +172,7 @@
             size="40"
             width="5"
             indeterminate
-            color="grey darken-2 "
+            color="blue-grey"
           >
           </v-progress-circular>
         </div>
@@ -136,6 +190,27 @@
           :username="username"
           @closeDialog="show_call_dialog = false"
         />
+        <History
+          v-if="dialog_history.show"
+          :DialogHistory="dialog_history"
+          :MessageId="message_id"
+        />
+        <Customer
+          v-if="dialog_customer.show"
+          :DialogCustomer="dialog_customer"
+          :customer="customer"
+        />
+        <BasketDialog
+          v-if="dialog_basket.show"
+          :BasketDialog="dialog_basket"
+          :user_basket="user_basket"
+        />
+
+        <MessageLog
+          v-if="dialog_message_log.show"
+          :dialogMessageLog="dialog_message_log"
+          :message_id="message_id"
+        />
       </v-card>
     </v-dialog>
   </div>
@@ -144,8 +219,24 @@
 import ChangeStatus from "~/components/CallCenter/ChangeStatus.vue";
 import CallDialog from "~/components/CallCenter/CallDialog.vue";
 
+import Customer from "~/components/CallCenter/Customer.vue";
+import History from "~/components/NewCallCenter/History.vue";
+import Refer from "~/components/NewCallCenter/Refer.vue";
+import MessageLog from "~/components/NewCallCenter/MessageLog.vue";
+import BasketDialog from "@/components/NewCallCenter/BasketDialog.vue";
+import CallBackLogs from "@/components/CallCenter/CallBackLogs.vue";
+
 export default {
-  components: { ChangeStatus, CallDialog },
+  components: {
+    ChangeStatus,
+    CallDialog,
+    Customer,
+    History,
+    Refer,
+    MessageLog,
+    BasketDialog,
+    CallBackLogs,
+  },
   props: {
     dialog: {
       require: false,
@@ -159,12 +250,29 @@ export default {
   data() {
     return {
       call_back_list: [],
+      status_items: [
+        { text: "تماس مجدد", value: "call_back", icon: "", count: "" },
+        { text: "معوقه", value: "delayed", icon: "", count: "" },
+      ],
       dialog_change_status: { show: false, items: null },
       user_info: {},
+      customer: {},
+      user_basket: {},
       username: "",
       message_info: {},
       totla_data: [],
       loading: true,
+      dialog_customer: { show: false, items: null },
+      dialog_basket: { show: false, items: null },
+      dialog_message_log: { show: false, items: null },
+      dialog_change_status: { show: false, items: null },
+      dialog_Refer: { show: false, items: null },
+      dialog_history: {
+        show: false,
+        items: null,
+      },
+      message_id: "",
+      show_cards: true,
       show_call_dialog: false,
       items: [
         { text: "همه", key: "all" },
@@ -176,6 +284,13 @@ export default {
     };
   },
   watch: {
+    loading() {
+      if (!Boolean(this.loading)) {
+        setTimeout(() => {
+          this.show_cards = false;
+        }, 150);
+      }
+    },
     tab() {
       this.loading = true;
       let data = JSON.parse(JSON.stringify(this.totla_data));
@@ -208,7 +323,9 @@ export default {
         row_number: 4000,
       })
         .then((res) => {
-          let data = res.model.data.filter((x) => x.status == "call_back");
+          let data = res.model.data.filter(
+            (x) => x.status == "call_back" || x.status == "delayed"
+          );
           let items = [];
           let now_date = this.$toJalali(
             this.now,
@@ -251,6 +368,14 @@ export default {
             a.created_at - b.created_at;
           });
           this.call_back_list = this.totla_data;
+          let just_call_back = this.totla_data.filter(
+            (y) => y.status == "call_back"
+          );
+          let just_delayed = this.totla_data.filter(
+            (y) => y.status == "delayed"
+          );
+          this.status_items[0].count = just_call_back.length;
+          this.status_items[1].count = just_delayed.length;
 
           this.loading = false;
         })
@@ -274,15 +399,49 @@ export default {
       this.show_call_dialog = true;
       this.username = username;
     },
+    manageOpenDialogs(item, key) {
+      switch (key) {
+        case "history_refrall":
+          this.message_id = item.id;
+          this.dialog_history.show = true;
+          break;
+        case "customer":
+          this.customer = item.user;
+          this.dialog_customer.show = true;
+          break;
+        case "basket":
+          this.user_basket = item.user;
+          this.dialog_basket.show = true;
+          break;    
+           case "history_change_status":
+           this.dialog_message_log.show = true;
+           this.message_id = item.id;
+          break;
+
+        default:
+          break;
+      }
+    },
   },
 };
 </script>
 <style scoped>
+.befor-style {
+  filter: brightness(98%);
+  transition: all 1.8s ease !important;
+  animation-timing-function: cubic-bezier(0.1, -0.6, 0.2, 0);
+  filter: opacity(0.3);
+}
 .card-style {
-  background-color: #fcfcfc;
+  filter: brightness(98%);
+  transition: all 0.9s ease !important;
+  animation-timing-function: cubic-bezier(0.1, -0.6, 0.2, 0);
+  filter: opacity(0.9);
 }
 .card-style:hover {
-  box-shadow: 2px 5px 3px 0px #0c0c0c69 !important;
-  transition: all 0.5s ease !important;
+  filter: opacity(1);
+  filter: drop-shadow(0 0 0.7rem rgba(77, 76, 76, 0.466));
+  background-color: rgb(241, 241, 241);
+  transition: all 0.4s ease;
 }
 </style>

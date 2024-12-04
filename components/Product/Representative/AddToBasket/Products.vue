@@ -223,11 +223,14 @@ export default {
             }
           }
           this.selected_product = product;
-          this.$emit("validVariations", this.valid_variations);
-          this.$emit("section", {
-            id: product.id,
-            section_name: "ProductVariationCombination",
-          });
+          if (Boolean(product) && Object.keys(product).length > 0) {
+            this.$emit("validVariations", this.valid_variations);
+            this.$emit("section", {
+              id: product.id,
+              section_name: "ProductVariationCombination",
+              product: product,
+            });
+          }
         });
       }
     },
@@ -471,8 +474,7 @@ export default {
           this.$emit("validVariations", true);
           this.$emit("productId", res.id);
         })
-        .catch((rej) => {
-        });
+        .catch((rej) => {});
     },
   },
 };

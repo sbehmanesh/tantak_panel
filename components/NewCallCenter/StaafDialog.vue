@@ -36,6 +36,13 @@
                   rules="phone,require"
                   v-model="form.username"
                 />
+                <amp-input
+                  type="password"
+                  class="ltr-item"
+                  text="رمز عبور"
+                  rules="require,password"
+                  v-model="form.password"
+                />
               </v-col>
             </v-row>
 
@@ -87,6 +94,7 @@ export default {
       username: "",
       last_name: "",
       first_name: "",
+      password: "",
       role_id: [],
     },
   }),
@@ -120,7 +128,9 @@ export default {
           this.$store.state.auth.role.supervisor_coordinator
         );
       }
-      if (this.$checkRole(this.$store.state.auth.role.superviser_centeral_stock)) {
+      if (
+        this.$checkRole(this.$store.state.auth.role.superviser_centeral_stock)
+      ) {
         dialog_title = "ایجاد کارمند انبار";
         this.form.role_id.push(this.$store.state.auth.role.store_employee);
       }

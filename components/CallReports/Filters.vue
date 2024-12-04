@@ -450,12 +450,18 @@ export default {
 }
 .card-style2 {
   border-radius: 8px !important;
+  filter: hue-rotate(3.142rad);
+  filter: grayscale(0.7);
+
+
 }
 .card-style2:hover {
   color: #000000bb;
   cursor: pointer;
-  box-shadow: 2px 0px 8px 8px #c5c5c57c !important;
-  transition: all 0.5s ease !important;
+  transform: translate3d(0.01ch, 0.1in, 0.5em);
+  transition: all 1.1s ease !important;
+  filter: opacity(1);
+
 }
 
 .selected-card {

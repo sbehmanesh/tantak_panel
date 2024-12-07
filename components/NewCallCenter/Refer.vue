@@ -10,7 +10,7 @@
       <v-stepper-content step="1">
         <v-form v-model="valid_step1">
           <v-row class="d-flex justify-center">
-            <v-col cols="5" v-if="is_superviser || is_oprator">
+            <v-col cols="12" md="3" v-if="is_superviser || is_oprator">
               <amp-autocomplete
                 rules="require"
                 v-model="step_ref"
@@ -18,7 +18,7 @@
                 text="انتخاب مرحله"
               />
             </v-col>
-            <v-col cols="5" v-if="Boolean(show_type_send)">
+            <v-col cols="12" md="3" v-if="Boolean(show_type_send)">
               <amp-select
                 rules="require"
                 v-model="type_send"
@@ -27,6 +27,15 @@
               />
             </v-col>
 
+            <v-col cols="12" md="3" v-if="type_send == 'multi'">
+              <amp-input
+                cClass="ltr-item"
+                rules="number"
+                v-model="count"
+                text=" تعداد"
+              />
+            </v-col>
+    
             <v-spacer></v-spacer>
             <v-btn
               :disabled="!valid_step1 || loading"
@@ -51,6 +60,12 @@
             </v-btn>
           </v-row>
         </v-form>
+        <v-col class="text-center" cols="12">
+              <small class="pt-1 primary--text" v-if="type_send == 'multi'">
+                چنانچه نوع تخصیص دستی باشد و تعداد پیام را مشخص نمایید , ارجاع
+                با تعداد وارد شده و به صورت رندم انجام میگیرد
+              </small>
+            </v-col>
       </v-stepper-content>
       <v-stepper-step
         v-if="Boolean(check_steps || !chek_number_step)"
@@ -178,6 +193,7 @@ export default {
     superviser_list: "user/list-employee",
     oprator_list: "user/list-employee",
     type_send: "",
+    count: "",
     step_ref: "",
     valid_step1: true,
     valid_step2: true,
@@ -242,6 +258,9 @@ export default {
       let form = {};
       let step = "";
       let role_user = "";
+      if (Boolean(this.count)) {
+        console.log("this.count >>> ", this.count);
+      }
       // //////////////////////////////////////////////////////////////
       if (Boolean(this.is_admin_call_center)) {
         if (this.type_send == "close") {
@@ -332,6 +351,13 @@ export default {
         this.$emit("setHeaders", true);
       } else {
         this.$emit("setHeaders", false);
+      }
+    },
+    count() {
+      if (Boolean(this.count)) {
+        this.$emit("count", +Number(this.count));
+      } else {
+        this.$emit("count", 0);
       }
     },
     step_ref() {

@@ -128,7 +128,7 @@
                       small
                       text
                       class="ma-2"
-                      @click="manageOpenDialogs(x , 'basket')"
+                      @click="manageOpenDialogs(x, 'basket')"
                     >
                       ثبت فاکتور
                     </v-btn>
@@ -138,7 +138,7 @@
                       small
                       text
                       class="ma-2"
-                      @click="manageOpenDialogs(x , 'history_change_status')"
+                      @click="manageOpenDialogs(x, 'history_change_status')"
                       >تاریخچه تغییر وضعیت
                     </v-btn>
                     <v-btn
@@ -292,28 +292,10 @@ export default {
       }
     },
     tab() {
-      this.loading = true;
-      let data = JSON.parse(JSON.stringify(this.totla_data));
-      if (this.tab == "all") {
-        this.call_back_list = data;
-      }
-      if (this.tab == "now") {
-        this.call_back_list = data.filter((x) => x.color == "green");
-      }
-
-      if (this.tab == "before_now") {
-        this.call_back_list = data.filter(
-          (x) => Boolean(x.violation_time) && !Boolean(x.color)
-        );
-      }
-      if (this.tab == "rejected") {
-        this.call_back_list = data.filter((x) => x.color == "red");
-      }
-      setTimeout(() => {
-        this.loading = false;
-      }, 500);
+      this.setItesmTab();
     },
   },
+
   mounted() {
     this.getList();
   },
@@ -376,7 +358,7 @@ export default {
           );
           this.status_items[0].count = just_call_back.length;
           this.status_items[1].count = just_delayed.length;
-
+          this.setItesmTab();
           this.loading = false;
         })
         .catch((err) => {
@@ -412,36 +394,50 @@ export default {
         case "basket":
           this.user_basket = item.user;
           this.dialog_basket.show = true;
-          break;    
-           case "history_change_status":
-           this.dialog_message_log.show = true;
-           this.message_id = item.id;
+          break;
+        case "history_change_status":
+          this.dialog_message_log.show = true;
+          this.message_id = item.id;
           break;
 
         default:
           break;
       }
     },
+    setItesmTab() {
+      this.loading = true;
+      let data = JSON.parse(JSON.stringify(this.totla_data));
+      if (this.tab == "all") {
+        this.call_back_list = data;
+      }
+      if (this.tab == "now") {
+        this.call_back_list = data.filter((x) => x.color == "green");
+      }
+
+      if (this.tab == "before_now") {
+        this.call_back_list = data.filter(
+          (x) => Boolean(x.violation_time) && !Boolean(x.color)
+        );
+      }
+      if (this.tab == "rejected") {
+        this.call_back_list = data.filter((x) => x.color == "red");
+      }
+      setTimeout(() => {
+        this.loading = false;
+      }, 500);
+    },
   },
 };
 </script>
 <style scoped>
-.befor-style {
-  filter: brightness(98%);
-  transition: all 1.8s ease !important;
-  animation-timing-function: cubic-bezier(0.1, -0.6, 0.2, 0);
-  filter: opacity(0.3);
-}
 .card-style {
   filter: brightness(98%);
-  transition: all 0.9s ease !important;
-  animation-timing-function: cubic-bezier(0.1, -0.6, 0.2, 0);
-  filter: opacity(0.9);
+  opacity: 0.73;
 }
 .card-style:hover {
-  filter: opacity(1);
-  filter: drop-shadow(0 0 0.7rem rgba(77, 76, 76, 0.466));
-  background-color: rgb(241, 241, 241);
+  transform: scale3d(1.02, 1.02, 1.02);
+  opacity: 1;
+  box-shadow: 0px 8px 8px 1px rgba(0, 0, 0, 0.3) !important;
   transition: all 0.4s ease;
 }
 </style>

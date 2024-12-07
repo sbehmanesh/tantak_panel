@@ -16,6 +16,7 @@
                 :userInfo="user_info"
                 :selected_item="selected_item"
                 @relod="relod"
+                @count="setCount($event)"
                 @clearBox="clearBox"
                 @setHeaders="setHeaders($event)"
               />
@@ -30,7 +31,7 @@
           dark
           label
           class="ma-2"
-          :color="tab != item.value ? 'grey ' : 'grey darken-1'"
+          :color="tab != item.value ? 'grey' : 'grey darken-1'"
           v-for="(item, key) in items"
           :key="key"
           @click="selectItem(item)"
@@ -57,7 +58,9 @@
     <v-row class="d-flex justify-center">
       <v-col cols="12" md="12">
         <BaseTable
+          v-if="show_tabale"
           url="/message"
+          @getData="getTotalItems($event)"
           :headers="headers"
           :createUrl="create_url"
           :autoUpdate="update_url"
@@ -135,6 +138,8 @@ export default {
     extra_btn: [],
     panel: 1,
     calls_back: false,
+    show_tabale: true,
+    total_items: [],
     user: [],
     now: "",
     tab: "all",
@@ -376,6 +381,9 @@ export default {
       this.selected_item = [];
     },
     setHeaders(event) {
+      console.log("event >> ", event);
+      this.show_tabale = false;
+
       let header = [];
       if (event && Boolean(event)) {
         header = [
@@ -533,12 +541,20 @@ export default {
           },
         ];
       }
+      console.log("header >>> ", header);
 
+      setTimeout(() => {
+        this.show_tabale = true;
+      }, 500);
       this.headers = header;
     },
     clearBox() {
       this.selected_item = [];
       this.panel = 1;
+    },
+    getTotalItems(event) {
+      console.log("12 > ", event);
+      this.total_items = event.model.data;
     },
 
     selectItem(item) {
@@ -606,9 +622,58 @@ export default {
           "jYYYY/jMM/jDD"
         );
         if (this.now == time) {
-
           return "orange lighten-4";
         }
+      }
+    },
+    setCount(event) {
+      console.log("event >>>>> " , event);
+      if (event == 0) {
+      this.selected_item = []
+        return
+      }
+      let items = [];
+      this.selected_item = []
+      for (let i = 0; i < this.total_items.length; i++) {
+        const body = this.total_items[i];
+        if (Boolean(event)) {
+          if (
+            (this.$checkRole(this.$store.state.auth.role.admin_id) ||
+              this.$checkRole(
+                this.$store.state.auth.role.admin_call_center_id
+              )) &&
+            (body.step == "init" || body.step == "supervisor_to_manager")
+          ) {
+            items.push(body);
+          } else if (
+            this.$checkRole(this.$store.state.auth.role.superviser_id) &&
+            (body.step == "manager_to_supervisor" ||
+              body.step == "operator_to_supervisor")
+          ) {
+            items.push(body);
+          } else if (
+            this.$checkRole(this.$store.state.auth.role.oprator_id) &&
+            body.step == "supervisor_to_operator" &&
+            body.status != "done"
+          ) {
+            items.push(body);
+          }
+        }
+      }
+      if (event > items.length) {
+        this.$toast.info(
+          "تعداد وارد شده بیشتر از تعداد پیام هایی است که متوانید ارجاع دهید"
+        );
+        return;
+      }
+      console.log("WWWW", items);
+      let ids = [];
+      let random_data = items.splice(0, event);
+      console.log("random_data >> ", random_data);
+      if (random_data.length > 0) {
+        random_data.map((x) => {
+          this.selected_item.push(x.id);
+        });
       }
     },
   },

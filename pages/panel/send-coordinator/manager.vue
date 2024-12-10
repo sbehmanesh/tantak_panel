@@ -50,7 +50,7 @@
                   </div>
                 </v-sheet>
                 <!-- جدول کارتابل -->
-                <MainTable :getData="get_data" />
+                <MainTable :getData="get_data" :key-route="key_route" />
               </v-col>
             </v-row>
           </v-container>

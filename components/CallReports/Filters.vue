@@ -458,8 +458,8 @@ export default {
 .card-style2:hover {
   color: #000000bb;
   cursor: pointer;
-  transform: translate3d(0.01ch, 0.1in, 0.5em);
-  transition: all 1.1s ease !important;
+  transform: scale3d(1.02, 1.02, 1.02);
+  transition: all 0.4s ease !important;
   filter: opacity(1);
 
 }

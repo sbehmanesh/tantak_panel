@@ -2,7 +2,7 @@
   <div class="text-center">
     <v-dialog v-model="dialog" width="450">
       <v-card style="overflow: hidden">
-        <v-card-title class="grey lighten-2"> برداشت از انبار </v-card-title>
+        <v-card-title class="grey lighten-2"> خروج از انبار </v-card-title>
 
         <v-card-text>
           <v-col cols="12" class="text-center">
@@ -17,7 +17,7 @@
           </div>
           <amp-textarea
             :rows="3"
-            text="دلیل برداشت"
+            text="دلیل خروج"
             v-model="message"
             class="mt-5"
           />
@@ -72,7 +72,7 @@ export default {
 
       this.$reqApi("sale-agency-stock/sale", form)
         .then((res) => {
-          this.$toast.success("برداشت انجام شد");
+          this.$toast.success("خروج انجام شد");
           this.$emit("refresh")
           this.$emit("closeDialog");
         })

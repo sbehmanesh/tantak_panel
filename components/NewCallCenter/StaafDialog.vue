@@ -20,6 +20,14 @@
           <v-form v-model="valid" @submit.prevent="submit()">
             <v-row>
               <v-col cols="12" md="12">
+                <amp-select
+                v-if="$checkRole(this.$store.state.auth.role.agency_manager)"
+                  text="نقش"
+                  v-model="role_id"
+                  :items="roles"
+                  rules="require"
+                />
+
                 <amp-input
                   text="نام"
                   v-model="form.first_name"
@@ -89,6 +97,8 @@ export default {
   data: () => ({
     valid: true,
     valid_comment: true,
+    role_id: "",
+    roles: [],
     loading: false,
     form: {
       username: "",
@@ -98,6 +108,12 @@ export default {
       role_id: [],
     },
   }),
+  beforeMount() {
+    this.roles = [
+      { text: "  انبار دار  ", value: this.$store.state.auth.role.storekeeper },
+      { text: "صندوق دار", value: this.$store.state.auth.role.cashier_id },
+    ];
+  },
   computed: {
     check_role() {
       let dialog_title = "";
@@ -158,10 +174,10 @@ export default {
           this.$store.state.auth.role.delivery_coordination
         );
       }
-      if (this.$checkRole(this.$store.state.auth.role.agency_manager)) {
-        dialog_title = " ایجاد  انبار دار ";
-        this.form.role_id.push(this.$store.state.auth.role.storekeeper);
-      }
+      // if (this.$checkRole(this.$store.state.auth.role.agency_manager)) {
+      //   dialog_title = " ایجاد  انبار دار ";
+      //   this.form.role_id.push(this.$store.state.auth.role.storekeeper);
+      // }
       if (this.$checkRole(this.$store.state.auth.role.storekeeper)) {
         dialog_title = " ایجاد  کارمند ";
         this.form.role_id.push(this.$store.state.auth.role.agency_employee);
@@ -178,6 +194,15 @@ export default {
     submit() {
       this.loading = true;
       let form = { ...this.form };
+      if (
+        Boolean(this.role_id) &&
+        Boolean(this.$checkRole(this.$store.state.auth.role.agency_manager))
+      ) {
+        form.role_id.push(this.role_id);
+        if (this.$store.state.auth.role.cashier_id  == this.role_id) {
+          form["sale_agency_id"] = this.$store.state.auth.user.sale_agenciy_id
+        }
+      }
       form["person_type"] = "real";
       let url = "user/inser-employee";
       this.$reqApi(url, form)

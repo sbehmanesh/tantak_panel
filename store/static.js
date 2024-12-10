@@ -55,6 +55,7 @@ export const state = () => ({
   inventory_status,
   inventory_type,
   inventory_type_request,
+  tiket_status,
 });
 
 let status_type = [
@@ -754,4 +755,9 @@ let inventory_type = [
 let inventory_type_request = [
   { text: "افزودن محصول", value: "insert" },
   { text: "انبار گردانی", value: "stock_check" },
+];
+let tiket_status = [
+  { text: "پاسخ داده شده", value: "support" },
+  { text: "منتظر پاسخ", value: "user" },
+  { text: "بسته شده", value: "close" },
 ];

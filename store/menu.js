@@ -126,12 +126,18 @@ let mnue_tree = [
 
 
 
-  // {
-  //   id: 200,
-  //   name: "فروش تجمیعی",
-  //   access: "collective_sell/index",
-  //   route: "/collective-sell",
-  // },
+  {
+    id: 200564,
+    name: "خرید حضوری",
+    access: "*",
+    route: "/in-person-shopping",
+  }, 
+   {
+    id: 2005687564,
+    name: "کد های تخفیف",
+    access: "*",
+    route: "/discount-code",
+  },
   {
     id: 13,
     name: "محصولات",
@@ -335,6 +341,24 @@ let mnue_tree = [
     route: "/warehouses-stock/agency",
   },
   {
+    id: 15649,
+    name: "پشتیبانی",
+    children: [
+      {
+        id: 24560,
+        name: "پشتیبانی",
+        access: "ticket/index",
+        route: "/ticket",
+      },
+      {
+        id: 24561,
+        name: "دسته بندی",
+        access: "ticket/root",
+        route: "/ticket/ticket-group",
+      },
+    ],
+  },
+  {
     id: 18,
     name: "تنظیمات",
     children: [
@@ -351,6 +375,12 @@ let mnue_tree = [
         route: "/setting/slider",
       },
       {
+        id: 1904505,
+        name: "بابت های  کد تخفیف",
+        access: "setting/index",
+        route: "/setting/for-discount",
+      },     
+       {
         id: 19005,
         name: "بابت های کیف پول",
         access: "setting/index",

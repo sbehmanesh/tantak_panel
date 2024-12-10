@@ -40,7 +40,11 @@
           {{ item.text }}
         </v-chip>
       </v-row>
-      <v-row cols="12" class="center-div mt-5">
+      <v-row
+        cols="12"
+        class="center-div mt-5"
+        v-if="!Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))"
+      >
         <v-chip
           dark
           label
@@ -54,6 +58,7 @@
           {{ item.text }}
         </v-chip>
       </v-row>
+  
     </v-col>
     <v-row class="d-flex justify-center">
       <v-col cols="12" md="12">
@@ -106,6 +111,12 @@
           @relod="relod"
           :now="now"
         />
+        <MessageExcel
+          :dialog="excel_message"
+          v-if="excel_message"
+          url-list="/message"
+          @closeDialog="excel_message = false"
+        />
       </v-col>
     </v-row>
   </div>
@@ -121,6 +132,7 @@ import Refer from "~/components/NewCallCenter/Refer.vue";
 import MessageLog from "~/components/NewCallCenter/MessageLog.vue";
 import BasketDialog from "@/components/NewCallCenter/BasketDialog.vue";
 import CallBackLogs from "@/components/CallCenter/CallBackLogs.vue";
+import MessageExcel from "@/components/NewCallCenter/MessageExcel.vue";
 
 export default {
   components: {
@@ -132,12 +144,14 @@ export default {
     MessageLog,
     BasketDialog,
     CallBackLogs,
+    MessageExcel,
   },
   data: () => ({
     headers: [],
     extra_btn: [],
     panel: 1,
     calls_back: false,
+    excel_message: false,
     show_tabale: true,
     total_items: [],
     user: [],
@@ -345,6 +359,17 @@ export default {
           }
         },
       },
+      {
+        text: "خروجی اکسل",
+        icon: "download",
+        color: "teal darken-2",
+        fun: (body) => {
+          this.excel_message = true;
+          // this.getDoneExcel();
+
+          // let done_messeage =
+        },
+      },
     ];
     this.$store.dispatch("setPageTitle", this.title);
   },
@@ -381,7 +406,6 @@ export default {
       this.selected_item = [];
     },
     setHeaders(event) {
-      console.log("event >> ", event);
       this.show_tabale = false;
 
       let header = [];
@@ -541,8 +565,6 @@ export default {
           },
         ];
       }
-      console.log("header >>> ", header);
-
       setTimeout(() => {
         this.show_tabale = true;
       }, 500);
@@ -553,7 +575,6 @@ export default {
       this.panel = 1;
     },
     getTotalItems(event) {
-      console.log("12 > ", event);
       this.total_items = event.model.data;
     },
 
@@ -627,13 +648,12 @@ export default {
       }
     },
     setCount(event) {
-      console.log("event >>>>> " , event);
       if (event == 0) {
-      this.selected_item = []
-        return
+        this.selected_item = [];
+        return;
       }
       let items = [];
-      this.selected_item = []
+      this.selected_item = [];
       for (let i = 0; i < this.total_items.length; i++) {
         const body = this.total_items[i];
         if (Boolean(event)) {
@@ -666,15 +686,69 @@ export default {
         );
         return;
       }
-      console.log("WWWW", items);
       let ids = [];
       let random_data = items.splice(0, event);
-      console.log("random_data >> ", random_data);
       if (random_data.length > 0) {
         random_data.map((x) => {
           this.selected_item.push(x.id);
         });
       }
+    },
+    getDoneExcel() {
+      let data = JSON.parse(JSON.stringify(this.total_items));
+      let done_messages = [];
+      for (let i = 0; i < data.length; i++) {
+        const x = data[i];
+        if (x.status == "done") {
+          done_messages.push({
+            user_first_name: x.user_first_name,
+            user_last_name: x.user_last_name,
+            receptor: x.receptor,
+            messageid: x.messageid,
+            step: this.$getItemEnum(
+              this.$store.state.static.step_message,
+              x.step
+            ),
+            user_username: this.$showUsername(x.user_username),
+          });
+        }
+      }
+
+      let file_name = "پیام های انجام شده";
+      let headers = [
+        {
+          text: "زمان ثبت",
+          filterType: "date",
+          filterCol: "created_at",
+          value: (body) => {
+            if (body.created_at) {
+              return this.$toJalali(body.created_at);
+            }
+            return "";
+          },
+        },
+        { text: "نام کاربر", value: "user_first_name" },
+        { text: "نام خانوادگی", value: "user_last_name" },
+        {
+          text: "شماره ارسال کننده",
+          type: "phone",
+          filterCol: "user_username",
+          value: "user_username",
+        },
+        {
+          text: "گیرنده",
+          value: "receptor",
+        },
+        {
+          text: "شناسه پیام",
+          value: "messageid",
+        },
+        {
+          text: "مرحله",
+          value: "step",
+        },
+      ];
+      this.$exportCSV(headers, done_messages, file_name);
     },
   },
 };

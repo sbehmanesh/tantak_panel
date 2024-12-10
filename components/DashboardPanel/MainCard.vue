@@ -38,6 +38,10 @@ export default {
     getData: {
       default: false,
       Required: false,
+    },  
+    keyRoute: {
+      default: false,
+      required: false,
     },
   },
   data: () => ({
@@ -52,7 +56,7 @@ export default {
             title: "کارهای جدید",
             color: "primary",
             count: "",
-            route: "basket",
+            route: "",
           },
         ],
       },
@@ -118,9 +122,13 @@ export default {
       },
     ],
   }),
+  mounted(){
+    
+    this.rows[0].menus[0].route = this.keyRoute
+
+  },
   watch: {
     getData() {
-      
       this.rows[0].menus[0].count = this.getData.work_all;
       this.rows[1].menus[0].count = this.getData.task_today;
       this.rows[1].menus[1].count = this.getData.task_late;
@@ -128,6 +136,7 @@ export default {
       this.rows[1].menus[3].count = this.getData.task_untime;
     },
   },
+  
   methods: {
     sendRoute(path) {
       if (path != null) {

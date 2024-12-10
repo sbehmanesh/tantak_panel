@@ -60,7 +60,7 @@
           </div>
         </v-sheet>
         <!-- جدول کارتابل -->
-        <MainTable :getData="get_data" />
+        <MainTable :getData="get_data" :key-route="key_route" />
       </v-col>
     </v-row>
   </v-container>
@@ -77,6 +77,7 @@ export default {
     username_employee: "",
     firstname_employee: "",
     lastname_employee: "",
+    key_route: "",
     employee_flag: false,
     sides: [
       {
@@ -119,6 +120,7 @@ export default {
   }),
   beforeMount() {
     // this.changeRout();
+    this.key_route =  this.sides[0].route.split("?")[0];
     this.$store.dispatch("setPageTitle", this.title);
     this.getApi();
   },

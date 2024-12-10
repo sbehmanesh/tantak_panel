@@ -3,7 +3,7 @@
     <v-window v-model="step">
       <v-window-item :value="1">
         <v-row class="d-flex justify-center">
-          <v-col cols="12" md="6">
+          <v-col cols="12" md="7">
             <v-expansion-panels
               v-model="panel"
               class="card-style elevation-0"
@@ -176,18 +176,31 @@
               </v-expansion-panel>
             </v-expansion-panels>
           </v-col>
+                  <v-col cols="12" md="7">
+            <SearchByCatgory
+              @productId="setFilter($event, 'id')"
+              @type="setFilter($event, 'type')"
+            />
+          </v-col>
+        </v-row>
+        <v-row>
+  
+      
+          <v-col cols="12" class="pa-0">
+            <BaseTable
+              ref="ReloadList"
+              url="/sale-agency-stock"
+              :headers="headers"
+              :filters="filters"
+              :root-body="root_body"
+              :extraBtn="extra_btn"
+              autoDelete="sale-agency-stock/delete"
+              :actionsList="actions_list"
+              :BTNactions="btn_actions"
+            />
+          </v-col>
         </v-row>
 
-        <BaseTable
-          ref="Refresh"
-          url="/sale-agency-stock"
-          :headers="headers"
-          :root-body="root_body"
-          :extraBtn="extra_btn"
-          autoDelete="sale-agency-stock/delete"
-          :actionsList="actions_list"
-          :BTNactions="btn_actions"
-        />
         <RotationValue
           :dialog="rotation"
           @reload="refresh"
@@ -222,6 +235,7 @@ import Products from "@/components/Product/Representative/AddToBasket/Products.v
 import History from "@/components/Product/Representative/History.vue";
 import VarComExcel from "@/components/Product/VarComExcel.vue";
 import RotationValue from "@/components/Product/Representative/RotationValue.vue";
+import SearchByCatgory from "@/components/Product/Representative/SearchByCatgory.vue";
 
 export default {
   components: {
@@ -230,6 +244,7 @@ export default {
     History,
     VarComExcel,
     RotationValue,
+    SearchByCatgory,
   },
   props: {
     branchId: {
@@ -276,6 +291,7 @@ export default {
         sale_agency_id: "",
         array_section: [],
       },
+      filters: {},
     };
   },
   computed: {
@@ -591,6 +607,21 @@ export default {
       this.slected_product = {};
       this.continue_form = false;
       this.skock = "";
+    },
+    setFilter(event, key) {
+
+      if (key == "id") {
+        this.root_body["parent_id"] = event;
+        this.refresh();
+      } else if (key == "type") {
+        if (event == "all") {
+          this.filters = {};
+        } else {
+          this.filters = {
+            section_name: { op: "=", value: event },
+          };
+        }
+      }
     },
   },
 };

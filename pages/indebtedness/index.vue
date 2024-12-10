@@ -101,6 +101,8 @@ export default {
     id: "",
     step_order: "",
     filter: {},
+    title: "بدهکاری ها",
+
     step: 1,
   }),
   watch: {

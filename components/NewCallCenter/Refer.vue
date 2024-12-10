@@ -259,7 +259,6 @@ export default {
       let step = "";
       let role_user = "";
       if (Boolean(this.count)) {
-        console.log("this.count >>> ", this.count);
       }
       // //////////////////////////////////////////////////////////////
       if (Boolean(this.is_admin_call_center)) {

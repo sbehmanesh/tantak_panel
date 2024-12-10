@@ -507,7 +507,7 @@ export default {
         },
       },
       {
-        text: "برداشت از انبار",
+        text: "خروج از انبار",
         icon: "change_circle",
         color: "success",
         fun: (body) => {

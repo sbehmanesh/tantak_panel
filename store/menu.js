@@ -126,12 +126,12 @@ let mnue_tree = [
 
 
 
-  // {
-  //   id: 200564,
-  //   name: "خرید حضوری",
-  //   access: "*",
-  //   route: "/in-person-shopping",
-  // }, 
+  {
+    id: 200564,
+    name: "خرید حضوری",
+    access: "*",
+    route: "/in-person-shopping",
+  }, 
   //  {
   //   id: 2005687564,
   //   name: "کد های تخفیف",

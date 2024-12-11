@@ -200,7 +200,7 @@ export default {
       ) {
         form.role_id.push(this.role_id);
         if (this.$store.state.auth.role.cashier_id  == this.role_id) {
-          form["sale_agency_id"] = this.$store.state.auth.user.sale_agenciy_id
+          form["sale_agenciy_id"] = this.$store.state.auth.user.sale_agenciy_id
         }
       }
       form["person_type"] = "real";

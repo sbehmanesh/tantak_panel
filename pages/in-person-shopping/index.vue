@@ -2,175 +2,59 @@
   <v-row>
     <v-col cols="12" md="12">
       <v-stepper v-model="e1">
-        <v-row class="d-flex justify-center">
-          <v-col cols="10" md="5" class="mt-4">
-            <v-stepper-header class="elevation-0">
-              <v-stepper-step :complete="e1 > 1" step="1">
+        <v-row class="d-flex justify-center align-center">
+          <v-col cols="10" md="6" class="mt-4">
+            <v-stepper-header class="elevation-0" >
+              <v-stepper-step :complete="e1 > 1" step="1" color="blue-grey">
                 انتخاب کاربر
               </v-stepper-step>
 
-              <v-stepper-step :complete="e1 > 2" step="2">
+              <v-stepper-step color="blue-grey" :complete="e1 > 2" step="2">
                 سبد خرید
               </v-stepper-step>
 
-              <v-stepper-step :complete="e1 > 2" step="3"
+              <v-stepper-step color="blue-grey" :complete="e1 > 2" step="3"
                 >تکمیل اطلاعات</v-stepper-step
               >
 
-              <v-stepper-step :complete="e1 > 3" step="4">
+              <v-stepper-step color="blue-grey" :complete="e1 > 3" step="4">
                 مشاهده فاکتور
               </v-stepper-step>
             </v-stepper-header>
           </v-col>
+          <v-col cols="12" md="7" class="text-center">
+          <v-btn text outlined v-if="e1 > 1" color="blue-grey" @click="e1--" >
+            <v-icon class="mx-2" color="blue-grey">
+              arrow_circle_right
+            </v-icon>
+            برگشت به مرحله قبل
+          </v-btn>
+          <v-divider class="mt-4"></v-divider>
+          <v-divider></v-divider>
+        </v-col>
         </v-row>
+  
 
         <v-stepper-items>
           <v-stepper-content step="1">
-            <v-row class="d-flex justify-center mb-8">
-              <v-col md="3" cols="8" class="ma-0 pa-0 text-center">
-                <v-tabs v-model="tab" centered icons-and-text>
-                  <v-tab>
-                    <h1>
-                      انتخاب کاربر
-                      <v-icon> person </v-icon>
-                    </h1>
-                  </v-tab>
-                  <v-spacer> </v-spacer>
-                  <v-tab>
-                    <h1>
-                      ایجاد کاربر
-                      <v-icon> person_add </v-icon>
-                    </h1>
-                  </v-tab>
-                </v-tabs></v-col
-              >
+            <v-row class="justify-center">
+              <v-col cols="12" md="4">
+                <CustomerInfo
+                  @customer="customer_infos = $event"
+                  @nextStep="e1 = 2"
+                />
+              </v-col>
             </v-row>
-
-            <v-tabs-items v-model="tab">
-              <v-tab-item>
-                <v-row class="d-flex justify-center">
-                  <v-col cols="12" md="6">
-                    <UserSelectForm
-                      v-if="tab == 0"
-                      text="انتخاب کاربر"
-                      v-model="user"
-                      url="/user"
-                      rules="require"
-                      :role-id="[]"
-                    />
-                  </v-col>
-                </v-row>
-              </v-tab-item>
-              <v-tab-item>
-                <v-form v-model="valid_add_user">
-                  <v-row class="d-flex justify-center">
-                    <v-col cols="12" md="3">
-                      <amp-input
-                        text="نام"
-                        v-model="first_name"
-                        rules="require"
-                      />
-                    </v-col>
-                    <v-col cols="12" md="3">
-                      <amp-input
-                        text="نام خانوادگی"
-                        rules="require"
-                        v-model="last_name"
-                      />
-                    </v-col>
-                    <v-col cols="12" md="3">
-                      <amp-input
-                        class="ltr-item"
-                        text=" شماره همراه "
-                        rules="phone,require"
-                        v-model="username"
-                      />
-                    </v-col>
-                  </v-row>
-                </v-form>
-              </v-tab-item>
-            </v-tabs-items>
-
-            <v-col cols="12" class="text-center mt-10">
-              <amp-button
-                v-if="tab == 1"
-                icon="add_circle"
-                height="40"
-                @click="addUser(tab, true)"
-                color="primary "
-                text="افزودن "
-                :loading="loading"
-                :disabled="
-                  tab == 0 ? !user[0] || loading : loading || !valid_add_user
-                "
-              />
-              <amp-button
-                v-if="(tab == 1 && show_btn_nex) || tab == 0"
-                icon="arrow_circle_left"
-                height="40"
-                @click="addUser(tab, false)"
-                color="info darken-3"
-                text="بعدی"
-                :disabled="
-                  tab == 0 ? !user[0] || loading : loading || !valid_add_user
-                "
-              />
-            </v-col>
           </v-stepper-content>
 
           <v-stepper-content step="2">
-            <Basket
-              ref="have_item"
-              @next_step="goToStep($event)"
-              @basket_costumer_id="basket_costumer_id = $event"
-              @backStep="backStep()"
-              :UserId="user_id"
-              @list="showBtn($event)"
-              @chek_save="changeNumber($event)"
-            />
-
-            <v-row class="my-4 d-flex justify-center" v-if="show_btn">
-              <amp-button
-                icon="arrow_circle_right"
-                height="40"
-                @click="e1 = 1"
-                class="ma-1"
-                color="red darken-2"
-                text="برگشت "
-              />
-              <amp-button
-                icon="verified"
-                height="40"
-                @click="save = true"
-                color="success darken-2 "
-                class="ma-1"
-                text="ثبت سبد خرید "
-                :loading="loading_factor"
-                :disabled="loading || save"
-              />
-              <amp-button
-                v-if="next_btn"
-                icon="arrow_circle_left"
-                height="40"
-                @click="e1 = 3"
-                color="info darken-3 "
-                class="ma-1"
-                text="بعدی "
-                :loading="loading"
-                :disabled="loading || !save || loading_factor"
-              />
-            </v-row>
+            <CreateBasket @selected_data="selectedData($event)" />
           </v-stepper-content>
 
           <v-stepper-content step="3">
-            <v-row v-if="e1 == 3" class="d-flex justify-center">
-              <v-col cols="12" md="10">
-                <CompleteInfo
-                  :basket_costumer_id="basket_costumer_id"
-                  @nextStep="e1 = 4"
-                  @backStep="e1 = 2"
-                  :user_id="user_id"
-                />
+            <v-row class="d-flex justify-center">
+              <v-col cols="12" md="7" v-if="e1 == 3">
+                <Factor :information="selected_list" />
               </v-col>
             </v-row>
           </v-stepper-content>
@@ -194,9 +78,20 @@
 import UserSelectForm from "@/components/User/UserSelectForm";
 import Basket from "@/components/Product/Basket.vue";
 import CompleteInfo from "@/components/Product/CompleteInfo.vue";
-import InPersoneFactory from "@/components/Product/InPersoneFactory.vue";
+import InPersoneFactory from "~/components/Product/PersonShopping/InPersoneFactory.vue";
+import CustomerInfo from "~/components/Product/PersonShopping/CustomerInfo.vue";
+import CreateBasket from "~/components/Product/PersonShopping/CreateBasket.vue";
+import Factor from "~/components/Product/PersonShopping/Factor.vue";
 export default {
-  components: { UserSelectForm, Basket, CompleteInfo, InPersoneFactory },
+  components: {
+    UserSelectForm,
+    Basket,
+    CompleteInfo,
+    InPersoneFactory,
+    CustomerInfo,
+    CreateBasket,
+    Factor,
+  },
   data: () => ({
     e1: 1,
     attrs: {
@@ -228,6 +123,8 @@ export default {
     user: [],
     products: [],
     list_basket: {},
+    customer_infos: {},
+    selected_list: {},
     factor_list: {},
     main_image: "",
     basket_costumer_id: "",
@@ -246,7 +143,6 @@ export default {
       user_id: "",
     },
     factor_data: [],
-    dialog_add_product: { show: false, items: null },
   }),
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);
@@ -318,6 +214,10 @@ export default {
     },
     changeNumber() {
       this.save = false;
+    },
+    selectedData(event) {
+      this.selected_list = event;
+      this.e1 = 3;
     },
   },
 };

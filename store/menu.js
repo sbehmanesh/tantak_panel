@@ -343,7 +343,7 @@ let mnue_tree = [
   {
     id: 618558145,
     name: "موجودی انبار",
-    access: "sale_agency_stocks/manager_listـroot",
+    access: "sale_agency_stocks/manager_list_root",
     route: "/warehouses-stock/agency",
   },
   {

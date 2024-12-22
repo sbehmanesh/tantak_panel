@@ -96,7 +96,40 @@
                   <h1 class="font_11">ریال{{ $price(wallet.credit_wallt) }}</h1>
                 </v-chip>
               </v-card>
+            </v-col>         
+            
+            
+            <div class="d-flex justify-center">
+            
+            <v-col cols="6">
+              <v-card
+                class="elevation-0 text-center pa-2"
+                style="border-top: 3px solid teal"
+                outlined
+              >
+                <h1 class="font_13"> قیمت اصلی سبد خرید</h1>
+                <br>
+
+                <v-chip>
+                  <h1 class="font_11">ریال{{ $price(wallet.original_price) }}</h1>
+                </v-chip>
+              </v-card>
+            </v-col> 
+            
+            <v-col cols="6">
+              <v-card
+                class="elevation-0 text-center pa-2"
+                style="border-top: 3px solid teal"
+                outlined
+              >
+                <h1 class="font_13"> مجموع کل تخفیفات</h1>
+                <br>
+                <v-chip>
+                  <h1 class="font_11">ریال{{ $price(wallet.off_amount) }}</h1>
+                </v-chip>
+              </v-card>
             </v-col>
+          </div>
             <v-row class="d-flex justify-center pa-4">
               <v-col cols="12" md="2" class="ma-2">
                 <amp-button
@@ -178,7 +211,9 @@ export default {
             this.$toast.success("سفارش با موفقیت ثبت شد");
             this.$router.push("/in-person-shopping");
           })
-          .catch((err) => {});
+          .catch((err) => {
+          console.log(err);
+          });
       }
     },
   },

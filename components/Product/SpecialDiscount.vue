@@ -3,10 +3,7 @@
     <v-container fluid class="px-8">
       <v-row class="justify-center mb-5 align-top">
         <v-col cols="12" md="6">
-          <v-card
-          
-            class="elevation-0 pa-5"
-          >
+          <v-card class="elevation-0 pa-5">
             <v-row dense>
               <v-col cols="12" md="6">
                 <amp-input text="عنوان" v-model="form.title" rules="require" />
@@ -19,12 +16,20 @@
                   :items="$store.state.static.status"
                 />
               </v-col>
+              <v-col cols="12" md="6">
+                <amp-select
+                  text=" نوع تخفیف"
+                  rules="require"
+                  v-model="form.type_discount"
+                  :items="$store.state.static.discount_type"
+                />
+              </v-col>
 
               <v-col cols="12" md="6">
                 <amp-jdate
                   text="تاریخ شروع "
                   :is-number="true"
-                    rules="require"
+                  rules="require"
                   v-model="form.start_at"
                   :min="now"
                 />
@@ -32,7 +37,7 @@
               <v-col cols="12" md="6">
                 <amp-jdate
                   text="تاریخ پایان"
-                    rules="require"
+                  rules="require"
                   :is-number="true"
                   v-model="form.end_at"
                 />
@@ -40,13 +45,28 @@
 
               <v-col cols="12" md="6">
                 <amp-input
+                  v-if="form.type_discount == 'amount'"
                   text="قیمت پس از تخفیف (ریال)"
                   v-model="form.price_off"
                   rules="require"
                   is-price
                 />
+                <amp-input
+                  v-else
+                  text="درصد تخفیف"
+                  v-model="form.price_off"
+                  rules="require,percent"
+                />
               </v-col>
 
+              <v-col cols="12" md="6">
+                <amp-input
+                  text=" سقف تعداد استفاده"
+                  v-model="form.max_number"
+                  cClass="ltr-item"
+                  rules="number"
+                />
+              </v-col>
               <v-col cols="12" md="6">
                 <amp-input
                   text="ترتیب"
@@ -57,7 +77,7 @@
               </v-col>
               <v-col cols>
                 <amp-textarea
-                  :rows="3"
+                  :rows="1"
                   text="توضیحات"
                   v-model="form.description"
                 />
@@ -200,6 +220,7 @@ export default {
       price_off: "",
       product_id: "",
       description: "",
+      type_discount: "",
       off_sale_all: "yes",
       off_sale_online: false,
       off_sale_call_center: false,

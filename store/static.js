@@ -57,7 +57,8 @@ export const state = () => ({
   inventory_type_request,
   tiket_status,
   reterned_type,
- 
+  status_cupon,
+  discount_type,
 });
 
 let status_type = [
@@ -763,7 +764,18 @@ let tiket_status = [
   { text: "منتظر پاسخ", value: "user" },
   { text: "بسته شده", value: "close" },
 ];
-let reterned_type= [
+let reterned_type = [
   { text: "ناقص", value: "defect" },
   { text: "تعویض", value: "dissatisfactin" },
+];
+let status_cupon = [
+  { text: "فعال", value: "active" },
+  { text: "غیرفعال", value: "inactive" },
+  { text: "استفاده شده", value: "used" },
+  { text: "منقضی شده", value: "expired" },
+];
+
+let discount_type =  [
+  { text: "درصد", value: "percent" },
+  { text: "مقدار", value: "amount" },
 ];

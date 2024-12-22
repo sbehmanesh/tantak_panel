@@ -6,14 +6,14 @@
     class="rounded-0 pa-2 d-flex flex-column"
   >
     <v-row class="ma-2">
-      <!-- <v-col cols="12" md="3">
+      <v-col cols="12" md="3">
         <amp-select
           text="بابت"
-          :items="$store.state.setting.basic_information.for_wallet"
+          :items="for_title_texts"
           rules="require"
           v-model="form.for_title"
         />
-      </v-col> -->
+      </v-col>
       <v-col cols="12" md="3">
         <amp-select
           :items="code_type"
@@ -38,43 +38,31 @@
         />
       </v-col>
 
-  
       <v-col cols="12" md="3">
         <amp-select
           text="عمومی"
           :items="$store.state.static.bool_en"
           rules="require"
-          v-model="form.public"
+          v-model="form.is_public"
         ></amp-select>
       </v-col>
-      <v-col cols="12" md="3" v-if="!form.public">
+      <v-col cols="12" md="3">
         <amp-select
-          text="برای "
-          :items="$store.state.static.discount_for"
+          text="وضعیت"
+          :items="$store.state.static.status_cupon"
           rules="require"
-          v-model="form.send_in"
+          v-model="form.status"
         ></amp-select>
       </v-col>
-      <v-col
-        cols="12"
-        md="3"
-        v-if="form.send_in == 'countract' && !form.public"
-      >
-        <amp-autocomplete
-          multiple
+
+      <v-col cols="12" md="3" v-if="form.is_public == 'no'">
+        <UserSelectForm
+          text="انتخاب کاربر"
+          v-model="user"
+          multi
+          url="user"
           rules="require"
-          text="انتخاب قرارداد"
-          :items="contract_ids"
-          v-model="form.contract_ids"
-        />
-      </v-col>
-      <v-col cols="12" md="3" v-if="form.send_in == 'user' && !form.public">
-        <amp-autocomplete
-          multiple
-          rules="require"
-          text="انتخاب کابر"
-          :items="users"
-          v-model="form.user_ids"
+          :role-id="[]"
         />
       </v-col>
       <v-col cols="12" md="3" v-if="form.send_in != 'custom'">
@@ -86,16 +74,42 @@
         />
       </v-col>
       <v-col cols="12" md="3">
-        <amp-input
-          text="کد تخفیف"
-          v-model="form.code"
+        <amp-select
+          text="قابل استفاده برای تمامی محصولات (پکیج و محصولات)"
+          :items="$store.state.static.bool_en"
           rules="require"
-          cClass="ltr-item"
+          v-model="form.all_products"
+        ></amp-select>
+      </v-col>
+      <v-col cols="12" md="3" v-if="form.all_products == 'no'">
+        <amp-select
+          text="تخفیف برای "
+          :items="send_for_items"
+          rules="require"
+          v-model="form.send_for"
+        ></amp-select>
+      </v-col>
+      <v-col cols="12" md="3" v-if="form.all_products == 'no'">
+        <amp-autocomplete
+          v-if="form.send_for == 'product'"
+          text="انتخاب محصول"
+          multiple
+          :items="products"
+          rules="require"
+          v-model="form.product_ids"
+        />
+        <amp-autocomplete
+          v-if="form.send_for == 'package'"
+          text="انتخاب پکیج"
+          multiple
+          :items="package"
+          rules="require"
+          v-model="form.package_ids"
         />
       </v-col>
-      <v-col cols="12" md="3" v-if="form.send_in != 'custom'">
+      <v-col cols="12" md="3">
         <amp-input
-          text="حداکثر استفاده برای کاربر"
+          text="حد اکثر استفاده برای کاربر"
           rules="number,require"
           v-model="form.user_usage_limit"
           cClass="ltr-item"
@@ -105,7 +119,7 @@
         <amp-jdate
           text=" تاریخ شروع "
           rules="require"
-          v-model="form.start_at"
+          v-model="form.start_date"
         />
       </v-col>
       <v-col cols="12" md="3">
@@ -113,7 +127,7 @@
           text="تاریخ پایان"
           rules="require"
           :min="now"
-          v-model="form.end_at"
+          v-model="form.end_date"
         />
       </v-col>
       <v-col cols="12" md="3">
@@ -145,7 +159,13 @@
 
 <script>
 let jmoment = require("moment");
+import UserSelectForm from "@/components/User/UserSelectForm";
+
 export default {
+  components: {
+    UserSelectForm,
+  },
+
   props: {
     modelId: {
       require: false,
@@ -160,35 +180,43 @@ export default {
         { text: "درصد", value: "percentage" },
         { text: "مقدار", value: "amount" },
       ],
-      insurance: [],
-      contract_ids: [],
-      company: [],
+      send_for_items: [
+        { text: "محصولات", value: "product" },
+        { text: "پکیج ها", value: "package" },
+      ],
+      user: [],
+      for_title_texts: [],
+      products: [],
+      package: [],
       users: [],
       show_insurance_type: false,
       now: "",
       form: {
         for_title: "",
         type: "",
-        code: "",
-        send_in: "",
-        start_at: "",
-        end_at: "",
-        insurance_id: "",
+        send_for: "product",
+        start_date: "",
+        end_date: "",
+        all_products: "",
         status: "active",
-        company_id: "",
         value: "",
         coupon_usage_limit: "",
         user_usage_limit: "",
         description: "",
         sort: "",
-        public: true,
-        contract_ids: [],
+        is_public: "yes",
+        product_ids: [],
+        package_ids: [],
         user_ids: [],
       },
     };
   },
-
+  beforeMount() {
+    this.loadProduct();
+    this.loadPackages();
+  },
   mounted() {
+    this.getForTitle();
     this.now = jmoment().format("YYYY-MM-DD");
     if (Boolean(this.modelId)) {
       this.loadData();
@@ -198,23 +226,27 @@ export default {
     submit() {
       this.loading = true;
 
-      if (this.form.public == "yes") {
-        this.form.public = true
-
-      }else{
-        this.form.public = false
+      if (this.form.is_public == "yes") {
+        this.form.is_public = true;
+      } else {
+        this.form.is_public = false;
       }
-      if (this.form.code.length > 7) {
-        this.loading = false;
-        return this.$toast.error("کد تخفیف نمیتواند بیشتر از 7 حرف باشد");
+
+      if (this.form.all_products == "yes") {
+        this.form.all_products = true;
+      } else {
+        this.form.all_products = false;
+      }
+      if (this.user.length > 0) {
+        this.user.map((x) => {
+          this.form.user_ids.push(x.id);
+        });
       }
       let form = { ...this.form };
       if (this.modelId) {
         form["id"] = this.modelId;
       }
-      let url = this.modelId
-        ? "/discount-code/update"
-        : "/discount-code/insert";
+      let url = this.modelId ? "/coupon/update" : "/coupon/insert";
       this.$reqApi(url, form)
         .then((res) => {
           this.loading = false;
@@ -227,28 +259,14 @@ export default {
     },
     loadData() {
       this.loading = true;
-      this.$reqApi("/discount-code/show", { id: this.modelId })
+      this.$reqApi("/coupon/show", { id: this.modelId })
         .then((res) => {
-          if (Boolean(res.data.for_title)) {
-            this.form.for_title = res.data.for_title.toString();
+          let data = res.model;
+          for (let i in data) {
+            this.form[i] = data[i];
           }
-          this.form.type = res.data.type;
-          this.form.send_in = res.data.send_in;
-          this.form.code = res.data.code;
-          this.form.start_at = res.data.start_at;
-          this.form.end_at = res.data.end_at;
-          this.form.insurance_id = res.data.insurance_id;
-          this.form.status = res.data.status;
-          this.form.company_id = res.data.company_id;
-          this.form.amount = res.data.amount;
-          this.form.percent = res.data.percent;
-          this.form.coupon_usage_limit = res.data.coupon_usage_limit;
-          this.form.user_usage_limit = res.data.user_usage_limit;
-          this.form.description = res.data.description;
-          this.form.sort = res.data.sort;
-          this.form.public = res.data.public;
-          this.form.contract_ids = res.data.contracts.map((x) => x.id);
-          this.form.user_ids = res.data.users.map((x) => x.id);
+          this.form.all_products = Boolean(data.all_products) ? "yes" : "no";
+          this.form.is_public = Boolean(data.is_public) ? "yes" : "no";
           this.loading = false;
         })
         .catch((err) => {
@@ -270,64 +288,74 @@ export default {
           this.loading = false;
         });
     },
-    loadInsurance() {
+    getForTitle() {
       this.loading = true;
-      this.$reqApi("/insurance", { row_number: 2000 })
+      let filters = {
+        key: {
+          op: "=",
+          value: "for_discount",
+        },
+      };
+      let items = [];
+      this.$reqApi("/setting", { row_number: 2000, filters: filters })
         .then(async (response) => {
-          this.insurance = response.model.data.map((x) => ({
-            text: x.fa_name,
-            value: x.id,
-          }));
-          this.loading = false;
-        })
-        .catch((error) => {
-          this.loading = false;
-        });
-    },
-    loadCompany() {
-      this.loading = true;
-      this.$reqApi(`/company`, { row_number: 2000 })
-        .then(async (response) => {
-          this.company = response.model.data.map((x) => ({
-            text: "بیمه " + x.fa_name,
-            value: x.id,
-          }));
-          this.loading = false;
-        })
-        .catch((error) => {
-          this.loading = false;
-        });
-    },
-    loadUser() {
-      this.loading = true;
-      this.$reqApi("/user", { row_number: 2000 })
-        .then(async (response) => {
-          this.users = response.model.data.map((x) => {
-            let text = "";
-            if (x.first_name) {
-              if (x.last_name) {
-                text = x.first_name + " " + x.last_name;
-              } else {
-                text = x.first_name;
-              }
-            } else {
-              if (x.last_name) {
-                text = x.last_name;
-              } else {
-                text = x.username;
-              }
-            }
-            return {
-              text: text,
+          for (let i = 0; i < response.model.data.length; i++) {
+            const x = response.model.data[i];
+            items.push({
+              text: x.value,
               value: x.id,
-            };
-          });
+            });
+          }
+          this.for_title_texts = items;
           this.loading = false;
         })
         .catch((error) => {
           this.loading = false;
         });
     },
+    loadProduct() {
+      this.load_item = true;
+      this.$reqApi("/product/low-search", { row_number: 50000 })
+        .then((response) => {
+          let items = [];
+          for (let index = 0; index < response.model.data.length; index++) {
+            const x = response.model.data[index];
+            items.push({
+              text: x.name,
+              value: x.id,
+            });
+          }
+          this.products = items;
+          this.load_item = false;
+        })
+        .catch((error) => {
+          this.load_item = false;
+        });
+    },
+    loadPackages() {
+      let filter = {
+        type: {
+          op: "=",
+          value: "Package",
+        },
+      };
+      this.$reqApi("/package", { filters: filter, row_number: 2000 })
+        .then((res) => {
+          let data = res.model.data;
+          let items = [];
+          for (let index = 0; index < data.length; index++) {
+            const x = data[index];
+            items.push({
+              text: x.name,
+              value: x.id,
+            });
+          }
+
+          this.package = items;
+        })
+        .catch((error) => {});
+    },
+
     back() {
       if (window.history.length > 2) {
         this.$router.back();

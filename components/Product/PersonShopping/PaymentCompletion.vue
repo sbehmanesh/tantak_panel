@@ -1,8 +1,9 @@
 <template>
   <v-dialog v-model="dialog" persistent max-width="650">
-    <v-card style="overflow: hidden !important" class="pa-5">
+    <v-card style="overflow: hidden !important" class="pa-2">
+      <div class="card-style pa-4 pt-7">
       <v-row class="d-flex align-center px-3">
-        <h1 class="font_16"> تکیمل پرداخت سفارش</h1>
+        <h1 class="font_16"> تکمیل پرداخت سفارش</h1>
         <v-spacer></v-spacer>
         <v-btn icon @click="closeDialog">
           <v-icon> close </v-icon>
@@ -71,6 +72,37 @@
             </v-chip>
           </v-card>
         </v-col>
+        <div class="d-flex justify-center">
+            
+            <v-col cols="6">
+              <v-card
+                class="elevation-0 text-center pa-2"
+                style="border-top: 3px solid teal"
+                outlined
+              >
+                <h1 class="font_13"> قیمت اصلی سبد خرید</h1>
+                <br>
+
+                <v-chip>
+                  <h1 class="font_11">ریال{{ $price(wallet.original_price) }}</h1>
+                </v-chip>
+              </v-card>
+            </v-col> 
+            
+            <v-col cols="6">
+              <v-card
+                class="elevation-0 text-center pa-2"
+                style="border-top: 3px solid teal"
+                outlined
+              >
+                <h1 class="font_13"> مجموع کل تخفیفات</h1>
+                <br>
+                <v-chip>
+                  <h1 class="font_11">ریال{{ $price(wallet.off_amount) }}</h1>
+                </v-chip>
+              </v-card>
+            </v-col>
+          </div>
         <v-row class="d-flex justify-center pa-4">
           <v-col cols="12" md="2" class="ma-2">
             <amp-button
@@ -85,6 +117,7 @@
         
         </v-row>
       </div>
+    </div>
     </v-card>
   </v-dialog>
 </template>
@@ -142,3 +175,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+.card-style{
+  border: 9px double #919191 !important;
+}
+</style>

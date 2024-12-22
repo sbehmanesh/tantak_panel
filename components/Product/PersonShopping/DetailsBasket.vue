@@ -100,50 +100,52 @@
                   </v-row>
                 </h1>
               </v-card-text>
-              <v-col cols="12" v-if="Boolean(x.returned)">
-                <v-divider></v-divider>
-                <v-divider></v-divider>
-                <v-row class="align-center mt-2">
-                  <v-col cols="3">
-                    <amp-select
-                      text=" نوع مرجوعیت"
-                      :items="$store.state.static.reterned_type"
-                      v-model="x.returned_type"
-                    />
-                  </v-col>
-                  <v-col cols="2">
-                    <amp-input
-                      text="تعداد"
-                      v-model="x.new_count"
-                      rules="number"
-                      cClass="ltr-item"
-                    />
-                  </v-col>
-                  <v-col cols>
-                    <amp-textarea
-                      text=" توضیحات"
-                      :rows="1"
-                      v-model="x.description"
-                    />
-                  </v-col>
-                  <v-col cols="12">
-                    <amp-button
-                      text="ثبت  مرجوعی"
-                      height="40"
-                      block
-                      icon="free_cancellation"
-                      color="red lighten-1"
-                      :disabled="
-                        !Boolean(x.new_count) ||
-                        !Boolean(x.returned_type) ||
-                        !Boolean(x.description)
-                      "
-                      @click="submitReterned(x)"
-                      class="ma-1"
-                    />
-                  </v-col>
-                </v-row>
-              </v-col>
+              <v-card v-if="Boolean(x.returned)"  class="red lighten-5 elevation-3" outlined>
+                <v-col cols="12"  >
+             
+             <v-row class="align-center mt-2 ">
+               <v-col cols="3">
+                 <amp-select
+                   text=" نوع مرجوعیت"
+                   :items="$store.state.static.reterned_type"
+                   v-model="x.returned_type"
+                 />
+               </v-col>
+               <v-col cols="2">
+                 <amp-input
+                   text="تعداد"
+                   v-model="x.new_count"
+                   rules="number"
+                   cClass="ltr-item"
+                 />
+               </v-col>
+               <v-col cols>
+                 <amp-textarea
+                   text=" توضیحات"
+                   :rows="1"
+                   v-model="x.description"
+                 />
+               </v-col>
+               <v-col cols="12">
+                 <amp-button
+                   text="ثبت  مرجوعی"
+                   height="40"
+                   block
+                   icon="free_cancellation"
+                   color="red lighten-1"
+                   :disabled="
+                     !Boolean(x.new_count) ||
+                     !Boolean(x.returned_type) ||
+                     !Boolean(x.description)
+                   "
+                   @click="submitReterned(x)"
+                   class="ma-1"
+                 />
+               </v-col>
+             </v-row>
+           </v-col>
+              </v-card>
+            
             </v-card>
           </v-window-item>
 

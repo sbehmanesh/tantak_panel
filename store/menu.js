@@ -138,12 +138,12 @@ let mnue_tree = [
     access: "basket/sale_agency_seller_insert_basket",
     route: "/in-person-shopping",
   }, 
-  //  {
-  //   id: 2005687564,
-  //   name: "کد های تخفیف",
-  //   access: "*",
-  //   route: "/discount-code",
-  // },
+   {
+    id: 2005687564,
+    name: "کد های تخفیف",
+    access: "*",
+    route: "/discount-code",
+  },
   {
     id: 13,
     name: "محصولات",

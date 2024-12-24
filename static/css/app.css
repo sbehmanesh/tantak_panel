@@ -19,6 +19,9 @@
   border-radius: 1px;
   border-radius: 7px !important;
 }
+.copun-class {
+  text-decoration: line-through rgb(255, 0, 0) !important;
+}
 
 .vpd-column-content::-webkit-scrollbar-track {
   box-shadow: inset 0 0 5px grey;

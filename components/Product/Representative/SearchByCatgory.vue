@@ -11,11 +11,11 @@
         text="مشاهده همه"
         height="38"
         block
-        color="primary "
+        color="blue-grey "
         @click="seeAll"
         class="ma-1"
         :loading="loading"
-        :disabled="loading || !Boolean(search)"
+        :disabled="loading"
       />
     </v-col>
   </v-row>
@@ -78,6 +78,7 @@ export default {
     seeAll() {
       this.search = "";
       this.type = "all";
+      this.$emit("seeAll")
     },
   },
 };

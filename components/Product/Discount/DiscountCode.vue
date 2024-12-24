@@ -106,11 +106,21 @@
           rules="require"
           v-model="form.package_ids"
         />
+        <amp-autocomplete
+          @click="show_dialog = true"
+          v-if="form.send_for == 'category'"
+          text="دسته بندی های انتخاب شده"
+          multiple
+          :items="catgoury_items"
+          rules="require"
+          v-model="form.category_ids"
+        />
       </v-col>
       <v-col cols="12" md="3">
         <amp-input
-          text="حد اکثر استفاده برای کاربر"
-          rules="number,require"
+          text="  سقف استفاده برای کاربر (ریال)"
+          rules="require,price"
+          is-price
           v-model="form.user_usage_limit"
           cClass="ltr-item"
         />
@@ -136,6 +146,14 @@
       <v-col cols="12" md="12">
         <amp-textarea :rows="3" text="توضیحات" v-model="form.description" />
       </v-col>
+      <!-- <SelectCategorey
+        :dialog="show_dialog"
+        v-if="show_dialog"
+        @closeDialog="show_dialog = false"
+        @catgoryIds="form.category_ids = $event"
+        :data="form.category_ids"
+        :categorey-items="catgoury_items"
+      /> -->
     </v-row>
     <v-row class="ma-1 d-flex justify-center">
       <amp-button
@@ -160,10 +178,12 @@
 <script>
 let jmoment = require("moment");
 import UserSelectForm from "@/components/User/UserSelectForm";
+// import SelectCategorey from "@/components/Product/Discount/SelectCategorey.vue";
 
 export default {
   components: {
     UserSelectForm,
+    // SelectCategorey,
   },
 
   props: {
@@ -183,13 +203,15 @@ export default {
       send_for_items: [
         { text: "محصولات", value: "product" },
         { text: "پکیج ها", value: "package" },
+        { text: "بر اساس دسته بندی", value: "category" },
       ],
       user: [],
       for_title_texts: [],
       products: [],
       package: [],
+      catgoury_items: [],
       users: [],
-      show_insurance_type: false,
+      show_dialog: false,
       now: "",
       form: {
         for_title: "",
@@ -206,6 +228,7 @@ export default {
         sort: "",
         is_public: "yes",
         product_ids: [],
+        category_ids: [],
         package_ids: [],
         user_ids: [],
       },
@@ -214,6 +237,7 @@ export default {
   beforeMount() {
     this.loadProduct();
     this.loadPackages();
+    this.loadCategory();
   },
   mounted() {
     this.getForTitle();
@@ -221,6 +245,11 @@ export default {
     if (Boolean(this.modelId)) {
       this.loadData();
     }
+  },
+  watch: {
+    "form.send_for"() {
+      this.show_dialog = this.form.send_for == "category" ? true : false;
+    },
   },
   methods: {
     submit() {
@@ -259,7 +288,7 @@ export default {
     },
     loadData() {
       this.loading = true;
-      this.$reqApi("/coupon/show", { id: this.modelId })
+      this.$reqApi("/coupon/show", { id: this.modelId, with_user: true })
         .then((res) => {
           let data = res.model;
           for (let i in data) {
@@ -267,6 +296,19 @@ export default {
           }
           this.form.all_products = Boolean(data.all_products) ? "yes" : "no";
           this.form.is_public = Boolean(data.is_public) ? "yes" : "no";
+          this.user =
+            data.users.length > 0 ? data.users.map((x) => x.user) : [];
+          data.couponables.map((y) => {
+            if (y.couponable_type == "products") {
+              this.form.product_ids.push(y.couponable_id);
+            } else if (y.couponable_type == "packages") {
+              this.form.package_ids.push(y.couponable_id);
+            } else if (y.couponable_type == "categories") {
+              this.form.category_ids.push(y.couponable_id);
+            }
+          });
+          console.log("  this.form.product_ids? ", this.form.product_ids);
+
           this.loading = false;
         })
         .catch((err) => {
@@ -326,6 +368,27 @@ export default {
             });
           }
           this.products = items;
+          this.load_item = false;
+        })
+        .catch((error) => {
+          this.load_item = false;
+        });
+    },
+
+    loadCategory() {
+      this.load_item = true;
+      this.$reqApi("/category", { row_number: 50000 })
+        .then((response) => {
+          let items = [];
+          for (let index = 0; index < response.model.data.length; index++) {
+            const x = response.model.data[index];
+            items.push({
+              text: x.name,
+              value: x.id,
+              parent: x.parent_id,
+            });
+          }
+          this.catgoury_items = items;
           this.load_item = false;
         })
         .catch((error) => {

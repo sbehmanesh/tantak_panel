@@ -329,7 +329,7 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
 .hover-class:hover {
   color: rgb(253, 81, 2);
   cursor: pointer;

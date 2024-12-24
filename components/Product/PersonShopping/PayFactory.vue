@@ -33,8 +33,11 @@
       </v-card>
     </v-col>
     <v-col cols="12" class="d-flex align-center justify-center mt-5">
-      <v-col cols="6">
+      <v-col cols="5">
         <amp-select text="نوع پرداخت" :items="pay_type" v-model="kind_set" />
+      </v-col>
+      <v-col cols="5">
+        <amp-input v-model="coupon" text="اعمال کد تخفیف" cClass="ltr-item" />
       </v-col>
       <amp-button
         text="تایید"
@@ -96,40 +99,57 @@
                   <h1 class="font_11">ریال{{ $price(wallet.credit_wallt) }}</h1>
                 </v-chip>
               </v-card>
-            </v-col>         
-            
-            
-            <div class="d-flex justify-center">
-            
-            <v-col cols="6">
-              <v-card
-                class="elevation-0 text-center pa-2"
-                style="border-top: 3px solid teal"
-                outlined
-              >
-                <h1 class="font_13"> قیمت اصلی سبد خرید</h1>
-                <br>
-
-                <v-chip>
-                  <h1 class="font_11">ریال{{ $price(wallet.original_price) }}</h1>
-                </v-chip>
-              </v-card>
-            </v-col> 
-            
-            <v-col cols="6">
-              <v-card
-                class="elevation-0 text-center pa-2"
-                style="border-top: 3px solid teal"
-                outlined
-              >
-                <h1 class="font_13"> مجموع کل تخفیفات</h1>
-                <br>
-                <v-chip>
-                  <h1 class="font_11">ریال{{ $price(wallet.off_amount) }}</h1>
-                </v-chip>
-              </v-card>
             </v-col>
-          </div>
+
+            <div class="d-flex justify-center">
+              <v-col cols="4">
+                <v-card
+                  class="elevation-0 text-center pa-2"
+                  style="border-top: 3px solid teal"
+                  outlined
+                >
+                  <h1 class="font_13">قیمت اصلی سبد خرید</h1>
+                  <br />
+
+                  <v-chip>
+                    <h1 class="font_11">
+                      ریال{{ $price(wallet.original_price) }}
+                    </h1>
+                  </v-chip>
+                </v-card>
+              </v-col>
+              <v-col cols="4">
+                <v-card
+                  class="elevation-0 text-center pa-2"
+                  style="border-top: 3px solid teal"
+                  outlined
+                >
+                  <h1 class="font_12">مقدار استفاده شده از کد تخفیف</h1>
+                  <br />
+
+                  <v-chip>
+                    <h1 class="font_11">
+                      ریال{{ $price(wallet.amount_coupon) }}
+                    </h1>
+                  </v-chip>
+                </v-card>
+              </v-col>
+
+              <v-col cols="4">
+                <v-card
+                  class="elevation-0 text-center pa-2"
+                  style="border-top: 3px solid teal"
+                  outlined
+                >
+                  <h1 class="font_13">مجموع کل تخفیفات</h1>
+                  <br />
+                  <v-chip>
+                    <h1 class="font_11">ریال{{ $price(wallet.off_amount) }}</h1>
+                  </v-chip>
+                </v-card>
+              </v-col>
+            </div>
+
             <v-row class="d-flex justify-center pa-4">
               <v-col cols="12" md="2" class="ma-2">
                 <amp-button
@@ -184,6 +204,7 @@ export default {
     package: { title: "پکیج ها ", count: 0, price: "" },
     sumb_price: 0,
     kind_set: "naghd",
+    coupon: "",
     loading: false,
     basket_id: "",
     wallet: {},
@@ -201,6 +222,7 @@ export default {
           only_price: only_price_show,
           kind_set: this.kind_set,
           basket_id: this.basket_id,
+          coupon: this.coupon,
         })
           .then((res) => {
             if (Boolean(only_price_show)) {
@@ -212,7 +234,7 @@ export default {
             this.$router.push("/in-person-shopping");
           })
           .catch((err) => {
-          console.log(err);
+            console.log(err);
           });
       }
     },
@@ -279,7 +301,6 @@ export default {
     saveBasket() {
       let find = this.data.find((x) => x.skock < x.count);
       if (Boolean(find)) {
-        
         this.$toast.info(
           "سفارشی بیشتر از موجودی ثبت شده لطفا آن را اصلاح کنید "
         );

@@ -4,7 +4,7 @@
   </div>
 </template>
 <script>
-import DiscountCode from "@/components/Product/DiscountCode.vue";
+import DiscountCode from "~/components/Product/Discount/DiscountCode.vue";
 export default {
   components: { DiscountCode },
   data() {

@@ -5,11 +5,50 @@
         <SearchByCatgory
           @productId="setFilter($event, 'id')"
           @type="setFilter($event, 'type')"
+          @seeAll="seeAll"
         />
+      </v-col>
+      <v-col cols="7" class="d-flex justify-center">
+        <v-expansion-panels>
+          <v-expansion-panel class="elevation-2">
+            <v-expansion-panel-header expand-icon="qr_code">
+              <h1>جستوجو با استفاده از بارکد</h1>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <v-row class="align-center justify-center">
+                <v-col cols="6">
+                  <amp-input
+                    text="بارکد مورد نظر را وارد کنید"
+                    v-model="barcode"
+                    cClass="ltr-item"
+                  />
+                </v-col>
+                <v-col cols="6" class="d-flex align-center">
+                  <amp-button
+                  text="جستوجو در محصولات "
+                  @click="searchByBarcode('full_barcode')"
+                  color="blue-grey"
+                  class="mx-4"
+                  height="38"
+                ></amp-button>
+
+                <amp-button
+                  text="جستوجو در پکیج ها "
+                  @click="searchByBarcode('package_number')"
+                  color="blue-grey"
+                  height="38"
+                ></amp-button>
+                </v-col>
+
+     
+              </v-row>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12" class="pa-0">
+      <v-col cols="12" class="pa-0 text-center">
         <v-col cols="12" md="4">
           <v-banner single-line>
             <v-row class="align-center pa-4">
@@ -68,12 +107,9 @@ export default {
         { text: "پکیج ", key: "packages", icon: "bento" },
       ],
       skock: "",
-      continue_form: false,
-      show_history: false,
       varcome_excel: false,
       rotation: false,
       loading: false,
-      actions_list: [],
       total_data: [],
       extra_btn: [],
       headers: [],
@@ -85,6 +121,7 @@ export default {
       overlay: false,
       product: { product_id: "" },
       root_body: "",
+      barcode: "",
       product_var_id: "",
       valid: true,
       form: {
@@ -122,6 +159,21 @@ export default {
     this.$store.dispatch("setPageTitle", this.title);
 
     this.headers = [
+      {
+        text: "",
+        width: "10px",
+        type: "checkbox",
+        disableSort: true,
+        filterable: false,
+        fun: (body) => {},
+        show_box: (body) => {
+          if (body.skock != "0") {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
       {
         text: "نوع ",
         disableSort: true,
@@ -169,24 +221,63 @@ export default {
           }
         },
       },
-      { text: "", value: "", disableSort: true, filterable: false },
-
       {
-        text: "",
-        width: "10px",
-        type: "checkbox",
-        disableSort: true,
-        filterable: false,
-        fun: (body) => {
-        },
-        show_box: (body) => {
-          if (body.skock != "0") {
-            return true;
+        text: "قیمت    ",
+        value: (body) => {
+          let price = "";
+          let discount_price = "";
+          if (
+            body.only_product_var &&
+            Boolean(body.only_product_var) &&
+            Boolean(body.only_product_var.product.special_discounts) &&
+            body.only_product_var.product.special_discounts.length > 0
+          ) {
+            price = Boolean(body.only_product_var.price)
+              ? body.only_product_var.price
+              : body.only_product_var.product.base_price;
+            discount_price =
+              body.only_product_var.product.special_discounts[0]
+                .type_discount == "amount"
+                ? +Number(price) -
+                  +Number(
+                    body.only_product_var.product.special_discounts[0].price_off
+                  )
+                : price -
+                  (body.only_product_var.product.special_discounts[0]
+                    .price_off /
+                    100) *
+                    price;
+            return `
+            <h1 class='mt-2'>
+            <small>
+                ریال  ${this.$price(discount_price)}
+              </small>
+             <br/>
+              <span class="copun-class grey--text">
+              ریال  ${this.$price(price)}
+                </span>
+              </h1>
+            `;
           } else {
-            return false;
+            let price = "";
+            if (Boolean(body.only_product_var)) {
+              price = Boolean(body.only_product_var.price)
+                ? body.only_product_var.price
+                : body.only_product_var.product.base_price;
+            } else {
+              price = body.package.price;
+            }
+            return ` <h1 class='mt-2'>
+              <small  >
+              ریال  ${this.$price(price)}
+                </small>
+              </h1>`;
           }
         },
+        disableSort: true,
+        filterable: false,
       },
+
       {
         text: "موجودی",
         value: (body) => {
@@ -215,42 +306,7 @@ export default {
         this.total_data = [...this.total_data, ...event.model.data];
       }
     },
-    //     submit() {
-    //       this.loading = true;
-    //       let items = [];
-    //       for (let i = 0; i < this.products_list.length; i++) {
-    //         const x = this.products_list[i];
-    //         items.push({
-    //           section_id: x.section_id,
-    //           section_name: x.section_name,
-    //           skock: x.skock,
-    //         });
-    //       }
-    //       let form = { ...this.form };
-    //       form.sale_agency_id = this.$store.state.auth.user.sale_agency_id;
-    //       form.array_section = items;
-    //       let url = this.update
-    //         ? "sale-agency-stock/update"
-    //         : "sale-agency-stock/insert-manager";
-    //       this.$reqApi(url, form)
-    //         .then((response) => {
-    //           this.step == 1;
-    //           this.$toast.success(
-    //             "عملیات با موفقیت انجام شده و درخواست شما با موفقیت ثبت شد"
-    //           );
-    //           this.loading = false;
-    //           this.update = false;
-    //           this.$refs.Refresh.getDataFromApi();
-    //           this.canceld();
-    //           this.products_list = [];
-    //         })
-    //         .catch((err) => {
-    //           this.loading = false;
-    //           this.update = false;
-    //           this.canceld();
-    //           this.continue_form = false;
-    //         });
-    //     },
+
     refresh() {
       this.$refs.ReloadList.getDataFromApi();
     },
@@ -268,6 +324,26 @@ export default {
         }
       }
     },
+    searchByBarcode(key) {
+      switch (key) {
+        case "full_barcode":
+          this.filters = {
+            full_barcode: {
+              op: "=",
+              value: this.barcode,
+            },
+          };
+          break;
+        case "package_number":
+          this.filters = {
+            package_number: {
+              op: "=",
+              value: this.barcode,
+            },
+          };
+          break;
+      }
+    },
     setlist() {
       this.selected_list.push(this.selected_var);
       this.overlay = false;
@@ -276,6 +352,9 @@ export default {
       if (body.item.skock == "0") {
         return "red lighten-5";
       }
+    },
+    seeAll() {
+      this.filters = {};
     },
   },
 };

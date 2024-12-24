@@ -8,7 +8,7 @@
       createUrl="/discount-code/insert"
       :autoLoad="false"
       autoUpdate="/discount-code"
-      autoDelete="/discount-code/delete"
+      autoDelete="/coupon/delete"
     />
   </div>
 

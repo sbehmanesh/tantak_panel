@@ -109,10 +109,7 @@ export default {
       default: false,
       type: Boolean,
     },
-    catgoryId: {
-      default: "",
-      type: String,
-    },
+
     createdAt: {
       default: "",
       type: String,
@@ -120,6 +117,10 @@ export default {
     catgorysName: {
       default: [],
       type: Array,
+    },
+    catgoryId: {
+      default: "",
+      type: String,
     },
   },
   data() {

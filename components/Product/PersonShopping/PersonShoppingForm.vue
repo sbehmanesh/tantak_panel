@@ -107,11 +107,7 @@ export default {
   },
   data: () => ({
     e1: 1,
-    attrs: {
-      class: "mb-6",
-      boilerplate: true,
-      elevation: 1,
-    },
+  
     kind_set_item: [
       { text: "کارت به کارت", value: "cardToCard" },
       { text: "ارسال لینک", value: "send_pay_link" },

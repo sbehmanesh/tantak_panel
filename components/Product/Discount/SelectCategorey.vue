@@ -189,8 +189,6 @@ export default {
     filters: {},
   }),
   beforeMount() {
-    console.log("Sssss");
-    console.log("Sssss");
 
     this.subCategory();
     this.filters = {
@@ -392,7 +390,6 @@ export default {
       this.$emit("closeDialog");
     },
     loadData() {
-      console.log("y", this.data);
 
       for (let i = 0; i < this.data.length; i++) {
         const x = this.data[i];
@@ -415,7 +412,6 @@ export default {
           text.push(x.text);
           this.findParents(x.parent);
         }
-        console.log("text? " , text);
         
       }
     },

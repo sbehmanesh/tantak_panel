@@ -307,7 +307,6 @@ export default {
               this.form.category_ids.push(y.couponable_id);
             }
           });
-          console.log("  this.form.product_ids? ", this.form.product_ids);
 
           this.loading = false;
         })

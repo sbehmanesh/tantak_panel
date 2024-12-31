@@ -36,15 +36,15 @@ let mnue_tree = [
         name: "کاربران برتر",
         access: "user/root",
         route: "/user/top-user",
-      },  
-       {
+      },
+      {
         id: 56554,
         name: "نمایندگی برتر",
         access: "product_requests/root",
         route: "/user/top-sale-agency",
       },
     ],
-    
+
   },
   {
     id: 618564558145,
@@ -97,6 +97,12 @@ let mnue_tree = [
         name: "اطلاعات داخلی",
         route: "/new-call-center/internal",
       },
+      {
+        id: 7225855,
+        name: "کارکنان  برتر",
+        access: "messages/root",
+        route: "/product/tops/top-personal",
+      }, 
     ],
   },
   {
@@ -137,8 +143,8 @@ let mnue_tree = [
     name: "خرید حضوری",
     access: "basket/sale_agency_seller_insert_basket",
     route: "/in-person-shopping",
-  }, 
-   {
+  },
+  {
     id: 2005687564,
     name: "کد های تخفیف",
     access: "coupons/index",
@@ -171,6 +177,18 @@ let mnue_tree = [
         name: "جعبه  ها",
         access: "packages/root",
         route: "/product/box",
+      },
+      {
+        id: 72278525,
+        name: "محصولات برتر",
+        access: "basket/root",
+        route: "/product/tops/top-product",
+      }, 
+      {
+        id: 722555,
+        name: "پکیج های برتر",
+        access: "basket/root",
+        route: "/product/tops/top-package",
       },
       {
         id: 40,
@@ -214,7 +232,7 @@ let mnue_tree = [
         access: "setting/index",
         route: "/setting/color-products",
       },
-         {
+      {
         id: 845065212,
         access: "pending_inventories/index",
         name: "محصولات منتظر تایید",
@@ -385,8 +403,8 @@ let mnue_tree = [
         name: "بابت های  کد تخفیف",
         access: "setting/index",
         route: "/setting/for-discount",
-      },     
-       {
+      },
+      {
         id: 19005,
         name: "بابت های کیف پول",
         access: "setting/index",
@@ -487,15 +505,15 @@ let mnue_tree = [
         name: "تغییر روزهای چک",
         access: "setting/index",
         route: "/setting/change-check-days",
-      },    
-      
+      },
+
       {
         id: 26123,
         name: "مهلت های برگشت",
         access: "setting/index",
         route: "/setting/deadline-back",
-      },   
-         {
+      },
+      {
         id: 2612213,
         name: "پیام های آماده",
         access: "setting/index",
@@ -503,5 +521,5 @@ let mnue_tree = [
       },
     ],
   },
- 
+
 ];

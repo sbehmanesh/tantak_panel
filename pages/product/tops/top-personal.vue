@@ -55,15 +55,14 @@ export default {
     this.$store.dispatch("setting/getRoleServer");
     this.headers = [
       {
-        text: "نام ",
+        text: "نام و نام خانوادگی کاربر",
         value: "name",
         filtrabel: false,
         disabled: true,
       },
       {
-        text: "مبلغ (ریال)",
-        value: "price",
-        type: "price",
+        text: "تعداد",
+        value: "count",
         filtrabel: false,
         disabled: true,
       },
@@ -71,8 +70,8 @@ export default {
       {
         filtrabel: false,
         disabled: true,
-        text: "تعداد",
-        value: "count",
+        text: "نقش",
+        value: "role_name",
       },
     ];
   },
@@ -88,13 +87,37 @@ export default {
           const data = res.model;
           for (let i = 0; i < data.length; i++) {
             const x = data[i];
+            let operator = "";
+            if (
+              Boolean(x.operator) &&
+              Boolean(x.operator.first_name) &&
+              Boolean(x.operator.last_name)
+            ) {
+              operator = `${x.operator.first_name} ${x.operator.last_name}`;
+            } else {
+              operator = "--";
+            }
 
+            let supervisor = "";
+            if (
+              Boolean(x.supervisor) &&
+              Boolean(x.supervisor.first_name) &&
+              Boolean(x.supervisor.last_name)
+            ) {
+              supervisor = `${x.supervisor.first_name} ${x.supervisor.last_name}`;
+            } else {
+              supervisor = "--";
+            }
+            let user = Boolean(operator) ? operator : supervisor;
+            let role_name  =  Boolean(operator) ? 'فروشنده'  : ' مرکز تماس'
             items.push({
-              name: x.pacakge.name,
-              price: x.pacakge.price,
+              name: user,
               count: x.count,
+              role_name:role_name
+         
             });
           }
+          this.top_users = items
         })
         .catch((err) => {});
       this.show_tabel = true;

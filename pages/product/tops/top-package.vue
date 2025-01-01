@@ -44,14 +44,14 @@ export default {
     this.$store.dispatch("setting/getRoleServer");
     this.headers = [
       {
-        text: "نام و نام خانوادگی کاربر",
+        text: "نام پکیج",
         value: "name",
         filtrabel: false,
         disabled: true,
       },
       {
         text: "مبلغ (ریال)",
-        value: "total",
+        value: "price",
         type: "price",
         filtrabel: false,
         disabled: true,
@@ -60,8 +60,8 @@ export default {
       {
         filtrabel: false,
         disabled: true,
-        text: "نقش",
-        value: "roles",
+        text: "تعداد",
+        value: "count",
       },
     ];
   },
@@ -76,28 +76,15 @@ export default {
           const data = res.model;
           for (let i = 0; i < data.length; i++) {
             const x = data[i];
-            let user = "";
-            if (
-              Boolean(x.user) &&
-              Boolean(x.user.first_name) &&
-              Boolean(x.user.last_name)
-            ) {
-              user = `${x.user.first_name} ${x.user.last_name}`;
-            } else {
-              user = "--";
-            }
+
             items.push({
-              name: user,
-              total: x.total,
-              roles: Boolean(x.user) && Array.isArray(x.user.roles)
-                ? x.user.roles.map((m) => m.name).join(" | ")
-                : "",
+              name: x.pacakge.name,
+              price: x.pacakge.price,
+              count: x.count,
             });
           }
           
-          this.top_users = items.sort((a, b) => {
-            a.total - b.total;
-          });
+       
         })
         .catch((err) => {});
       this.show_tabel = true;

@@ -12,7 +12,7 @@
           text="تایید"
           icon="search"
           height="39"
-          :disabled="!Boolean(start_at) && !Boolean(end_at)"
+          :disabled="!Boolean(start_at) || !Boolean(end_at)"
           @click="setFilters(start_at, end_at)"
         />
       </v-col>
@@ -20,17 +20,18 @@
     <BaseTable
       v-if="show_tabel"
       localData
-      :dataArray="top_users"
+      :dataArray="top_products"
       :headers="headers"
     />
   </div>
 </template>
 <script>
+
 let jmoment = require("moment");
 export default {
   data: () => ({
     headers: [],
-    top_users: [],
+    top_products: [],
     start_at: "",
     end_at: "",
     now: "",
@@ -44,14 +45,14 @@ export default {
     this.$store.dispatch("setting/getRoleServer");
     this.headers = [
       {
-        text: "نام و نام خانوادگی کاربر",
+        text: " نام محصول ",
         value: "name",
         filtrabel: false,
         disabled: true,
       },
       {
-        text: "مبلغ (ریال)",
-        value: "total",
+        text: "قیمت پایه (ریال)",
+        value: "price",
         type: "price",
         filtrabel: false,
         disabled: true,
@@ -60,8 +61,8 @@ export default {
       {
         filtrabel: false,
         disabled: true,
-        text: "نقش",
-        value: "roles",
+        text: "تعداد",
+        value: "count",
       },
     ];
   },
@@ -74,30 +75,18 @@ export default {
         .then((res) => {
           let items = [];
           const data = res.model;
+
+          console.log("sss >> ", data);
           for (let i = 0; i < data.length; i++) {
             const x = data[i];
-            let user = "";
-            if (
-              Boolean(x.user) &&
-              Boolean(x.user.first_name) &&
-              Boolean(x.user.last_name)
-            ) {
-              user = `${x.user.first_name} ${x.user.last_name}`;
-            } else {
-              user = "--";
-            }
             items.push({
-              name: user,
-              total: x.total,
-              roles: Boolean(x.user) && Array.isArray(x.user.roles)
-                ? x.user.roles.map((m) => m.name).join(" | ")
-                : "",
+              count: x.count,
+              price: x.product.base_price,
+              name: x.product.name,
             });
           }
+          this.top_products = items
           
-          this.top_users = items.sort((a, b) => {
-            a.total - b.total;
-          });
         })
         .catch((err) => {});
       this.show_tabel = true;

@@ -169,6 +169,7 @@
         <amp-textarea :rows="3" text="توضیحات" v-model="form.description" />
       </v-col>
       <SelectCategorey
+        title-card=" اعمال کد تخفیف بر اساس دسته بندی"
         :dialog="show_dialog"
         v-if="show_dialog"
         @closeDialog="show_dialog = false"

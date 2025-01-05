@@ -3,7 +3,9 @@
     <v-dialog v-model="dialog" persistent fullscreen>
       <v-card>
         <div class="primary white--text pa-4 d-flex align-center">
-          <h1>اعمال کد تخفیف بر اساس دسته بندی</h1>
+          <h1>
+          {{ titleCard }}
+           </h1>
           <v-spacer></v-spacer>
           <v-btn text color="white" @click="closeList">
             <v-icon> close </v-icon>
@@ -171,7 +173,10 @@ import CategoryCatalogDialog from "~/components/Product/Catalog/CategoryCatalogD
 export default {
   components: { CategoryCatalogDialog },
   props: {
-    dialog: {
+    titleCard: {
+      default: "",
+      type: String,
+    },   dialog: {
       default: false,
       type: Boolean,
     },
@@ -187,7 +192,7 @@ export default {
   data: () => ({
     headers: [],
     btn_actions: [],
-    title: "دسته بندی محصولات",
+
     selected_item: [],
     removeDialog: false,
     show_catgory_list: false,

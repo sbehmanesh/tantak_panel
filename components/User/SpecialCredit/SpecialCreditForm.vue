@@ -7,7 +7,7 @@
   >
     <v-card :disabled="Boolean(loading)" class="elevation-0">
       <v-row class="ma-2">
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="4">
           <amp-input
             text="میزان تومانی اعتبار"
             v-model="form.price"
@@ -16,7 +16,7 @@
             cClass="ltr-item"
           />
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="4">
           <amp-select
             text="بابت"
             :items="reason"
@@ -24,14 +24,36 @@
             v-model="form.reason"
           />
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="4">
           <amp-jdate
             text=" تاریخ شروع "
             rules="require"
             v-model="form.start_at"
           />
         </v-col>
-        <v-col cols="12" md="3">
+
+        <v-col cols="12" md="4" class="d-flex align-center">
+          <v-col cols="10" class="pa-0">
+            <amp-autocomplete
+              :disabled="true"
+              text="دسته بندی های انتخاب شده"
+              multiple
+              :items="catgoury_items"
+              rules="require"
+              v-model="category_ids"
+            />
+          </v-col>
+          <v-col cols="2" class="pa-0 mt-1">
+            <amp-button
+              block
+              height="38"
+              @click="show_dialog = true"
+              :text="category_ids.length > 0 ? 'ویرایش' : 'ثبت'"
+              color="blue-grey"
+            />
+          </v-col>
+        </v-col>
+        <v-col cols="12" md="4">
           <amp-autocomplete
             text="محصولات"
             multiple
@@ -41,7 +63,7 @@
           />
         </v-col>
 
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="4">
           <amp-jdate
             text="حداکثر مهلت استفاده"
             rules="require"
@@ -49,13 +71,21 @@
             v-model="form.end_at"
           />
         </v-col>
-        <v-col cols>
+        <v-col cols="12">
           <amp-textarea :rows="3" text="توضیحات" v-model="form.description" />
         </v-col>
       </v-row>
       <v-row> </v-row>
     </v-card>
-
+    <SelectCategorey
+      title-card="فیلتر کردن محصولات بر اساس دسته بندی"
+      :dialog="show_dialog"
+      v-if="show_dialog"
+      @closeDialog="show_dialog = false"
+      @catgoryIds="category_ids = $event"
+      :data="category_ids"
+      :categorey-items="catgoury_items"
+    />
     <v-row class="ma-1 d-flex justify-center">
       <amp-button
         text="برگشت"
@@ -78,7 +108,12 @@
 
 <script>
 let jmoment = require("moment");
+import SelectCategorey from "@/components/Product/Discount/SelectCategorey.vue";
+
 export default {
+  components: {
+    SelectCategorey,
+  },
   props: {
     modelId: {
       require: false,
@@ -89,12 +124,14 @@ export default {
     return {
       valid: true,
       loading: false,
-
+      show_dialog: false,
       insurance: [],
+      category_ids: [],
       transactions: [],
       send_info_trasnsaction: {},
       products: [],
       reason: [],
+      catgoury_items: [],
       now: "",
       left_over: "",
       total_transaction: "",
@@ -112,6 +149,7 @@ export default {
   },
 
   mounted() {
+    this.loadCategory();
     this.getReasons();
     this.loadProduct();
     if (Boolean(this.$route.query.id)) {
@@ -140,6 +178,27 @@ export default {
         })
         .catch((err) => {
           this.loading = false;
+        });
+    },
+    loadCategory() {
+      this.load_item = true;
+      this.$reqApi("/category", { row_number: 50000 })
+        .then((response) => {
+          let items = [];
+          for (let index = 0; index < response.model.data.length; index++) {
+            const x = response.model.data[index];
+            items.push({
+              text: x.name,
+              value: x.id,
+              level: x.level,
+              parent: x.parent_id,
+            });
+          }
+          this.catgoury_items = items;
+          this.load_item = false;
+        })
+        .catch((error) => {
+          this.load_item = false;
         });
     },
     loadData() {
@@ -189,6 +248,10 @@ export default {
               value: x.id,
             });
           }
+          items.unshift({
+            text: "همه محصولات",
+            value: "all",
+          });
           this.products = items;
           this.load_item = false;
         })

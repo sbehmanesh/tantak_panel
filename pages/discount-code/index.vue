@@ -2,8 +2,10 @@
   <div>
     <BaseTable
       url="/coupon"
+      ref="baseTabel"
       :headers="headers"
       :filters="filters"
+        :extraBtn="extra_btn"
       :BTNactions="btn_actions"
       createUrl="/discount-code/insert"
       :autoLoad="false"
@@ -15,6 +17,12 @@
       :dialog="show_history"
       :couponId="coupon_id"
       @closeDialog="show_history = false"
+    />   
+     <Excel
+      v-if="add_excel"
+      :dialog="add_excel"
+      @refresh="refresh"
+      @closeDialog="add_excel = false"
     />
   </div>
 
@@ -24,18 +32,22 @@
 </template>
 <script>
 import History from "@/components/Product/Discount/History.vue";
+import Excel from "@/components/Product/Discount/Excel.vue";
 export default {
   components: {
     History,
+    Excel,
   },
   data: () => ({
     headers: [],
     headers_custom: [],
     title: "کدهای تخفیف",
     btn_actions: [],
+    extra_btn: [],
     discount_for: [],
     dialog_log: { show: false, items: null },
     show_history: false,
+    add_excel: false,
     filters: {},
     coupon_id: "",
     items: [
@@ -71,6 +83,26 @@ export default {
             return false;
           }
         },
+      },
+    ];
+       this.extra_btn = [
+
+      {
+        color: "teal",
+        icon: "post_add",
+        text: "افزودن بااکسل",
+        fun: (body) => {
+          this.add_excel = true;
+        },
+        // show_fun: (body) => {
+        //   if (
+        //     Boolean(this.$store.state.auth.action.indexOf("coupons/index") > -1)
+        //   ) {
+        //     return true;
+        //   } else {
+        //     return false;
+        //   }
+        // },
       },
     ];
     this.headers = [
@@ -189,6 +221,7 @@ export default {
         },
       },
     ];
+    
     // this.headers_custom = [
     //   {
     //     text: "فعال شده در",
@@ -338,7 +371,11 @@ export default {
         navigator.clipboard.writeText(coupon);
         this.$toast.success(" کپی شد");
       }
+   
     },
+    refresh(){
+        this.$refs.baseTabel.getDataFromApi()
+      }
   },
 };
 </script>

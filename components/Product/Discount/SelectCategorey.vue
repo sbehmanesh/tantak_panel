@@ -43,7 +43,6 @@
               <v-divider></v-divider>
               <v-divider></v-divider>
               <v-btn @click="saveCategory" block color="btn_color" class="mt-4">
-                <span class="white--text"> اعمال تخفیف برای </span>
                 <span class="mx-2">
                   <span
                     v-for="(x, i) in catgory_catalog"

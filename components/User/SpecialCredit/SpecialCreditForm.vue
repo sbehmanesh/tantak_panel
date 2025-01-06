@@ -17,10 +17,19 @@
           />
         </v-col>
         <v-col cols="12" md="4">
-          <amp-select text="بابت" :items="reason" rules="require" v-model="form.reason" />
+          <amp-select
+            text="بابت"
+            :items="reason"
+            rules="require"
+            v-model="form.reason"
+          />
         </v-col>
         <v-col cols="12" md="4">
-          <amp-jdate text=" تاریخ شروع " rules="require" v-model="form.start_at" />
+          <amp-jdate
+            text=" تاریخ شروع "
+            rules="require"
+            v-model="form.start_at"
+          />
         </v-col>
 
         <v-col cols="12" md="4" class="d-flex align-center">
@@ -175,7 +184,9 @@ export default {
       if (this.modelId) {
         form["id"] = this.modelId;
       }
-      let url = this.modelId ? "/special-amount/update" : "/special-amount/insert";
+      let url = this.modelId
+        ? "/special-amount/update"
+        : "/special-amount/insert";
       this.$reqApi(url, form)
         .then((res) => {
           this.loading = false;
@@ -244,10 +255,14 @@ export default {
 
     loadProduct(filter) {
       this.load_item = true;
+      let filters = {};
       if (filter && Boolean(filter)) {
-        let filters = filter;
+        filters = filter;
       }
-      this.$reqApi("/product/low-search", { row_number: 50000, filters: filters })
+      this.$reqApi("/product/low-search", {
+        row_number: 50000,
+        filters: filters,
+      })
         .then((response) => {
           let items = [];
           for (let index = 0; index < response.model.data.length; index++) {

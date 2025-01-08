@@ -282,19 +282,19 @@ export default {
           let var_3 = "";
 
           if (body.section_name == "ProductVariationCombination") {
-            if (body.product_var && body.product_var.product) {
-              product_name = body.product_var.product.name;
+            if (body.only_product_var && body.only_product_var.product) {
+              product_name = body.only_product_var.product.name;
             }
-            if (body.product_var.variation1) {
-              var_1 = Boolean(body.product_var.variation1.colors)
-                ? body.product_var.variation1.colors
-                : body.product_var.variation1.value;
+            if (body.only_product_var.variation1) {
+              var_1 = Boolean(body.only_product_var.variation1.colors)
+                ? body.only_product_var.variation1.colors
+                : body.only_product_var.variation1.value;
             }
-            if (body.product_var.variation2) {
-              var_2 = body.product_var.variation2.value;
+            if (body.only_product_var.variation2) {
+              var_2 = body.only_product_var.variation2.value;
             }
-            if (body.product_var.variation3) {
-              var_3 = body.product_var.variation3.value;
+            if (body.only_product_var.variation3) {
+              var_3 = body.only_product_var.variation3.value;
             }
             text = `${product_name}  ( ${var_1} - ${var_2} - ${var_3} )`;
             return text;
@@ -370,19 +370,19 @@ export default {
           let var_2 = "";
           let var_3 = "";
           if (body.section_name == "ProductVariationCombination") {
-            if (body.product_var && body.product_var.product) {
-              product_name = body.product_var.product.name;
+            if (body.only_product_var && body.only_product_var.product) {
+              product_name = body.only_product_var.product.name;
             }
-            if (body.product_var.variation1) {
-              var_1 = body.product_var.variation1.codes
-                ? body.product_var.variation1.colors
-                : body.product_var.variation1.value;
+            if (body.only_product_var.variation1) {
+              var_1 = body.only_product_var.variation1.codes
+                ? body.only_product_var.variation1.colors
+                : body.only_product_var.variation1.value;
             }
-            if (body.product_var.variation2) {
-              var_2 = body.product_var.variation2.value;
+            if (body.only_product_var.variation2) {
+              var_2 = body.only_product_var.variation2.value;
             }
-            if (body.product_var.variation3) {
-              var_3 = body.product_var.variation3.value;
+            if (body.only_product_var.variation3) {
+              var_3 = body.only_product_var.variation3.value;
             }
             text = `${product_name}  ( ${var_1} - ${var_2} - ${var_3} )`;
             this.send_prop = text;
@@ -455,20 +455,20 @@ export default {
             this.form[key] = data[key];
           }
           if (data.section_name == "ProductVariationCombination") {
-            this.product.product_id = data.product_var.product_id;
-            if (data.product_var) {
-              product_name = data.product_var.product.name;
+            this.product.product_id = data.only_product_var.product_id;
+            if (data.only_product_var) {
+              product_name = data.only_product_var.product.name;
             }
-            if (data.product_var.variation1) {
-              var_1 = data.product_var.variation1.colors
-                ? data.product_var.variation1.colors
-                : data.product_var.variation1.value;
+            if (data.only_product_var.variation1) {
+              var_1 = data.only_product_var.variation1.colors
+                ? data.only_product_var.variation1.colors
+                : data.only_product_var.variation1.value;
             }
-            if (data.product_var.variation2) {
-              var_2 = data.product_var.variation2.value;
+            if (data.only_product_var.variation2) {
+              var_2 = data.only_product_var.variation2.value;
             }
-            if (data.product_var.variation3) {
-              var_3 = data.product_var.variation3.value;
+            if (data.only_product_var.variation3) {
+              var_3 = data.only_product_var.variation3.value;
             }
             text = `${product_name}  ( ${var_1} - ${var_2} - ${var_3} )`;
           } else {

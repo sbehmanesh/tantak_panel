@@ -1,10 +1,6 @@
 <template>
   <v-dialog v-model="dialog" persistent max-width="800">
-    <v-card
-      style="overflow: hidden !important"
-      class="pa-5"
-      :disabled="loading"
-    >
+    <v-card style="overflow: hidden !important" class="pa-5" :disabled="loading">
       <div class="card-style pa-5">
         <v-row class="d-flex align-center pa-5 mb-4">
           <h1 class="font_18">جزییات سبد خرید</h1>
@@ -62,9 +58,7 @@
               class="pa-3 elevation-1 my-4 card-items"
               outlined
               :style="
-                Boolean(x.returned)
-                  ? 'border-right : 2px solid red !important;'
-                  : ''
+                Boolean(x.returned) ? 'border-right : 2px solid red !important;' : ''
               "
             >
               <v-card-text class="elevation-0" @click="show_dialog(i)">
@@ -74,7 +68,7 @@
 
                   <br />
                   <small>
-                    {{ x.information }} 
+                    {{ x.information }}
                   </small>
                   ( <small> عدد {{ x.number }} </small> )
                 </h1>
@@ -85,19 +79,17 @@
                 </h1>
                 <h1>
                   <small>
-                      بارکد :‌
-                      {{ x.full_barcode }}
-                    </small>
+                    بارکد :‌
+                    {{ x.full_barcode }}
+                  </small>
                 </h1>
                 <h1>
                   <v-row class="justify-space-between pa-3 py-4">
-               
-                    
                     <small> قیمت اصلی:‌ {{ $price(x.base_price) }} ریال </small>
-                    <small class="grey--text">  مقدار تخفیف:‌ {{ $price(x.off_amount) }} ریال </small>
-                    <small>
-                      قیمت پس از تخفیف:‌ {{ $price(x.price) }} ریال
+                    <small class="grey--text">
+                      مقدار تخفیف:‌ {{ $price(x.off_amount) }} ریال
                     </small>
+                    <small> قیمت پس از تخفیف:‌ {{ $price(x.price) }} ریال </small>
 
                     <small>
                       جمع کل :‌
@@ -106,21 +98,20 @@
                   </v-row>
                 </h1>
               </v-card-text>
-              <v-card
-                v-if="Boolean(x.returned)"
-                class=" elevation-3"
-                outlined
-              >
+              <v-card v-if="Boolean(x.returned)" class="elevation-3" outlined>
                 <v-col cols="12">
+                  <h1 v-if="Boolean(selected_name)">
+                     نام محصول / پکیج  جایگزین : {{ selected_name }} 
+                  </h1>
                   <v-row class="align-center mt-2">
-                    <v-col cols="3">
+                    <v-col cols="4">
                       <amp-select
                         text=" نوع مرجوعیت"
                         :items="$store.state.static.reterned_type"
                         v-model="x.returned_type"
                       />
                     </v-col>
-                    <v-col cols="2">
+                    <v-col cols="4">
                       <amp-input
                         text="تعداد"
                         v-model="x.new_count"
@@ -128,8 +119,18 @@
                         cClass="ltr-item"
                       />
                     </v-col>
+                    <v-col cols="4" v-if="x.returned_type == 'replacement'">
+                      <amp-button
+                        text="انتخاب کالا"
+                        block
+                        color="btn_color"
+                        height="38"
+                        @click="show_select = true"
+                      />
+                    </v-col>
                     <v-col cols>
                       <amp-textarea
+                        cols="12"
                         text=" توضیحات"
                         :rows="1"
                         v-model="x.description"
@@ -156,12 +157,14 @@
               </v-card>
             </v-card>
           </v-window-item>
-
+          <SelectItems
+            v-if="show_select"
+            :dialog="show_select"
+            @selectedItem="selectedData($event)"
+            @closeDialog="show_select = false"
+          />
           <v-window-item :value="2">
-            <div
-              class="text-center my-2"
-              v-if="Object.keys(transactions).length > 0"
-            >
+            <div class="text-center my-2" v-if="Object.keys(transactions).length > 0">
               <v-card
                 v-for="(x, i) in transactions.payments"
                 :key="x.id"
@@ -205,9 +208,7 @@
                       {{ x.pay_text }}
                       <small v-if="Boolean(x.paid_date)">
                         ( پرداخت شده در
-                        {{
-                          $toJalali(x.paid_date, "YYYY-MM-DD", "jYYYY/jMM/jDD")
-                        }}
+                        {{ $toJalali(x.paid_date, "YYYY-MM-DD", "jYYYY/jMM/jDD") }}
                         )
                       </small>
                     </h1>
@@ -244,7 +245,9 @@
   </v-dialog>
 </template>
 <script>
+import SelectItems from "@/components/Product/PersonShopping/SelectItems.vue";
 export default {
+  components: { SelectItems },
   props: {
     dialog: {
       type: Boolean,
@@ -263,10 +266,11 @@ export default {
     return {
       items_basket: [],
       check_returned: [],
-
+      selected_name: "",
       valid: true,
       show_item: true,
       loading: false,
+      show_select: false,
       returned_items: false,
       selected_box: {},
       form: {
@@ -309,21 +313,49 @@ export default {
     //     Boolean(x.returned)
     //   );
     // },
+    selectedData(event) {
+      let body = event;
+      let text = "";
+      let product_name = "";
+      let var_1 = "";
+      let var_2 = "";
+      let var_3 = "";
+
+      if (body.section_name == "ProductVariationCombination") {
+        if (body.only_product_var && body.only_product_var.product) {
+          product_name = body.only_product_var.product.name;
+        }
+        if (body.only_product_var.variation1) {
+          var_1 = Boolean(body.only_product_var.variation1.colors)
+            ? body.only_product_var.variation1.colors
+            : body.only_product_var.variation1.value;
+        }
+        if (body.only_product_var.variation2) {
+          var_2 = body.only_product_var.variation2.value;
+        }
+        if (body.only_product_var.variation3) {
+          var_3 = body.only_product_var.variation3.value;
+        }
+        text = `${product_name}  ( ${var_1} - ${var_2} - ${var_3} )`;
+      } else if (body.section_name == "Package") {
+        text = body.package.name;
+      }
+
+      this.selected_name = text;
+    },
     submitReterned(data) {
       this.loading = true;
+      console.log(">>>"  , data);
+      
       if (data.new_count > data.number) {
-        this.$toast.info(
-          "تعداد وارد شده از تعداد  موجودی محصول در سبد خرید بیشتر است"
-        );
+        this.$toast.info("تعداد وارد شده از تعداد  موجودی محصول در سبد خرید بیشتر است");
         this.loading = false;
         return;
       }
 
       let form = {
         basket_id: data.basket_id,
-        section_id: Boolean(data.package_id)
-          ? data.package_id
-          : data.product_varcomb_id,
+        section_id: Boolean(data.package_id) ? data.package_id : data.product_varcomb_id,
         section_name: Boolean(data.package_id)
           ? "Package"
           : "ProductVariationCombination",

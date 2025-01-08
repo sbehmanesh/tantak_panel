@@ -768,7 +768,7 @@ let tiket_status = [
 ];
 let reterned_type = [
   { text: "ناقص", value: "defect" },
-  { text: "تعویض", value: "dissatisfactin" },
+  { text: "تعویض", value: "replacement " },
 ];
 let status_cupon = [
   { text: "فعال", value: "active" },

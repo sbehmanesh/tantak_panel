@@ -5,10 +5,10 @@
         <v-col cols="12" md="6">
           <v-card class="elevation-0 pa-5">
             <v-row dense>
-              <v-col cols="12" md="6">
+              <v-col cols="12" md="4">
                 <amp-input text="عنوان" v-model="form.title" rules="require" />
               </v-col>
-              <v-col cols="12" md="6">
+              <v-col cols="12" md="4">
                 <amp-select
                   text=" وضعیت"
                   rules="require"
@@ -16,7 +16,7 @@
                   :items="$store.state.static.status"
                 />
               </v-col>
-              <v-col cols="12" md="6">
+              <v-col cols="12" md="4">
                 <amp-select
                   text=" نوع تخفیف"
                   rules="require"
@@ -25,7 +25,7 @@
                 />
               </v-col>
 
-              <v-col cols="12" md="6">
+              <v-col cols="12" md="4">
                 <amp-jdate
                   text="تاریخ شروع "
                   :is-number="true"
@@ -34,7 +34,7 @@
                   :min="now"
                 />
               </v-col>
-              <v-col cols="12" md="6">
+              <v-col cols="12" md="4">
                 <amp-jdate
                   text="تاریخ پایان"
                   rules="require"
@@ -43,7 +43,7 @@
                 />
               </v-col>
 
-              <v-col cols="12" md="6">
+              <v-col cols="12" md="4">
                 <amp-input
                   v-if="form.type_discount == 'amount'"
                   text="قیمت پس از تخفیف (ریال)"
@@ -59,15 +59,23 @@
                 />
               </v-col>
 
-              <v-col cols="12" md="6">
+              <v-col cols="12" md="4">
                 <amp-input
                   text=" سقف تعداد استفاده"
                   v-model="form.max_number"
                   cClass="ltr-item"
                   rules="number"
                 />
+              </v-col>        
+               <v-col cols="12" md="4">
+                <amp-input
+                  text=" مقدار محدود استفاده هر فرد"
+                  v-model="form.limit_use"
+                  cClass="ltr-item"
+                   rules="number"
+                />
               </v-col>
-              <v-col cols="12" md="6">
+              <v-col cols="12" md="4">
                 <amp-input
                   text="ترتیب"
                   v-model="form.sort"
@@ -77,7 +85,7 @@
               </v-col>
               <v-col cols>
                 <amp-textarea
-                  :rows="1"
+                  :rows="3"
                   text="توضیحات"
                   v-model="form.description"
                 />
@@ -219,6 +227,7 @@ export default {
       start_at: "",
       price_off: "",
       product_id: "",
+      limit_use: "",
       description: "",
       type_discount: "",
       off_sale_all: "yes",

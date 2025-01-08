@@ -74,6 +74,15 @@
         />
       </v-col>
       <v-col cols="12" md="4">
+        <amp-input
+          rules="number,require"
+          text="حداقل خرید  (ریال)"
+          v-model="form.amount_minimum_use"
+          cClass="ltr-item"
+          is-price
+        />
+      </v-col>
+      <v-col cols="12" md="4">
         <amp-select
           text="قابل استفاده برای تمامی محصولات (پکیج و محصولات)"
           :items="$store.state.static.bool_en"
@@ -246,6 +255,7 @@ export default {
         status: "active",
         value: "",
         coupon_usage_limit: "",
+        amount_minimum_use: "",
         user_usage_limit: "",
         description: "",
         sort: "",

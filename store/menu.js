@@ -44,7 +44,6 @@ let mnue_tree = [
         route: "/user/top-sale-agency",
       },
     ],
-
   },
   {
     id: 618564558145,
@@ -102,7 +101,7 @@ let mnue_tree = [
         name: "کارکنان  برتر",
         access: "messages/root",
         route: "/product/tops/top-personal",
-      }, 
+      },
     ],
   },
   {
@@ -135,8 +134,6 @@ let mnue_tree = [
     access: "user/internal_personnels",
     route: "/user/internal-personnel",
   },
-
-
 
   {
     id: 200564,
@@ -183,7 +180,7 @@ let mnue_tree = [
         name: "محصولات برتر",
         access: "basket/root",
         route: "/product/tops/top-product",
-      }, 
+      },
       {
         id: 722555,
         name: "پکیج های برتر",
@@ -277,7 +274,6 @@ let mnue_tree = [
     access: "tasks/index",
     route: "/tasks",
   },
-
 
   {
     id: 545613,
@@ -519,7 +515,17 @@ let mnue_tree = [
         access: "setting/index",
         route: "/setting/message-example",
       },
+      {
+        id: 26151542213,
+        name: "دسته بندی نقش ",
+        access: "setting/index",
+        route: "/setting/category-role",
+      },      {
+        id: 2615154254213,
+        name: "دسته بندی کاربران ",
+        access: "setting/index",
+        route: "/setting/category-user",
+      },
     ],
   },
-
 ];

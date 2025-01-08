@@ -603,6 +603,8 @@ let origin_of_entry = [
   { text: "فروش تلفنی", value: "sale_phone" },
   { text: "  ورود با اکسل یا کاوه نگار", value: "excel_sale_phone" },
   { text: " افزودن در پنل", value: "manual" },
+  { text: "خرید حضوری", value: "sale_person" },
+  { text: "آنلاین", value: "online" },
 ];
 let status_basket_refral = [
   {

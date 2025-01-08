@@ -36,7 +36,7 @@
           <v-col cols="10" class="pa-0">
             <amp-autocomplete
               :disabled="true"
-              text="دسته بندی های انتخاب شده"
+              text="فیلتر محصولات "
               multiple
               :items="catgoury_items"
               rules="require"
@@ -82,7 +82,7 @@
       :dialog="show_dialog"
       v-if="show_dialog"
       @closeDialog="show_dialog = false"
-      @catgoryIds="category_ids = $event"
+      @catgoryIds="setCategoreyFilter($event)"
       :data="category_ids"
       :categorey-items="catgoury_items"
     />
@@ -149,6 +149,9 @@ export default {
   },
 
   mounted() {
+
+ 
+
     this.loadCategory();
     this.getReasons();
     this.loadProduct();
@@ -161,23 +164,13 @@ export default {
     }
   },
 
-  watch: {
-    category_ids: {
-      deep: true,
-      handler() {
-        if (this.category_ids.length > 0) {
-          let filter = {
-            category_id: {
-              op: "in",
-              value: this.category_ids,
-            },
-          };
-          this.loadProduct(filter);
-        }
-      },
-    },
-  },
   methods: {
+    setCategoreyFilter(event) {
+      this.category_ids = event;
+      if (this.category_ids.length > 0) {
+        this.loadProduct(this.category_ids);
+      }
+    },
     submit() {
       this.loading = true;
       let form = { ...this.form };
@@ -253,15 +246,17 @@ export default {
         .catch((error) => {});
     },
 
-    loadProduct(filter) {
+    loadProduct(category_ids) {
       this.load_item = true;
-      let filters = {};
-      if (filter && Boolean(filter)) {
-        filters = filter;
+
+      let ides = {};
+      if (category_ids && category_ids.length > 0) {
+        ides = category_ids;
       }
+
       this.$reqApi("/product/low-search", {
         row_number: 50000,
-        filters: filters,
+        category_ids: ides,
       })
         .then((response) => {
           let items = [];

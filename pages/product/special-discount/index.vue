@@ -6,6 +6,7 @@
       autoUpdate="/product/special-discount"
       createUrl="/product/special-discount/insert"
       autoDelete="special-discount/delete"
+      :BTNactions="btn_actions"
     >
     </BaseTable>
   </div>
@@ -85,8 +86,8 @@ export default {
             return body.sale_agencies
               .map((x) => `${x.name} (${x.code})`)
               .join("<br/>");
-          }else{
-            return "--"
+          } else {
+            return "--";
           }
         },
       },
@@ -112,6 +113,16 @@ export default {
           } else {
             return false;
           }
+        },
+      },
+    ];
+    this.btn_actions = [
+      {
+        text: "تاریخچه",
+        icon: "history",
+        color: "red",
+        fun: (body) => {
+          this.$router.push(`/product/special-discount/history?id=${body.id}`);
         },
       },
     ];

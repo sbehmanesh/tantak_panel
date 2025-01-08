@@ -22,20 +22,27 @@
       @closeDialog="closeDialog"
       @relod="relod"
     />
+    <InsertUserExcel
+      v-if="create_user"
+      :dialog="create_user"
+      @closeDialog="create_user = false"
+      @reload="relod"
+    />
   </div>
 </template>
 
 <script>
 import CatgoryUsers from "@/components/User/CatgoryUsers.vue";
-
+import InsertUserExcel from "@/components/User/InsertUserExcel.vue";
 import Excel from "@/components/User/Excel.vue";
 export default {
-  components: { CatgoryUsers, Excel },
+  components: { CatgoryUsers, Excel, InsertUserExcel },
   data: () => ({
     headers: [],
     extraBtn: [],
     role_id: "",
     show_cards: false,
+    create_user: false,
     personal_count: "",
     user_count: "",
     catgory_users: [],
@@ -58,6 +65,15 @@ export default {
           this.dialog.show = true;
         },
       },
+
+      {
+        icon: "post_add",
+        color: "teal",
+        text: "ایجاد با اکسل",
+        fun: () => {
+          this.create_user = true;
+        },
+      },
     ];
     this.$store.dispatch("setPageTitle", this.title);
     this.$store.dispatch("setting/getRoleServer");
@@ -77,15 +93,19 @@ export default {
         value: "login_source",
         filterType: "select",
         items: this.$store.state.static.origin_of_entry,
-      },   
-         {
+      },
+      {
         text: "وضعبت فعالیت",
         value: "status_work",
         filterType: "select",
         items: this.$store.state.static.status_work,
       },
       { text: "کد ملی", filterCol: "national_code", value: "national_code" },
-      { text: "کد پرسنلی", filterCol: "personnel_code", value: "personnel_code" },
+      {
+        text: "کد پرسنلی",
+        filterCol: "personnel_code",
+        value: "personnel_code",
+      },
       {
         filterable: false,
         disableSort: true,
@@ -106,12 +126,12 @@ export default {
       {
         text: "نقش",
         filterCol: "name",
-        value: body => {
+        value: (body) => {
           if (Array.isArray(body.roles)) {
-            return body.roles.map(x => x.name).join(" | ");
+            return body.roles.map((x) => x.name).join(" | ");
           }
           return "";
-        }
+        },
       },
       {
         text: "توضیحات",
@@ -175,7 +195,7 @@ export default {
       } else {
         this.role_id["condition"] = "not_in";
       }
-      this.relod()
+      this.relod();
     },
   },
 };

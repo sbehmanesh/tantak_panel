@@ -75,7 +75,7 @@
       </v-col>
       <v-col cols="12" md="4">
         <amp-input
-          rules="number,require"
+          rules="require"
           text="حداقل خرید  (ریال)"
           v-model="form.amount_minimum_use"
           cClass="ltr-item"

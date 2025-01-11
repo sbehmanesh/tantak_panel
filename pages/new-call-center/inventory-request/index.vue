@@ -131,6 +131,7 @@ export default {
     get_api: "",
     basket_id: "",
     total_price: "",
+    ready_message: "",
     show_wallet: false,
     wallet_data: null,
     dialog_history: {
@@ -367,6 +368,11 @@ export default {
         },
       },
     ];
+  },
+  watch: {
+    ready_message() {
+      this.message = this.ready_message;
+    },
   },
   computed: {
     extra_btn() {

@@ -66,15 +66,15 @@
         <v-col cols="12" md="2" v-if="form.type == 'on_basket'">
           <amp-jdate
             text=" شروع بازه خرید "
-            :is-number="true"
             v-model="form.start_at_buy"
+            :is-number="true"
           />
         </v-col>
         <v-col cols="12" md="2" v-if="form.type == 'on_basket'">
           <amp-jdate
             text=" پایان بازه خرید "
-            :is-number="true"
             v-model="form.end_at_buy"
+            :is-number="true"
           />
         </v-col>
         <v-col cols="12" md="2">
@@ -82,8 +82,8 @@
             v-if="form.type == 'on_product'"
             text="تعداد خرید"
             v-model="form.amount_start_use"
-            rules="require,number"
             cClass="ltr-item"
+            rules="require,number"
           />
           <amp-input
             v-else
@@ -97,12 +97,7 @@
         <v-col cols="12" md="2">
           <amp-input text="ترتیب" v-model="form.sort" rules="number,number"       cClass="ltr-item" />
         </v-col>
-        <!-- <v-col cols="12" md="12">
-          <amp-textarea
-            text="توضیحات"
-            v-model="form.description"
-          ></amp-textarea>
-        </v-col> -->
+
       </v-row>
       <v-row class="align-center justify-center">
         <v-col cols="10">

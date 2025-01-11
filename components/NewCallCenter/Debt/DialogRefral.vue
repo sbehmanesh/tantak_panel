@@ -28,6 +28,11 @@
               v-model="form.file"
               class="mb-5"
             />
+            <amp-select
+              text="پیام های اماده"
+              :items="$store.state.setting.ready_messages"
+              v-model="ready_message"
+            />
             <amp-textarea
               text=" توضیحات"
               rules="require"
@@ -97,10 +102,17 @@ export default {
         id: "",
         file: "",
       },
+      ready_message:"",
+
     };
   },
-  mounted() {},
+  mounted() {
+    this.$store.dispatch("setting/readyMessages");
+  },
   watch: {
+    ready_message() {
+      this.message = this.ready_message;
+    },
     "form.step"() {
       switch (this.form.step) {
         case "supervisor_to_employee_stock":

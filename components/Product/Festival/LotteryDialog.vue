@@ -4,7 +4,6 @@
       <div class="card-style pa-4 pt-7">
         <v-row class="d-flex align-center px-3">
           <h1 class="font_16">ثبت قرعه کشی</h1>
-      
           <v-spacer></v-spacer>
           <v-btn icon @click="closeDialog">
             <v-icon> close </v-icon>
@@ -77,7 +76,6 @@
 </template>
 <script>
 import FestivalAwards from "@/components/Product/Festival/FestivalAwards.vue";
-
 export default {
   components: { FestivalAwards },
   props: {
@@ -113,8 +111,6 @@ export default {
   mounted() {
     this.loadPackages();
     this.loadProduct();
-    console.log("itemId???" , this.itemId);
-    
     if (this.itemId) {
       this.loadData();
     }
@@ -126,7 +122,6 @@ export default {
     selectedIItems(event) {
       this.form.package_items = event.packages;
       this.form.product_items = event.products;
-
       let form = { ...this.form };
       form["festival_id"] = this.festivalId;
       this.loading = true;

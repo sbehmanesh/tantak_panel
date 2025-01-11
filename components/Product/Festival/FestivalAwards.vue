@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-expansion-panels>
+    <v-expansion-panels >
       <v-expansion-panel class="expan-style">
         <v-expansion-panel-header>
           <h1 class="font_17">جوایز جشنواره</h1>
@@ -73,8 +73,6 @@ export default {
   }),
   methods: {
     getData(data, type) {
-      console.log("data? ", data);
-
       if (type == "package") {
         this.packages_items = data;
       } else if (type == "product") {
@@ -84,9 +82,6 @@ export default {
     callSubmit() {
       let products = [];
       let packages = [];
-console.log("@ this.packages_items." ,  this.packages_items);
-console.log("@ this.packages_items." ,  this.packages_items);
-
       this.packages_items.map((x) => {
         packages.push({
           id: x.value,
@@ -99,9 +94,6 @@ console.log("@ this.packages_items." ,  this.packages_items);
           number: x.count,
         });
       });
-      console.log("product", products);
-      console.log("packages", packages);
-
       this.$emit("selectedIItems", {
         products: products,
         packages: packages,

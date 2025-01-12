@@ -2,13 +2,13 @@
   <v-form v-model="valid" @submit.prevent="submit()" :disabled="loading">
     <v-container fluid class="px-8">
       <v-row dense class="d-flex">
-        <v-col cols="12" md="2">
+        <v-col cols="12" md="3">
           <amp-input text="عنوان جشنواره" v-model="form.name" rules="require" />
         </v-col>
-        <v-col cols="12" md="2">
+        <v-col cols="12" md="3">
           <AmpUploadFile v-model="form.logo" title="انتخاب تصویر" />
         </v-col>
-        <v-col cols="12" md="2">
+        <v-col cols="12" md="3">
           <amp-select
             text="نوع جشنواره"
             rules="require"
@@ -16,21 +16,21 @@
             :items="$store.state.static.festival_type"
           />
         </v-col>
-        <v-col cols="12" md="2">
+        <v-col cols="12" md="3">
           <amp-jdate
             text="تاریخ شروع  جشنواره"
             :is-number="true"
             v-model="form.start_at"
           />
         </v-col>
-        <v-col cols="12" md="2">
+        <v-col cols="12" md="3">
           <amp-jdate
             text="تاریخ پایان جشنواره"
             :is-number="true"
             v-model="form.end_at"
           />
         </v-col>
-        <v-col cols="12" md="2">
+        <v-col cols="12" md="3">
           <amp-select
             text="وضعیت"
             :items="$store.state.static.festival_status"
@@ -39,7 +39,7 @@
           ></amp-select>
         </v-col>
 
-        <v-col cols="12" md="2">
+        <v-col cols="12" md="3">
           <amp-select
             text="جشنواره برای "
             :items="for_typs"
@@ -47,7 +47,7 @@
             v-model="form.section_name"
           ></amp-select>
         </v-col>
-        <v-col cols="12" md="2">
+        <v-col cols="12" md="3">
           <amp-autocomplete
             v-if="form.section_name == 'Product'"
             text="انتخاب محصول"
@@ -63,21 +63,21 @@
             v-model="form.section_id"
           />
         </v-col>
-        <v-col cols="12" md="2" v-if="form.type == 'on_basket'">
+        <v-col cols="12" md="3" v-if="form.type == 'on_basket'">
           <amp-jdate
             text=" شروع بازه خرید "
             v-model="form.start_at_buy"
             :is-number="true"
           />
         </v-col>
-        <v-col cols="12" md="2" v-if="form.type == 'on_basket'">
+        <v-col cols="12" md="3" v-if="form.type == 'on_basket'">
           <amp-jdate
             text=" پایان بازه خرید "
             v-model="form.end_at_buy"
             :is-number="true"
           />
         </v-col>
-        <v-col cols="12" md="2">
+        <v-col cols="12" md="3">
           <amp-input
             v-if="form.type == 'on_product'"
             text="تعداد خرید"
@@ -94,10 +94,14 @@
             is-price
           />
         </v-col>
-        <v-col cols="12" md="2">
-          <amp-input text="ترتیب" v-model="form.sort" rules="number,number"       cClass="ltr-item" />
+        <v-col cols="12" md="3">
+          <amp-input
+            text="ترتیب"
+            v-model="form.sort"
+            rules="number,number"
+            cClass="ltr-item"
+          />
         </v-col>
-
       </v-row>
       <v-row class="align-center justify-center">
         <v-col cols="10">
@@ -106,6 +110,7 @@
             :products="products"
             :package="package"
             @selectedIItems="selectedIItems($event)"
+            :load-items="load_items"
             ref="FestivalAwards"
           />
         </v-col>
@@ -148,6 +153,7 @@ export default {
   },
   data: () => ({
     valid: false,
+    load_items:{},
     loading: false,
     createUrl: "/festival/insert",
     updateUrl: "/festival/update",
@@ -200,6 +206,12 @@ export default {
           let data = response.data;
           for (let i in data) {
             this.form[i] = data[i];
+          }
+          if (Boolean(data.gift_packages) && data.gift_packages.length > 0) {
+            this.load_items["packages"] = data.gift_packages
+          }   
+             if (Boolean(data.gift_products) && data.gift_products.length > 0) {
+            this.load_items["products"] = data.gift_products
           }
           this.loading = false;
         })

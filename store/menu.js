@@ -175,12 +175,12 @@ let mnue_tree = [
         access: "packages/root",
         route: "/product/box",
       },   
-        {
-        id: 112575487845,
-        name: "جشنواره",
-        access: "festivals/index",
-        route: "/product/festivals",
-      },
+      //   {
+      //   id: 112575487845,
+      //   name: "جشنواره",
+      //   access: "festivals/index",
+      //   route: "/product/festivals",
+      // },
       {
         id: 72278525,
         name: "محصولات برتر",
@@ -232,7 +232,7 @@ let mnue_tree = [
       {
         id: 13731452006,
         name: "رنگ های محصولات",
-        access: "setting/index",
+        access: "setting/root",
         route: "/setting/color-products",
       },
       {
@@ -391,31 +391,31 @@ let mnue_tree = [
       {
         id: 10065,
         name: "بازه های زمانی",
-        access: "delivery_times/index",
+        access: "setting/root",
         route: "/setting/delivery-time",
       },
       {
         id: 19,
         name: "اسلایدر",
-        access: "setting/index",
+        access: "setting/root",
         route: "/setting/slider",
       },
       {
         id: 1904505,
         name: "بابت های  کد تخفیف",
-        access: "setting/index",
+        access: "setting/root",
         route: "/setting/for-discount",
       },
       {
         id: 19005,
         name: "بابت های کیف پول",
-        access: "setting/index",
+        access: "setting/root",
         route: "/setting/for-wallet",
       },
       {
         id: 10569,
         name: "حذف سبد خرید",
-        access: "setting/index",
+        access: "setting/root",
         route: "/setting/delete-basket",
       },
       {
@@ -427,31 +427,31 @@ let mnue_tree = [
       {
         id: 101209,
         name: "گارانتی",
-        access: "setting/index",
+        access: "setting/root",
         route: "/setting/warranty",
       },
       {
         id: 20,
         name: "بنرها",
-        access: "setting/index",
+        access: "setting/root",
         route: "/setting/main-banner",
       },
       {
         id: 21,
         name: "تنظیمات عمومی",
-        access: "setting/index",
+        access: "setting/root",
         route: "/setting/public/1",
       },
       {
         id: 29541,
         name: "علل های کنسلی",
-        access: "setting/index",
+        access: "setting/root",
         route: "/setting/reason-cancel",
       },
       {
         id: 22,
         name: "ویژگی های محصولات",
-        access: "setting/index",
+        access: "setting/root",
         route: "/setting/variation-type",
       },
       {
@@ -463,25 +463,25 @@ let mnue_tree = [
       {
         id: 61013734,
         name: "الگوریتم اعلانات",
-        access: "setting/index",
+        access: "setting/root",
         route: "/setting/message-algouritm",
       },
       {
         id: 23,
         name: "روش های ارسال",
-        access: "setting/index",
+        access: "setting/root",
         route: "/setting/delivery-method",
       },
       {
         id: 24,
         name: "واحد ها",
-        access: "setting/index",
+        access: "setting/root",
         route: "/setting/units",
       },
       {
         id: 25,
         name: "تنظیمات فروش عمده",
-        access: "setting/index",
+        access: "setting/root",
         route: "/setting/whole-sell",
       },
       {
@@ -493,43 +493,43 @@ let mnue_tree = [
       {
         id: 5265414,
         name: "دسته بندی وظیفه ها",
-        access: "setting/index",
+        access: "setting/root",
         route: "/setting/category-task",
       },
       {
         id: 89563,
         name: "پرداخت های نمایندگی",
-        access: "setting/index",
+        access: "setting/root",
         route: "/setting/payment",
       },
       {
         id: 13731006,
         name: "تغییر روزهای چک",
-        access: "setting/index",
+        access: "setting/root",
         route: "/setting/change-check-days",
       },
 
       {
         id: 26123,
         name: "مهلت های برگشت",
-        access: "setting/index",
+        access: "setting/root",
         route: "/setting/deadline-back",
       },
       {
         id: 2612213,
         name: "پیام های آماده",
-        access: "setting/index",
+        access: "setting/root",
         route: "/setting/message-example",
       },
       {
         id: 26151542213,
         name: "دسته بندی نقش ",
-        access: "setting/index",
+        access: "setting/root",
         route: "/setting/category-role",
       },      {
         id: 2615154254213,
         name: "دسته بندی کاربران ",
-        access: "setting/index",
+        access: "setting/root",
         route: "/setting/category-user",
       },
     ],

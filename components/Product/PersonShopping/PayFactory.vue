@@ -32,6 +32,7 @@
         </h1>
       </v-card>
     </v-col>
+
     <v-col cols="12" class="d-flex align-center justify-center mt-5">
       <v-col cols="5">
         <amp-select text="نوع پرداخت" :items="pay_type" v-model="kind_set" />
@@ -149,7 +150,9 @@
                 </v-card>
               </v-col>
             </div>
-
+            <v-col cols="12" class="pa-0">
+              <FestivalInPersone v-if="festival_item.length > 0" :festival-item="festival_item" />
+            </v-col>
             <v-row class="d-flex justify-center pa-4">
               <v-col cols="12" md="2" class="ma-2">
                 <amp-button
@@ -179,7 +182,11 @@
 </template>
 
 <script>
+import FestivalInPersone from "@/components/Product/PersonShopping/FestivalInPersone.vue";
 export default {
+  components: {
+    FestivalInPersone,
+  },
   props: {
     data: {
       default: {},
@@ -189,12 +196,16 @@ export default {
       default: {},
       require: false,
     },
+    userId: {
+      require: false,
+    },
     formData: {
       default: {},
       require: false,
     },
   },
   data: () => ({
+    festival_item :[],
     pay_type: [
       { text: "نقد", value: "naghd" },
       { text: "پرداخت با کارتخوان", value: "pos" },
@@ -212,6 +223,57 @@ export default {
   }),
   watch: {
     basket_id() {
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+
       let only_price_show = this.only_price;
       if (Boolean(only_price_show)) {
         this.overlay = true;
@@ -233,12 +295,13 @@ export default {
             this.$toast.success("سفارش با موفقیت ثبت شد");
             this.$router.push("/in-person-shopping");
           })
-          .catch((err) => {
-          });
+          .catch((err) => {});
       }
     },
   },
   mounted() {
+    console.log(">>>>", this.userId);
+    this.payFactor(true);
     this.loadData();
   },
   methods: {
@@ -288,8 +351,9 @@ export default {
       this.only_price = only_price;
       this.$reqApi("basket/sale-agency/seller/insert", this.formData)
         .then((res) => {
-          if (Boolean(res.basket_id)) {
-            this.basket_id = res.basket_id;
+          if (Boolean(res.id)) {
+            this.basket_id = res.id;
+            this.getFestivals(res.user_id);
           }
           this.loading = false;
         })
@@ -312,6 +376,15 @@ export default {
     },
     editBasket() {
       this.$emit("editBasket");
+    },
+    getFestivals(user_id) {
+      this.$reqApi("festival/user-cover", { user_id: user_id })
+        .then((res) => {
+          this.festival_item = res.model.data
+          console.log("@>", res);
+          console.log("@  this.festival_item>",   this.festival_item);
+        })
+        .catch((err) => {});
     },
   },
 };

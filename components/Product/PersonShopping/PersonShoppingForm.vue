@@ -72,6 +72,7 @@
                   :data="factor_data"
                   :form-data="form_data"
                   :user="customer_infos"
+                  :user-id="user_id"
                   @payBasket="callPayApi($event)"
                   @backStep="e1--"
                   @editBasket="e1 = 2"

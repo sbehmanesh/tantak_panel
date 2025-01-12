@@ -42,7 +42,11 @@
                       text="زمان مراجع بعدی"
                       v-model="form.document[0].end_at"
                     />
-
+                    <amp-select
+                      text="پیام های اماده"
+                      :items="$store.state.setting.ready_messages"
+                      v-model="ready_message"
+                    />
                     <amp-textarea
                       rules="require"
                       text="توضیحات"
@@ -165,6 +169,8 @@ export default {
     step: 1,
     answers_list: [],
     comment: "",
+    ready_message: "",
+
     loading: false,
     form: {
       message_id: "",
@@ -182,7 +188,14 @@ export default {
       }
     },
   },
+  watch: {
+    ready_message() {
+      this.form.document[0].description = this.ready_message;
+    },
+  },
   mounted() {
+    this.$store.dispatch("setting/readyMessages");
+
     this.loadQuestions();
   },
   methods: {

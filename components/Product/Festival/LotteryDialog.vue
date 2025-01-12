@@ -8,6 +8,9 @@
           <v-btn icon @click="closeDialog">
             <v-icon> close </v-icon>
           </v-btn>
+          <v-col cols="12">
+            <v-divider></v-divider>
+          </v-col>
         </v-row>
         <v-row>
           <v-col cols="12" md="3">
@@ -55,6 +58,7 @@
               v-if="products.length > 0 && package.length > 0"
               :products="products"
               :package="package"
+              :load-items=load_items
               @selectedIItems="selectedIItems($event)"
               ref="FestivalAwards"
             />
@@ -102,6 +106,7 @@ export default {
       only_price: false,
       products: [],
       package: [],
+      load_items: {},
       form: {
         product_items: [],
         package_items: [],
@@ -150,6 +155,12 @@ export default {
           let data = response.data;
           for (let i in data) {
             this.form[i] = data[i];
+          }
+          if (Boolean(data.packages) && data.packages.length > 0) {
+            this.load_items["packages"] = data.packages
+          }   
+             if (Boolean(data.products) && data.products.length > 0) {
+            this.load_items["products"] = data.products
           }
           this.loading = false;
         })

@@ -14,10 +14,20 @@
 
       <v-window-item :value="2">
         <BaseTable
+          v-if="step == 2"
           url="/lottery"
           autoDelete="/lottery/delete"
           :headers="lottery_hed"
           :BTNactions="btn_actions"
+          :extraBtn="extra_btn"
+          :filters="filters"
+        />
+      </v-window-item>
+      <v-window-item :value="3">
+        <History
+          v-if="step == 3"
+          :festival-id="festival_id"
+          @backStep="step -= 2"
         />
       </v-window-item>
     </v-window>
@@ -34,17 +44,21 @@
 
 <script>
 import LotteryDialog from "@/components/Product/Festival/LotteryDialog.vue";
+import History from "@/components/Product/Festival/History.vue";
 export default {
   components: {
     LotteryDialog,
+    History,
   },
   data: () => ({
     headers: [],
     lottery_hed: [],
+    extra_btn: [],
     step: 1,
     btn_actions: [],
     festival_id: "",
     model_id: "",
+    filters: {},
     title: "جشنواره",
     show_dialog: false,
   }),
@@ -143,7 +157,7 @@ export default {
         color: "red",
         fun: (body) => {
           this.show_dialog = true;
-          this.model_id = body.id;
+          this.festival_id = body.id;
         },
         show_fun: (body) => {
           if (this.step == 1) {
@@ -169,9 +183,15 @@ export default {
         },
       },
       {
-        text: "قرعه کشی های ثبت شده",
+        text: " لیست قرعه کشی  ها ",
         color: "blue-grey",
         fun: (body) => {
+          this.filters = {
+            festival_id: {
+              op: "=",
+              value: body.id,
+            },
+          };
           this.step++;
           this.festival_id = body.id;
         },
@@ -181,6 +201,31 @@ export default {
           } else {
             return false;
           }
+        },
+      },
+      {
+        text: "تاریخچه",
+        color: "red",
+        fun: (body) => {
+          this.step += 2;
+          this.festival_id = body.id;
+        },
+        show_fun: (body) => {
+          if (this.step == 1) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
+    ];
+    this.extra_btn = [
+      {
+        text: "برگشت",
+        color: "red",
+        icon: "redo",
+        fun: () => {
+          this.step--;
         },
       },
     ];

@@ -175,12 +175,12 @@ let mnue_tree = [
         access: "packages/root",
         route: "/product/box",
       },   
-        {
-        id: 112575487845,
-        name: "جشنواره",
-        access: "festivals/index",
-        route: "/product/festivals",
-      },
+      //   {
+      //   id: 112575487845,
+      //   name: "جشنواره",
+      //   access: "festivals/index",
+      //   route: "/product/festivals",
+      // },
       {
         id: 72278525,
         name: "محصولات برتر",

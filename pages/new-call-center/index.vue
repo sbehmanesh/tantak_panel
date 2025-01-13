@@ -58,7 +58,6 @@
           {{ item.text }}
         </v-chip>
       </v-row>
-  
     </v-col>
     <v-row class="d-flex justify-center">
       <v-col cols="12" md="12">
@@ -117,6 +116,11 @@
           url-list="/message"
           @closeDialog="excel_message = false"
         />
+        <RefralLogExcel
+          :dialog="refral_logs"
+          v-if="refral_logs"
+          @closeDialog="refral_logs = false"
+        />
       </v-col>
     </v-row>
   </div>
@@ -133,6 +137,7 @@ import MessageLog from "~/components/NewCallCenter/MessageLog.vue";
 import BasketDialog from "@/components/NewCallCenter/BasketDialog.vue";
 import CallBackLogs from "@/components/CallCenter/CallBackLogs.vue";
 import MessageExcel from "@/components/NewCallCenter/MessageExcel.vue";
+import RefralLogExcel from "@/components/NewCallCenter/RefralLogExcel.vue";
 
 export default {
   components: {
@@ -145,6 +150,7 @@ export default {
     BasketDialog,
     CallBackLogs,
     MessageExcel,
+    RefralLogExcel,
   },
   data: () => ({
     headers: [],
@@ -152,6 +158,7 @@ export default {
     panel: 1,
     calls_back: false,
     excel_message: false,
+    refral_logs: false,
     show_tabale: true,
     total_items: [],
     user: [],
@@ -362,12 +369,23 @@ export default {
       {
         text: "خروجی اکسل",
         icon: "download",
-        color: "teal darken-2",
+        color: "teal ",
         fun: (body) => {
           this.excel_message = true;
           // this.getDoneExcel();
 
           // let done_messeage =
+        },
+      },
+      {
+        text: "گزارشات",
+        icon: "pending_actions",
+        color: "info ",
+        fun: (body) => {
+          this.refral_logs = true;
+          // this.$reqApi("message/refer/history-report")
+          //   .then((res) => {})
+          //   .catch((err) => {});
         },
       },
     ];

@@ -174,13 +174,13 @@ let mnue_tree = [
         name: "جعبه  ها",
         access: "packages/root",
         route: "/product/box",
-      },   
-      //   {
-      //   id: 112575487845,
-      //   name: "جشنواره",
-      //   access: "festivals/index",
-      //   route: "/product/festivals",
-      // },
+      },
+      {
+        id: 112575487845,
+        name: "جشنواره",
+        access: "festivals/index",
+        route: "/product/festivals",
+      },
       {
         id: 72278525,
         name: "محصولات برتر",
@@ -526,7 +526,8 @@ let mnue_tree = [
         name: "دسته بندی نقش ",
         access: "setting/root",
         route: "/setting/category-role",
-      },      {
+      },
+      {
         id: 2615154254213,
         name: "دسته بندی کاربران ",
         access: "setting/root",

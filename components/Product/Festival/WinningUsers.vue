@@ -36,11 +36,14 @@
                       <v-col
                         cols="12"
                         md="12"
-                        v-for="item in gift.items"
-                        :key="item.value"
+                        v-for="(item, i_coupon) in gift.items"
+                        :key="i_coupon"
                         class="py-0"
                       >
-                        <v-card class="d-flex align-center pa-3 my-1">
+                        <v-card
+                          class="d-flex align-center pa-3 my-1 elevation-2"
+                          outlined
+                        >
                           <v-icon color="green"> task_alt </v-icon>
                           <v-spacer></v-spacer>
                           <h1>
@@ -71,7 +74,7 @@
                           <v-btn
                             small
                             icon
-                            @click="deleteItem(y.value, y, x, i)"
+                            @click="deleteItem(i, gift.type, i_coupon)"
                             class="blue-grey mx-1"
                           >
                             <v-icon x-small color="white">delete</v-icon>
@@ -86,8 +89,9 @@
                     v-if="gift.type == 'cash' || gift.type == 'credit'"
                   >
                     <v-card
+                      outlined
                       width="100%"
-                      class="d-flex align-center pa-5"
+                      class="d-flex align-center pa-3 elevation-2"
                       cols="12"
                       v-if="gift.type == 'cash'"
                     >
@@ -101,16 +105,17 @@
                       <v-btn
                         small
                         icon
-                        @click="deleteItem(y.value, y, x, i)"
+                        @click="deleteItem(i, gift.type)"
                         class="blue-grey mx-1"
                       >
                         <v-icon x-small color="white">delete</v-icon>
                       </v-btn>
                     </v-card>
                     <v-card
+                      outlined
                       width="100%"
                       cols="12"
-                      class="d-flex align-center pa-5"
+                      class="d-flex align-center pa-3 elevation-2"
                       v-if="gift.type == 'credit'"
                     >
                       <v-icon color="green"> task_alt </v-icon>
@@ -122,7 +127,7 @@
                       <v-btn
                         small
                         icon
-                        @click="deleteItem(y.value, y, x, i)"
+                        @click="deleteItem(i, gift.type)"
                         class="blue-grey mx-1"
                       >
                         <v-icon x-small color="white">delete</v-icon>
@@ -131,10 +136,11 @@
                   </v-col>
                   <v-col cols="12" v-if="gift.type == 'product_var_com_items'">
                     <v-card
-                      v-for="product in gift.items"
-                      :key="product.id"
+                      outlined
+                      v-for="(product, i_product) in gift.items"
+                      :key="i_product"
                       width="100%"
-                      class="d-flex align-center pa-3 my-1"
+                      class="d-flex align-center pa-3 my-1 elevation-2"
                       cols="12"
                     >
                       <v-avatar size="35" class="mx-2">
@@ -173,7 +179,7 @@
                       <v-btn
                         small
                         icon
-                        @click="deleteItem(y.value, y, x, i)"
+                        @click="deleteItem(i, gift.type, i_product)"
                         class="blue-grey mx-1"
                       >
                         <v-icon x-small color="white">delete</v-icon>
@@ -182,10 +188,11 @@
                   </v-col>
                   <v-col cols="12" v-if="gift.type == 'package_items'">
                     <v-card
-                      v-for="pack in gift.items"
-                      :key="pack.id"
+                      outlined
+                      v-for="(pack, i_pack) in gift.items"
+                      :key="i_pack"
                       width="100%"
-                      class="d-flex align-center pa-3 my-1"
+                      class="d-flex align-center pa-3 my-1 elevation-2"
                       cols="12"
                     >
                       <v-avatar size="35" class="mx-2">
@@ -216,7 +223,7 @@
                       <v-btn
                         small
                         icon
-                        @click="deleteItem(y.value, y, x, i)"
+                        @click="deleteItem(i, gift.type, i_pack)"
                         class="blue-grey mx-1"
                       >
                         <v-icon x-small color="white">delete</v-icon>
@@ -393,9 +400,12 @@ export default {
       switch (key) {
         case "product_var_com_items":
           this.$refs.LattryProduct.addVariation();
+          this.dialog = false;
+
           break;
         case "package_items":
           this.$refs.LattryPackage.addPackage();
+          this.dialog = false;
 
           break;
         case "coupon_items":
@@ -421,7 +431,7 @@ export default {
               }
             }
           }
-
+          this.$toast.success("کد تخفیف با موفقیت برای کاربر ثبت شد");
           this.dialog = false;
           this.coupon_ids = false;
           break;
@@ -432,6 +442,8 @@ export default {
             type_name: this.dialog_title,
             value: this.wallet,
           });
+          this.$toast.success("شارژ کیف پول نقدی با موفقیت انجام شد");
+
           this.wallet = "";
           this.dialog = false;
 
@@ -443,6 +455,8 @@ export default {
             type_name: this.dialog_title,
             value: this.wallet,
           });
+          this.$toast.success("شارژ کیف پول اعتباری  با موفقیت انجام شد");
+
           this.wallet = "";
           this.dialog = false;
 
@@ -450,9 +464,20 @@ export default {
       }
     },
 
-    deleteItem(index) {
-      let items = this.list_item;
-      items.splice(index, 1);
+    deleteItem(key_user, type, item_index = null) {
+      if (item_index != null) {
+        let items = this.peoples[key_user].gift_items.find(
+          (x) => x.type == type
+        );
+        items.items = items.items.filter((x, i) => i != item_index);
+        this.peoples[key_user].gift_items =  this.peoples[key_user].gift_items.filter((f)=> typeof f.items == 'undefined' ||  f.items.length != 0)
+      } else {
+        this.peoples[key_user].gift_items = this.peoples[
+          key_user
+        ].gift_items.filter((x) => x.type != type);
+      }
+      this.$toast.success("   حذف   با موفقیت انجام شد");
+    
     },
     saveCoupon(code) {
       if (code && Boolean(code)) {

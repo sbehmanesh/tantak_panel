@@ -151,18 +151,8 @@ export default {
           return;
         }
 
-        // for (let i = 0; i < event.length; i++) {
-        //   const element = event[i];
-        //   for (let index = 0; index < element.gift_items.length; index++) {
-        //     const x = element.gift_items[index];
-        //     this.sortData(x);
-        //     console.log(
-        //       "*%%%%%%%%%****************************************************************************************************************************************************"
-        //     );
-        //   }
-        // }
+
       }
-      console.log("$ 4 ", event);
       for (let i = 0; i < event.length; i++) {
         const x = event[i];
         for (let index = 0; index < x.gift_items.length; index++) {
@@ -180,8 +170,6 @@ export default {
     },
     sortData(item) {
       if (item.type == "product_var_com_items") {
-        console.log(">>>product_var_com_items>", item);
-
         item.items.map((x) => {
           this.type_data.product_var_com_items.push({
             id: x.id,
@@ -190,8 +178,6 @@ export default {
           });
         });
       } else if (item.type == "package_items") {
-        console.log(">>>package_items>", item);
-
         item.items.map((x) => {
           this.type_data.package_items.push({
             id: x.value,
@@ -219,7 +205,6 @@ export default {
           type: "credit",
         });
       }
-      console.log(" >>> F I N A L >> ", this.type_data);
     },
     selectedIItems(event) {
       this.form.package_items = event.packages;

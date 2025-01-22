@@ -226,6 +226,7 @@ export default {
         icon: "redo",
         fun: () => {
           this.step--;
+          this.model_id =""
         },
       },
     ];

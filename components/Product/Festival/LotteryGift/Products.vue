@@ -93,7 +93,7 @@
                     قیمت محصول :‌
                     {{ $price(selected_product.product_price) }} ریال
                   </h1>
-                  <h1 >
+                  <h1>
                     <small>
                       مجموع :‌
                       {{
@@ -122,7 +122,6 @@
                   </div>
                 </div>
 
-         
                 <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
               </v-row>
             </v-card>
@@ -295,7 +294,6 @@ export default {
               ? product.price
               : product.product_price;
             this.selected_product["number"] = 1;
-            console.log("#$", this.selected_product);
 
             // if (
             //   Boolean(product.variation1) &&
@@ -492,29 +490,27 @@ export default {
     },
 
     addVariation() {
-        this.loading_add = true;
-        setTimeout(() => {
-          this.selected_product["count"] = this.number;
-          this.selected_product.variation1.value = Boolean(
-            this.selected_product.variation1.colors
-          )
-            ? this.selected_product.variation1.colors
-            : this.selected_product.variation1.value;
-          // this.variations_list.unshift(this.selected_product);
-          this.number = 1;
-          this.$toast.success(" محصول  اضافه شد");
-          this.var_id_1 = "";
-          this.var_id_2 = "";
-          this.var_id_3 = "";
-          this.sumb_price = "";
-          this.main_price = "";
-          this.product_varcomb_id = "";
-          this.number = 1;
-          this.$emit("data", this.selected_product);
-          this.loading_add = false;
-        }, 1000);
-
-    
+      this.loading_add = true;
+      setTimeout(() => {
+        this.selected_product["count"] = this.number;
+        this.selected_product.variation1.value = Boolean(
+          this.selected_product.variation1.colors
+        )
+          ? this.selected_product.variation1.colors
+          : this.selected_product.variation1.value;
+        // this.variations_list.unshift(this.selected_product);
+        this.number = 1;
+        this.$toast.success(" محصول  اضافه شد");
+        this.var_id_1 = "";
+        this.var_id_2 = "";
+        this.var_id_3 = "";
+        this.sumb_price = "";
+        this.main_price = "";
+        this.product_varcomb_id = "";
+        this.number = 1;
+        this.$emit("data", this.selected_product);
+        this.loading_add = false;
+      }, 100);
     },
     deletVar(key) {
       let items = this.variations_list;
@@ -582,14 +578,12 @@ export default {
     },
     actionNumber(item, pluss) {
       this.loading = true;
-      console.log(item.number, pluss);
       if (Boolean(pluss)) {
         item.number++;
       } else {
         item.number--;
       }
       this.loading = false;
-      console.log(item.number);
     },
   },
 };

@@ -230,7 +230,6 @@ export default {
       }
     },
     submit() {
-      console.log("basket_costumer_id" , this.basket_costumer_id)
 
       this.loading = true;
       let form = {};

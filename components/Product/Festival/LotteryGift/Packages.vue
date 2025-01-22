@@ -261,7 +261,6 @@ export default {
     },
     actionNumber(item, pluss) {
       this.loading = true;
-      console.log(item.count, pluss);
       if (Boolean(pluss)) {
         item.count++;
       } else {

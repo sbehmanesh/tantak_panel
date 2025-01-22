@@ -42,6 +42,7 @@
                       >
                         <v-card
                           class="d-flex align-center pa-3 my-1 elevation-2"
+                          style="border-right: 3px solid grey !important;"
                           outlined
                         >
                           <v-icon color="green"> task_alt </v-icon>
@@ -89,6 +90,8 @@
                     v-if="gift.type == 'cash' || gift.type == 'credit'"
                   >
                     <v-card
+                    style="border-right: 3px solid grey !important;"
+
                       outlined
                       width="100%"
                       class="d-flex align-center pa-3 elevation-2"
@@ -113,6 +116,8 @@
                     </v-card>
                     <v-card
                       outlined
+                      style="border-right: 3px solid grey !important;"
+
                       width="100%"
                       cols="12"
                       class="d-flex align-center pa-3 elevation-2"
@@ -137,6 +142,8 @@
                   <v-col cols="12" v-if="gift.type == 'product_var_com_items'">
                     <v-card
                       outlined
+                      style="border-right: 3px solid grey !important;"
+
                       v-for="(product, i_product) in gift.items"
                       :key="i_product"
                       width="100%"
@@ -188,6 +195,8 @@
                   </v-col>
                   <v-col cols="12" v-if="gift.type == 'package_items'">
                     <v-card
+                    style="border-right: 3px solid grey !important;"
+
                       outlined
                       v-for="(pack, i_pack) in gift.items"
                       :key="i_pack"
@@ -461,6 +470,7 @@ export default {
           this.dialog = false;
 
           break;
+
       }
     },
 
@@ -470,14 +480,17 @@ export default {
           (x) => x.type == type
         );
         items.items = items.items.filter((x, i) => i != item_index);
-        this.peoples[key_user].gift_items =  this.peoples[key_user].gift_items.filter((f)=> typeof f.items == 'undefined' ||  f.items.length != 0)
+        this.peoples[key_user].gift_items = this.peoples[
+          key_user
+        ].gift_items.filter(
+          (f) => typeof f.items == "undefined" || f.items.length != 0
+        );
       } else {
         this.peoples[key_user].gift_items = this.peoples[
           key_user
         ].gift_items.filter((x) => x.type != type);
       }
       this.$toast.success("   حذف   با موفقیت انجام شد");
-    
     },
     saveCoupon(code) {
       if (code && Boolean(code)) {
@@ -568,6 +581,8 @@ export default {
         });
     },
     getData(data, type) {
+      console.log("data" ,  data);
+      
       if (type == "package") {
         let package_key = this.dialog_user.gift_items.find(
           (f) => f.type == this.dialog_key
@@ -597,6 +612,9 @@ export default {
           });
         }
       }
+      console.log("this.peoples" ,  this.peoples);
+
+      
     },
     callSubmit() {
       this.$emit("winingUsers", this.peoples);

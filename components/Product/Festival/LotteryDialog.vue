@@ -117,7 +117,13 @@ export default {
       peoples: [],
       package: [],
       load_items: {},
-      form: {},
+      form: {
+        people_number_use: "",
+        time: "",
+        status: "",
+        sort: "",
+        description: "",
+      },
       types: [
         { text: "محصول ", value: "product_var_com_items" },
         { text: "پکیج ", value: "package_items" },
@@ -150,8 +156,6 @@ export default {
           );
           return;
         }
-
-
       }
       for (let i = 0; i < event.length; i++) {
         const x = event[i];
@@ -159,14 +163,15 @@ export default {
           const element = x.gift_items[index];
           this.sortData(element);
         }
- 
       }
       let form = { ...this.form, ...this.type_data };
-      form["festival_id"] = this.festivalId
-      this.$reqApi("/lottery/insert", form).then((res)=>{
-        this.$toast.success("قرعه کشی با موفقیت ثبت شد")
-        this.closeDialog()
-      }).catch((err)=>{})
+      form["festival_id"] = this.festivalId;
+      this.$reqApi("/lottery/insert", form)
+        .then((res) => {
+          this.$toast.success("قرعه کشی با موفقیت ثبت شد");
+          this.closeDialog();
+        })
+        .catch((err) => {});
     },
     sortData(item) {
       if (item.type == "product_var_com_items") {
@@ -235,15 +240,37 @@ export default {
       this.$reqApi(this.showUrl, { id: this.itemId })
         .then(async (response) => {
           let data = response.data;
-          for (let i in data) {
-            this.form[i] = data[i];
+          console.log("data", data);
+          this.form.people_number_use = data.people_number_use.toString();
+          this.form.time = data.time;
+          this.form.status = data.status;
+          this.form.sort = data.sort;
+          this.form.description = data.description;
+          this.form.festival_id = data.festival_id;
+          let prop_items = [];
+          if (data.product_var_coms.length > 0) {
+            let items = [];
+            for (let i = 0; i < data.product_var_coms.length; i++) {
+              const x = data.product_var_coms[i];
+              items.push({
+                type: "product_var_coms",
+                user_number: x.person_win,
+                type_name: `محصول ( نفر ${x.person_win} )`,
+                value: this.wallet,
+              });
+              prop_items.push({
+                number: x.person_win,
+                gift_items: [],
+              });
+            }
           }
-          if (Boolean(data.packages) && data.packages.length > 0) {
-            this.load_items["packages"] = data.packages;
-          }
-          if (Boolean(data.products) && data.products.length > 0) {
-            this.load_items["products"] = data.products;
-          }
+
+          // if (Boolean(data.packages) && data.packages.length > 0) {
+          //   this.load_items["packages"] = data.packages;
+          // }
+          // if (Boolean(data.products) && data.products.length > 0) {
+          //   this.load_items["products"] = data.products;
+          // }
           this.loading = false;
         })
         .catch((error) => {

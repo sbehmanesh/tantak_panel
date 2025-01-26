@@ -1,9 +1,9 @@
 <template>
-  <v-dialog v-model="dialog" width="460" persistent>
+  <v-dialog v-model="dialog" width="430" persistent>
     <v-card :disabled="loading" class="pa-4 py-6">
       <div class="pt-2" style="border: 7px double #8585858a">
         <v-col cols="12" class="text-center">
-          <h1 class="font_13">
+          <h1 class="font_16">
             برسی روند ارجاع (
             <small>
               تعداد محصولات
@@ -16,10 +16,7 @@
               {{ $price(data.total_price) }} ریال
             </small>
             <br />
-            <small
-              class="grey--text"
-              style="border-bottom: 1px solid #8585858a"
-            >
+            <small class="grey--text" style="border-bottom: 1px solid #8585858a">
               شماره فاکتور
               {{ data.factor_number }}
             </small>
@@ -41,7 +38,7 @@
           />
           <amp-textarea label="توضیحات" v-model="form.message" />
         </v-col>
-        <v-row class="d-flex justify-center mt-5 mb-3">
+        <v-row class="d-flex justify-center mt-3 mb-3">
           <v-col cols="12" md="3">
             <amp-button
               text="تایید"
@@ -91,74 +88,55 @@ export default {
     form: { step: "", message: "" },
   }),
   mounted() {
-    console.log("sssss");
-
     this.checkRole();
   },
   watch: {
     "form.step"() {
       if (this.form.step == "agency_manager_to_sefir") {
-        this.show_select_user = true;
-        this.select_user_title = "سفیر مورد نظر را انتخاب کنید";
         this.getUsers("user/sefir");
+        this.select_user_title = "سفیر مورد نظر را انتخاب کنید";
+        this.show_select_user = true;
       }
       if (this.form.step == "storage_manager_to_employee") {
+        this.getUsers("user/list-employee");
         this.show_select_user = true;
         this.select_user_title = "کارمند مورد نظر را انتخاب کنید";
+      }
+      if (this.form.step == "manager_to_supervisor_financial") {
         this.getUsers("user/list-employee");
-      }    
-       if (this.form.step == "manager_to_supervisor_financial") {
-        this.show_select_user = true;
         this.select_user_title = "سرپرست مورد نظر را انتخاب کنید";
-        this.getUsers("user/list-employee");
-      }       if (this.form.step == "supervisor_to_financial") {
         this.show_select_user = true;
-        this.select_user_title = "واحد مالی مورد نظر را انتخاب کنید";
+      }
+      if (this.form.step == "supervisor_to_financial") {
         this.getUsers("user/list-employee");
+        this.select_user_title = "واحد مالی مورد نظر را انتخاب کنید";
+        this.show_select_user = true;
       }
     },
   },
   methods: {
     checkRole() {
-      if (
-        Boolean(this.$checkRole(this.$store.state.auth.role.agency_manager))
-      ) {
+      if (Boolean(this.$checkRole(this.$store.state.auth.role.agency_manager))) {
         this.setStepItems("agency_manager");
       }
       if (Boolean(this.$checkRole(this.$store.state.auth.role.sefir))) {
         this.setStepItems("sefir");
       }
-
       if (
-        Boolean(
-          this.$checkRole(this.$store.state.auth.role.superviser_centeral_stock)
-        )
+        Boolean(this.$checkRole(this.$store.state.auth.role.superviser_centeral_stock))
       ) {
         this.setStepItems("storage_manager");
       }
-      if (
-        Boolean(this.$checkRole(this.$store.state.auth.role.store_employee))
-      ) {
+      if (Boolean(this.$checkRole(this.$store.state.auth.role.store_employee))) {
         this.setStepItems("storage_employee");
       }
-      if (
-        Boolean(
-          this.$checkRole(this.$store.state.auth.role.manager_financial_unit)
-        )
-      ) {
+      if (Boolean(this.$checkRole(this.$store.state.auth.role.manager_financial_unit))) {
         this.setStepItems("manager_financial");
-      }    
-        if (
-        Boolean(
-          this.$checkRole(this.$store.state.auth.role.fiscal_supervisor)
-        )
-      ) {
+      }
+      if (Boolean(this.$checkRole(this.$store.state.auth.role.fiscal_supervisor))) {
         this.setStepItems("supervisor");
-      }        if (
-        Boolean(
-          this.$checkRole(this.$store.state.auth.role.financial_unit_id)
-        )
-      ) {
+      }
+      if (Boolean(this.$checkRole(this.$store.state.auth.role.financial_unit_id))) {
         this.setStepItems("financial");
       }
     },
@@ -166,16 +144,13 @@ export default {
       let items = [...this.$store.state.static.step_reterned_product];
       let data = [];
       data = items.filter((x) => x.key == key);
-      console.log("key? ?? ", data);
-
       if (Boolean(data) && data.length > 0) {
         this.step_items = data;
-     if (this.step_items.length == 1) {
-      setTimeout(() => {
-        this.form.step = this.step_items[0].value
-      }, 111);
-      
-     }
+        if (this.step_items.length == 1) {
+          setTimeout(() => {
+            this.form.step = this.step_items[0].value;
+          }, 111);
+        }
       }
     },
     submit() {
@@ -217,7 +192,7 @@ export default {
             const x = res.model.data[i];
             let user =
               Boolean(x.first_name) && Boolean(x.last_name)
-                ? x.first_name + " " + x.last_name
+                ? x.first_name + " " + x.last_name + " | " + x.username
                 : x.username;
             items.push({
               text: user,

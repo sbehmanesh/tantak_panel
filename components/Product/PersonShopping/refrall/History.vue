@@ -3,7 +3,9 @@
     <v-dialog v-model="dialog" persistent fullscreen>
       <v-card>
         <v-col cols="12" class="primary white--text d-flex align-center">
-          <h1 class="font_18">تاریخچه استفاده ا ز کد تخفیف</h1>
+          <span class="font_18">
+          تاریخچه روند ارجاعات
+          </span>
           <v-spacer></v-spacer>
           <v-btn icon @click="closeDialog">
             <v-icon color="white"> close </v-icon>
@@ -35,20 +37,14 @@ export default {
   },
   data() {
     return {
-      panel: 1,
-      continue_form: false,
-      loading: false,
       filters: {},
       response: [],
       headers: [],
       btn_actions: [],
       extra_btn: [],
-      product: { product_id: "" },
       root_body: {},
       url: "",
       product_var_info: "",
-      valid: true,
-      update: false,
       form: {
         skock: "",
         description: "",
@@ -78,7 +74,7 @@ export default {
               "jYYYY/jMM/jDD"
             );
           } else {
-            return "فعال نشده";
+            return " --";
           }
         },
       },
@@ -110,9 +106,9 @@ export default {
         value: (body) => {
           if (typeof body.text_log == "string") {
             if (body.text_log.length < 25) {
-              return `<h1 class='font_12'>${body.text_log}</h1>`;
+              return `<span class='font_12'>${body.text_log}</span>`;
             }
-            return `<h1 class='font_12'>${body.text_log.slice(0, 25) }"..."</h1>`;
+            return `<span class='font_12'>${body.text_log.slice(0, 25) }"..."</span>`;
           } else {
             return "-";
           }

@@ -1,9 +1,9 @@
 <template>
   <v-dialog v-model="dialog" width="380" persistent>
-    <v-card class="pa-3 " >
-      <div class="pb-6" style="border: 7px double #8585858a;">
+    <v-card class="pa-4 py-5 " >
+      <div class="pb-2 pt-4" >
         <v-col cols="12" class="text-center">
-        <h1 class="">تعیین وضعیت</h1>
+        <h1 class="font_17">تعیین وضعیت</h1>
         <h1>
           <small v-if="data.user && Boolean(data.user.first_name)">
             {{ data.user.first_name }} {{ data.user.last_name }}
@@ -23,12 +23,6 @@
             :items="$store.state.static.status_return_product"
             rules="require"
           />
-          <!-- <amp-input
-            text="تعداد"
-            v-model="form.number"
-            cClass="ltr-item"
-            rules="number,require"
-          /> -->
         </v-form>
         <v-row class="d-flex justify-center mt-8">
           <v-col cols="12" md="4">
@@ -82,10 +76,10 @@ export default {
       form["return_product_id"] = this.data.id;
       this.$reqApi("return-product/change-status", form)
         .then((res) => {
-          this.loading = false;
-          this.$emit("reload");
           this.closeDialog();
+          this.$emit("reload");
           this.$toast.success("عملیات با موفقیت انجام شد");
+          this.loading = false;
         })
         .catch((err) => {
           this.loading = false;

@@ -56,10 +56,10 @@
   </div>
 </template>
 <script>
-import DetailsBasket from "@/components/Product/PersonShopping/DetailsBasket.vue";
-import PaymentCompletion from "@/components/Product/PersonShopping/PaymentCompletion.vue";
-import ChangeStatus from "~/components/Product/PersonShopping/refrall/ChangeStatus.vue";
 import Refral from "@/components/Product/PersonShopping/Refral.vue";
+import DetailsBasket from "@/components/Product/PersonShopping/DetailsBasket.vue";
+import ChangeStatus from "~/components/Product/PersonShopping/refrall/ChangeStatus.vue";
+import PaymentCompletion from "@/components/Product/PersonShopping/PaymentCompletion.vue";
 
 export default {
   components: { DetailsBasket, PaymentCompletion, ChangeStatus, Refral },
@@ -121,6 +121,7 @@ export default {
               ) > -1
             ) &&
             this.step == 2
+            && body.status=="wait"
           ) {
             return true;
           } else {
@@ -128,28 +129,6 @@ export default {
           }
         },
       },
-      // {
-      //   text: "روال ارجاعات",
-      //   icon: "sync_alt",
-      //   color: "teal",
-      //   fun: (body) => {
-      //     this.refreal_dialog = true;
-      //   },
-      //   show_fun: (body) => {
-      //     if (
-      //       Boolean(
-      //         this.$store.state.auth.action.indexOf(
-      //           "return_factories/referral"
-      //         ) > -1
-      //       ) &&
-      //       this.step == 2
-      //     ) {
-      //       return true;
-      //     } else {
-      //       return false;
-      //     }
-      //   },
-      // },
       {
         text: "تکیمل  پرداخت",
         icon: "receipt",
@@ -173,7 +152,7 @@ export default {
         text: "سفارشات مرجوعی",
         icon: "event_busy",
         color: "blue-grey",
-        fun: (body) => {
+        fun: () => {
           this.step++;
         },
       },
@@ -183,10 +162,10 @@ export default {
         text: "روند ارجاعات",
         icon: "sync_alt",
         color: "blue-grey",
-        fun: (body) => {
+        fun: () => {
           this.$router.push(`/in-person-shopping/refral-list?action=${true}`);
         },
-        show_fun: (body) => {
+        show_fun: () => {
           if (
             Boolean(
               this.$store.state.auth.action.indexOf("return_factories/index") >
@@ -376,7 +355,6 @@ export default {
       },
       {
         filtrabel: false,
-
         value: (body) => {
           return `
       <h1 class="my-2">
@@ -391,7 +369,6 @@ export default {
             body.price_deposit_credit
           )}
           </small>
-    
         </h1>
       `;
         },
@@ -422,8 +399,6 @@ export default {
   mounted(){
     if (Boolean(this.$route.query.step)) {
       this.step = +Number(this.$route.query.step)
-      console.log(this.step );
-      
     }
   },
   methods: {

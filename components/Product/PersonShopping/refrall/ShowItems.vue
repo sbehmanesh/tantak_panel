@@ -1,9 +1,9 @@
 <template>
-  <v-dialog v-model="dialog" width="500" persistent>
+  <v-dialog v-model="dialog" width="520" persistent>
     <v-card class="pa-4 py-6">
-      <div class="" style="border: 7px double #8585858a">
-        <v-col cols="12" class="d-flex align-center">
-          <h1>
+      <div class="pa-2 py-5" style="border: 7px double #8585858a">
+        <v-col cols="12" class="d-flex align-top">
+          <h1 class="font_16">
             جزییات
             <br />
             <small>
@@ -36,19 +36,19 @@
         <v-col cols="12" v-if="!loading">
           <div v-for="(x, i) in items.return_factory_items" :key="i">
             <v-card
-              style="border-right: 3px solid #8585858a"
-              class="elevation-1 my-3 pa-4"
+              style="border-right: 4px solid #8585858a"
+              class="elevation-1 my-4 pa-4"
               outlined
             >
               <h1>
                 <small>
                   {{ x.name }}
                 </small>
-                <small class="grey--text"> ( {{ x.number }} عدد )</small>
+             
               </h1>
               <div class="d-flex justify-space-between align-center grey--text">
                 <h1>
-                  <small> {{ $price(x.price) }} ریال </small>
+                  <small> تعداد {{ x.number }} عدد </small>
                 </h1>
                 <h1>
                   <small> جمع کل {{ $price(x.price) }} ریال </small>
@@ -85,9 +85,7 @@ export default {
     loadData() {
       this.$reqApi("return-factory/show", { id: this.modelId })
         .then((res) => {
-          console.log("#res", res);
           this.items = res.model;
-
           this.loading = false;
         })
         .catch((err) => {

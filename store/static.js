@@ -810,7 +810,7 @@ let type_gift = [
 ];
 
 let step_reterned_product = [
-  { text: "ثبت اولیه", value: "init" , key:"" },
+  { text: "ثبت اولیه", value: "init" , key:"---" },
   { text: "بستن", value: "close" , key:"agency_manager" },
   { text: "از مدیر نمایندگی به سفیر", value: "agency_manager_to_sefir" , key:"agency_manager" },
   { text: "از سفیر به مدیرنمایندگی", value: "sefir_to_agency_manager" , key:"sefir" },

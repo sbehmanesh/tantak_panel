@@ -30,9 +30,9 @@
 </template>
 
 <script>
-import ShowItems from "@/components/Product/PersonShopping/refrall/ShowItems.vue";
 import Refral from "@/components/Product/PersonShopping/refrall/Refral.vue";
 import History from "@/components/Product/PersonShopping/refrall/History.vue";
+import ShowItems from "@/components/Product/PersonShopping/refrall/ShowItems.vue";
 export default {
   components: { ShowItems, Refral, History },
   data: () => ({
@@ -40,7 +40,7 @@ export default {
     extra_btn: [],
     btn_actions: [],
     data: {},
-    title: " محصولات معوقه",
+    title: " تاریخچه محصولات معوقه ",
     show_items: false,
     referral: false,
     history: false,

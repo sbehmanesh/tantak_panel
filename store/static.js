@@ -810,9 +810,6 @@ let type_gift = [
 ];
 
 let step_reterned_product = [
-  { text: "ثبت اولیه", value: "init" , key:"---" },
-  { text: "بستن", value: "close" , key:"agency_manager" },
-  { text: "از مدیر نمایندگی به سفیر", value: "agency_manager_to_sefir" , key:"agency_manager" },
   { text: "از سفیر به مدیرنمایندگی", value: "sefir_to_agency_manager" , key:"sefir" },
   { text: "از سفیر به سرپرست انبار مرکزی", value: "sefir_to_storage_manager"  , key:"sefir"},
   { text: "از سرپرست انبار مرکزی به سفیر", value: "storage_manager_to_sefir", key:"storage_manager" },
@@ -824,4 +821,7 @@ let step_reterned_product = [
   { text: "مدیر واحد مالی به سرپرست واحد مالی", value: "manager_to_supervisor_financial", key:"manager_financial" },
   { text: "سرپرست واحد مالی به مدیر واحد مالی", value: "supervisor_to_manager_financial" , key:"supervisor"},
   { text: "سرپرست واحد مالی به واحد مالی", value: "supervisor_to_financial", key:"supervisor" },
+  { text: "ثبت اولیه", value: "init" , key:"---" },
+  { text: "از مدیر نمایندگی به سفیر", value: "agency_manager_to_sefir" , key:"agency_manager" },
+  { text: "بستن", value: "close" , key:"agency_manager" },
 ]

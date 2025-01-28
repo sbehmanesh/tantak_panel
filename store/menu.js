@@ -42,8 +42,15 @@ let mnue_tree = [
         name: "نمایندگی برتر",
         access: "product_requests/root",
         route: "/user/top-sale-agency",
+      },   
+      {
+        id: 55656554,
+        name: " مخاطبین",
+        access: "contacts/index",
+        route: "/user/contacts",
       },
     ],
+    
   },
   {
     id: 618564558145,

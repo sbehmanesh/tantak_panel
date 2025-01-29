@@ -56,7 +56,7 @@ export default {
               "jYYYY/jMM/jDD"
             );
           } else {
-            return "فعال نشده";
+            return " --";
           }
         },
       },
@@ -73,8 +73,8 @@ export default {
       },
       {
         text: "شماره همراه",
-        filterCol: "send_user_last_name",
-        value: "send_user_last_name",
+        filterCol: "send_user_username",
+        value: "send_user_username",
       },
       {
         text: "پیام",
@@ -88,12 +88,9 @@ export default {
         value: (body) => {
           if (typeof body.text_log == "string") {
             if (body.text_log.length < 25) {
-              return `<h1 class='font_12'>${body.text_log}</h1>`;
+              return `<span class='font_12'>${body.text_log}</span>`;
             }
-            return `<h1 class='font_12'>${body.text_log.slice(
-              0,
-              25
-            )}"..."</h1>`;
+            return `<span class='font_12'>${body.text_log.slice(0, 25) }"..."</span>`;
           } else {
             return "-";
           }
@@ -107,13 +104,14 @@ export default {
       {
         text: " نام خانوادگی گیرنده ",
         filterCol: "get_user_last_name",
-        value: "get_user_username",
+        value: "get_user_last_name",
       },
       {
         text: "شماره همراه",
-        filterCol: "send_user_last_name",
-        value: "send_user_last_name",
+        filterCol: "get_user_username",
+        value: "get_user_username",
       },
+  
 
       {
         text: "وضعیت",

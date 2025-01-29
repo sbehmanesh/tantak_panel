@@ -91,8 +91,8 @@ export default {
       },
       {
         text: "شماره همراه",
-        filterCol: "send_user_last_name",
-        value: "send_user_last_name",
+        filterCol: "send_user_username",
+        value: "send_user_username",
       },
       {
         text: "پیام",
@@ -122,12 +122,12 @@ export default {
       {
         text: " نام خانوادگی گیرنده ",
         filterCol: "get_user_last_name",
-        value: "get_user_username",
+        value: "get_user_last_name",
       },
       {
         text: "شماره همراه",
-        filterCol: "send_user_last_name",
-        value: "send_user_last_name",
+        filterCol: "get_user_username",
+        value: "get_user_username",
       },
   
 

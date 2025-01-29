@@ -3,20 +3,17 @@
     <v-card :disabled="loading" class="pa-4 py-6">
       <div class="pt-2" style="border: 7px double #8585858a">
         <v-col cols="12" class="text-center">
-          <h1 class="font_16">
-            برسی روند ارجاع (
-            <small>
-              تعداد محصولات
-              {{ data.return_factory_items.length }} </small
-            >)
-          </h1>
+          <h1 class="font_16">برسی روند ارجاع</h1>
           <h1>
             <small>
               مجموع قیمت
               {{ $price(data.total_price) }} ریال
             </small>
             <br />
-            <small class="grey--text" style="border-bottom: 1px solid #8585858a">
+            <small
+              class="grey--text"
+              style="border-bottom: 1px solid #8585858a"
+            >
               شماره فاکتور
               {{ data.factor_number }}
             </small>
@@ -70,7 +67,7 @@
 export default {
   props: {
     data: {
-      default: {},
+      default: () => ({}),
     },
     dialog: {
       default: false,
@@ -116,27 +113,41 @@ export default {
   },
   methods: {
     checkRole() {
-      if (Boolean(this.$checkRole(this.$store.state.auth.role.agency_manager))) {
+      if (
+        Boolean(this.$checkRole(this.$store.state.auth.role.agency_manager))
+      ) {
         this.setStepItems("agency_manager");
       }
       if (Boolean(this.$checkRole(this.$store.state.auth.role.sefir))) {
         this.setStepItems("sefir");
       }
       if (
-        Boolean(this.$checkRole(this.$store.state.auth.role.superviser_centeral_stock))
+        Boolean(
+          this.$checkRole(this.$store.state.auth.role.superviser_centeral_stock)
+        )
       ) {
         this.setStepItems("storage_manager");
       }
-      if (Boolean(this.$checkRole(this.$store.state.auth.role.store_employee))) {
+      if (
+        Boolean(this.$checkRole(this.$store.state.auth.role.store_employee))
+      ) {
         this.setStepItems("storage_employee");
       }
-      if (Boolean(this.$checkRole(this.$store.state.auth.role.manager_financial_unit))) {
+      if (
+        Boolean(
+          this.$checkRole(this.$store.state.auth.role.manager_financial_unit)
+        )
+      ) {
         this.setStepItems("manager_financial");
       }
-      if (Boolean(this.$checkRole(this.$store.state.auth.role.fiscal_supervisor))) {
+      if (
+        Boolean(this.$checkRole(this.$store.state.auth.role.fiscal_supervisor))
+      ) {
         this.setStepItems("supervisor");
       }
-      if (Boolean(this.$checkRole(this.$store.state.auth.role.financial_unit_id))) {
+      if (
+        Boolean(this.$checkRole(this.$store.state.auth.role.financial_unit_id))
+      ) {
         this.setStepItems("financial");
       }
     },
@@ -146,7 +157,7 @@ export default {
       data = items.filter((x) => x.key == key);
       if (Boolean(data) && data.length > 0) {
         this.step_items = data;
-        if (this.step_items.length == 1) {
+        if (this.step_items && this.step_items.length == 1) {
           setTimeout(() => {
             this.form.step = this.step_items[0].value;
           }, 111);

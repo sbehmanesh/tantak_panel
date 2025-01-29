@@ -3,7 +3,7 @@
     <v-card class="pa-2">
       <div class="">
         <v-col cols="12" class="d-flex align-top">
-          <h1 class="font_16">جزییات</h1>
+          <h1 class="font_19">جزییات</h1>
 
           <v-spacer></v-spacer>
           <v-btn icon @click="closeDialog">
@@ -47,9 +47,9 @@
             <v-icon color="grey ">shopping_cart</v-icon>
             <h1 v-if="Object.keys(items).length > 0">
               <small>
-                تعداد ایتم
+                تعداد موجودی
                 <br />
-                {{ items.return_factory_items.length }}
+                {{ items.return_factory_items.length }} عدد
               </small>
             </h1>
           </v-card>

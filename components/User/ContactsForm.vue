@@ -2,7 +2,7 @@
   <v-form v-model="valid" @submit.prevent="submit()" :disabled="loading">
     <v-container fluid class="px-8">
       <v-row dense class="d-flex justify-center">
-        <v-col cols="12" md="2">
+        <v-col cols="12" md="4">
           <amp-input
             text="شماره همراه"
             v-model="form.phone_number"
@@ -10,19 +10,19 @@
             cClass="ltr-item"
           />
         </v-col>
-        <v-col cols="12" md="2">
+        <v-col cols="12" md="4">
           <amp-select text=" دسته بندی" v-model="form.category_id" rules="require" :items="category_contact" />
         </v-col>
-        <v-col cols="12" md="2">
+        <v-col cols="12" md="4">
           <amp-input text=" نام مخاطب" v-model="form.first_name" rules="require" />
         </v-col>
-        <v-col cols="12" md="2">
+        <v-col cols="12" md="4">
           <amp-input text="نام خانوادگی" v-model="form.last_name" rules="require" />
         </v-col>
-        <v-col cols="12" md="2">
-          <amp-input text=" how_know" v-model="form.how_know" />
+        <v-col cols="12" md="4">
+          <amp-input text="طریقه آشنایی" v-model="form.how_know" />
         </v-col>
-        <v-col cols="12" md="2">
+        <v-col cols="12" md="4">
           <amp-select
             text=" داخلی"
             :items="internal_items"

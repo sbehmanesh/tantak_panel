@@ -189,7 +189,7 @@
             v-if="!loading"
             ref="NotSystemProductsItems"
             @selectedIItems="selectedIItems($event)"
-            :data="not_system_products"
+            :datas="not_system_products"
             :load-items="prop_not_system_products"
           />
         </v-col>
@@ -430,7 +430,6 @@ export default {
         });
     },
     selectedIItems(event) {
-      console.log("event >>>>>> ", event);
 
       if (this.form.type_gift == "product_package" && event) {
         this.form.package_items = event.packages;

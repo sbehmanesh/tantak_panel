@@ -179,7 +179,6 @@ export default {
       this.$reqApi("return-factory/show", { id: this.modelId })
         .then((res) => {
           this.items = res.model;
-          console.log(this.items);
 
           this.loading = false;
         })

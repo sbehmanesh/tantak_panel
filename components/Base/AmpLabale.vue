@@ -15,6 +15,7 @@ export default {
   props: {
     text: {
       type: String,
+      default:'',
       required: false,
     },
     color: {

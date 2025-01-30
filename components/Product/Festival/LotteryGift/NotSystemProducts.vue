@@ -1,8 +1,10 @@
 <template>
-  <v-card class="pa-15 elevation-1" outlined>
-    <v-col cols="12" class="d-flex align-center">
+  <v-card
+    :class="sizeCard == 'small' ? 'pa-5 elevation-0' : 'pa-15 elevation-1'"
+    :outlined="sizeCard == 'small' ? false : true"
+  >
+    <v-col cols="12" class="d-flex align-center" v-if="sizeCard != 'small'">
       <v-divider style="border: 1px dashed #bababa"></v-divider>
-
       <h1 class="mx-4 font_17 text-center">
         محصول مورد نظر را انتخاب کنید
         <br />
@@ -12,17 +14,26 @@
     </v-col>
     <v-row class="justify-center mt-6">
       <v-col cols="12">
-        <amp-select
-          rules="require"
+        <amp-autocomplete
           multiple
           v-model="not_system_product_ids"
-          :items="data"
+          :items="datas"
         />
       </v-col>
     </v-row>
-
+    <!-- <amp-autocomplete
+          rules="require"
+          multiple
+          v-model="not_system_product_ids"
+          :items="datas"
+        /> -->
     <v-row class="d-flex align-center" v-if="not_system_product_ids.length > 0">
-      <v-col cols="12" md="4" v-for="(x, i) in list_items" :key="i">
+      <v-col
+        cols="12"
+        :md="sizeCard == 'small' ? '6' : '4'"
+        v-for="(x, i) in list_items"
+        :key="i"
+      >
         <v-card class="text-center" width="100%" outlined>
           <v-col cols="12" class="text-center elevation-1">
             <h1>
@@ -54,15 +65,19 @@
 </template>
 <script>
 export default {
+  components: {},
   props: {
     loadItems: {
       require: false,
     },
-    data: {
+    datas: {
       default: [],
       type: Array,
     },
-
+    sizeCard: {
+      default: "normal",
+      type: String,
+    },
   },
   data: () => ({
     step: 1,
@@ -78,7 +93,7 @@ export default {
         let items = [];
         for (let i = 0; i < this.not_system_product_ids.length; i++) {
           const x = this.not_system_product_ids[i];
-          let find = this.data.find((y) => y.value == x);
+          let find = this.datas.find((y) => y.value == x);
           if (Boolean(find)) {
             find["number"] = "1";
             items.push(find);
@@ -89,7 +104,8 @@ export default {
     },
   },
   mounted() {
-    if ( this.loadItems && this.loadItems.length > 0) {
+
+    if (this.loadItems && this.loadItems.length > 0) {
       this.not_system_product_ids = this.loadItems;
     }
   },
@@ -102,9 +118,9 @@ export default {
           number: x.number,
         });
       });
-      console.log("itsssssssems", items);
 
       this.$emit("selectedIItems", items);
+      this.$emit("selectedIItemsShow", this.list_items);
     },
   },
 };

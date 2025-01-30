@@ -1,55 +1,89 @@
 <template>
-  <v-dialog v-model="dialog" persistent max-width="1000">
-    <v-card style="overflow: hidden !important" class="pa-2">
-      <div class="card-style pa-4 pt-7">
-        <v-row class="d-flex align-center px-3">
-          <h1 class="font_16">ثبت قرعه کشی</h1>
-          <v-spacer></v-spacer>
-          <v-btn icon @click="closeDialog">
-            <v-icon> close </v-icon>
-          </v-btn>
+  <v-dialog v-model="dialog" persistent max-width="980">
+    <v-card style="overflow: hidden !important" class="pa-5 pt-8">
+      <v-row class="d-flex align-center px-8">
+        <h1 class="font_16">ثبت قرعه کشی</h1>
+        <v-spacer></v-spacer>
+        <v-btn icon @click="closeDialog">
+          <v-icon> close </v-icon>
+        </v-btn>
+        <v-col cols="12">
+          <v-divider></v-divider>
+        </v-col>
+      </v-row>
+
+      <v-stepper v-model="e6" vertical elevation="0">
+        <v-stepper-step :complete="e6 > 1" step="1">
+          <span >اطلاعات پایه قرعه کشی</span>
+          <small class="mt-1" >موارد اجباری با * علامت گذاری شده</small>
+        </v-stepper-step>
+
+        <v-stepper-content step="1">
+          <v-form v-model="valid">
+            <v-row>
+              <v-col cols="12" md="6">
+                <amp-input
+                  text="تعداد افراد "
+                  v-model="form.people_number_use"
+                  rules="require,number"
+                  cClass="ltr-item"
+                />
+              </v-col>
+              <v-col cols="12" md="6">
+                <amp-jdate
+                  text="زمان قرعه کشی"
+                  rules="require"
+                  :is-number="true"
+                  v-model="form.time"
+                />
+              </v-col>
+              <v-col cols="12" md="6">
+                <amp-select
+                  text="وضعیت"
+                  v-model="form.status"
+                  :items="$store.state.static.status"
+                  rules="require"
+                />
+              </v-col>
+              <v-col cols="12" md="6">
+                <amp-input
+                  text="ترتیب"
+                  v-model="form.sort"
+                  rules="number"
+                  cClass="ltr-item"
+                />
+              </v-col>
+              <v-col cols>
+                <amp-textarea
+                  text="توضیحات"
+                  :rows="1"
+                  v-model="form.description"
+                />
+              </v-col>
+            </v-row>
+            <v-row class="pa-2 justify-center">
+              <v-col cols="12" md="3">
+                <amp-button
+                  text="تایید"
+                  height="38"
+                  block
+                  color="teal darken-2"
+                  @click="e6++"
+                  class="ma-1"
+                  :loading="loading"
+                  :disabled="loading || !valid"
+                />
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-stepper-content>
+
+        <v-stepper-step :complete="e6 > 2" step="2">
+          Configure analytics for this app
+        </v-stepper-step>
+
+        <v-stepper-content step="2">
           <v-col cols="12">
-            <v-divider></v-divider>
-          </v-col>
-        </v-row>
-        <v-form v-model="valid">
-          <v-row>
-            <v-col cols="12" md="3">
-              <amp-input
-                text="تعداد افراد جشنواره"
-                v-model="form.people_number_use"
-                rules="require,number"
-                cClass="ltr-item"
-              />
-            </v-col>
-            <v-col cols="12" md="3">
-              <amp-jdate
-                text="زمان قرعه کشی"
-                rules="require"
-                :is-number="true"
-                v-model="form.time"
-              />
-            </v-col>
-            <v-col cols="12" md="3">
-              <amp-select
-                text="وضعیت"
-                v-model="form.status"
-                :items="$store.state.static.status"
-                rules="require"
-              />
-            </v-col>
-            <v-col cols="12" md="3">
-              <amp-input
-                text="ترتیب"
-                v-model="form.sort"
-                rules="number"
-                cClass="ltr-item"
-              />
-            </v-col>
-            <v-col cols>
-              <amp-textarea text="توضیحات" v-model="form.description" />
-            </v-col>
-            <v-col cols="12">
               <WinningUsers
                 :load-data="load_data"
                 ref="WinningUsersFestival"
@@ -58,32 +92,11 @@
                 :users-count="form.people_number_use"
               />
             </v-col>
-          </v-row>
-        </v-form>
+        </v-stepper-content>
+      </v-stepper>
 
-        <!-- <v-row class="align-center justify-center">
-          <v-col cols="12">
-            <FestivalAwards
-              v-if="products.length > 0 && package.length > 0"
-              :products="products"
-              :package="package"
-              :load-items=load_items
-              @selectedIItems="selectedIItems($event)"
-              ref="FestivalAwards"
-            />
-          </v-col>
-        </v-row> -->
-        <v-col cols="12" class="text-center">
-          <amp-button
-            large
-            icon="done"
-            class="my-1"
-            @click="submit"
-            color="success"
-            :text="itemId ? 'ویرایش' : 'ثبت'"
-          />
-        </v-col>
-      </div>
+
+ 
     </v-card>
   </v-dialog>
 </template>
@@ -109,6 +122,8 @@ export default {
   data() {
     return {
       valid: true,
+      e6: 1,
+
       loading: false,
       createUrl: "/lottery/insert",
       updateUrl: "/lottery/update",
@@ -131,6 +146,7 @@ export default {
         { text: "پکیج ", value: "package_items" },
         { text: "کد تخفیف", value: "coupon_items" },
         { text: "اعتباری", value: "wallets" },
+        { text: "محصولات غیر سیستمی", value: "not_system_product_ids" },
       ],
       type_data: {},
     };
@@ -202,7 +218,6 @@ export default {
             number: x.number,
             person_win: item.user_number,
           });
-    
         });
       } else if (item.type == "cash") {
         this.type_data.wallets.push({
@@ -223,9 +238,17 @@ export default {
           amount: item.value,
           type: "credit",
         });
+      } else if (item.type == "not_system_product_ids") {
+        item.items.map((x) => {
+          this.type_data.not_system_product_ids.push({
+            id: x.value,
+            number: x.number,
+            person_win: item.user_number,
+          });
+        });
       }
     },
- 
+
     //   this.form.package_items = event.packages;
     //   this.form.product_items = event.products;
     //   let form = { ...this.form };
@@ -234,7 +257,7 @@ export default {
     //   let url = this.createUrl;
     //   if (this.itemId) {
     //     url = this.updateUrl;
-       
+
     //   }
     //   this.$reqApi(url, form)
     //     .then((response) => {
@@ -260,7 +283,6 @@ export default {
           this.form.sort = data.sort;
           this.form.description = data.description;
           this.form.festival_id = data.festival_id;
-          let prop_items = [];
           let mian_array = [
             ...data.wallets,
             ...data.product_var_coms,
@@ -301,7 +323,6 @@ export default {
                 discount_value: discount_value,
               });
 
-
               pre[cur.person_win].gift_items.push({
                 type: "coupon_items",
                 user_number: cur.person_win,
@@ -325,6 +346,7 @@ export default {
                 });
               }
             }
+
             if (typeof cur.lotterygable_id != "undefined") {
               let text =
                 cur.lotterygable_id == "cash"
@@ -357,6 +379,62 @@ export default {
           }, {});
           for (let key in mian_array) {
             this.load_data.push(mian_array[key]);
+          }
+          if (
+            Boolean(data.not_system_products) &&
+            data.not_system_products &&
+            data.not_system_products.length > 0
+          ) {
+            let items_not_system_products = [];
+            for (let i = 0; i < this.load_data.length; i++) {
+              const x = this.load_data[i];
+              data.not_system_products.map((y) => {
+                if (y.person_win == x.number) {
+                  items_not_system_products.push({
+                    text: y.value,
+                    type: "not_system_product_ids",
+                    type_name: `محصولات سیستمی  نفر ( ${y.person_win} )`,
+                    value: y.id,
+                    number: y.number,
+                    user_number: y.person_win,
+                  });
+                }
+              });
+            }
+
+            const uniq_items = items_not_system_products.reduce((acc, item) => {
+              const key = item.type;
+              if (!acc[key]) {
+                acc[key] = {
+                  type: item.type,
+                  type_name: `محصولات سیستمی  نفر ( ${item.user_number} )`,
+                  number: item.user_number,
+                  items: [
+                    {
+                      text: item.text,
+                      number: item.number,
+                      value: item.value,
+                    },
+                  ],
+                };
+              } else {
+                acc[key].items.push({
+                  text: item.text,
+                  number: item.number,
+                  value: item.value,
+                });
+              }
+              return acc;
+            }, {});
+
+            for (let key in uniq_items) {
+              this.load_data.map((x) => {
+                if (x.number == uniq_items[key].number) {
+                  uniq_items[key]["user_number"] = uniq_items[key].number;
+                  x.gift_items.push(uniq_items[key]);
+                }
+              });
+            }
           }
 
           this.loading = false;
@@ -413,8 +491,3 @@ export default {
   },
 };
 </script>
-<style scoped>
-.card-style {
-  border: 9px double #919191 !important;
-}
-</style>

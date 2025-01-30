@@ -268,6 +268,40 @@
                         <v-icon x-small color="white">delete</v-icon>
                       </v-btn>
                     </v-card>
+                  </v-col>     
+                  
+                  <v-col cols="12" v-if="gift.type == 'not_system_product_ids'">
+                    <v-card
+                      style="border-right: 3px solid grey !important"
+                      outlined
+                      v-for="(pr_items, i_pr_item) in gift.items"
+                      :key="i_pr_item"
+                      width="100%"
+                      class="d-flex align-center pa-3 my-1 elevation-2"
+                      cols="12"
+                    >
+       
+                      <h1>
+                        <small> نام محصول ( غیر سیستمی ) ‌ {{ pr_items.text }} </small>
+                      </h1>
+                      <v-spacer></v-spacer>
+                      <h1>
+                        <small> تعداد :‌ {{ pr_items.number }} </small>
+                      </h1>
+                      <v-spacer></v-spacer>
+                
+                    
+              
+                 
+                      <v-btn
+                        small
+                        icon
+                        @click="deleteItem(i, gift.type, i_pr_item)"
+                        class="blue-grey mx-1"
+                      >
+                        <v-icon x-small color="white">delete</v-icon>
+                      </v-btn>
+                    </v-card>
                   </v-col>
                 </v-row>
               </div>
@@ -277,98 +311,117 @@
       </v-expansion-panel>
     </v-expansion-panels>
 
-    <v-dialog persistent width="550" v-model="dialog">
-      <v-card class="pa-0">
-        <v-col cols="12" class="d-flex align-center justify-center">
-          <v-divider></v-divider>
-          <h1 class="mx-3">
-            {{ dialog_title }}
-          </h1>
-          <v-divider></v-divider>
-        </v-col>
-        <div class="pa-4">
-          <div v-if="dialog_key == 'coupon_items'" class="d-flex align-center">
-            <v-col cols="12" class="mt-1">
-              <v-autocomplete
-                clearable
-                multiple
-                outlined
-                dense
-                prepend-inner-icon="newspaper"
-                v-model="coupon_ids"
-                :items="coupon_list"
-                label="کد های تخفیف"
-              >
-                <template v-slot:item="data">
-                  <v-list-item-content>
-                    <v-list-item-title>
-                      <h1>
-                        {{ data.item.text }}
-                      </h1>
-                    </v-list-item-title>
-                    <v-list-item-subtitle>
-                      <h1>
-                        <small class="blue-grey--text">
-                          مقدار تخفیف :‌ {{ data.item.discount_value }}
-                        </small>
-                        <br />
-                        <small> {{ data.item.date }} </small>
-                      </h1>
-                    </v-list-item-subtitle>
-                  </v-list-item-content>
-                </template>
-              </v-autocomplete>
-            </v-col>
-          </div>
-          <div v-if="dialog_key == 'not_system_product_ids'">
-            <NotSystemProducts
-            ref="NotSystemProductsItems"
-            @selectedIItems="getData($event, 'not_system_product')"
-            :data="not_system_products"
-            :load-items="[]"
-          />
-          </div>
-          <div
-            v-if="dialog_key == 'cash' || dialog_key == 'credit'"
-            class="text-center"
-          >
-            <amp-input
-              text="مبلغ به ریال"
-              v-model="wallet"
-              cClass="ltr-item"
-              is-price
-            ></amp-input>
-          </div>
-          <div v-if="dialog_key == 'product_var_com_items'">
-            <Products ref="LattryProduct" @data="getData($event, 'product')" />
-          </div>
-          <div v-if="dialog_key == 'package_items'">
-            <Packages ref="LattryPackage" @data="getData($event, 'package')" />
-          </div>
-        </div>
+    <v-dialog persistent width="750" v-model="dialog">
+      <v-card class="pa-10">
+        <div>
+          <v-col cols="12" class="d-flex align-center">
+            <v-divider style="border: 1px dashed #bababa"></v-divider>
+            <h1 class="mx-4 font_12 text-center">
+              <v-icon size="50" color="grey" >
+               assignment_ind
+              </v-icon>
+              <br />
+              {{ dialog_title }}
+            </h1>
+            <v-divider style="border: 1px dashed #bababa"></v-divider>
+          </v-col>
 
-        <v-col cols="12" class="d-flex justify-center">
-          <v-col cols="12" md="3">
-            <amp-button
-              text="تایید"
-              height="36"
-              block
-              color="teal darken-2"
-              @click="submit(dialog_key, dialog_user)"
-              class="ma-1"
-            />
+          <div class="pa-4">
+            <div v-if="dialog_key == 'not_system_product_ids'">
+              <NotSystemProducts
+                v-if="dialog_key == 'not_system_product_ids' && dialog"
+                ref="NotSystemProductsItems"
+                @selectedIItemsShow="getData($event, 'not_system_product')"
+                :datas="not_system_products"
+                size-card="small"
+                :load-items="[]"
+              />
+            </div>
+            <div
+              v-if="dialog_key == 'coupon_items'"
+              class="d-flex align-center"
+            >
+              <v-col cols="12" class="mt-1">
+                <v-autocomplete
+                  clearable
+                  multiple
+                  outlined
+                  dense
+                  prepend-inner-icon="newspaper"
+                  v-model="coupon_ids"
+                  :items="coupon_list"
+                  label="کد های تخفیف"
+                >
+                  <template v-slot:item="data">
+                    <v-list-item-content>
+                      <v-list-item-title>
+                        <h1>
+                          {{ data.item.text }}
+                        </h1>
+                      </v-list-item-title>
+                      <v-list-item-subtitle>
+                        <h1>
+                          <small class="blue-grey--text">
+                            مقدار تخفیف :‌ {{ data.item.discount_value }}
+                          </small>
+                          <br />
+                          <small> {{ data.item.date }} </small>
+                        </h1>
+                      </v-list-item-subtitle>
+                    </v-list-item-content>
+                  </template>
+                </v-autocomplete>
+              </v-col>
+            </div>
+
+            <div
+              v-if="dialog_key == 'cash' || dialog_key == 'credit'"
+              class="text-center"
+            >
+              <amp-input
+                text="مبلغ به ریال"
+                v-model="wallet"
+                cClass="ltr-item"
+                is-price
+              ></amp-input>
+            </div>
+            <div v-if="dialog_key == 'product_var_com_items'">
+              <Products
+                ref="LattryProduct"
+                @data="getData($event, 'product')"
+              />
+            </div>
+            <div v-if="dialog_key == 'package_items'">
+              <Packages
+                ref="LattryPackage"
+                @data="getData($event, 'package')"
+              />
+            </div>
+          </div>
+
+          <v-col cols="12" class="d-flex justify-center">
+            <v-col cols="12" md="3">
+              <amp-button
+                text="تایید"
+                height="36"
+                block
+                color="teal darken-2"
+                @click="submit(dialog_key, dialog_user)"
+                class="ma-1"
+              />
+            </v-col>
+            <v-col cols="12" md="3">
+              <amp-button
+                text="انصراف"
+                height="36"
+                block
+                color="red darken-2"
+                @click="dialog = false"
+                class="ma-1"
+              />
+            </v-col>
           </v-col>
-          <v-col cols="12" md="3">
-            <amp-button
-              text="انصراف"
-              height="36"
-              block
-              color="red darken-2"
-              @click="dialog = false"
-              class="ma-1"
-            />
-          </v-col>
-        </v-col>
+        </div>
       </v-card>
     </v-dialog>
   </div>
@@ -451,7 +504,7 @@ export default {
       }
 
       this.dialog = true;
-      console.log("key >> ", key, [this.dialog]);
+   
       this.dialog_title = `${type.text} ( نفر ${user.number} )`;
       this.dialog_key = key;
       this.dialog_user = user;
@@ -545,7 +598,7 @@ export default {
               value: x.id,
             });
           }
-          
+
           this.not_system_products = items;
         })
         .catch((err) => {});
@@ -686,7 +739,6 @@ export default {
           });
         }
       } else if (type == "not_system_product") {
-        console.log("ssdatass", data);
 
         let product_key = this.dialog_user.gift_items.find(
           (f) => f.type == this.dialog_key
@@ -698,10 +750,9 @@ export default {
             type: this.dialog_key,
             user_number: this.dialog_user.number,
             type_name: this.dialog_title,
-            items: [data],
+            items: data,
           });
         }
-        console.log("this.dialog_user.gift_items", this.dialog_user.gift_items);
       }
     },
     callSubmit() {

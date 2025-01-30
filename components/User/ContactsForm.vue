@@ -11,13 +11,26 @@
           />
         </v-col>
         <v-col cols="12" md="4">
-          <amp-select text=" دسته بندی" v-model="form.category_id" rules="require" :items="category_contact" />
+          <amp-select
+            text=" دسته بندی"
+            v-model="form.category_id"
+            rules="require"
+            :items="category_contact"
+          />
         </v-col>
         <v-col cols="12" md="4">
-          <amp-input text=" نام مخاطب" v-model="form.first_name" rules="require" />
+          <amp-input
+            text=" نام مخاطب"
+            v-model="form.first_name"
+            rules="require"
+          />
         </v-col>
         <v-col cols="12" md="4">
-          <amp-input text="نام خانوادگی" v-model="form.last_name" rules="require" />
+          <amp-input
+            text="نام خانوادگی"
+            v-model="form.last_name"
+            rules="require"
+          />
         </v-col>
         <v-col cols="12" md="4">
           <amp-input text="طریقه آشنایی" v-model="form.how_know" />
@@ -90,7 +103,7 @@ export default {
   }),
 
   beforeMount() {
-    this.loadInternals()
+    this.loadInternals();
     this.loadCategouryes();
   },
   mounted() {
@@ -101,7 +114,7 @@ export default {
 
   methods: {
     submit() {
-        this.loading = true;
+      this.loading = true;
       let form = { ...this.form };
       let url = this.createUrl;
       if (this.modelId) {
@@ -131,10 +144,8 @@ export default {
 
       this.$reqApi("/setting", { filters: filters })
         .then((response) => {
-            console.log(response);
-            
           this.category_contact = response.model.data.map((x) => ({
-              text: x.value,
+            text: x.value,
             value: x.id,
           }));
 
@@ -165,10 +176,10 @@ export default {
       this.loading = true;
       this.$reqApi(this.showUrl, { id: this.modelId })
         .then(async (response) => {
-let data = response.model
-for(let i in data){
-    this.form[i] = data[i]
-}
+          let data = response.model;
+          for (let i in data) {
+            this.form[i] = data[i];
+          }
           this.loading = false;
         })
         .catch((error) => {

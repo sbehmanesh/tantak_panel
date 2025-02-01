@@ -1,11 +1,12 @@
 <template>
   <div class="text-center">
-    <v-dialog v-model="dialog" persistent width="450">
+    <v-dialog v-model="dialog" persistent width="500">
       <v-card
         :disabled="disabled"
-        class="elevation-0 d-flex align-center pa-3"
-        style="overflow: hidden !important"
+        class="elevation-0 pa-3 "
       >
+      <div class="card-style pa-5" elevation="2">
+        <v-banner class="mb-5"> <h1>خروجی اکسل گزارشات تماس</h1></v-banner>
         <v-form v-model="valid">
           <v-row class="justify-center">
             <v-col cols="12" md="12">
@@ -23,6 +24,14 @@
                 :rules="Boolean(form.type_report) ? 'require' : ''"
                 :role-id="filter_role"
               />
+              <amp-select
+                :disabled="!Boolean(form.type_report)"
+                text="مرحله را انتخاب کنید"
+                :items="step_items"
+                rules="require"
+                v-model="form.step"
+              />
+
               <amp-jdate
                 text="تاریخ شروع"
                 :is-number="true"
@@ -58,6 +67,8 @@
             </v-row>
           </v-row>
         </v-form>
+      </div>
+       
       </v-card>
     </v-dialog>
   </div>
@@ -79,12 +90,8 @@ export default {
     return {
       loading: false,
       disabled: false,
-      page_number: 1,
-      total_length: "0",
+      valid: true,
       url_list: "user/searchByRole",
-      value: 0,
-      end: false,
-      total_data: [],
       filter_role: [],
       user: [],
       roles: [],
@@ -94,8 +101,6 @@ export default {
         start_at: "",
         user_id: "",
       },
-
-      valid: true,
       set_filters: {},
       excel_hed: [
         { text: "شماره همراه ارجاع دهنده", value: "sender_phone" },
@@ -149,14 +154,40 @@ export default {
     }
   },
   watch: {
-    total_data: {
-      deep: true,
-      handler() {
-        this.value = (this.total_data.length * 100) / this.total_length;
-      },
-    },
     "form.type_report"() {
       this.filter_role = [];
+      console.log("E --> ", this.form.type_report);
+      if (this.form.type_report == "manager") {
+        this.step_items = [
+          {
+            text: "مدیر مرکز تماس به سرپرست مرکز تماس",
+            value: "manager_to_supervisor",
+          },
+          {
+            text: "پیام های بسته شده",
+            value: "close",
+          },
+        ];
+      } else if (this.form.type_report == "supervisor") {
+        this.step_items = [
+          {
+            text: "   از سرپرست مرکز تماس به فروشنده",
+            value: "supervisor_to_operator",
+          },
+          {
+            text: "   از سرپرست مرکز تماس به مدیر مرکز تماس",
+
+            value: "supervisor_to_manager",
+          },
+        ];
+      } else {
+        this.step_items = [
+          {
+            text: "   از  فروشنده به سرپرست مرکز   ",
+            value: "operator_to_supervisor",
+          },
+        ];
+      }
       let find = this.roles.find((x) => x.value == this.form.type_report);
       if (Boolean(find)) {
         this.filter_role.push(find.role_id);
@@ -169,22 +200,19 @@ export default {
         Boolean(this.$checkRole(this.$store.state.auth.role.superviser_id)) &&
         this.form.type_report == "supervisor"
       ) {
-
         return false;
       } else if (!Boolean(this.form.type_report)) {
-
         return false;
       } else {
         return true;
       }
     },
-    status_request() {
-      return `
- ${this.total_length} / ${this.total_data.length}
-  `;
-    },
+
   },
   methods: {
+    closeDialog() {
+      this.$emit("closeDialog");
+    },
     getLogsRefral() {
       this.loading = true;
       let form = { ...this.form };
@@ -245,16 +273,14 @@ export default {
       this.$toast.success("اکسل گزارش ارجاعات با موفقیت دریافت شد");
     },
 
-    closeDialog() {
-      this.end = true;
-      this.$emit("closeDialog");
-    },
   },
 };
 </script>
 <style scoped>
 .card-style {
-  background-color: #ffffff !important;
+  overflow: hidden !important;
+  border-radius: 8px !important;
+  border: 7px double #a8a8a8b8;
 }
 .card-style2 {
   background-color: #ffffff !important;

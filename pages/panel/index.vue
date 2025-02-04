@@ -1,5 +1,7 @@
 <template>
-  <div></div>
+  <div>
+
+  </div>
 </template>
 
 <script>
@@ -90,13 +92,20 @@ export default {
       if (this.$checkAccess("access_cartable/cartable_send_coordinator")) {
         this.$router.push("/panel/send-coordinator/coordinator");
       }
-      if (this.$checkAccess("access_cartable/cartable_manager_send_coordinator")) {
+      if (
+        this.$checkAccess("access_cartable/cartable_manager_send_coordinator")
+      ) {
         this.$router.push("/panel/send-coordinator/manager");
       }
-      if (this.$checkAccess("access_cartable/cartable_supervisor_send_coordinator")) {
+      if (
+        this.$checkAccess(
+          "access_cartable/cartable_supervisor_send_coordinator"
+        )
+      ) {
         this.$router.push("/panel/send-coordinator/supervisor");
       }
     },
   },
 };
 </script>
+

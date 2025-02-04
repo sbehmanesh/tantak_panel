@@ -185,7 +185,7 @@
             not_system_products.length > 0
           "
         >
-        <NotSystemProducts
+          <NotSystemProducts
             v-if="!loading"
             ref="NotSystemProductsItems"
             @selectedIItems="selectedIItems($event)"
@@ -430,7 +430,6 @@ export default {
         });
     },
     selectedIItems(event) {
-
       if (this.form.type_gift == "product_package" && event) {
         this.form.package_items = event.packages;
         this.form.product_items = event.products;

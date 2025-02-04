@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" persistent max-width="980">
+  <v-dialog v-model="dialog" persistent max-width="850">
     <v-card style="overflow: hidden !important" class="pa-5 pt-8">
       <v-row class="d-flex align-center px-8">
         <h1 class="font_16">ثبت قرعه کشی</h1>
@@ -12,13 +12,8 @@
         </v-col>
       </v-row>
 
-      <v-stepper v-model="e6" vertical elevation="0">
-        <v-stepper-step :complete="e6 > 1" step="1">
-          <span >اطلاعات پایه قرعه کشی</span>
-          <small class="mt-1" >موارد اجباری با * علامت گذاری شده</small>
-        </v-stepper-step>
 
-        <v-stepper-content step="1">
+
           <v-form v-model="valid">
             <v-row>
               <v-col cols="12" md="6">
@@ -60,29 +55,9 @@
                   v-model="form.description"
                 />
               </v-col>
+              
             </v-row>
-            <v-row class="pa-2 justify-center">
-              <v-col cols="12" md="3">
-                <amp-button
-                  text="تایید"
-                  height="38"
-                  block
-                  color="teal darken-2"
-                  @click="e6++"
-                  class="ma-1"
-                  :loading="loading"
-                  :disabled="loading || !valid"
-                />
-              </v-col>
-            </v-row>
-          </v-form>
-        </v-stepper-content>
-
-        <v-stepper-step :complete="e6 > 2" step="2">
-          Configure analytics for this app
-        </v-stepper-step>
-
-        <v-stepper-content step="2">
+                          
           <v-col cols="12">
               <WinningUsers
                 :load-data="load_data"
@@ -92,8 +67,25 @@
                 :users-count="form.people_number_use"
               />
             </v-col>
-        </v-stepper-content>
-      </v-stepper>
+            <v-row class="pa-2 justify-center">
+              <v-col cols="12" md="3">
+                <amp-button
+                icon="done"
+                  text="تایید"
+                  block
+                  color="teal "
+                  @click="submit"
+                  class="ma-1"
+                  :loading="loading"
+                  :disabled="loading || !valid"
+                />
+              </v-col>
+
+            </v-row>
+          </v-form>
+
+  
+
 
 
  

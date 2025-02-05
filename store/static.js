@@ -64,12 +64,18 @@ export const state = () => ({
   type_gift,
   status_return_product,
   step_reterned_product,
+  type_questions,
+  register_type,
 });
 
 let status_type = [
   { text: "شارژ", value: "charg" },
   { text: "خرید", value: "buy" },
   { text: "برگشت", value: "reject" },
+];
+let register_type = [
+  { text: "پنل", value: "panel" },
+  { text: "اپ", value: "app" },
 ];
 
 let setting_keys = [
@@ -632,7 +638,8 @@ let status_basket_refral = [
   {
     text: "کنسل شده",
     value: "canceled",
-  },  {
+  },
+  {
     text: "کنسل شده",
     value: "cancel",
   },
@@ -805,24 +812,73 @@ let type_gift = [
   { text: "کد تخفیف", value: "coupon" },
   { text: "شارژ کیف پول نقدی", value: "cash_walet" },
   { text: "اعتباری", value: "credit_wallt" },
-]; let status_return_product = [
+];
+let status_return_product = [
   { text: "افزودن به انبار", value: "add_stock" },
   { text: "بازگشت", value: "return_fac" },
 ];
 
 let step_reterned_product = [
-  { text: "از سفیر به مدیرنمایندگی", value: "sefir_to_agency_manager" , key:"sefir" },
-  { text: "از سفیر به سرپرست انبار مرکزی", value: "sefir_to_storage_manager"  , key:"sefir"},
-  { text: "از سرپرست انبار مرکزی به سفیر", value: "storage_manager_to_sefir", key:"storage_manager" },
-  { text: "سرپرست انبار مرکزی به کارمند", value: "storage_manager_to_employee" , key:"storage_manager"},
-  { text: "کارمند انبار مرکزی به سرپرست انبار مرکزی", value: "storage_employee_to_manager" , key:"storage_employee"},
-  { text: "کارمند انبار مرکزی به واحد مالی", value: "storage_employee_to_financial", key:"storage_employee" },
-  { text: "تایید", value: "done" , key:"financial"},
-  { text: " واحد مالی به سرپرست واحد مالی", value: "financial_to_supervisor" , key:"financial"},
-  { text: "مدیر واحد مالی به سرپرست واحد مالی", value: "manager_to_supervisor_financial", key:"manager_financial" },
-  { text: "سرپرست واحد مالی به مدیر واحد مالی", value: "supervisor_to_manager_financial" , key:"supervisor"},
-  { text: "سرپرست واحد مالی به واحد مالی", value: "supervisor_to_financial", key:"supervisor" },
-  { text: "ثبت اولیه", value: "init" , key:"---" },
-  { text: "از مدیر نمایندگی به سفیر", value: "agency_manager_to_sefir" , key:"agency_manager" },
-  { text: "بستن", value: "close" , key:"agency_manager" },
-]
+  {
+    text: "از سفیر به مدیرنمایندگی",
+    value: "sefir_to_agency_manager",
+    key: "sefir",
+  },
+  {
+    text: "از سفیر به سرپرست انبار مرکزی",
+    value: "sefir_to_storage_manager",
+    key: "sefir",
+  },
+  {
+    text: "از سرپرست انبار مرکزی به سفیر",
+    value: "storage_manager_to_sefir",
+    key: "storage_manager",
+  },
+  {
+    text: "سرپرست انبار مرکزی به کارمند",
+    value: "storage_manager_to_employee",
+    key: "storage_manager",
+  },
+  {
+    text: "کارمند انبار مرکزی به سرپرست انبار مرکزی",
+    value: "storage_employee_to_manager",
+    key: "storage_employee",
+  },
+  {
+    text: "کارمند انبار مرکزی به واحد مالی",
+    value: "storage_employee_to_financial",
+    key: "storage_employee",
+  },
+  { text: "تایید", value: "done", key: "financial" },
+  {
+    text: " واحد مالی به سرپرست واحد مالی",
+    value: "financial_to_supervisor",
+    key: "financial",
+  },
+  {
+    text: "مدیر واحد مالی به سرپرست واحد مالی",
+    value: "manager_to_supervisor_financial",
+    key: "manager_financial",
+  },
+  {
+    text: "سرپرست واحد مالی به مدیر واحد مالی",
+    value: "supervisor_to_manager_financial",
+    key: "supervisor",
+  },
+  {
+    text: "سرپرست واحد مالی به واحد مالی",
+    value: "supervisor_to_financial",
+    key: "supervisor",
+  },
+  { text: "ثبت اولیه", value: "init", key: "---" },
+  {
+    text: "از مدیر نمایندگی به سفیر",
+    value: "agency_manager_to_sefir",
+    key: "agency_manager",
+  },
+  { text: "بستن", value: "close", key: "agency_manager" },
+];
+let type_questions = [
+  { text: "متن", value: "text" },
+  { text: "دراپ دان", value: "option" },
+];

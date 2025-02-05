@@ -98,7 +98,6 @@
                   text="نظر درباره مشتری "
                   v-model="comment"
                 ></amp-textarea>
-
                 <v-row class="mb-2 mt-4 d-flex justify-center">
                   <amp-button
                     text="تایید"
@@ -175,6 +174,8 @@ export default {
       let form = {};
       form["user_id"] = this.userInfo.id;
       form["comment"] = this.comment;
+      form["register_type"] = "panel";
+
       let url = "/user-comment/insert";
       this.$reqApi(url, form)
         .then((res) => {

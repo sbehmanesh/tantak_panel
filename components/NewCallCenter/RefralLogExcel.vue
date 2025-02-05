@@ -1,74 +1,70 @@
 <template>
   <div class="text-center">
     <v-dialog v-model="dialog" persistent width="500">
-      <v-card
-        :disabled="disabled"
-        class="elevation-0 pa-3 "
-      >
-      <div class="card-style pa-5" elevation="2">
-        <v-banner class="mb-5"> <h1>خروجی اکسل گزارشات تماس</h1></v-banner>
-        <v-form v-model="valid">
-          <v-row class="justify-center">
-            <v-col cols="12" md="12">
-              <amp-select
-                text="نقش"
-                :items="roles"
-                rules="require"
-                v-model="form.type_report"
-              />
-              <UserSelectForm
-                v-if="Boolean(check_show_list)"
-                text="انتخاب کاربر"
-                v-model="user"
-                :url="url_list"
-                :rules="Boolean(form.type_report) ? 'require' : ''"
-                :role-id="filter_role"
-              />
-              <amp-select
-                :disabled="!Boolean(form.type_report)"
-                text="مرحله را انتخاب کنید"
-                :items="step_items"
-                rules="require"
-                v-model="form.step"
-              />
+      <v-card :disabled="disabled" class="elevation-0 pa-3">
+        <div class="card-style pa-5" elevation="2">
+          <v-banner class="mb-5"> <h1>خروجی اکسل گزارشات تماس</h1></v-banner>
+          <v-form v-model="valid">
+            <v-row class="justify-center">
+              <v-col cols="12" md="12">
+                <amp-select
+                  text="نقش"
+                  :items="roles"
+                  rules="require"
+                  v-model="form.type_report"
+                />
+                <UserSelectForm
+                  v-if="Boolean(check_show_list)"
+                  text="انتخاب کاربر"
+                  v-model="user"
+                  :url="url_list"
+                  :rules="Boolean(form.type_report) ? 'require' : ''"
+                  :role-id="filter_role"
+                />
+                <amp-select
+                  :disabled="!Boolean(form.type_report)"
+                  text="مرحله را انتخاب کنید"
+                  :items="step_items"
+                  rules="require"
+                  v-model="form.step"
+                />
 
-              <amp-jdate
-                text="تاریخ شروع"
-                :is-number="true"
-                rules="require"
-                v-model="form.start_at"
-              />
-              <amp-jdate
-                class="mt-3"
-                rules="require"
-                text="تاریخ پایان"
-                :is-number="true"
-                v-model="form.end_at"
-              />
-            </v-col>
-            <v-row class="align-center pa-2 justify-center my-2">
-              <amp-button
-                text="تایید"
-                height="38"
-                class="ma-2"
-                :loading="loading"
-                color="blue-grey"
-                @click="getLogsRefral"
-                :disabled="!valid || loading"
-              />
-              <amp-button
-                text="انصراف"
-                height="38"
-                class="ma-2"
-                color="red"
-                @click="closeDialog"
-                :disabled="loading"
-              />
+                <amp-jdate
+                  text="تاریخ شروع"
+                  :is-number="true"
+                  rules="require"
+                  v-model="form.start_at"
+                />
+                <amp-jdate
+                  class="mt-3"
+                  rules="require"
+                  text="تاریخ پایان"
+                  :is-number="true"
+                  v-model="form.end_at"
+                />
+              </v-col>
+              <v-row class="align-center pa-2 justify-center my-2">
+                <amp-button
+                  text="تایید"
+                  height="38"
+                  class="ma-2"
+                  :loading="loading"
+                  color="blue-grey"
+                  @click="getLogsRefral"
+                  :disabled="!valid || loading"
+                />
+                <amp-button
+                  text="انصراف"
+                  height="38"
+                  class="ma-2"
+                  color="red"
+                  @click="closeDialog"
+                  :disabled="loading"
+                />
+              </v-row>
             </v-row>
-          </v-row>
-        </v-form>
-      </div>
-       
+          </v-form>
+        </div>
       </v-card>
     </v-dialog>
   </div>
@@ -103,17 +99,31 @@ export default {
       },
       set_filters: {},
       excel_hed: [
-        { text: "شماره همراه ارجاع دهنده", value: "sender_phone" },
+        { text: "زمان ثبت پیام", value: "created_at" },
+        { text: "شناسه پیام", value: "message_id" },
+        { text: "نام صاحب پیام", value: "customer_name" },
+        { text: "شماره همراه صاحب پیام", value: "customer_phone" },
+        {
+          text: "آخرین وضعیت پیام",
+          value: "status",
+        },
         {
           text: "مرحله ارجاع ",
           value: "step",
         },
+        {
+          text: "نوع ارجاع پیام",
+          value: "type_send",
+        },
+        { text: "شماره همراه ارجاع دهنده", value: "sender_phone" },
+
         {
           text: "تعداد پیام ارجاع داده شده",
           value: "count",
         },
         { text: "گیرنده", value: "geter" },
         { text: "شماره همراه  گیرنده", value: "geter_phone" },
+        { text: "توضیحات", value: "description" },
       ],
     };
   },
@@ -156,7 +166,6 @@ export default {
   watch: {
     "form.type_report"() {
       this.filter_role = [];
-      console.log("E --> ", this.form.type_report);
       if (this.form.type_report == "manager") {
         this.step_items = [
           {
@@ -207,7 +216,6 @@ export default {
         return true;
       }
     },
-
   },
   methods: {
     closeDialog() {
@@ -255,7 +263,34 @@ export default {
           this.$store.state.static.step_message,
           x.step
         );
+        let status_messages = this.$getItemEnum(
+          this.$store.state.static.status_message,
+          x.message.status
+        );
+        let customer_name = "";
+        if (
+          x.message &&
+          Boolean(x.message.user) &&
+          Boolean(x.message.user.first_name) &&
+          Boolean(x.message.user.last_name)
+        ) {
+          customer_name = `${x.message.user.first_name} ${x.message.user.last_name}`;
+        }
+        let customer_phone = "";
+        if (
+          x.message &&
+          Boolean(x.message.user) &&
+          Boolean(x.message.user.username)
+        ) {
+          customer_phone = x.message.user.username;
+        }
+
+        let type_send = this.$getItemEnum(
+          this.$store.state.static.type_send,
+          x.type_send
+        );
         body_items.push({
+          created_at: this.$toJalali(x.created_at),
           sender_phone: data.user.username,
           geter:
             Boolean(x.to_personnel) &&
@@ -266,13 +301,18 @@ export default {
           geter_phone: Boolean(x.to_personnel) ? x.to_personnel.username : "--",
           count: x.count,
           step: step_refral,
+          message_id: x.message ? x.message.messageid : "--",
+          status: x.message ? status_messages : "--",
+          description: x.description,
+          customer_name: customer_name,
+          customer_phone: customer_phone,
+          type_send: type_send,
         });
       }
       this.$exportCSV(this.excel_hed, body_items, excel_name);
       this.loading = false;
       this.$toast.success("اکسل گزارش ارجاعات با موفقیت دریافت شد");
     },
-
   },
 };
 </script>

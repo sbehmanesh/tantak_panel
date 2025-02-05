@@ -42,7 +42,7 @@ let mnue_tree = [
         name: "نمایندگی برتر",
         access: "product_requests/root",
         route: "/user/top-sale-agency",
-      },   
+      },
       {
         id: 55656554,
         name: " مخاطبین",
@@ -50,7 +50,6 @@ let mnue_tree = [
         route: "/user/contacts",
       },
     ],
-    
   },
   {
     id: 618564558145,
@@ -422,6 +421,25 @@ let mnue_tree = [
         route: "/setting/delivery-time",
       },
       {
+        id: 97774589,
+        name: "نظر سنجی",
+        children: [
+          {
+            id: 1001549,
+            name: "دسته بندی سوالات",
+            access: "comment_categories/index",
+            route: "/setting/comment-questions/category",
+          },
+          {
+            id: 1009,
+            name: "فرم نظر سنجی",
+            access: "comment_questions/root",
+            route: "/setting/comment-questions",
+          },
+       
+        ],
+      },
+      {
         id: 19,
         name: "اسلایدر",
         access: "setting/root",
@@ -445,12 +463,7 @@ let mnue_tree = [
         access: "setting/root",
         route: "/setting/delete-basket",
       },
-      {
-        id: 1009,
-        name: "فرم نظر سنجی",
-        access: "comment_questions/index",
-        route: "/setting/comment-questions",
-      },
+
       {
         id: 101209,
         name: "گارانتی",
@@ -565,7 +578,8 @@ let mnue_tree = [
         name: "دسته بندی مخاطبین ",
         access: "setting/root",
         route: "/setting/category-contact",
-      },    {
+      },
+      {
         id: 99852,
         name: "محصولات غیر سیستمی",
         access: "setting/root",

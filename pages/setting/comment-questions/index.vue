@@ -34,8 +34,11 @@ export default {
           if (body.answers.length > 0) {
             answers_items = body.answers.map((x) => x.answer).join(`  <br/>  -`);
           }
-          if (answers_items) {
+          if (answers_items.length > 0) {
             return answers_items;
+          }
+          if (answers_items.length==0) {
+            return "--"
           }
         },
         value: (body) => {

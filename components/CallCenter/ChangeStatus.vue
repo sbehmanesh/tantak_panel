@@ -89,12 +89,20 @@
                     :key="index"
                   >
                     <amp-select
+                      v-if="question.type == 'option'"
                       :text="index + 1 + ' - ' + question.title"
                       v-model="answers_list[index]"
                       :items="question.answer"
                       rules="require"
                     />
+                    <amp-input
+                      rules="require"
+                      v-if="question.type == 'text'"
+                      :text="index + 1 + ' - ' + question.title"
+                      v-model="answers_list[index]"
+                    />
                   </div>
+
                   <amp-textarea
                     class="mx-4"
                     rules="require"
@@ -235,6 +243,7 @@ export default {
             });
             questions.push({
               title: x.question,
+              type: x.type == "text" ? "text" : "option",
               answer: answer_question,
             });
           }
@@ -250,6 +259,7 @@ export default {
       form["user_id"] = this.userInfo.id;
       form["answers"] = this.answers_list;
       form["comment"] = this.comment;
+      form["register_type"] = "panel";
       let url = "/user-comment/insert";
       this.$reqApi(url, form)
         .then((res) => {

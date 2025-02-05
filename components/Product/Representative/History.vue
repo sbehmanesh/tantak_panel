@@ -2,6 +2,7 @@
   <div>
     <BaseTable
       url="/sale-agency-stock/history"
+      @getData="totalItems($event)"
       :headers="headers"
       :filters="filters"
       :root-body="root_body"
@@ -32,6 +33,7 @@ export default {
       loading: false,
       filters: {},
       response: [],
+      items: [],
       headers: [],
       product: { product_id: "" },
       root_body: "",
@@ -49,7 +51,7 @@ export default {
     };
   },
 
-   beforeMount() {
+  beforeMount() {
     this.filters = {
       section_id: {
         op: "=",
@@ -147,6 +149,15 @@ export default {
     ];
     this.extra_btn = [
       {
+        text: "خروجی اکسل",
+        icon: "description",
+        color: "teal",
+        fun: () => {
+          this.getExcelFile();
+        },
+      },
+
+      {
         text: "برگشت",
         icon: "arrow_circle_right",
         color: "red",
@@ -157,8 +168,49 @@ export default {
     ];
   },
   methods: {
+    totalItems(res) {
+      this.items = res.model.data;
+    },
     backStep() {
       this.$emit("backStep");
+    },
+    getExcelFile() {
+      let body_items = [];
+
+      for (let i = 0; i < this.items.length; i++) {
+        const x = this.items[i];
+        let user =
+          Boolean(x.user) &&
+          Boolean(x.user.first_name) &&
+          Boolean(x.user.last_name)
+            ? `${x.user.first_name} ${x.user.last_name}`
+            : "--";
+        let phone = Boolean(x.user) ? x.user.username : "--";
+        body_items.push({
+          created_at: this.$toJalali(x.created_at),
+          user: user,
+          phone: phone,
+          text_log: x.text_log,
+          after_change_stock: x.after_change_stock,
+          after_change_saved_stock: x.after_change_saved_stock,
+          befor_change_saved_stock: x.befor_change_saved_stock,
+          befor_change_stock: x.befor_change_stock,
+          factor_number: x.basket && Boolean(x.basket) && Object.keys(x.basket).length > 0 ?  x.basket.factor_number :"--",
+        });
+        let heder = [
+          { text: "زمان ثبت", value: "created_at" },
+          { text: "نام کاربر", value: "user" },
+          { text: "شماره همراه", value: "phone" },
+          { text: "آخرین وضعیت", value: "text_log" },
+          { text: "موجودی جدید", value: "after_change_stock" },
+          { text: "موجودی جدید انبار", value: "after_change_saved_stock" },
+          { text: "موجودی قدیم انبار", value: "befor_change_saved_stock" },
+          { text: "موجودی قدیم", value: "befor_change_stock" },
+          { text: "شماره فاکتور سفارش", value: "factor_number" },
+        ];
+        let excel_name = "تاریخجه انبار";
+        this.$exportCSV(heder, body_items, excel_name);
+      }
     },
   },
 };

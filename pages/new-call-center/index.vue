@@ -388,7 +388,6 @@ export default {
         Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))) &&
       this.$store.state.auth.action.indexOf("messages/insert") > -1
     ) {
-      console.log(">>>>>>>>>>")
       this.extra_btn.push({
         text: "گزارشات",
         icon: "pending_actions",
@@ -397,7 +396,6 @@ export default {
           this.refral_logs = true;
         },
       });
-      console.log(">>>>extra_btn>>>>>>" , this.extra_btn)
 
     }
     this.$store.dispatch("setPageTitle", this.title);

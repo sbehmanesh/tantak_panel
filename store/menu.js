@@ -52,11 +52,18 @@ let mnue_tree = [
     ],
   },
   {
+    id: 1122334,
+    name: "شرکت ها",
+    access: "companies/index",
+    route: "/companies",
+  },
+  {
     id: 618564558145,
     name: "گزارشات تماس",
     access: "messages/issabel_request_call/history",
     route: "/call-reports",
-  },
+  }, 
+
   {
     id: 50,
     name: "مرکز فروش تلفنی",
@@ -294,12 +301,7 @@ let mnue_tree = [
     ],
   },
 
-  // {
-  //   id: 31,
-  //   name: "موجودی انبار",
-  //   access: "product/root",
-  //   route: "/stock",
-  // },
+
   {
     id: 34751,
     name: "وظیفه ها",

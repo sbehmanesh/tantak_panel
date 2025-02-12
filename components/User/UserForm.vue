@@ -31,7 +31,7 @@
             multiple
             rules="require"
             v-model="form.person_type"
-            :items="$store.state.setting.person_type"
+            :items="$store.state.static.person_type"
           />
         </v-col>        <v-col cols="12" md="3" v-if="!Boolean(roleId)">
           <amp-autocomplete

@@ -62,7 +62,7 @@ components:{
         const x = event.model.data[index];
         items.push({
           text:x.first_name + " " + x.last_name +  " | " + x.phone_number,
-          value:x.id
+          value:x.phone_number
         })
       }
 this.contacts= items

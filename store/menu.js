@@ -55,6 +55,7 @@ let mnue_tree = [
     id: 1122334,
     name: "شرکت ها",
     access: "companies/index",
+    // access: "*",
     route: "/companies",
   },
   {

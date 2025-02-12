@@ -25,7 +25,15 @@
             v-model="form.password"
           />
         </v-col>
-        <v-col cols="12" md="3" v-if="!Boolean(roleId)">
+        <v-col cols="12" md="3" >
+          <amp-autocomplete
+            text="نوع شخص"
+            multiple
+            rules="require"
+            v-model="form.person_type"
+            :items="$store.state.setting.person_type"
+          />
+        </v-col>        <v-col cols="12" md="3" v-if="!Boolean(roleId)">
           <amp-autocomplete
             text="نقش"
             chips
@@ -67,6 +75,22 @@
             rules="require"
             v-model="form.person_type"
             :items="$store.state.static.person_type"
+          />
+        </v-col>   
+          <v-col cols="12" md="3" v-if="form.person_type == 'legal'">
+          <amp-select
+            text="شرکت"
+            rules="require"
+            v-model="form.company_id"
+            :items="companies"
+          />
+        </v-col>   
+          <v-col cols="12" md="3" v-if="form.person_type == 'legal'">
+            <amp-input
+            text="سمت (پست)"
+            rules="require"
+            :is-number="true"
+            v-model="form.post"
           />
         </v-col>
 
@@ -229,6 +253,7 @@ export default {
     psychologist: [],
     supervisor_status_items: [],
     category_users: [],
+    companies: [],
     province: [],
     user: [],
     citis: [],
@@ -245,8 +270,11 @@ export default {
       branch_id: "",
       first_name: "",
       person_type: "",
+      company_id: "",
+      post: "",
       email: "",
       internal_id: "",
+      person_type: "",
       internal_port: "",
       status_work: "",
       role_id: [],
@@ -327,6 +355,7 @@ export default {
       this.loadData();
     }
     this.loadInternals();
+    this.companiesList();
     // this.loadState().then((res) => {
     //   res.filter((x) => {
     //     this.province.push({
@@ -337,6 +366,24 @@ export default {
     // });
   },
   methods: {
+    companiesList(){
+      this.loading = true
+this.$reqApi("company").then((res)=>{
+let items  = []
+for (let i = 0; i < res.model.data.length; i++) {
+  const x = res.model.data[i];
+  items.push({
+    text:x.fa_name + " | " + x.en_name,
+    value:x.id
+  })
+  this.companies = items
+  this.loading = false
+
+}
+}).catch((err)=>{
+  this.loading = false
+})
+    },
     submit() {
       this.loading = true;
       if (this.parent_id.length > 0) {
@@ -376,6 +423,9 @@ export default {
           this.form.username = response.model.username;
           this.form.password = response.model.password;
           this.form.birth_date = response.model.birth_date;
+          this.form.person_type = response.model.person_type;
+          this.form.company_id = response.model.company_id;
+          this.form.post = response.model.post;
           this.form.last_name = response.model.last_name;
           this.form.person_type = response.model.person_type;
           this.form.first_name = response.model.first_name;

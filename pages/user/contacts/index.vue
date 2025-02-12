@@ -6,15 +6,26 @@
       autoDelete="/contact/delete"
       autoUpdate="/user/contacts"
       createUrl="/user/contacts/insert"
+      :extraBtn="extra_btn"
+      @getData="getContracts($event)"
+
     />
+    <JoineContract v-if="dialog" :dialog="dialog" @closeDialog="dialog = false" :user-contacts='contacts' />
   </div>
 </template>
 
 <script>
+import JoineContract from "@/components/User/JoineContract.vue"
+
 export default {
+components:{
+  JoineContract
+},
   data: () => ({
     headers: [],
-    btn_actions: [],
+    extra_btn: [],
+    contacts: [],
+  dialog:false,
     title: " مخاطبین دفترچه تلفن",
   }),
   beforeMount() {
@@ -33,6 +44,29 @@ export default {
         },
       },
     ];
+    this.extra_btn = [
+      {
+        text: "افزودن به کاربران",
+        icon: "group_add",
+        color: "teal darken-2",
+        fun: () => {
+          this.dialog = true
+        },
+      },
+    ];
   },
+  methods:{
+    getContracts(event){
+    let items =[]
+      for (let index = 0; index < event.model.data.length; index++) {
+        const x = event.model.data[index];
+        items.push({
+          text:x.first_name + " " + x.last_name +  " | " + x.phone_number,
+          value:x.id
+        })
+      }
+this.contacts= items
+    }
+  }
 };
 </script>

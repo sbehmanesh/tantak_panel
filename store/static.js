@@ -78,6 +78,7 @@ let register_type = [
   { text: "اپ", value: "app" },
 ];
 
+
 let setting_keys = [
   { text: "لوگوی صفحه اصلی", value: "header_logo", type: "image" },
   { text: "تیتر فوتر", value: "footer_text_title", type: "single_text" },
@@ -260,7 +261,6 @@ let send_for = [
 let person_type = [
   { text: "حقیقی", value: "real" },
   { text: "حقوقی", value: "legal" },
-  { text: "هیچ کدام", value: "none" },
 ];
 let status_baranch = [
   { text: "فعال", value: "active" },

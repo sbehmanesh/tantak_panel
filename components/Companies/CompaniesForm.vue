@@ -1,22 +1,40 @@
 <template>
   <v-form v-model="valid" @submit.prevent="submit()" :disabled="loading">
     <v-container fluid class="px-8">
-      <v-row dense class="d-flex justify-center">
+      <v-row dense >
         <v-col cols="12" md="2">
           <amp-input text="عنوان شرکت " v-model="form.fa_name" rules="require" />
-        </v-col>
+        </v-col> 
+    
         <v-col cols="12" md="2">
-          <amp-input text="عنوان شرکت  (انگلیسی)" v-model="form.en_name" rules="require" />
+          <amp-input text="عنوان شرکت  (انگلیسی)" v-model="form.en_name" rules="require,en_chart" />
         </v-col> 
         <v-col cols="12" md="2">
-          <amp-input text="آدرس ایمیل" v-model="form.en_name" rules="email,require" />
+          <amp-input text="نام شهر" v-model="form.city" rules="" />
+        </v-col>   
+          <v-col cols="12" md="2">
+          <amp-input text="شناسه شرکت" v-model="form.national_id" rules="number" />
+        </v-col>
+        <v-col cols="12" md="2">
+        <amp-select
+          :items="$store.state.static.status"
+          text="وضعیت"
+          v-model="form.status"
+        />
+      </v-col>    
+         <v-col cols="12" md="2">
+        <amp-jdate
+          text="تاریخ ثبت نام"
+          v-model="form.registered_at"
+        />
+      </v-col>
+        <v-col cols="12" md="2">
+          <amp-input text="آدرس الکترونیکی" v-model="form.email" rules="email" />
         </v-col>
         <v-col cols="12" md="2">
           <amp-upload-file title="بارگذاری لوگو" v-model="form.logo" />
         </v-col>
-         <v-col cols="12" md="2">
-          <amp-input text="عنوان دسته بندی" v-model="form.value" rules="require" />
-        </v-col>
+  
         <v-col cols="12">
           <amp-textarea text="توضیحات " v-model="form.description" />
         </v-col>
@@ -59,7 +77,7 @@ export default {
       registered_at: "",
       description: "",
       national_id: "",
-      status: "",
+      status: "active",
     },
   }),
   mounted() {
@@ -94,11 +112,10 @@ export default {
       this.loading = true
       this.$reqApi(this.showUrl, { id: this.modelId })
         .then(async (response) => {
-          response = response.model
-          this.form['id'] = response.id
-          this.form.key = response.key
-          this.form.value = response.value
-          this.form.value_2 = response.value_2
+          let data = response.model
+     for(let key in data){
+      this.form[key] = data[key]
+     }
           this.loading = false
         })
         .catch((error) => {

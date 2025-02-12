@@ -24,6 +24,14 @@
             v-model="form.first_name"
             rules="require"
           />
+        </v-col>        <v-col cols="12" md="4">
+          <amp-autocomplete
+            text="نوع شخص"
+            multiple
+            rules="require"
+            v-model="form.person_type"
+            :items="$store.state.staticstatic.person_type"
+          />
         </v-col>
         <v-col cols="12" md="4">
           <amp-input
@@ -99,6 +107,7 @@ export default {
       description: "",
       how_know: "",
       internal_id: "",
+      person_type: "",
     },
   }),
 

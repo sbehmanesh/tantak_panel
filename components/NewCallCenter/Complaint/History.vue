@@ -4,7 +4,7 @@
       <v-card>
         <v-toolbar color="primary" dark>
           <v-toolbar-title>
-            <span style="font-size: 21px">تاریخچه ارجاع شکایت ثبت شده</span>
+            <span style="font-size: 18px">تاریخچه ارجاع شکایت ثبت شده</span>
           </v-toolbar-title>
           <v-spacer></v-spacer>
           <v-btn icon @click="closeDialog">
@@ -54,42 +54,45 @@ export default {
           return "";
         },
       },
-      // {
-      //   text: "از",
-      //   value: (body) => {
-      //     if (body.from_personnel) {
-      //       return body.from_personnel.first_name
-      //         ? body.from_personnel.first_name +
-      //             " " +
-      //             body.from_personnel.last_name
-      //         : "--";
-      //     }
-      //   },
-      // },
-      // {
-      //   text: "به",
-      //   value: (body) => {
-      //     if (body.to_personnel) {
-      //       return body.to_personnel.first_name
-      //         ? body.to_personnel.first_name + " " + body.to_personnel.last_name
-      //         : "--";
-      //     } else {
-      //       return "--";
-      //     }
-      //   },
-      // },
+      {
+        text: "از",
+        value: (body) => {
+          if (body.send_user_first_name && body.send_user_last_name) {
+            return body.send_user_first_name
+              ? body.send_user_first_name +
+                  " " +
+                  body.send_user_last_name
+              : "--";
+          }
+        },
+      },
+      {text:"فرستنده", value:"send_user_username"},
+  
+      {
+        text: "به",
+        value: (body) => {
+          if (body.get_user_first_name) {
+            return body.get_user_first_name
+              ? body.get_user_first_name + " " + body.get_user_last_name
+              : "--";
+          } else {
+            return "--";
+          }
+        },
+      },
+      {text:"گیرنده"  ,value:"get_user_username"},
 
-      // {
-      //   text: "وضعیت",
-      //   value: "status",
-      //   filterType: "select",
-      //   items: this.$store.state.static.status_message,
-      // },
+
       {
         text: "مرحله",
         value: "step",
         filterType: "select",
-        items: this.$store.state.static.step_message,
+        items: this.$store.state.static.complaint_step,
+      },      {
+        text: "وضعیت",
+        value: "status",
+        filterType: "select",
+        items: this.$store.state.static.complaint_status,
       },
       // {
       //   text: "نوع تخصیص",

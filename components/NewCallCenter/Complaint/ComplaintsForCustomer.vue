@@ -27,7 +27,7 @@
       @closeDialog="refral_dialog = false"
       @relod="refresh"
     />
-     <History
+    <History
       v-if="history"
       :dialog="history"
       :complaint-id="complaint_id"
@@ -41,12 +41,13 @@ import ComplaintsDialog from "~/components/NewCallCenter/Complaint/ComplaintsDia
 import ComplaintRefral from "@/components/NewCallCenter/Complaint/ComplaintRefral.vue";
 import History from "@/components/NewCallCenter/Complaint/History.vue";
 export default {
-  components: { ComplaintsDialog, ComplaintRefral , History },
+  components: { ComplaintsDialog, ComplaintRefral, History },
   props: {
     userId: {
       require: false,
       default: false,
-    },    filterUser: {
+    },
+    filterUser: {
       require: false,
       default: true,
     },
@@ -67,13 +68,12 @@ export default {
   beforeMount() {
     if (Boolean(this.filterUser)) {
       this.filters = {
-      user_id: {
-        op: "=",
-        value: this.userId,
-      },
-    };
+        user_id: {
+          op: "=",
+          value: this.userId,
+        },
+      };
     }
-  
   },
   mounted() {
     this.headers = [
@@ -98,6 +98,18 @@ export default {
         },
       },
       { text: "زیر دسته", value: "subcategory" },
+      {
+        text: "مرحله",
+        value: "step",
+        filterType: "select",
+        items: this.$store.state.static.complaint_step,
+      },
+      {
+        text: "وضعیت",
+        value: "status",
+        filterType: "select",
+        items: this.$store.state.static.complaint_status,
+      },
       {
         text: "توضیحات",
         filterCol: "description",
@@ -131,6 +143,23 @@ export default {
         },
         show_fun: (body) => (body.file ? true : false),
       },
+
+      {
+        text: "تاریخچه",
+        color: "teal",
+        icon: "history",
+        fun: (body) => {
+          this.history = true;
+          this.complaint_id = body.id;
+        },
+        show_fun: (body) => {
+          if (body.step != "init") {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
       {
         text: "روند ارجاع ",
         color: "blue-grey",
@@ -140,54 +169,50 @@ export default {
           this.complaint_id = body.id;
           this.role_id = body.category?.role_id;
         },
-        show_fun:(body)=>{
-          if (body.step == 'init' && !Boolean(this.$checkRole(this.$store.state.auth.role.tracking_unit))) {
-                   return false 
-          }else{
-                    return true
+        show_fun: (body) => {
+          if (body.step == "close" || body.step == "done" ){
+            return false
           }
-        }
-      },  
-        {
-        text: "تاریخچه",
-        color: "teal",
-        icon: "history",
-        fun: (body) => {
-          this.history = true;
-          this.complaint_id = body.id;
+          if (
+            body.step == "init" &&
+            !Boolean(this.$checkRole(this.$store.state.auth.role.tracking_unit))
+          ) {
+            return false;
+          } else if (
+            Boolean(
+              this.$checkRole(this.$store.state.auth.role.tracking_unit)
+            ) &&
+            body.step == "referral_from_complaint_follow_up"
+          ) {
+            return false;
+          } else {
+            return true;
+          }
         },
-        show_fun:(body)=>{
-          if (body.step != 'init') {
-                   return true 
-          }else{
-                    return false
-          }
-        }
       },
     ];
 
     if (Boolean(this.filterUser)) {
       this.actions_list = [
-      {
-        text: "ویرایش",
-        fun: (body) => {
-          this.show_dialog = true;
-          this.model_id = body.id;
+        {
+          text: "ویرایش",
+          fun: (body) => {
+            this.show_dialog = true;
+            this.model_id = body.id;
+          },
         },
-      },
-    ];
-    this.extra_btn = [
-      {
-        text: "ثبت شکایت",
-        icon: "add_circle",
-        color: "primary",
-        fun: () => {
-          this.show_dialog = true;
+      ];
+      this.extra_btn = [
+        {
+          text: "ثبت شکایت",
+          icon: "add_circle",
+          color: "primary",
+          fun: () => {
+            this.show_dialog = true;
+          },
         },
-      },
-    ];
+      ];
     }
- 
   },
   methods: {
     refresh() {

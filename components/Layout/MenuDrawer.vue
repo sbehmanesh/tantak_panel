@@ -2,7 +2,11 @@
   <v-navigation-drawer app v-model="drawer" right color="primary">
     <v-list>
       <v-row class="d-flex align-center">
-        <v-col cols="12" md="1" :class="$vuetify.breakpoint.mdAndUp ? 'ma-0 pa-0' : ''">
+        <v-col
+          cols="12"
+          md="1"
+          :class="$vuetify.breakpoint.mdAndUp ? 'ma-0 pa-0' : ''"
+        >
           <v-text-field
             v-model="search"
             label="جستجوی منو"
@@ -20,7 +24,7 @@
             <v-col cols="12" md="11" class="pa-0">
               <v-treeview
                 :items="items"
-                class="rounded elevation-3 pa-2  backgorundAppBar mt-2"
+                class="rounded elevation-3 pa-2 backgorundAppBar mt-2"
                 id="scrollBar"
                 v-model="tree"
                 hoverable
@@ -57,15 +61,15 @@ export default {
     case_sensitive: false,
     collaps_mnue: false,
     result: [],
-    open: []
+    open: [],
   }),
   computed: {
     items() {
       return [...this.$store.state.menu.mnue_tree]
-        .map(x => {
+        .map((x) => {
           return this.filterImtes(x);
         })
-        .filter(x => {
+        .filter((x) => {
           if (x.name != "" && x.name != null) {
             if (x.children) {
               if (x.children.length > 0) {
@@ -95,7 +99,7 @@ export default {
       return this.case_sensitive
         ? (item, search, textKey) => item[textKey].indexOf(search) > -1
         : undefined;
-    }
+    },
   },
   watch: {
     drawer() {
@@ -108,14 +112,14 @@ export default {
       if (this.search == null || this.search == "") {
         this.$refs.CollapsMnue.updateAll(this.collaps_mnue);
       }
-    }
+    },
   },
   beforeMount() {
     this.getAllItem(this.$store.state.menu.mnue_tree);
   },
   methods: {
     handelClick(items) {
-      let selected_item = this.result.find(item => item.id == items[0]);
+      let selected_item = this.result.find((item) => item.id == items[0]);
       if (selected_item) {
         if (selected_item.route) {
           this.selectMenu(selected_item);
@@ -183,7 +187,7 @@ export default {
     },
     getAllItem(items) {
       if (items) {
-        items.forEach(item => {
+        items.forEach((item) => {
           this.result.push(item);
           if (item.children) {
             this.result.concat(this.getAllItem(item.children));
@@ -192,7 +196,7 @@ export default {
       }
     },
     filterChildren(item) {
-      return item.filter(x => {
+      return item.filter((x) => {
         if (x.children) {
           if (x.children.length > 0) {
             x.children = this.filterChildren(x.children);
@@ -207,7 +211,7 @@ export default {
     },
     filterImtes(items) {
       if (items.children) {
-        let child = items.children.map(j => {
+        let child = items.children.map((j) => {
           if (j.children) {
             return this.filterImtes(j);
           } else {
@@ -218,12 +222,12 @@ export default {
           return {
             name: "",
             id: this.getRandomNumber(1000000),
-            access: "dontAvilabel"
+            access: "dontAvilabel",
           };
         });
         return {
           ...items,
-          children: child.filter(x => x.name)
+          children: child.filter((x) => x.name),
         };
       } else {
         if (this.checkAccess(items)) {
@@ -233,13 +237,13 @@ export default {
       return {
         name: "",
         id: this.getRandomNumber(1000000),
-        access: "dontAvilabel"
+        access: "dontAvilabel",
       };
     },
     getRandomNumber(max) {
       return Math.floor(Math.random() * max);
-    }
-  }
+    },
+  },
 };
 </script>
 

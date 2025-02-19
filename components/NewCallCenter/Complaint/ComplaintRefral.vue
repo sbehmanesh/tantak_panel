@@ -105,9 +105,7 @@ export default {
       id: "",
     },
   }),
-  beforeMount() {
-    this.loadCategory();
-  },
+
   mounted() {
     if (!Boolean(this.$checkRole(this.$store.state.auth.role.tracking_unit))) {
       this.step_items = this.$store.state.static.complaint_step.filter(
@@ -116,14 +114,11 @@ export default {
       );
     } else {
       this.step_items = this.$store.state.static.complaint_step.filter(
-        (x) => x.value != "init"
+        (x) => x.value != "init" &&  x.value!='referred_to_complaint_follow_up'
       );
     }
 
-    console.log(
-      "this.$store.state.static.complaint_step ==> ",
-      this.$store.state.static.complaint_step
-    );
+  
   },
 
   methods: {
@@ -134,13 +129,13 @@ export default {
         form.step == "referral_from_complaint_follow_up" &&
         this.user.length > 0
       ) {
-        form["user_refer_id "] = this.user[0].id;
+        form["user_refer_id"] = this.user[0].id;
       }
       if (Boolean(this.complaintId)) {
         form["id"] = this.complaintId;
       }
-      let url = Boolean(this.modelId) ? "complaint/update" : "complaint/insert";
-      this.$reqApi(url, form)
+  
+      this.$reqApi('complaint/referral', form)
         .then((res) => {
           this.loading = false;
           this.closeDialog();
@@ -155,7 +150,6 @@ export default {
       this.loading = true;
       this.$reqApi("complaint/show", { id: this.modelId })
         .then(async (response) => {
-          console.log("response ==> ", response);
           let items = [];
           for (let key in response.model) {
             this.form[key] = response.model[key];

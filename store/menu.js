@@ -57,19 +57,37 @@ let mnue_tree = [
     access: "companies/index",
     route: "/companies",
   },
-  
-  {
-    id: 112285489334,
-    name: "شکایات",
-    access: "complaints/index",
-    route: "/complaint",
-  },
+  // {
+  //   id: 484521111,
+  //   name: "شکایات",
+  //   children: [
+    // {
+    //   id: 5632,
+    //   access: "complaint_categories/index",
+    //   name: "دسته بندی شکایات",
+    //   route: "/new-call-center/complaint-categories",
+    // },
+  //     {
+  //       id: 112285489334,
+  //       name: "لیست شکایات",
+  //       access: "complaints/index",
+  //       route: "/complaint",
+  //     },
+  //     {
+  //       id: 787546588888,
+  //       name: "تاریخچه",
+  //       access: "complaints/logs",
+  //       route: "/complaint/history",
+  //     },
+  //   ],
+  // },
+
   {
     id: 618564558145,
     name: "گزارشات تماس",
     access: "messages/issabel_request_call/history",
     route: "/call-reports",
-  }, 
+  },
 
   {
     id: 50,
@@ -86,14 +104,9 @@ let mnue_tree = [
         access: "wholesale_form/index",
         name: "فروش تلفنی",
         route: "/product/buy-person",
-      },   
-      
-      {
-        id: 5632,
-        access: "complaint_categories/index",
-        name: "دسته بندی شکایات",
-        route: "/new-call-center/complaint-categories",
       },
+
+
       {
         id: 53,
         access: "messages/index",
@@ -298,7 +311,6 @@ let mnue_tree = [
     ],
   },
 
-
   {
     id: 34751,
     name: "وظیفه ها",
@@ -435,7 +447,6 @@ let mnue_tree = [
             access: "comment_questions/root",
             route: "/setting/comment-questions",
           },
-       
         ],
       },
       {

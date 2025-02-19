@@ -6,6 +6,7 @@
           <v-row class="d-flex justify-space-between align-center">
             <v-col cols="12" md="4" :class="is_mobile ? 'log_mobile' : ''">
               <div :class="is_mobile ? '' : 'py-4'">
+
                 <img
                   :src="$store.state.logo"
                   width="auto"
@@ -40,7 +41,6 @@
             @click="toggleDrawer()"
             >menu</v-icon
           >
-          
         </v-col>
       </v-row>
     </v-container>

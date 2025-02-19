@@ -11,7 +11,8 @@ export const state = () => ({
   logo: logo_bimche,
   page_title: app_name,
   file_url: "https://test-api.tantak.ir/",
-  server_url: "https://test-api.tantak.ir/api/v1"
+  server_url: "https://test-api.tantak.ir/api/v1",
+  ws_url:'wss://socket.tantak.ir/ws'
 });
 
 export const mutations = {

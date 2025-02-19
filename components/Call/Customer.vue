@@ -2,21 +2,53 @@
   <div>
     <v-dialog
       persistent
-      v-model="DialogCustomer.show"
-      :model-id="DialogCustomer.items"
-      fullscreen
+      v-model="dialog"
+      :fullscreen="full_screen"
+      width="750px"
     >
+  
       <v-card>
         <v-card color="primary">
-          <v-card-title>
-            <span style="font-size: 21px" class="white--text">
-              اطلاعات مشتری</span
+       
+          <div class="d-flex align-center pa-3">
+            <v-progress-circular
+              class="ml-3"
+              :width="1"
+              indeterminate
+              :size="39"
+              color="white"
             >
+              <v-icon size="33" color="white"
+                >account_circle</v-icon
+              ></v-progress-circular
+            >
+            <div>
+              <h1 class="white--text">
+                <small> تماس گیرنده</small>
+              </h1>
+              <h1 v-if="!Boolean(anonymous)" class="white--text">
+                {{ customer.first_name }} {{ customer.last_name }}
+              </h1>
+              <h1 v-else class="white--text">ناشناس</h1>
+              <small class="white--text">
+                {{ customer.username }}
+              </small>
+              <v-icon size="12px" color="white"> call </v-icon>
+            </div>
+
             <v-spacer></v-spacer>
-            <v-btn icon @click="closeDialog">
-              <v-icon color="white" size="26"> cancel </v-icon>
+            <v-btn small icon @click="full_screen = !full_screen">
+              <v-icon v-if="!full_screen" color="white" size="15">
+                check_box_outline_blank
+              </v-icon>
+              <v-icon v-if="full_screen" color="white" size="15">
+                content_copy
+              </v-icon>
             </v-btn>
-          </v-card-title>
+            <v-btn small icon @click="closeDialog">
+              <v-icon color="white" size="19"> close </v-icon>
+            </v-btn>
+          </div>
 
           <v-stepper v-model="step_index">
             <v-row class="justify-center mt-4">
@@ -26,15 +58,17 @@
                 edit-icon="content_paste_search"
                 step="1"
               >
-                <span class="font_16"> سوابق خرید </span>
-                <small class="pt-2">
+                <span class="font_14"> سوابق خرید </span>
+                <small v-if="full_screen" class="pt-2">
                   خریدهای ثبت شده برای
                   {{ username }}
                 </small>
               </v-stepper-step>
               <v-stepper-step complete editable edit-icon="comment" step="2">
-                <span class="font_16">نظرات </span>
-                <small class="pt-2">نظرات ثبت شده برای مشتری</small>
+                <span class="font_14">نظرات </span>
+                <small v-if="full_screen" class="pt-2"
+                  >نظرات ثبت شده برای مشتری</small
+                >
               </v-stepper-step>
 
               <v-stepper-step
@@ -43,11 +77,11 @@
                 edit-icon="account_circle"
                 step="3"
               >
-                <span class="font_16"> تکمیل پروفایل </span>
-                <small class="pt-2">
+                <span class="font_14"> تکمیل پروفایل </span>
+                <small v-if="full_screen" class="pt-2">
                   در صورت مغایرت اطلاعات ,اطلاعات را تکمیل کنید
-                </small></v-stepper-step
-              >
+                </small>
+              </v-stepper-step>
               <v-stepper-step
                 complete
                 editable
@@ -55,11 +89,11 @@
 "
                 step="4"
               >
-                <span class="font_16"> سفارشات </span>
-                <small class="pt-2">
+                <span class="font_14"> سفارشات </span>
+                <small v-if="full_screen" class="pt-2">
                   لیست سفارشات باز مشتری
-                </small></v-stepper-step
-              >
+                </small>
+              </v-stepper-step>
               <!-- <v-stepper-step
                 complete
                 editable
@@ -67,8 +101,10 @@
 "
                 step="5"
               >
-                <span class="font_16"> شکایات </span>
-                <small class="pt-2"> شکایات ثبت شده برای مشتری </small>
+                <span class="font_14"> شکایات </span>
+                <small v-if="full_screen" class="pt-2">
+                  شکایات ثبت شده برای مشتری
+                </small>
               </v-stepper-step> -->
             </v-row>
 
@@ -83,7 +119,11 @@
               <v-stepper-content step="1">
                 <v-window v-model="step_basket">
                   <v-row class="d-flex justify-center">
-                    <v-col cols="4" class="center-div">
+                    <v-col
+                      cols="12"
+                      :md="full_screen ? 4 : 6"
+                      class="center-div"
+                    >
                       <v-row
                         class="d-flex justify-center mt-3 py-3 grey lighten-3"
                       >
@@ -769,7 +809,10 @@ export default {
     ComplaintsForCustomer,
   },
   props: {
-    DialogCustomer: {
+    waitingLine: {
+      require: false,
+      default: false,
+    },    dialog: {
       require: false,
       default: false,
     },
@@ -817,6 +860,7 @@ export default {
     section_id: "",
     step_order: "",
     overlay: false,
+    full_screen: false,
     show_transactions: false,
     disabl_update: true,
     filters: {},
@@ -1458,6 +1502,18 @@ export default {
       this.phoneNumber(this.customer.username);
     }
   },
+  computed: {
+    anonymous() {
+      if (
+        Boolean(this.customer.first_name) &&
+        Boolean(this.customer.last_name)
+      ) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+  },
   watch: {
     step_basket() {
       this.disabl_update = true;
@@ -1510,8 +1566,8 @@ export default {
         });
     },
     closeDialog() {
-      this.DialogCustomer.show = false;
-      this.DialogCustomer.items = null;
+      this.$emit("closeDialog");
+      this.$store.dispatch("ws/resetCallerId");
     },
     createListPakage(event) {
       let ckek_dublicate = this.pckage_list_item.find((f) => event.id == f.id);

@@ -156,7 +156,6 @@ export default {
           for(let key in data){
             this.form[key] = data[key]
           }
-        console.log("response ==> ", response);
        if (data.subcategory.length > 0) {
         let items  =[]
         data.subcategory.map((x)=>{

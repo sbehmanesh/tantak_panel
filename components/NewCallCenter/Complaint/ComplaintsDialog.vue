@@ -102,7 +102,6 @@ export default {
     this.loadCategory();
   },
   mounted() {
-    console.log("this.modelId ==> ", this.modelId);
     if (Boolean(this.modelId)) {
       this.loadData();
     }
@@ -143,7 +142,6 @@ export default {
       this.loading = true;
       this.$reqApi("complaint/show", { id: this.modelId })
         .then(async (response) => {
-          console.log("response ==> ", response);
           let items = [];
           for(let key in response.model){
             this.form[key] = response.model[key]

@@ -28,6 +28,11 @@
       @closeDialog="create_user = false"
       @reload="relod"
     />
+    <AddToConcats
+      v-if="add_concat"
+      :dialog="add_concat"
+      @closeDialog="add_concat = false"
+    />
   </div>
 </template>
 
@@ -35,14 +40,16 @@
 import CatgoryUsers from "@/components/User/CatgoryUsers.vue";
 import InsertUserExcel from "@/components/User/InsertUserExcel.vue";
 import Excel from "@/components/User/Excel.vue";
+import AddToConcats from "@/components/User/AddToConcats.vue";
 export default {
-  components: { CatgoryUsers, Excel, InsertUserExcel },
+  components: { CatgoryUsers, Excel, InsertUserExcel, AddToConcats },
   data: () => ({
     headers: [],
     extraBtn: [],
     role_id: "",
     show_cards: false,
     create_user: false,
+    add_concat: false,
     personal_count: "",
     user_count: "",
     catgory_users: [],
@@ -72,6 +79,14 @@ export default {
         text: "ایجاد با اکسل",
         fun: () => {
           this.create_user = true;
+        },
+      },
+      {
+        icon: "contact_phone",
+        color: "blue-grey",
+        text: "افزودن به مخاطبین",
+        fun: () => {
+          this.add_concat = true;
         },
       },
     ];

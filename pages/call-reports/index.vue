@@ -23,7 +23,7 @@
       </v-card>
     </v-col>
 
-    <v-dialog persistent :value="voice_dialog.show" max-width="500">
+    <v-dialog persistent :value="voice_dialog.show" width="350">
       <v-card height="200" v-if="voice_dialog.show">
         <div class="d-flex justify-end pa-5">
           <v-icon size="28" class="pointer" @click="closeDialog()">close</v-icon>
@@ -180,22 +180,25 @@ export default {
     ];
 
     this.btn_actions = [
-      // {
-      //   text: "پخش صوت",
-      //   color: "primary",
-      //   fun: (body) => {
-      //     this.voice_dialog.show = false;
-      //     this.downloadCallRecord(body.recordingfile);
-      //     // this.voice_dialog.item = body;
-      //   },
-      //   show_fun: (body) => {
-      //     if (Boolean(body.recordingfile)) {
-      //       return true;
-      //     } else {
-      //       return false;
-      //     }
-      //   },
-      // },
+      {
+        text: "پخش صوت",
+        icon:"play_circle",
+        color: "primary",
+        fun: (body) => {
+          this.voice_dialog.show = false;
+          this.downloadCallRecord(body.recordingfile);
+          this.voice_dialog.item = body;
+          console.log(body.billsec);
+          
+        },
+        show_fun: (body) => {
+          if (Boolean(body.recordingfile) && body.billsec!='00:00'){
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
     ];
   },
   methods: {
@@ -283,18 +286,32 @@ export default {
         this.loading2 = false;
       }, 800);
     },
-    downloadCallRecord(value) {
-      let url = "/cdr/call-record/" + value;
-      this.$reqApi(url, {}, { responseType: "blob" }, false, "get", true)
+    downloadCallRecord(value , show = false) {
+      let url = "/message/issabel-request-call/get-rec-file";
+      this.$reqApi(url, { recordingfile  : value } )
         .then((response) => {
-          const url = URL.createObjectURL(response);
-          this.voice_dialog.item = url;
+          if (!show) {
+            console.log("response ==> ", response);
+            let result = response.split("/")
+            console.log("result ==> ", result);
+            this.downloadCallRecord(result[result.length-1] , true)
+            
+          }else{
           this.voice_dialog.show = true;
+          this.voice_dialog.item =response;
+
+          }
+          ;
         })
         .catch((error) => {
-          reject();
+        console.log("error ==> ", error);
         });
     },
+
+     closeDialog(){
+       this.voice_dialog.item = null;
+        this.voice_dialog.show = false;
+    }
   },
 };
 </script>

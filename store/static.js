@@ -68,6 +68,7 @@ export const state = () => ({
   register_type,
   complaint_step,
   complaint_status,
+  ownership_type_agancy,
 });
 
 let status_type = [
@@ -79,7 +80,6 @@ let register_type = [
   { text: "پنل", value: "panel" },
   { text: "اپ", value: "app" },
 ];
-
 
 let setting_keys = [
   { text: "لوگوی صفحه اصلی", value: "header_logo", type: "image" },
@@ -803,6 +803,10 @@ let discount_type = [
   { text: "درصد", value: "percent" },
   { text: "مقدار", value: "amount" },
 ];
+let ownership_type_agancy = [
+  { text: "مالک", value: "owner" },
+  { text: "اجاره", value: "rental" },
+];
 let festival_type = [
   { text: "برای سبد های خرید", value: "on_basket" },
   { text: "برای محصولات", value: "on_product" },
@@ -886,14 +890,20 @@ let type_questions = [
 ];
 let complaint_step = [
   { text: "ثبت اولیه", value: "init" },
-  { text: "ارجاع از واحد پیگیری شکایت به واحد مربوطه (ارجاع به نقش مربوطه) ", value: "referral_from_complaint_follow_up" },
-  { text: "مرجوع از واحد مربوطه به واحد پیگیری شکایت", value: "referred_to_complaint_follow_up" },
+  {
+    text: "ارجاع از واحد پیگیری شکایت به واحد مربوطه (ارجاع به نقش مربوطه) ",
+    value: "referral_from_complaint_follow_up",
+  },
+  {
+    text: "مرجوع از واحد مربوطه به واحد پیگیری شکایت",
+    value: "referred_to_complaint_follow_up",
+  },
   { text: "بستن شکایت", value: "close" },
   { text: "تایید شکایت", value: "done" },
 ];
-let complaint_status =[
-  {text:"ثبت اولیه" , value:"init"},
-  {text:"درحال برسی" , value:"reviewing"},
-  {text:"انجام شده" , value:"done"},
-  {text:"لغو شده" , value:"cancel"},
-]
+let complaint_status = [
+  { text: "ثبت اولیه", value: "init" },
+  { text: "درحال برسی", value: "reviewing" },
+  { text: "انجام شده", value: "done" },
+  { text: "لغو شده", value: "cancel" },
+];

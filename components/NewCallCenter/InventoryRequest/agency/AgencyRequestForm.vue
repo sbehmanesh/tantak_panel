@@ -1,74 +1,79 @@
 <template>
   <v-form v-model="valid" @submit.prevent="submit()" :disabled="loading">
-    <v-container fluid>
-      <v-col cols="12" class="text-center d-flex align-center justify-center">
-        <v-row>
-          <v-col cols="12" md="2">
-            <amp-select
-              rules="require"
-              text="نوع مالکیت"
-              v-model="form.ownership_type"
-              :items="$store.state.static.ownership_type_agancy"
-            />
-          </v-col>
-          <v-col cols="12" md="2">
-            <UserSelectForm
-              text="کاربران"
-              v-model="user"
-              url="user"
-              rules="require"
-              :role-id="[]"
-            />
-          </v-col>
-          <v-col cols="12" md="2">
-            <amp-jdate
-              text="تاریخ تولد"
-              rules="require"
-              :is-number="true"
-              v-model="form.birth_date"
-            />
-          </v-col>
-          <v-col cols="12" md="2">
-            <amp-input
-              text="کد ملی"
-              rules="nationalCode,require"
-              :is-number="true"
-              v-model="form.national_code"
-            />
-          </v-col>
-          <v-col cols="12" md="2">
-            <amp-input
-              text="متراژ ساختمان (متر مربع)"
-              rules="number,require"
-              v-model="form.size_store"
-              cClass="ltr-item"
-            />
-          </v-col>
-          <v-col cols="12" md="2">
-            <amp-input
-              text="استان"
-              rules="require"
-              v-model="form.agency_province"
-            />
-          </v-col>
-          <v-col cols="12" md="2">
-            <amp-input text="شهر" rules="require" v-model="form.agency_city" />
-          </v-col>
-          <v-col cols>
-            <amp-input
-              text="آدرس دقیق"
-              rules="require"
-              v-model="form.agency_address"
-            />
-          </v-col>
-        </v-row>
-      </v-col>
+    <v-container fluid class="">
+      <v-row class="d-flex justify-center align-center">
+    
+        <v-col cols="12" md="5" class="text-center">
+          <v-card class="pa-5 elevation-2 pt-8" outlined>
+    
+            <v-row>
+              <v-col class="pa-0" cols="12" md="12">
+                <UserSelectForm
+                  text="کاربر مورد نظر را انتخاب کنید"
+                  v-model="user"
+                  url="user"
+                  rules="require"
+                  :role-id="[]"
+                />
+              </v-col>
+              <v-col class="pa-0" cols="12" md="6">
+                <amp-select
+                  rules="require"
+                  text="نوع مالکیت"
+                  v-model="form.ownership_type"
+                  :items="$store.state.static.ownership_type_agancy"
+                />
+              </v-col>
 
-      <v-row dense>
-        <v-col cols="12" md="12">
-          <v-divider />
-        </v-col>
-        <v-col cols="12" md="12" class="text-center">
+              <v-col class="pa-0" cols="12" md="6">
+                <amp-jdate
+                  text="تاریخ تولد"
+                  rules="require"
+                  :is-number="true"
+                  v-model="form.birth_date"
+                />
+              </v-col>
+              <v-col class="pa-0" cols="12" md="6">
+                <amp-input
+                  text="کد ملی"
+                  rules="nationalCode,require"
+                  :is-number="true"
+                  v-model="form.national_code"
+                />
+              </v-col>
+              <v-col class="pa-0" cols="12" md="6">
+                <amp-input
+                  text="متراژ ساختمان (متر مربع)"
+                  rules="number,require"
+                  v-model="form.size_store"
+                  cClass="ltr-item"
+                />
+              </v-col>
+              <v-col class="pa-0" cols="12" md="6">
+                <amp-input
+                  text="استان"
+                  rules="require"
+                  v-model="form.agency_province"
+                />
+              </v-col>
+              <v-col class="pa-0" cols="12" md="6">
+                <amp-input
+                  text="شهر"
+                  rules="require"
+                  v-model="form.agency_city"
+                />
+              </v-col>
+              <v-col class="pa-0" cols>
+                <amp-input
+                  text="آدرس دقیق"
+                  rules="require"
+                  v-model="form.agency_address"
+                />
+              </v-col>
+            </v-row>
+            <v-row dense>
+   
+        <v-col  cols="12" md="12" class="text-center">
           <amp-button
             large
             icon="redo"
@@ -89,6 +94,11 @@
           />
         </v-col>
       </v-row>
+          </v-card>
+        </v-col>
+      </v-row>
+
+     
     </v-container>
   </v-form>
 </template>
@@ -111,6 +121,7 @@ export default {
     showUrl: "/agency-request/show",
     user: [],
     form: {
+      user_id: "",
       first_name: "",
       last_name: "",
       birth_date: "",
@@ -135,6 +146,7 @@ export default {
       deep: true,
       handler() {
         if (this.user.length > 0 && !Boolean(this.modelId)) {
+          this.form.user_id = this.user[0].id
           this.form.national_code = Boolean(this.user[0].national_code)
             ? this.user[0].national_code
             : "";

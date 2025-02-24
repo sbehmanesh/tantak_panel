@@ -503,6 +503,11 @@ let mnue_tree = [
         name: "تنظیمات عمومی",
         access: "setting/root",
         route: "/setting/public/1",
+      },    {
+        id: 24187888887,
+        name: "عنوان های شغلی",
+        access: "setting/root",
+        route: "/setting/job-titles",
       },
       {
         id: 29541,

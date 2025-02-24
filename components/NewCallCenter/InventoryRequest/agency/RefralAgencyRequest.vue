@@ -10,29 +10,20 @@
         <v-form v-model="valid" class="pa-3">
           <v-col cols="12" class="pa-0 ma-0">
             <amp-select
-              :disabled="set_items.length == 1"
               text="تعیین مرحله"
               rules="require"
-              :items="set_items"
+              :items="set_step_items"
               v-model="form.step"
             />
             <UserSelectForm
               v-if="show_select_user"
               :text="select_user_title"
               v-model="user"
-              :url="url"
+              url="user/searchByRole"
+              :role-id="[role]"
               rules="require"
             />
-            <AmpUploadFileNew
-              text="بارگذاری فایل"
-              v-model="form.file"
-              class="mb-5"
-            />
-            <amp-select
-              text="پیام های اماده"
-              :items="$store.state.setting.ready_messages"
-              v-model="ready_message"
-            />
+
             <amp-textarea
               text=" توضیحات"
               rules="require"
@@ -42,15 +33,17 @@
           </v-col>
         </v-form>
         <v-card-actions>
-          <v-row class="d-flex justify-center pa-1">
+          <v-row class="d-flex justify-center pa-1 mb-4">
             <amp-button
               text="انصراف"
               @click="closeDialog"
               color="red"
+              height="38"
               class="ma-2"
             />
             <amp-button
               text="تایید"
+              height="38"
               @click="submit"
               color="success darken-1"
               class="ma-2"
@@ -79,170 +72,44 @@ export default {
       require: false,
       default: false,
     },
-    statusPayment: {
-      require: false,
-      default: false,
-    },
-    stepOrder: {
-      require: false,
-      default: false,
-    },
   },
   data() {
     return {
       user: [],
+      role: "",
       valid: true,
       loading: false,
       show_select_user: false,
-      url: "user/list-employee",
       select_user_title: "",
       form: {
         step: "",
         message: "",
         id: "",
-        file: "",
       },
-      ready_message: "",
     };
   },
-  mounted() {
-    this.$store.dispatch("setting/readyMessages");
-  },
+ 
   watch: {
-    ready_message() {
-      this.message = this.ready_message;
-    },
     "form.step"() {
-      switch (this.form.step) {
-        case "supervisor_to_employee_stock":
-          this.show_select_user = true;
-          this.select_user_title = "انتخاب کارمند انبار مرکزی ";
-          break;
-        case "fiscal_manager_to_supervisor":
-          this.show_select_user = true;
-          this.select_user_title = "انتخاب   سرپرست واحد مالی ";
-          break;
-        case "fiscal_supervisor_to_fiscal":
-          this.show_select_user = true;
-          this.select_user_title = "انتخاب   واحد مالی ";
-          break;
-        default:
-          this.show_select_user = false;
-          break;
+      if (this.form.step == "sale_manager_to_supervisor") {
+        this.show_select_user = true;
+        this.role = this.$store.state.auth.role.sales_manager
+        this.select_user_title = "سرپرست فروش مورد نظر را انتخاب کنید";
       }
     },
   },
   computed: {
-    set_items() {
-      let items = [];
-      if (this.$checkRole(this.$store.state.auth.role.sefir)) {
-        if (this.stepOrder == "accept_reviewer") {
-          items = [
-            {
-              text: "ارجاع به مدیر واحد مالی",
-              value: "debtor_to_fiscal_manager",
-            },
-          ];
-          this.form.step = "debtor_to_fiscal_manager";
-        } else {
-          items = [
-            {
-              text: "ارجاع به سرپرست انبار مرکزی",
-              value: "debtor_to_reviewer",
-            },
-            {
-              text: "بستن",
-              value: "cancel",
-            },
-          ];
-        }
+    set_step_items() {
+      let items = [...this.$store.state.static.agency_request_step];
+      if (this.$checkRole(this.$store.state.auth.role.sale_manager)) {
+        return items.filter(
+          (x) => x.value != "init" && x.value != "sale_supervisor_to_manager"
+        );
+      } else if (this.$checkRole(this.$store.state.auth.role.sales_manager)) {
+        return items.filter(
+          (x) => x.value != "init" && x.value != "sale_supervisor_to_manager"
+        );
       }
-
-      if (
-        this.$checkRole(this.$store.state.auth.role.superviser_centeral_stock)
-      ) {
-        items = [
-          {
-            text: "تایید",
-            value: "accept_reviewer",
-          },
-          {
-            text: "عدم تایید",
-            value: "not_accept_reviewer",
-          },
-          {
-            text: " مرجوع کردن (ارجاع به  سفیر )",
-            value: "reviewer_to_debtor",
-          },
-        ];
-      }
-      if (this.$checkRole(this.$store.state.auth.role.sales_expert)) {
-        items = [
-          {
-            text: " مرجوع کردن (ارجاع به سرپرست نمایندگی )",
-            value: "employee_to_supervisor_sale ",
-          },
-        ];
-        if (this.statusPayment == "wait") {
-          items.push({
-            text: "تایید سفارش",
-            value: "accept_employee_sale",
-          });
-        }
-      }
-
-      if (
-        this.$checkRole(this.$store.state.auth.role.employee_centeral_stock)
-      ) {
-        items = [
-          {
-            text: " مرجوع کردن (ارجاع به سرپرست انبار مرکزی )",
-            value: "employee_to_supervisor_stock",
-          },
-          {
-            text: " درحال بسته بندی سفارش",
-            value: "waiting_packaging",
-          },
-        ];
-      }
-      if (this.$checkRole(this.$store.state.auth.role.fiscal_manager)) {
-        items = [
-          {
-            text: "ارجاع  به سرپرست واحد مالی",
-            value: "fiscal_manager_to_supervisor",
-          },
-          {
-            text: "مرجوع کردن (ارجاع به بدهکار )",
-            value: "fiscal_manager_to_debtor",
-          },
-        ];
-      }
-      if (this.$checkRole(this.$store.state.auth.role.fiscal_supervisor)) {
-        items = [
-          {
-            text: "ارجاع  به  واحد مالی",
-            value: "fiscal_supervisor_to_fiscal",
-          },
-          {
-            text: "مرجوع کردن (ارجاع به مدیر واحد مالی)",
-            value: "fiscal_supervisor_to_manager",
-          },
-        ];
-      }
-      if (this.$checkRole(this.$store.state.auth.role.fiscal)) {
-        items = [
-          {
-            text: "تایید سفارش",
-            value: "done",
-          },
-          {
-            text: "مرجوع کردن (ارجاع به سرپرست واحد مالی)",
-            value: "fiscal_to_fiscal_supervisor",
-          },
-        ];
-      }
-
-      return items;
     },
   },
   methods: {
@@ -250,19 +117,29 @@ export default {
       this.loading = true;
       let form = { ...this.form };
       form.id = this.modelId;
-      switch (this.form.step) {
-        case "fiscal_manager_to_supervisor":
-          form["user_refer_id"] = this.user[0].id;
-          break;
-        case "fiscal_supervisor_to_fiscal":
-          form["user_refer_id"] = this.user[0].id;
-          break;
+      if (this.form.step == "sale_manager_to_supervisor") {
+        form["user_refer_id"] = this.user[0].id;
       }
 
-      this.$reqApi("debt/referral", form)
+      this.$reqApi("agency-request/referral", form)
         .then((res) => {
-          this.$toast.success("عملیات با موفقیت انجام شد");
-          this.$emit("reload");
+          if (
+            this.form.step == "sale_manager_to_supervisor" &&
+            this.user.length > 0
+          ) {
+          
+            let name = Boolean(
+              this.user[0]?.first_name && this.user[0]?.last_name
+            )
+              ? this.user[0]?.first_name + " " + this.user[0]?.last_name
+              : this.user[0].username;
+            this.$toast.success(
+              `درخواست نمایندگی با موفقیت به ${name} ارجاع داده شد`
+            );
+          } else {
+            this.$toast.success("عملیات با موفقیت انجام شد");
+          }
+          this.$emit("refresh");
           this.closeDialog();
           this.loading = false;
         })

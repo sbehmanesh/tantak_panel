@@ -69,6 +69,7 @@ export const state = () => ({
   complaint_step,
   complaint_status,
   ownership_type_agancy,
+  agency_request_step,
 });
 
 let status_type = [
@@ -906,4 +907,11 @@ let complaint_status = [
   { text: "درحال برسی", value: "reviewing" },
   { text: "انجام شده", value: "done" },
   { text: "لغو شده", value: "cancel" },
+];
+let agency_request_step = [
+  { text: "ثبت اولیه", value: "init" },
+  { text: "از مدیر فروش به سرپرست فروش", value: "sale_manager_to_supervisor" },
+  { text: "از  سرپرست  فروش به مدیر فروش", value: "sale_supervisor_to_manager" },
+  { text: "انجام شده", value: "done" },
+  { text: "لغو شده", value: "reject" },
 ];

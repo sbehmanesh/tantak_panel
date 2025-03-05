@@ -142,7 +142,6 @@ export default {
       this.loading = true;
       this.$reqApi("complaint/show", { id: this.modelId })
         .then(async (response) => {
-          let items = [];
           for(let key in response.model){
             this.form[key] = response.model[key]
           }

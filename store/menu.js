@@ -49,14 +49,15 @@ let mnue_tree = [
         access: "contacts/index",
         route: "/user/contacts",
       },  
-      //   {
-      //   id: 55656857554,
-      //   name: "درخواست های همکاری",
-      //   access: "contacts/index",
-      //   route: "/user/cooperation-requests",
-      // },
+
     ],
   },
+  // {
+  //   id: 55656857554,
+  //   name: "درخواست های همکاری",
+  //   access: "employment_forms/referral",
+  //   route: "/user/cooperation-requests",
+  // },
   {
     id: 1122334,
     name: "شرکت ها",
@@ -67,12 +68,12 @@ let mnue_tree = [
   //   id: 484521111,
   //   name: "شکایات",
   //   children: [
-    // {
-    //   id: 5632,
-    //   access: "complaint_categories/index",
-    //   name: "دسته بندی شکایات",
-    //   route: "/new-call-center/complaint-categories",
-    // },
+  //   {
+  //     id: 5632,
+  //     access: "complaint_categories/index",
+  //     name: "دسته بندی شکایات",
+  //     route: "/new-call-center/complaint-categories",
+  //   },
   //     {
   //       id: 112285489334,
   //       name: "لیست شکایات",
@@ -347,12 +348,12 @@ let mnue_tree = [
         access: "contact_us_form/index",
         route: "/forms/contact-us-form",
       },
-      {
-        id: 28,
-        name: "درخواست فرم نمایندگی",
-        access: "representation_request_form/index",
-        route: "/forms/representation-request-form",
-      },
+      // {
+      //   id: 28,
+      //   name: "درخواست فرم نمایندگی",
+      //   access: "representation_request_form/index",
+      //   route: "/forms/representation-request-form",
+      // },
       {
         id: 29,
         name: "شکایات",

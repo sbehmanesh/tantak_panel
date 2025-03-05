@@ -7,7 +7,7 @@
             <v-expansion-panel class="card-style">
               <v-expansion-panel-header expand-icon="search">
                 <v-banner single-line>
-                  <span class="font_17">جستوجوی پیشرفته</span>
+                  <span class="font_17">جستجوی پیشرفته</span>
                 </v-banner>
               </v-expansion-panel-header>
               <v-expansion-panel-content>

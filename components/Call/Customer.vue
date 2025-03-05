@@ -94,7 +94,7 @@
                   لیست سفارشات باز مشتری
                 </small>
               </v-stepper-step>
-              <!-- <v-stepper-step
+              <v-stepper-step
                 complete
                 editable
                 edit-icon="fmd_bad
@@ -105,7 +105,7 @@
                 <small v-if="full_screen" class="pt-2">
                   شکایات ثبت شده برای مشتری
                 </small>
-              </v-stepper-step> -->
+              </v-stepper-step>
             </v-row>
 
             <v-row class="justify-center">

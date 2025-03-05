@@ -87,7 +87,7 @@
           block
           @click="setFilters"
           :disabled="!Boolean(sender) && !Boolean(factor_number) && !Boolean(gater)"
-          text="جستوجو"
+          text="جستجو"
           height="38"
           color="green darken-1"
         />

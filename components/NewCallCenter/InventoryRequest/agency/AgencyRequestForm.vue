@@ -162,9 +162,7 @@ export default {
           this.form.birth_date = Boolean(this.user[0].birth_date)
             ? this.user[0].birth_date
             : "";
-          console.log("this.form ==> ", this.form);
         }
-        console.log("user ==> ", this.user);
       },
     },
   },
@@ -194,9 +192,7 @@ export default {
       this.loading = true;
       this.$reqApi(this.showUrl, { id: this.modelId })
         .then(async (response) => {
-          console.log("response ==> ", response);
           let data = response.model;
-          console.log("data ==> ", data);
           for (let key in data) {
             this.form[key] = data[key];
           }

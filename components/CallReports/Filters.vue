@@ -34,7 +34,7 @@
       <v-col cols="12" md="2">
         <amp-button
           @click="search"
-          text="جستوجو"
+          text="جستجو"
           height="38"
           color="primary"
           type="submit"

@@ -13,7 +13,7 @@
         dense
         :disabled="Boolean(loading_package)"
         :loading="Boolean(loading_package)"
-        label="جستوجوی پکیج "
+        label="جستجوی پکیج "
         placeholder="نام پکیج مورد نظر را وارد کنید ..."
       />
     </v-col>

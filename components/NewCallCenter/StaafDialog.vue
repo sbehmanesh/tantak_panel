@@ -21,7 +21,7 @@
             <v-row>
               <v-col cols="12" md="12">
                 <amp-select
-                v-if="$checkRole(this.$store.state.auth.role.agency_manager)"
+                  v-if="$checkRole(this.$store.state.auth.role.agency_manager)"
                   text="نقش"
                   v-model="role_id"
                   :items="roles"
@@ -186,6 +186,45 @@ export default {
         dialog_title = " ایجاد  پیک ";
         this.form.role_id.push(this.$store.state.auth.role.courier);
       }
+      if (
+        this.$checkRole(this.$store.state.auth.role.human_resources_manager)
+      ) {
+        dialog_title = " ایجاد  سرپرست منابع انسانی ";
+        this.form.role_id.push(
+          this.$store.state.auth.role.human_resources_supervisor
+        );
+      }
+
+      if (
+        this.$checkRole(this.$store.state.auth.role.human_resources_supervisor)
+      ) {
+        dialog_title = " ایجاد    کارشناس استخدام ";
+        this.form.role_id.push(
+          this.$store.state.auth.role.human_resources_expert
+        );
+      }
+
+      if (
+        this.$checkRole(
+          this.$store.state.auth.role.representative_affairs_manager
+        )
+      ) {
+        dialog_title = " ایجاد  سرپرست  امور نمایندگان ";
+        this.form.role_id.push(
+          this.$store.state.auth.role.representative_affairs_supervisor
+        );
+      }
+
+      if (
+        this.$checkRole(
+          this.$store.state.auth.role.representative_affairs_supervisor
+        )
+      ) {
+        dialog_title = " ایجاد    کارشناس امور نمایندگان ";
+        this.form.role_id.push(
+          this.$store.state.auth.role.representative_affairs_expert
+        );
+      }
 
       return dialog_title;
     },
@@ -199,8 +238,8 @@ export default {
         Boolean(this.$checkRole(this.$store.state.auth.role.agency_manager))
       ) {
         form.role_id.push(this.role_id);
-        if (this.$store.state.auth.role.cashier_id  == this.role_id) {
-          form["sale_agency_id"] = this.$store.state.auth.user.sale_agency_id
+        if (this.$store.state.auth.role.cashier_id == this.role_id) {
+          form["sale_agency_id"] = this.$store.state.auth.user.sale_agency_id;
         }
       }
       form["person_type"] = "real";

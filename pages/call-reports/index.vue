@@ -188,7 +188,6 @@ export default {
           this.voice_dialog.show = false;
           this.downloadCallRecord(body.recordingfile);
           this.voice_dialog.item = body;
-          console.log(body.billsec);
           
         },
         show_fun: (body) => {
@@ -204,7 +203,7 @@ export default {
   methods: {
     getData(event) {
       if (!Boolean(event) || Object.keys(event).length < 1) {
-        this.$toast.info("موردی برای جستوجو انتخاب نشده ");
+        this.$toast.info("موردی برای جستجو انتخاب نشده ");
         return;
       }
       this.loading = true;
@@ -291,9 +290,7 @@ export default {
       this.$reqApi(url, { recordingfile  : value } )
         .then((response) => {
           if (!show) {
-            console.log("response ==> ", response);
             let result = response.split("/")
-            console.log("result ==> ", result);
             this.downloadCallRecord(result[result.length-1] , true)
             
           }else{

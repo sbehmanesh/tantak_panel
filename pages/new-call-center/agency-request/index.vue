@@ -35,7 +35,7 @@ export default {
   data: () => ({
     headers: [],
     btn_actions: [],
-    title: "درخواست نمایندگی ها",
+    title: "درخواست نمایندگی ",
     refral: false,
     show_history: false,
     refreal_id: "",
@@ -106,8 +106,8 @@ export default {
         },
         show_fun: (body) => {
           if (
-            this.$checkRole(this.$store.state.auth.role.sale_manager) &&
-            (body.step == "init" || body.step == "sale_supervisor_to_manager")
+            this.$checkRole(this.$store.state.auth.role.representative_affairs_manager) &&
+            (body.step == "init" || body.step == "representative_affairs_supervisor_to_manager")
           ) {
             return true;
           } else if (

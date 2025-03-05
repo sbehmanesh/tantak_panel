@@ -1,413 +1,448 @@
 <template>
-    <v-row class="justify-center my-10">
-      <v-col cols="12" md="7" class="pa-0">
-        <v-stepper v-model="e1" class="elevation-0">
-          <v-col cols="12" md="12" class="pa-0">
-            <v-card class="elevation-0">
-              <v-stepper-header class="elevation-0">
-                <v-stepper-step color="blue-grey" :complete="e1 > 1" step="1">
-                  <span> مشخصات فردی </span>
-                </v-stepper-step>
+  <v-row class="justify-center mt-5">
+    <v-col cols="12" md="8" class="pa-0">
+      <v-stepper  v-model="e1" class="elevation-0">
+        <v-col cols="12" md="12" class="pa-0">
+              <v-stepper-header>
+                  <v-stepper-step
+                    :editable="e1 > 1 || valid_step1 ? true : false"
+                    color="blue-grey"
+                    :complete="e1 > 1"
+                    step="1"
+                  >
+                    <span> مشخصات فردی </span>
+                  </v-stepper-step>
 
-                <v-stepper-step color="blue-grey" :complete="e1 > 2" step="2">
-                  مشخصات تماس
-                </v-stepper-step>
+                  <v-stepper-step
+                    :editable="e1 > 2 || valid_step2 ? true : false"
+                    color="blue-grey"
+                    :complete="e1 > 2"
+                    step="2"
+                  >
+                    مشخصات تماس
+                  </v-stepper-step>
 
-                <v-stepper-step color="blue-grey" step="3" :complete="e1 > 3">
-                  تحصیالت</v-stepper-step
-                >
-                <v-stepper-step color="blue-grey" step="4" :complete="e1 > 4">
-                  تجربه و سوابق کار</v-stepper-step
-                >
-                <v-stepper-step color="blue-grey" step="5" :complete="e1 > 5">
-                  مهارت ها</v-stepper-step
-                >
-                <v-stepper-step color="blue-grey" step="6" :complete="e1 > 6">
-                  اطلاعات پایه
-                </v-stepper-step>
-                <v-stepper-step color="blue-grey" step="7">
-                  حقوق درخواستی
-                </v-stepper-step>
+                  <v-stepper-step
+                    :editable="e1 > 3 || valid_step3 ? true : false"
+                    color="blue-grey"
+                    step="3"
+                    :complete="e1 > 3"
+                  >
+                    تحصیالت</v-stepper-step
+                  >
+                  <v-stepper-step
+                    :editable="e1 > 4 || valid_step4 ? true : false"
+                    color="blue-grey"
+                    step="4"
+                    :complete="e1 > 4"
+                  >
+                    تجربه و سوابق کار</v-stepper-step
+                  >
+                  <v-stepper-step
+                    :editable="e1 > 5 || valid_step5 ? true : false"
+                    color="blue-grey"
+                    step="5"
+                    :complete="e1 > 5"
+                  >
+                    مهارت ها</v-stepper-step
+                  >
+                  <v-stepper-step
+                    :editable="e1 > 6 || valid_step6 ? true : false"
+                    color="blue-grey"
+                    step="6"
+                    :complete="e1 > 6"
+                  >
+                    اطلاعات پایه
+                  </v-stepper-step>
+                  <v-stepper-step
+                    :editable="e1 > 7 || valid_step7 ? true : false"
+                    color="blue-grey"
+                    step="7"
+                  >
+                    حقوق درخواستی
+                  </v-stepper-step>
               </v-stepper-header>
-              <v-divider></v-divider>
-            </v-card>
-          </v-col>
-          <v-card width="100%" class="pa-0 elevation-2">
-            <v-stepper-items class="px-2">
-              <v-stepper-content step="1">
-                <v-form v-model="valid_step1">
-                  <v-row class="pa-3 d-flex justify-center">
-                    <v-col cols="6" class="text-center">
-                      <h1 class="pt-1">
-                        <small class="blue-grey--text">
-                          چنانچه کاربرمورد نظر در لیست کاربران وجود نداشت کاربر
-                          جدید ثبت میشود
-                        </small>
-                      </h1>
-                      <v-divider class="mt-1"></v-divider>
-                    </v-col>
-                    <v-col cols="12" md="12" class="pa-0">
-                      <UserSelectForm
-                        text="کاربر مورد نظر را انتخاب کنید"
-                        v-model="user"
-                        url="user"
-                        :role-id="[]"
-                      />
-                    </v-col>
-                    <v-col class="pa-0" cols="12" md="6">
-                      <amp-input
-                        text="نام"
-                        v-model="form.first_name"
-                        rules="require"
-                      />
-                    </v-col>
-                    <v-col class="pa-0" cols="12" md="6">
-                      <amp-input
-                        text="نام خانوادگی"
-                        v-model="form.last_name"
-                        rules="require"
-                      />
-                    </v-col>
+              <v-stepper-items>
 
-                    <v-col class="pa-0" cols="12" md="6">
-                      <amp-jdate
-                        text="تاریخ تولد"
-                        rules="require"
-                        :is-number="true"
-                        v-model="form.birth_date"
-                      />
-                    </v-col>
-                    <v-col cols="12" md="6" class="pa-0">
-                      <amp-input
-                        text="کد ملی"
-                        rules="nationalCode,require"
-                        :is-number="true"
-                        v-model="form.national_code"
-                      />
-                    </v-col> </v-row
-                ></v-form>
-              </v-stepper-content>
+                  <v-stepper-content step="1">
+                    <v-form v-model="valid_step1">
+                      <v-row class="d-flex justify-center my-1">
+                        <v-col cols="6" class="text-center">
+                          <h1 class="pt-1">
+                            <small class="blue-grey--text">
+                              چنانچه کاربرمورد نظر در لیست کاربران وجود نداشت
+                              کاربر جدید ثبت میشود
+                            </small>
+                          </h1>
+                          <v-divider class="mt-1"></v-divider>
+                        </v-col>
 
-              <v-stepper-content step="2">
-                <v-form v-model="valid_step2">
-                  <v-row class="pa-3">
-                    <v-col class="pa-0" cols="12" md="6">
-                      <amp-input
-                        class="ltr-item"
-                        text=" شماره همراه "
-                        rules="phone,require"
-                        v-model="form.phone_number"
-                      />
-                    </v-col>
-                    <v-col cols="12" md="6" class="pa-0">
-                      <amp-input
-                        text="آدرس الکترونیکی"
-                        rules="email"
-                        dir="ltr"
-                        v-model="form.email"
-                    /></v-col>
-
-                    <v-col cols="12" md="12" class="pa-0">
-                      <amp-textarea
-                        text="آدرس دقیق محل سکونت کاربر"
-                        v-model="form.address"
-                        rules="require"
-                      />
-                    </v-col>
-                  </v-row>
-                </v-form>
-              </v-stepper-content>
-
-              <v-stepper-content step="3">
-                <v-form v-model="valid_step3">
-                  <v-row class="pa-3 d-flex justify-center">
-                    <v-col class="pa-0" cols="12" md="4">
-                      <amp-input
-                        text="آخرین مدرک تحصیلی"
-                        v-model="form.highest_degree"
-                        rules="require"
-                      />
-                    </v-col>
-                    <v-col class="pa-0" cols="12" md="4">
-                      <amp-input
-                        text=" رشته تحصیلی"
-                        v-model="form.field_study"
-                        rules="require"
-                      />
-                    </v-col>
-
-                    <v-col cols="12" md="4" class="pa-0">
-                      <amp-input
-                        text=" معدل"
-                        cClass="ltr-item"
-                        v-model="form.average"
-                      />
-                    </v-col>
-
-                    <v-col class="pa-0" cols="12" md="12">
-                      <amp-input
-                        text="محل تحصیل"
-                        rules="require"
-                        v-model="form.educational_institution"
-                      />
-                    </v-col>
-                  </v-row>
-                </v-form>
-              </v-stepper-content>
-              <v-stepper-content step="4">
-                <v-form v-model="valid_step4">
-                  <v-row class="pa-3 mb-3 d-flex justify-center">
-                    <v-col class="pa-0" cols="12" md="6">
-                      <amp-input
-                        text="  محل کار قبلی"
-                        v-model="form.previous_workplace"
-                        rules="require"
-                      />
-                    </v-col>
-                    <v-col class="pa-0" cols="12" md="6">
-                      <amp-input
-                        text="  وظایف"
-                        v-model="form.job_responsibilities"
-                        rules="require"
-                      />
-                    </v-col>
-
-                    <v-col class="pa-0" cols="12" md="6">
-                      <amp-input
-                        text="  میزان حقوق دریافتی (ریال)"
-                        is-price
-                        cClass="ltr-item"
-                        v-model="form.salary_received"
-                      />
-                    </v-col>
-                    <v-col class="pa-0" cols="12" md="6">
-                      <amp-input
-                        text="علت جدایی"
-                        rules="require"
-                        v-model="form.separation_reason"
-                      />
-                    </v-col>
-                    <v-col cols="12" md="6" class="pa-0">
-                      <amp-jdate
-                        text=" مدت زمان اشتغال شروع از"
-                        rules="number,require"
-                        :is-number="true"
-                        v-model="form.employment_start_date"
-                      />
-                    </v-col>
-                    <v-col cols="12" md="6" class="pa-0">
-                      <amp-jdate
-                        text="تا"
-                        rules="number,require"
-                        :is-number="true"
-                        v-model="form.employment_end_date"
-                      />
-                    </v-col>
-                  </v-row>
-                </v-form>
-              </v-stepper-content>
-              <v-stepper-content step="5">
-                <v-form v-model="valid_step5">
-                  <v-row class="pa-3 mb-3 d-flex justify-center">
-                    <v-col class="" cols="12" md="12">
-                      <v-btn
-                        @click="addItems('skills')"
-                        height="38"
-                        color="blue-grey lighten-1"
-                        block
-                        outlined
-                        class="mb-3"
-                      >
-                        <h1>مهارت های فنی و نرم افزاری</h1>
-                        <v-icon class="mr-6">control_point_duplicate</v-icon>
-                      </v-btn>
-                      <v-row class="mt-5">
-                        <v-col
-                          class="pa-0 text-start"
-                          cols="12"
-                          md="6"
-                          v-for="(x, i) in skills_user"
-                          :key="i"
-                        >
+                        <v-col cols="12" md="12" class="pa-0">
+                          <UserSelectForm
+                            text="کاربر مورد نظر را انتخاب کنید"
+                            v-model="user"
+                            url="user"
+                            :role-id="[]"
+                          />
+                        </v-col>
+                        <v-col class="pa-0" cols="12" md="6">
                           <amp-input
-                            v-model="x.text"
-                            :placeholder="`${i + 1}`"
-                          ></amp-input>
+                            text="نام"
+                            v-model="form.first_name"
+                            rules="require"
+                          />
                         </v-col>
-                      </v-row>
-                    </v-col>
-                    <v-col class="" cols="12" md="12">
-                      <v-btn
-                        @click="addItems('languages')"
-                        height="38"
-                        color="blue-grey lighten-1"
-                        block
-                        outlined
-                        class="mb-3"
-                      >
-                        <h1>تسلط بر زبان های خارجی و میزان تسلط</h1>
-                        <v-icon class="mr-6">control_point_duplicate</v-icon>
-                      </v-btn>
-                      <v-row class="mt-5">
-                        <v-col
-                          cols="12"
-                          v-for="(x, i) in languages"
-                          :key="i"
-                          class="d-flex pa-0 align-center"
-                        >
-                          <v-col class="pa-0 text-start" cols="12" md="9">
-                            <amp-input
-                              v-model="x.lang"
-                              :placeholder="`${i + 1}`"
-                            ></amp-input>
-                          </v-col>
-                          <v-col cols="12" md="3" class="pa-0">
-                            <amp-autocomplete
-                              placeholder="سطح تسلط"
-                              v-model="x.level"
-                              :items="language_level"
-                            ></amp-autocomplete>
-                          </v-col>
+                        <v-col class="pa-0" cols="12" md="6">
+                          <amp-input
+                            text="نام خانوادگی"
+                            v-model="form.last_name"
+                            rules="require"
+                          />
                         </v-col>
-                      </v-row>
-                    </v-col>
-                    <v-col class="pa-0" cols="12" md="12">
-                      <amp-textarea
-                        text="  تشریح مهارت ها "
-                        v-model="form.description_skills"
-                        rules="require"
-                      />
-                    </v-col>
-                  </v-row>
-                </v-form>
-              </v-stepper-content>
-              <v-stepper-content step="6">
-                <v-form v-model="valid_step6">
-                  <v-row class="pa-3 mb-3 d-flex justify-center">
-                    <v-col class="pa-0" cols="12" md="6">
-                      <amp-select
-                        text="شیفت کاری"
-                        v-model="form.work_shift"
-                        :items="work_shift"
-                        rules="require"
-                      />
-                    </v-col>
-                    <v-col class="pa-0" cols="12" md="6">
-                      <amp-select
-                        text="وضعیت تاهل "
-                        v-model="form.marital_status"
-                        :items="marital_status"
-                        rules="require"
-                      />
-                    </v-col>
-                    <v-col class="pa-0" cols="12" md="6">
-                      <amp-select
-                        text=" وضعیت خدمت وظیفه"
-                        v-model="form.military_service_status"
-                        :items="military_service_status"
-                      />
-                    </v-col>
-                    <v-col class="pa-0" cols="12" md="6">
-                      <AmpUploadFileNew
-                        title="آپلود حداقل یک مدرک شناسایی عکس دار "
-                        multiple
-                        v-model="form.file"
-                      />
-                    </v-col>
-                    <v-col class="pa-0" cols="12" md="12">
-                      <amp-textarea
-                        text="درصورت وضعیت سلامتی نا سالم بیماری را شرح دهید"
-                        v-model="form.description_disease"
-                      />
-                    </v-col>
-                  </v-row>
-                </v-form>
-              </v-stepper-content>
-              <v-stepper-content step="7">
-                <v-form v-model="valid_step7">
-                  <v-row class="pa-3 mb-3 d-flex justify-center">
-                    <v-col class="pa-0" cols="12" md="6">
-                      <amp-input
-                        text="میزان حقوق درخواستی (ریال)"
-                        is-price
-                        v-model="form.requested_salary"
-                        rules="require"
-                      />
-                    </v-col>
-                    <v-col class="pa-0" cols="12" md="6">
-                      <amp-select
-                        text="شامل اضافه کار"
-                        v-model="form.overtime"
-                        :items="$store.state.static.bool_text"
-                        rules="require"
-                      />
-                    </v-col>
 
-                    <v-col class="pa-0" cols="12" md="6">
-                      <amp-select
-                        text="شامل پاداش است"
-                        v-model="form.reward"
-                        :items="$store.state.static.bool_text"
-                        rules="require"
-                      />
-                    </v-col>
-                    <v-col class="pa-0" cols="12" md="6">
-                      <amp-select
-                        text="عنوان شغلی "
-                        v-model="form.job_position_id"
-                        :items="job_position"
-                        rules="require"
-                      />
-                    </v-col>
-                    <v-col class="pa-0" cols="12" md="12">
-                      <AmpUploadFileNew
-                        title="بارگذری فایل pdf"
-                        v-model="form.pdf_path"
-                      />
-                    </v-col>
+                        <v-col class="pa-0" cols="12" md="6">
+                          <amp-jdate
+                            text="تاریخ تولد"
+                            rules="require"
+                            :is-number="true"
+                            v-model="form.birth_date"
+                          />
+                        </v-col>
+                        <v-col cols="12" md="6" class="pa-0">
+                          <amp-input
+                            text="کد ملی"
+                            rules="nationalCode,require"
+                            :is-number="true"
+                            v-model="form.national_code"
+                          />
+                        </v-col> </v-row
+                    ></v-form>
+                  </v-stepper-content>
+
+                  <v-stepper-content step="2">
+                    <v-form v-model="valid_step2">
+                      <v-row class="my-1">
+                        <v-col class="pa-0" cols="12" md="6">
+                          <amp-input
+                            class="ltr-item"
+                            text=" شماره همراه "
+                            rules="phone,require"
+                            v-model="form.phone_number"
+                          />
+                        </v-col>
+                        <v-col cols="12" md="6" class="pa-0">
+                          <amp-input
+                            text="آدرس الکترونیکی"
+                            rules="email"
+                            dir="ltr"
+                            v-model="form.email"
+                        /></v-col>
+
+                        <v-col cols="12" md="12" class="pa-0">
+                          <amp-textarea
+                            text="آدرس دقیق محل سکونت کاربر"
+                            v-model="form.address"
+                            rules="require"
+                          />
+                        </v-col>
+                      </v-row>
+                    </v-form>
+                  </v-stepper-content>
+
+                  <v-stepper-content step="3">
+                    <v-form v-model="valid_step3">
+                      <v-row class="d-flex justify-center my-1">
+                        <v-col class="pa-0" cols="12" md="4">
+                          <amp-input
+                            text="آخرین مدرک تحصیلی"
+                            v-model="form.highest_degree"
+                            rules="require"
+                          />
+                        </v-col>
+                        <v-col class="pa-0" cols="12" md="4">
+                          <amp-input
+                            text=" رشته تحصیلی"
+                            v-model="form.field_study"
+                            rules="require"
+                          />
+                        </v-col>
+
+                        <v-col cols="12" md="4" class="pa-0">
+                          <amp-input
+                            text=" معدل"
+                            cClass="ltr-item"
+                            v-model="form.average"
+                          />
+                        </v-col>
+
+                        <v-col class="pa-0" cols="12" md="12">
+                          <amp-input
+                            text="محل تحصیل"
+                            rules="require"
+                            v-model="form.educational_institution"
+                          />
+                        </v-col>
+                      </v-row>
+                    </v-form>
+                  </v-stepper-content>
+                  <v-stepper-content step="4">
+                    <v-form v-model="valid_step4">
+                      <v-row class="d-flex justify-center my-1">
+                        <v-col class="pa-0" cols="12" md="6">
+                          <amp-input
+                            text="  محل کار قبلی"
+                            v-model="form.previous_workplace"
+                            rules="require"
+                          />
+                        </v-col>
+                        <v-col class="pa-0" cols="12" md="6">
+                          <amp-input
+                            text="  وظایف"
+                            v-model="form.job_responsibilities"
+                            rules="require"
+                          />
+                        </v-col>
+
+                        <v-col class="pa-0" cols="12" md="6">
+                          <amp-input
+                            text="  میزان حقوق دریافتی (ریال)"
+                            is-price
+                            cClass="ltr-item"
+                            v-model="form.salary_received"
+                          />
+                        </v-col>
+                        <v-col class="pa-0" cols="12" md="6">
+                          <amp-input
+                            text="علت جدایی"
+                            rules="require"
+                            v-model="form.separation_reason"
+                          />
+                        </v-col>
+                        <v-col cols="12" md="6" class="pa-0">
+                          <amp-jdate
+                            text=" مدت زمان اشتغال شروع از"
+                            rules="require"
+                            :is-number="true"
+                            v-model="form.employment_start_date"
+                          />
+                        </v-col>
+                        <v-col cols="12" md="6" class="pa-0">
+                          <amp-jdate
+                            text="تا"
+                            rules="require"
+                            :is-number="true"
+                            v-model="form.employment_end_date"
+                          />
+                        </v-col>
+                      </v-row>
+                    </v-form>
+                  </v-stepper-content>
+                  <v-stepper-content step="5">
+                    <v-form v-model="valid_step5">
+                      <v-row class="d-flex justify-center my-1">
+                        <v-col class="" cols="12" md="12">
+                          <v-btn
+                            @click="addItems('skills')"
+                            height="38"
+                            color="blue-grey lighten-1"
+                            block
+                            outlined
+                            class="mb-3"
+                          >
+                            <h1>مهارت های فنی و نرم افزاری</h1>
+                            <v-icon class="mr-6"
+                              >control_point_duplicate</v-icon
+                            >
+                          </v-btn>
+                          <v-row class="mt-5">
+                            <v-col
+                              class="pa-0 text-start"
+                              cols="12"
+                              md="6"
+                              v-for="(x, i) in skills_user"
+                              :key="i"
+                            >
+                              <amp-input
+                                v-model="x.text"
+                                :placeholder="`${i + 1}`"
+                              ></amp-input>
+                            </v-col>
+                          </v-row>
+                        </v-col>
+                        <v-col class="" cols="12" md="12">
+                          <v-btn
+                            @click="addItems('languages')"
+                            height="38"
+                            color="blue-grey lighten-1"
+                            block
+                            outlined
+                            class="mb-3"
+                          >
+                            <h1>تسلط بر زبان های خارجی و میزان تسلط</h1>
+                            <v-icon class="mr-6"
+                              >control_point_duplicate</v-icon
+                            >
+                          </v-btn>
+                          <v-row class="mt-5">
+                            <v-col
+                              cols="12"
+                              v-for="(x, i) in languages"
+                              :key="i"
+                              class="d-flex pa-0 align-center"
+                            >
+                              <v-col class="pa-0 text-start" cols="12" md="9">
+                                <amp-input
+                                  v-model="x.lang"
+                                  :placeholder="`${i + 1}`"
+                                ></amp-input>
+                              </v-col>
+                              <v-col cols="12" md="3" class="pa-0">
+                                <amp-autocomplete
+                                  placeholder="سطح تسلط"
+                                  v-model="x.level"
+                                  :items="language_level"
+                                ></amp-autocomplete>
+                              </v-col>
+                            </v-col>
+                          </v-row>
+                        </v-col>
+                        <v-col class="pa-0" cols="12" md="12">
+                          <amp-textarea
+                            text="  تشریح مهارت ها "
+                            v-model="form.description_skills"
+                            rules="require"
+                          />
+                        </v-col>
+                      </v-row>
+                    </v-form>
+                  </v-stepper-content>
+                  <v-stepper-content step="6">
+                    <v-form v-model="valid_step6">
+                      <v-row class="d-flex justify-center my-1">
+                        <v-col class="pa-0" cols="12" md="6">
+                          <amp-select
+                            text="شیفت کاری"
+                            v-model="form.work_shift"
+                            :items="work_shift"
+                            rules="require"
+                          />
+                        </v-col>
+                        <v-col class="pa-0" cols="12" md="6">
+                          <amp-select
+                            text="وضعیت تاهل "
+                            v-model="form.marital_status"
+                            :items="marital_status"
+                            rules="require"
+                          />
+                        </v-col>
+                        <v-col class="pa-0" cols="12" md="6">
+                          <amp-select
+                            text=" وضعیت خدمت وظیفه"
+                            v-model="form.military_service_status"
+                            :items="military_service_status"
+                          />
+                        </v-col>
+                        <v-col class="pa-0" cols="12" md="6">
+                          <AmpUploadFileNew
+                            title="آپلود حداقل یک مدرک شناسایی عکس دار "
+                            multiple
+                            v-model="form.file"
+                          />
+                        </v-col>
+                        <v-col class="pa-0" cols="12" md="12">
+                          <amp-textarea
+                            text="درصورت وضعیت سلامتی نا سالم بیماری را شرح دهید"
+                            v-model="form.description_disease"
+                          />
+                        </v-col>
+                      </v-row>
+                    </v-form>
+                  </v-stepper-content>
+                  <v-stepper-content step="7">
+                    <v-form v-model="valid_step7">
+                      <v-row class="d-flex justify-center my-1">
+                        <v-col class="pa-0" cols="12" md="6">
+                          <amp-input
+                            text="میزان حقوق درخواستی (ریال)"
+                            is-price
+                            v-model="form.requested_salary"
+                            rules="require"
+                          />
+                        </v-col>
+                        <v-col class="pa-0" cols="12" md="6">
+                          <amp-select
+                            text="شامل اضافه کار"
+                            v-model="form.overtime"
+                            :items="$store.state.static.bool_text"
+                            rules="require"
+                          />
+                        </v-col>
+
+                        <v-col class="pa-0" cols="12" md="6">
+                          <amp-select
+                            text="شامل پاداش است"
+                            v-model="form.reward"
+                            :items="$store.state.static.bool_text"
+                            rules="require"
+                          />
+                        </v-col>
+                        <v-col class="pa-0" cols="12" md="6">
+                          <amp-select
+                            text="عنوان شغلی "
+                            v-model="form.job_position_id"
+                            :items="job_position"
+                            rules="require"
+                          />
+                        </v-col>
+                        <v-col class="pa-0" cols="12" md="12">
+                          <AmpUploadFileNew
+                            title="بارگذری فایل pdf"
+                            v-model="form.pdf_path"
+                          />
+                        </v-col>
+                      </v-row>
+                    </v-form>
+                  </v-stepper-content>
+                </v-stepper-items>
+
+                  <v-row class="align-center justify-center mx-10 my-4">
+                    <v-btn @click="redirectPage" color="red lighten-2">
+                      <span class="white--text mx-1">انصراف</span>
+                    </v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      v-if="e1 > 1"
+                      @click="e1--"
+                      color="red lighten-2"
+                      class="mx-2"
+                    >
+                      <v-icon color="white">chevron_right</v-icon>
+                      <span class="white--text">برگشت</span>
+                    </v-btn>
+                    <v-btn
+                      v-if="e1 < 7"
+                      :disabled="!Boolean(check_validations)"
+                      color="blue-grey"
+                      @click="e1++"
+                    >
+                      <span class="white--text mx-1">بعدی</span>
+                      <v-icon color="white">chevron_left</v-icon>
+                    </v-btn>
+                    <v-btn
+                      v-if="e1 == 7"
+                      :disabled="!Boolean(check_validations)"
+                      color="blue-grey"
+                      @click="submit"
+                    >
+                      <span class="white--text mx-1">ثبت اطلاعات</span>
+                    </v-btn>
                   </v-row>
-                </v-form>
-              </v-stepper-content>
-            </v-stepper-items>
-            <v-row class="justify-center">
-              <v-col cols="12"> <v-divider></v-divider></v-col>
-              <v-col cols="12" md="11" class="d-flex justify-center">
-                <v-btn @click="e1--" color="red lighten-2" class="ma-2">
-                  <span class="white--text mx-1">انصراف</span>
-                </v-btn>
-                <v-spacer></v-spacer>
-                <v-btn
-                  v-if="e1 > 1"
-                  @click="e1--"
-                  color="red lighten-2"
-                  class="ma-2"
-                >
-                  <v-icon color="white">chevron_right</v-icon>
-                  <span class="white--text mx-1">برگشت</span>
-                </v-btn>
-                <v-btn
-                  v-if="e1 < 7"
-                  class="ma-2"
-                  color="blue-grey"
-                  @click="e1++"
-                >
-                  <span class="white--text mx-1">بعدی</span>
-                  <v-icon color="white">chevron_left</v-icon>
-                </v-btn>
-                <v-btn
-                  v-if="e1 == 7"
-                  class="ma-2"
-                  color="blue-grey"
-                  @click="submit"
-                >
-                  <span class="white--text mx-1">ثبت اطلاعات</span>
-                </v-btn>
-              </v-col>
-            </v-row>
-          </v-card>
-        </v-stepper>
-      </v-col>
-    </v-row>
+             
+          
+        </v-col>
+      </v-stepper>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -498,15 +533,14 @@ export default {
       job_position_id: "",
     },
   }),
+  computed: {
+    check_validations() {
+      let valid = `valid_step${this.e1}`;
 
-  watch: {
-    e1(){
-    console.log("e1 ==> ", this.e1);
-    let text = `valid_step${this.e1}`
-    console.log("text ==> ", text);
-      console.log("this ---> " , this);
-      
+      return this[valid];
     },
+  },
+  watch: {
     user: {
       deep: true,
       handler() {
@@ -545,7 +579,6 @@ export default {
       } else {
         this.form.health_status = "unhealthy";
       }
-      console.log("this.form.health_status ==> ", this.form.health_status);
       if (this.languages.length > 0) {
         this.form.languages = this.languages;
       }
@@ -581,7 +614,6 @@ export default {
       this.loading = true;
       this.$reqApi(this.showUrl, { id: this.modelId })
         .then(async (response) => {
-          console.log("response ==> ", response);
           let data = response.model;
           for (let key in data) {
             this.form[key] = data[key];
@@ -589,10 +621,9 @@ export default {
           data.technical_skills.map((x) => {
             this.skills_user.push({ text: x });
           });
-          console.log("this.skills_user >>> ", this.skills_user);
+          this.user.push(data.user);
 
           this.languages = [...data.languages];
-          console.log("data.languages ==> ", data.languages);
           this.loading = false;
         })
         .catch((error) => {
@@ -642,15 +673,4 @@ export default {
   },
 };
 </script>
-<!-- <style scoped>
-.v-stepper__step {
-  align-items: center;
-  display: flex;
-  flex-direction: row;
-  padding: 10px;
-  position: relative;
-}
-.v-stepper__header {
-  height: 130px !important;
-}
-</style> -->
+

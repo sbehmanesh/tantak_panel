@@ -70,6 +70,7 @@ export const state = () => ({
   complaint_status,
   ownership_type_agancy,
   agency_request_step,
+  cooperation_req,
 });
 
 let status_type = [
@@ -907,11 +908,48 @@ let complaint_status = [
   { text: "درحال برسی", value: "reviewing" },
   { text: "انجام شده", value: "done" },
   { text: "لغو شده", value: "cancel" },
+  { text: "لغو شده", value: "reject" },
 ];
 let agency_request_step = [
   { text: "ثبت اولیه", value: "init" },
-  { text: "از مدیر فروش به سرپرست فروش", value: "sale_manager_to_supervisor" },
-  { text: "از  سرپرست  فروش به مدیر فروش", value: "sale_supervisor_to_manager" },
+  {
+    text: "از مدیر  به سرپرست امور نمایندگی",
+    value: "representative_affairs_manager_to_supervisor",
+  },
+  {
+    text: "از  سرپرست  امور نمایندگی به مدیر ",
+    value: "representative_affairs_supervisor_to_manager",
+  },
+  {
+    text: "از  سرپرست  امور نمایندگی به کارشناس ",
+    value: "representative_affairs_supervisor_to_expert",
+  },
+  {
+    text: "  از     کارشناس  امور نمایندگی به سرپرست",
+    value: "representative_affairs_expert_to_supervisor",
+  },
   { text: "انجام شده", value: "done" },
   { text: "لغو شده", value: "reject" },
+];
+let cooperation_req = [
+  { text: "انجام شده", value: "done" },
+  { text: "لغو شده", value: "reject" },
+  { text: "ثبت اولیه", value: "init" },
+
+  {
+    text: "از مدیر منابع انسانی به سرپرست",
+    value: "human_resources_manager_to_supervisor",
+  },
+  {
+    text: "برگشت از سرپرست منابع انسانی به مدیر",
+    value: "human_resources_supervisor_to_manager",
+  },
+  {
+    text: "از سرپرست منابع انسانی به کارشناس استخدام",
+    value: "human_resources_supervisor_to_expert",
+  },
+  {
+    text: " از کارشناس استخدام به سرپرست",
+    value: "human_resources_expert_to_supervisor",
+  },
 ];

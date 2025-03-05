@@ -91,13 +91,14 @@ export default {
   watch: {
     "form.step"() {
       switch (this.form.step) {
-        case "representative_affairs_manager_to_supervisor":
-          this.select_user_title = "سرپرست    مورد نظر را انتخاب کنید";
+        case "human_resources_manager_to_supervisor":
+          this.select_user_title =
+            "سرپرست منابع انسانی  مورد نظر را انتخاب کنید";
           this.show_select_user = true;
 
           break;
-        case "representative_affairs_supervisor_to_expert":
-          this.select_user_title = "کارشناس  را انتخاب کنید";
+        case "human_resources_supervisor_to_expert":
+          this.select_user_title = "کارشناس استخدام را انتخاب کنید";
           this.show_select_user = true;
 
           break;
@@ -106,35 +107,33 @@ export default {
   },
   computed: {
     set_step_items() {
-      let items = [...this.$store.state.static.agency_request_step];
+      let items = [...this.$store.state.static.cooperation_req];
       if (
-        this.$checkRole(
-          this.$store.state.auth.role.representative_affairs_manager
-        )
+        this.$checkRole(this.$store.state.auth.role.human_resources_manager)
       ) {
         return items.filter(
           (x) =>
-            x.value == "representative_affairs_manager_to_supervisor" ||
+            x.value == "human_resources_manager_to_supervisor" ||
             x.value == "reject"
         );
-      } else if (
-        this.$checkRole(
-          this.$store.state.auth.role.representative_affairs_supervisor
-        )
+      }
+      // ---------------------SUPERVISOR-----------------------------------
+      else if (
+        this.$checkRole(this.$store.state.auth.role.human_resources_supervisor)
       ) {
         return items.filter(
           (x) =>
-            x.value == "representative_affairs_supervisor_to_manager" ||
-            x.value == "representative_affairs_supervisor_to_expert"
+            x.value == "human_resources_supervisor_to_manager" ||
+            x.value == "human_resources_supervisor_to_expert"
         );
-      } else if (
-        this.$checkRole(
-          this.$store.state.auth.role.representative_affairs_expert
-        )
+      }
+      // -------------------EXPERT-------------------------------------
+      else if (
+        this.$checkRole(this.$store.state.auth.role.human_resources_expert)
       ) {
         return items.filter(
           (x) =>
-            x.value == "representative_affairs_expert_to_supervisor" ||
+            x.value == "human_resources_expert_to_supervisor" ||
             x.value == "done"
         );
       }
@@ -145,20 +144,17 @@ export default {
       this.loading = true;
       let form = { ...this.form };
       form.id = this.modelId;
-
       if (
-        form.step == "representative_affairs_manager_to_supervisor" ||
-        form.step == "representative_affairs_supervisor_to_expert"
+        this.form.step == "human_resources_supervisor_to_expert" ||
+        this.form.step == "human_resources_manager_to_supervisor"
       ) {
-        
         form["user_refer_id"] = this.user[0].id;
       }
-      this.$reqApi("agency-request/referral", form)
+
+      this.$reqApi("employment-form/referral", form)
         .then((res) => {
           if (
-            (this.form.step == "representative_affairs_manager_to_supervisor" ||
-              this.form.step ==
-                "representative_affairs_supervisor_to_expert") &&
+            this.form.step == "sale_manager_to_supervisor" &&
             this.user.length > 0
           ) {
             let name = Boolean(

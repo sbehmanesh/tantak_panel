@@ -4,7 +4,7 @@
       <v-autocomplete v-if="
         this.$store.state.auth.action.indexOf('product_requests/update') > -1
       " class="mx-2" prepend-inner-icon="search" v-model="product_varcomb_id" :items="products" outlined dense
-        :disabled="Boolean(load_item)" :loading="Boolean(load_item)" label="جستوجوی سریع محصول"
+        :disabled="Boolean(load_item)" :loading="Boolean(load_item)" label="جستجوی سریع محصول"
         placeholder="نام محصول مورد نظر را وارد کنید ..." />
       <v-col v-if="Boolean(check) && !loading" class="justify-center text-center" cols="12">
         <v-icon color="red" size="80"> production_quantity_limits </v-icon>

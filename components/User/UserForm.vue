@@ -25,15 +25,8 @@
             v-model="form.password"
           />
         </v-col>
-        <v-col cols="12" md="3" >
-          <amp-autocomplete
-            text="نوع شخص"
-            rules="require"
-            v-model="form.person_type"
-            :items="$store.state.static.person_type"
-          />
-        </v-col>    
-            <v-col cols="12" md="3" v-if="!Boolean(roleId)">
+
+        <v-col cols="12" md="3" v-if="!Boolean(roleId)">
           <amp-autocomplete
             text="نقش"
             chips
@@ -76,21 +69,17 @@
             v-model="form.person_type"
             :items="$store.state.static.person_type"
           />
-        </v-col>   
-          <v-col cols="12" md="3" v-if="form.person_type == 'legal'">
+        </v-col>
+        <v-col cols="12" md="3" v-if="form.person_type == 'legal'">
           <amp-select
             text="شرکت"
             rules="require"
             v-model="form.company_id"
             :items="companies"
           />
-        </v-col>   
-          <v-col cols="12" md="3" v-if="form.person_type == 'legal'">
-            <amp-input
-            text="سمت (پست)"
-            rules="require"
-            v-model="form.post"
-          />
+        </v-col>
+        <v-col cols="12" md="3" v-if="form.person_type == 'legal'">
+          <amp-input text="سمت (پست)" rules="require" v-model="form.post" />
         </v-col>
 
         <v-col cols="12" md="3">
@@ -364,23 +353,24 @@ export default {
     // });
   },
   methods: {
-    companiesList(){
-      this.loading = true
-this.$reqApi("company").then((res)=>{
-let items  = []
-for (let i = 0; i < res.model.data.length; i++) {
-  const x = res.model.data[i];
-  items.push({
-    text:x.fa_name + " | " + x.en_name,
-    value:x.id
-  })
-  this.companies = items
-  this.loading = false
-
-}
-}).catch((err)=>{
-  this.loading = false
-})
+    companiesList() {
+      this.loading = true;
+      this.$reqApi("company")
+        .then((res) => {
+          let items = [];
+          for (let i = 0; i < res.model.data.length; i++) {
+            const x = res.model.data[i];
+            items.push({
+              text: x.fa_name + " | " + x.en_name,
+              value: x.id,
+            });
+            this.companies = items;
+            this.loading = false;
+          }
+        })
+        .catch((err) => {
+          this.loading = false;
+        });
     },
     submit() {
       this.loading = true;
@@ -447,8 +437,6 @@ for (let i = 0; i < res.model.data.length; i++) {
               });
             });
           }
-
-     
 
           if (Array.isArray(response.model.roles)) {
             this.form.role_id = response.model.roles.map((x) => x.id);

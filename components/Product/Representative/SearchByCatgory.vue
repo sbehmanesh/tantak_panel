@@ -1,7 +1,7 @@
 <template>
   <v-row class="align-center">
     <v-col cols="8" md="5">
-      <amp-autocomplete text="جستوجو محصولات" v-model="search" :items="list" />
+      <amp-autocomplete text="جستجو محصولات" v-model="search" :items="list" />
     </v-col>
     <v-col cols="8" md="5">
       <amp-autocomplete text="نوع" v-model="type" :items="options_type" />

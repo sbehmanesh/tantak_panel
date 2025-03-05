@@ -12,7 +12,7 @@
         <v-expansion-panels>
           <v-expansion-panel class="elevation-2">
             <v-expansion-panel-header expand-icon="qr_code">
-              <h1>جستوجو با استفاده از بارکد</h1>
+              <h1>جستجو با استفاده از بارکد</h1>
             </v-expansion-panel-header>
             <v-expansion-panel-content>
               <v-row class="align-center justify-center">
@@ -25,7 +25,7 @@
                 </v-col>
                 <v-col cols="6" class="d-flex align-center">
                   <amp-button
-                  text="جستوجو در محصولات "
+                  text="جستجو در محصولات "
                   @click="searchByBarcode('full_barcode')"
                   color="blue-grey"
                   class="mx-4"
@@ -33,7 +33,7 @@
                 ></amp-button>
 
                 <amp-button
-                  text="جستوجو در پکیج ها "
+                  text="جستجو در پکیج ها "
                   @click="searchByBarcode('package_number')"
                   color="blue-grey"
                   height="38"

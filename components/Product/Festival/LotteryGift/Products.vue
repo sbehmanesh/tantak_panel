@@ -13,7 +13,7 @@
         dense
         :disabled="Boolean(load_item)"
         :loading="Boolean(load_item)"
-        label="جستوجوی سریع محصول"
+        label="جستجوی سریع محصول"
         placeholder="نام محصول مورد نظر را وارد کنید ..."
       />
       <v-col

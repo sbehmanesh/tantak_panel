@@ -10,7 +10,7 @@
         </v-row>
         <v-col cols="12" class="d-flex justify-center align-center">
           <div class="text-center mb-3">
-            <v-icon size="43"> groups </v-icon>
+            <v-icon size="43" color="blue-grey"> groups </v-icon>
             <h1 class="font_12">
               صف انتظار
               <br />
@@ -24,7 +24,8 @@
         <v-row class="my-2">
           <v-col class="py-1" cols="12" md="12" v-for="(x, i) in waitingLine">
             <v-card
-              class="elevation-3 pa-3 call-cards"
+              :style="new_call == i ? 'background-color: teal !important;' : ''"
+              class="elevation-5 my-1 pa-3 call-cards"
               outlined
               @click="showInformationsUser(x)"
             >
@@ -40,7 +41,10 @@
                     {{ x.first_name }} {{ x.last_name }}
                   </small>
                   <small v-else> تماس ناشناس</small>
+
+             
                   <br />
+
                   <small class="grey--text" v-if="x.person_type == 'real'">
                     کاربر حقیقی</small
                   >
@@ -104,6 +108,7 @@ export default {
   data: () => ({
     caller_id_dialog: { show: false, item: null },
     loading: false,
+    new_call: null,
     call_list: [],
   }),
   watch: {
@@ -149,13 +154,14 @@ export default {
       let cards = document.getElementsByClassName("call-cards");
       for (let i = 0; i <= cards.length; i++) {
         const x = cards[i];
-
         setTimeout(() => {
           x.style.opacity = 1;
           x.style.transition = `all 1.${i}5s ease`;
           x.style.transform = `scale3d(1, 1, 1)`;
         }, 200 * i);
       }
+      this.new_call = this.call_list.length - 1;
+  
     },
   },
 };
@@ -163,20 +169,18 @@ export default {
 <style scoped>
 .call-cards {
   opacity: 0;
-  border-right: 1px solid #fd580b56;
   transform: scale3d(0.5, 1, 0.5);
   border-radius: 8px !important;
 
   background: linear-gradient(
     to right,
-    #fd580b41,
+    #ffffff96,
+    rgb(255, 255, 255),
     rgb(255, 255, 255),
     rgb(255, 255, 255),
     rgb(255, 255, 255),
     #ffffff
   ) !important;
   transition: all 0.5s ease !important;
-
 }
-
 </style>

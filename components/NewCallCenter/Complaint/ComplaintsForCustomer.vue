@@ -2,6 +2,7 @@
   <div>
     <BaseTable
       url="/complaint"
+         :rootBody="root_body"
       :headers="headers"
       :extraBtn="extra_btn"
       :filters="filters"
@@ -64,15 +65,12 @@ export default {
     complaint_id: "",
     role_id: "",
     filters: {},
+    root_body: {},
   }),
   beforeMount() {
     if (Boolean(this.filterUser)) {
-      this.filters = {
-        user_id: {
-          op: "=",
-          value: this.userId,
-        },
-      };
+      this.root_body = {user_id : this.userId}
+ 
     }
   },
   mounted() {

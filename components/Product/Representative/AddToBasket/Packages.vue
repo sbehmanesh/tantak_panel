@@ -4,7 +4,7 @@
       <v-autocomplete v-if="
         this.$store.state.auth.action.indexOf('product_requests/update') > -1
       " class="mx-2" prepend-inner-icon="search" v-model="package_id" :items="packages_list" outlined dense
-        :disabled="Boolean(loading_package)" :loading="Boolean(loading_package)" label="جستوجوی پکیج "
+        :disabled="Boolean(loading_package)" :loading="Boolean(loading_package)" label="جستجوی پکیج "
         placeholder="نام پکیج مورد نظر را وارد کنید ..." />
     </v-col>
     <v-row v-if="Boolean(package_id) && Object.keys(selected_package).length > 0">

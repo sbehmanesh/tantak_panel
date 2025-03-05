@@ -11,7 +11,7 @@
           dense
           :disabled="Boolean(load_item)"
           :loading="Boolean(load_item)"
-          label="جستوجوی محصول"
+          label="جستجوی محصول"
           placeholder="نام محصول مورد نظر را وارد کنید ..."
         />
         <v-col

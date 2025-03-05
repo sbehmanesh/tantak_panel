@@ -46,8 +46,18 @@ export const state = () => ({
     fiscal_supervisor: "d4d80c65-15fd-42e6-b578-594280168664",
     fiscal: "920976fd-423f-413a-8dba-eead45af9dea",
 
-    sefir :"19418275-309c-440f-a067-c77368e2b785",
-    tracking_unit :"0a2e60c5-21fc-400d-bdd4-eee2eb7e7bd4"
+    sefir: "19418275-309c-440f-a067-c77368e2b785",
+    tracking_unit: "0a2e60c5-21fc-400d-bdd4-eee2eb7e7bd4",
+
+    representative_affairs_manager: "6a4f6471-e3c7-485d-8726-e147264f2be7",
+    representative_affairs_supervisor: "b829bec5-1248-4a08-9b7a-8f7c85e4353c",
+    representative_affairs_expert: "daaa96fe-084c-4265-ae70-c86706e0a233",
+
+
+    human_resources_manager:"f9ed7c3b-19fc-4a0f-bc71-279df9b9681e",
+    human_resources_supervisor:"18b1b6f7-f6e4-42e7-80ff-b55e0dffcca7",
+    human_resources_expert:"96d9a807-9eb9-464c-923c-7090ccf66e08",
+
   },
 });
 

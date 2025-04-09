@@ -19,6 +19,7 @@
               />
             </v-col>
             <v-col cols="12" md="3" v-if="Boolean(show_type_send)">
+       
               <amp-select
                 rules="require"
                 v-model="type_send"
@@ -299,7 +300,6 @@ export default {
       this.url_list = this.superviser_list;
       this.select_type_send = [
         { text: "تخصیص خودکار", value: "auto" },
-        { text: "تخصیص خودکار", value: "auto" },
         { text: "دستی", value: "multi" },
         { text: "بر اساس سابقه فروش", value: "sale" },
         { text: " بر اساس تاریخ ", value: "date_time" },
@@ -331,7 +331,7 @@ export default {
       if (Boolean(this.is_superviser)) {
         if (
           this.step_ref == "supervisor_to_operator" &&
-          (this.type_send == "multi" || this.type_send == "auto")
+          (this.type_send == "multi" || this.type_send == "auto"|| this.type_send == "date_time")
         ) {
           form["operator_id"] = this.user[0].id;
         }
@@ -439,13 +439,13 @@ if (this.type_send == "date_time") {
       }
       if (
         this.is_admin_call_center &&
-        (this.type_send == "auto" || this.type_send == "sale")
+        (this.type_send == "auto" ||this.type_send == "date_time" || this.type_send == "sale")
       ) {
         check = true;
       }
       if (
         this.is_superviser &&
-        (this.type_send == "auto" || this.type_send == "sale")
+        (this.type_send == "auto" ||this.type_send == "date_time" || this.type_send == "sale")
       ) {
         check = true;
       }

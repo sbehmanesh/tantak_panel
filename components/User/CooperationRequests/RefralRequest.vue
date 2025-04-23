@@ -142,6 +142,16 @@ export default {
         return items.filter(
           (x) =>
             x.value == "human_resources_expert_to_supervisor" ||
+            x.value == "human_resources_expert_to_interviewer"
+        );
+      }
+      // -------------------interviewer-------------------------------------
+      else if (
+        this.$checkRole(this.$store.state.auth.role.interviewer)
+      ) {
+        return items.filter(
+          (x) =>
+            x.value == "interviewer_to_human_resources_expert" ||
             x.value == "done"
         );
       }

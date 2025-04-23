@@ -46,6 +46,27 @@
             </v-col>
             <v-col
               cols="12"
+              md="3"
+              v-if="
+                type_send == 'multi' ||
+                type_send == 'supervisor_to_manager' ||
+                step_ref == 'supervisor_to_manager' ||
+                step_ref == 'operator_to_supervisor'
+              "
+            >
+              <UserSelectForm
+                v-if="type_send == 'supervisor_to_manager'"
+                :text="
+                  is_admin_call_center ? ' انتخاب مرکز تماس' : 'انتخاب فروشنده'
+                "
+                v-model="user_back_message"
+                :url="url_list"
+                rules="require"
+                :role-id="[]"
+              />
+            </v-col>
+            <v-col
+              cols="12"
               md="2"
               v-if="
                 type_send == 'date_time' && step_ref != 'operator_to_supervisor'
@@ -267,6 +288,7 @@ export default {
   data: () => ({
     select_type_send: [],
     step_items: [],
+    user_back_message: [],
     superviser_list: "user/list-employee",
     oprator_list: "user/list-employee",
     type_send: "",
@@ -358,6 +380,7 @@ export default {
         form["step"] = "";
         if (this.type_send == "supervisor_to_manager") {
           form.step = "supervisor_to_manager";
+          form.supervisor_id = this.user_back_message[0].id;
         } else if (this.type_send == "close") {
           form.step = "close";
           form.step = step;
@@ -367,7 +390,7 @@ export default {
         } else if (
           this.type_send != "date_time" &&
           this.type_send != "supervisor_to_manager" &&
-          (this.type_send == "close"|| this.type_send == "multi")
+          (this.type_send == "close" || this.type_send == "multi")
         ) {
           form["supervisor_id"] = this.user[0].id;
           form.step = "manager_to_supervisor";
@@ -390,6 +413,9 @@ export default {
         form["step"] = this.step_ref;
         if (form.step != "operator_to_supervisor") {
           form["type_send"] = this.type_send;
+        }
+        if (this.type_send == "operator_to_supervisor") {
+          form["operator_id"] = this.user_back_message[0].id;
         }
       }
       ///////////////////////////////////////////////////////////

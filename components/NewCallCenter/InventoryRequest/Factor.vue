@@ -98,7 +98,7 @@
             <v-col cols="12" class="ma-0 pa-0" v-if="packages.length > 0 || boxes.length > 0">
               <v-card class="elevation-0 pa-3 text-center rounded-0 grey lighten-2" outlined>
                 <strong>
-                  قیمت پس از محاسبه تخفیف
+                  قیمت پس از مصاحبه  تخفیف
                   {{
                     this.$price(
                       discount_box +

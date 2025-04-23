@@ -133,7 +133,6 @@ export default {
     },
     inp_value() {
       this.$emit('input', this.inp_value)
-      console.log("this.inp_value ==> ", this.inp_value);
       this.$emit('change', this.inp_value)
     },
     value_inp() {

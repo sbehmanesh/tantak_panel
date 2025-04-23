@@ -57,6 +57,7 @@ export const state = () => ({
     human_resources_manager:"f9ed7c3b-19fc-4a0f-bc71-279df9b9681e",
     human_resources_supervisor:"18b1b6f7-f6e4-42e7-80ff-b55e0dffcca7",
     human_resources_expert:"96d9a807-9eb9-464c-923c-7090ccf66e08",
+    interviewer:"3b602321-8592-42a1-9d72-8b5951667ba9",
 
   },
 });

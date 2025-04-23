@@ -947,11 +947,18 @@ let cooperation_req = [
     value: "human_resources_supervisor_to_manager",
   },
   {
-    text: "از سرپرست منابع انسانی به کارشناس استخدام",
+    text: "از سرپرست منابع انسانی به کارشناس منابع انسانی",
     value: "human_resources_supervisor_to_expert",
   },
   {
-    text: " از کارشناس استخدام به سرپرست",
+    text: " از کارشناس منابع انسانی به سرپرست",
     value: "human_resources_expert_to_supervisor",
+  }, 
+   {
+    text: " از کارشناس منابع انسانی به مصاحبه  گر",
+    value: "human_resources_expert_to_interviewer",
+  },   {
+    text: " از مصاحبه  گر به کارشناس منابع انسانی",
+    value: "interviewer_to_human_resources_expert",
   },
 ];

@@ -32,7 +32,7 @@
                     </small>
                     <br />
                     <small class="teal--text">
-                      قیمت با تخفیف محاسبه شده :‌
+                      قیمت با تخفیف مصاحبه  شده :‌
                       {{ $price(selected_package.discount_value) }} ریال
                     </small>
                   </div>

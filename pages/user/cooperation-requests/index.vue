@@ -168,7 +168,8 @@ export default {
             ) {
               show = true;
             }
-          } else if (
+          } 
+          else if (
             Boolean(
               this.$checkRole(
                 this.$store.state.auth.role.human_resources_supervisor
@@ -189,9 +190,20 @@ export default {
                 this.$store.state.auth.role.human_resources_expert
               )
             ) &&
-            body.step == "human_resources_supervisor_to_expert"
+           ( body.step == "human_resources_supervisor_to_expert" || body.step == "interviewer_to_human_resources_expert")
           ) {
             show = true;
+          }else if (
+            Boolean(
+              this.$checkRole(
+                this.$store.state.auth.role.interviewer
+              )
+            )
+          )
+          {
+            if (body.step == "human_resources_expert_to_interviewer") {
+              show = true;
+            }
           }
           return show;
         },

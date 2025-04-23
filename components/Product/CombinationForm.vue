@@ -9,7 +9,7 @@
           <strong class="font_17"> ایجاد ترکیب جدید</strong>
         </v-expansion-panel-header>
         <v-expansion-panel-content eager>
-          <v-form v-model="valid" @submit.prevent="submit()">
+          <v-form ref="formReset" v-model="valid" @submit.prevent="submit()">
             <v-card class="elevation-0 mt-4" :disabled="loading">
               <v-row v-if="!loading">
                 <v-col cols="12">
@@ -250,6 +250,9 @@ export default {
           this.$emit("reloadCombinations");
           this.$emit("reloadVaritoinsForm");
           this.loadData();
+          this.$refs.formReset.reset();
+          this.selected_variations = []
+          this.$emit("insertVariationCombination");
           this.loading = false;
         })
         .catch((error) => {

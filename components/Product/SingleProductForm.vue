@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-row class="justify-center">
-      <v-col cols="12" md="9">
+      <v-col cols="12" md="9" v-if="show_combintaions_page">
         <CombinationForm
           :product_id="product.id"
           @closeAddCombination="closeAddCombination()"
@@ -182,12 +182,21 @@
     </v-col>
 
     <v-col cols="12" v-if="variations.length == 0 && !loading">
-      <v-alert outlined type="warning" prominent border="left" class="text-center">
+      <v-alert
+        outlined
+        type="warning"
+        prominent
+        border="left"
+        class="text-center"
+      >
         هنوز برنامه فروشی برای این محصول درج نشده است.
       </v-alert>
     </v-col>
 
-    <v-dialog v-model="deleteDiaolog" :width="$vuetify.breakpoint.mdAndUp ? 380 : 470">
+    <v-dialog
+      v-model="deleteDiaolog"
+      :width="$vuetify.breakpoint.mdAndUp ? 380 : 470"
+    >
       <v-card class="pa-5">
         <span class="mb-2 font_xxxl font_bold">ویژگی انتخابی حذف شود؟</span>
         <v-row class="pa-3">
@@ -230,6 +239,7 @@ export default {
 
   data: () => ({
     loading: false,
+    show_combintaions_page: true,
     variations: [],
     total_data: [],
 
@@ -377,8 +387,10 @@ export default {
               let var1 = Boolean(x.variation1.codes)
                 ? x.variation1.variation_type.value + " " + x.variation1.colors
                 : x.variation1.variation_type.value + " " + x.variation1.value;
-              let var2 = x.variation2.variation_type.value + " " + x.variation2.value;
-              let var3 = x.variation3.variation_type.value + " " + x.variation3.value;
+              let var2 =
+                x.variation2.variation_type.value + " " + x.variation2.value;
+              let var3 =
+                x.variation3.variation_type.value + " " + x.variation3.value;
               items.push({
                 var1: var1,
                 var2: var2,
@@ -408,7 +420,13 @@ export default {
           this.loading = false;
         });
     },
-
+    insertVariationCombination() {
+      this.$emit("reloadPage");
+      this.show_combintaions_page = false;
+      setTimeout(() => {
+        this.show_combintaions_page = true;
+      }, 50);
+    },
   },
 };
 </script>

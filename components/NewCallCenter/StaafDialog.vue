@@ -48,7 +48,7 @@
                   type="password"
                   class="ltr-item"
                   text="رمز عبور"
-                  rules="require,password"
+                  :rules="!Boolean(staaf) ? 'require,password' : 'password'"
                   v-model="form.password"
                 />
               </v-col>
@@ -92,6 +92,10 @@ export default {
       require: false,
       default: false,
     },
+    staaf: {
+      require: false,
+      default: false,
+    },
   },
 
   data: () => ({
@@ -108,6 +112,7 @@ export default {
       role_id: [],
     },
   }),
+
   beforeMount() {
     this.roles = [
       { text: "  انبار دار  ", value: this.$store.state.auth.role.storekeeper },
@@ -225,9 +230,21 @@ export default {
           this.$store.state.auth.role.representative_affairs_expert
         );
       }
-
+      if (Boolean(this.staaf)) {
+        dialog_title = "ویرایش اطلاعات کاربر";
+      }
       return dialog_title;
     },
+  },
+  mounted() {
+    if (Boolean(this.staaf) && Object.keys(this.staaf).length > 0) {
+      let user = this.staaf;
+      this.form.first_name = Boolean(user.first_name) ? user.first_name : "";
+      this.form.last_name = Boolean(user.last_name) ? user.last_name : "";
+      this.form.username = Boolean(user.username) ? user.username : "";
+      this.form.password = Boolean(user.password) ? user.password : "";
+      console.log("this.staaf ==> ", this.staaf);
+    }
   },
   methods: {
     submit() {
@@ -242,14 +259,23 @@ export default {
           form["sale_agency_id"] = this.$store.state.auth.user.sale_agency_id;
         }
       }
-      form["person_type"] = "real";
       let url = "user/inser-employee";
+      form["person_type"] = "real";
+      if (Boolean(this.staaf) && Object.keys(this.staaf).length > 0) {
+        url = "user/update-employee";
+        form["id"] = this.staaf.id;
+      }
+
       this.$reqApi(url, form)
         .then((res) => {
           this.loading = false;
           this.closeDialog();
           this.relod();
-          this.$toast.success("کاربر با موفقیت ایجاد شد");
+
+          let text = Boolean(this.staaf)
+            ? "اطلاعات کاربر با موفقیت ویرایش شد"
+            : "کاربر با موفقیت ایجاد شد";
+          this.$toast.success(`${text}`);
         })
         .catch((err) => {
           this.loading = false;

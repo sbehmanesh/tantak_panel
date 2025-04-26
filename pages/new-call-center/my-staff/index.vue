@@ -5,10 +5,12 @@
       :headers="headers"
       ref="RefreshStaff"
       :extraBtn="extraBtn"
+      :BTNactions="btn_actions"
     />
     <StaafDialog
       v-if="dialog_staff.show"
       :DialogStaff="dialog_staff"
+      :staaf="staaf"
       @relod="reload"
     />
   </div>
@@ -22,6 +24,7 @@ export default {
   data: () => ({
     headers: [],
     btn_actions: [],
+    staaf:null , 
     title: "لیست کارکنان",
     dialog_staff: {
       items: null,
@@ -40,17 +43,23 @@ export default {
       },
     ];
     this.$store.dispatch("setPageTitle", this.title);
-
+    this.btn_actions = [
+      { text: "ویرایش اطلاعات", icon: "account_circle", color: "blue-grey", fun: (body) => {
+        this.dialog_staff.show = true
+        this.staaf = body
+      } },
+    ];
     this.headers = [
       { text: "نام", value: "first_name" },
       { text: "نام خانوادگی", value: "last_name" },
       { text: "نام کاربری", filterCol: "username", value: "username" },
     ];
   },
-  methods:{
-    reload(){
-      this.$refs.RefreshStaff.getDataFromApi()
-    }
-  }
+  methods: {
+    reload() {
+      this.$refs.RefreshStaff.getDataFromApi();
+      this.staaf = null 
+    },
+  },
 };
 </script>

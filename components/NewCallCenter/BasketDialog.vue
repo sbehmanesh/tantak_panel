@@ -415,7 +415,6 @@
           <v-window-item :value="3">
             <v-row class="d-flex justify-center mt-8">
               <v-divider class="mt-4"></v-divider>
-              <span class="font_20 mx-3"> فاکتور سفارش </span>
               <v-divider class="mt-4 mb-5"></v-divider>
             </v-row>
             <v-row class="d-flex justify-center">
@@ -540,12 +539,12 @@
                       </v-col>
                     </v-row>
                     <v-col cols="12">
-
+                      <!-- 
                       <FestivalInPersone
                       v-if="festival_item.length > 0"
                       :festival-item="festival_item"
                       :user-id="user_basket.id"
-                      />
+                      /> -->
                     </v-col>
                   </v-card>
                 </v-dialog>
@@ -671,6 +670,7 @@ export default {
     username: "",
     show_factor: false,
     show_nex_btn: false,
+    festival_item: null,
     step_2: false,
     product_varcomb_id: "",
     length_item: "",
@@ -734,7 +734,7 @@ export default {
     // },
   },
   mounted() {
-    this.getFestivals(this.user_basket.id);
+    // this.getFestivals(this.user_basket.id);
   },
   methods: {
     addBasket(event) {
@@ -952,6 +952,7 @@ export default {
             this.overlay = true;
           } else {
             this.$toast.success("پرداخت با مو فقیت انجام شد");
+            this.closeDialog();
             this.overlay = false;
             this.loading = false;
           }

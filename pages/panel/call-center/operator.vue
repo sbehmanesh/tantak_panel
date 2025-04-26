@@ -3,7 +3,6 @@
     <v-row dense>
       <v-col cols="12" md="12">
         <v-card max-width="380" class="elevation-0">
-          <div>کارمند انبار مرکزی</div>
           <div class="my-1">به تن تاک خوش اومدی!</div>
           <div class="d-flex align-center">
             <v-icon size="18" color="green">circle</v-icon>

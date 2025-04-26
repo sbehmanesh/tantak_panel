@@ -48,8 +48,7 @@ let mnue_tree = [
         name: " مخاطبین",
         access: "contacts/index",
         route: "/user/contacts",
-      },  
-
+      },
     ],
   },
   {
@@ -68,12 +67,12 @@ let mnue_tree = [
     id: 484521111,
     name: "شکایات",
     children: [
-    {
-      id: 5632,
-      access: "complaint_categories/index",
-      name: "دسته بندی شکایات",
-      route: "/new-call-center/complaint-categories",
-    },
+      {
+        id: 5632,
+        access: "complaint_categories/index",
+        name: "دسته بندی شکایات",
+        route: "/new-call-center/complaint-categories",
+      },
       {
         id: 112285489334,
         name: "لیست شکایات",
@@ -88,14 +87,18 @@ let mnue_tree = [
       },
     ],
   },
-
+  {
+    id: 12455545,
+    name: "گزارشات تماس (جدید)",
+    access: "messages/issabel_request_call/history",
+    route: "/call-reports-new",
+  },
   {
     id: 618564558145,
     name: "گزارشات تماس",
     access: "messages/issabel_request_call/history",
     route: "/call-reports",
   },
-
   {
     id: 50,
     name: "مرکز فروش تلفنی",
@@ -112,7 +115,6 @@ let mnue_tree = [
         name: "فروش تلفنی",
         route: "/product/buy-person",
       },
-
 
       {
         id: 53,
@@ -487,6 +489,12 @@ let mnue_tree = [
         access: "setting/root",
         route: "/setting/delete-basket",
       },
+      {
+        id: 977,
+        name: "تعداد ساعات مهلت برسی پیام ",
+        access: "setting/root",
+        route: "/setting/hour-limit-review-message",
+      },
 
       {
         id: 101209,
@@ -505,7 +513,7 @@ let mnue_tree = [
         name: "تنظیمات عمومی",
         access: "setting/root",
         route: "/setting/public/1",
-      },   
+      },
       //  {
       //   id: 24187888887,
       //   name: "عنوان های شغلی",

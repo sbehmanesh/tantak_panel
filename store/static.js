@@ -7,6 +7,7 @@ export const state = () => ({
   user_level,
   person_type,
   status_baranch,
+  status_call,
   status_message,
   work_status,
   supervisor_status_items,
@@ -271,6 +272,13 @@ let status_baranch = [
   { text: "غیر فعال", value: "inactive" },
   { text: "پنهان ", value: "hidden" },
   { text: "معلق ", value: "suspended" },
+];
+let status_call = [
+  { text: "مشغول", value: "BUSY" },
+  { text: "بدون پاسخ", value: "NO ANSWER" },
+  { text: "از دست رفته", value: "MISSED" },
+  { text: "عدم موفقیت", value: "FAILED" },
+  { text: "پاسخ داده شده", value: "ANSWERED" }
 ];
 let sell_type = [
   { text: "فروش تکی", value: "sell" },
@@ -953,11 +961,12 @@ let cooperation_req = [
   {
     text: " از کارشناس منابع انسانی به سرپرست",
     value: "human_resources_expert_to_supervisor",
-  }, 
-   {
+  },
+  {
     text: " از کارشناس منابع انسانی به مصاحبه  گر",
     value: "human_resources_expert_to_interviewer",
-  },   {
+  },
+  {
     text: " از مصاحبه  گر به کارشناس منابع انسانی",
     value: "interviewer_to_human_resources_expert",
   },

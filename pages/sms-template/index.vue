@@ -15,9 +15,38 @@ export default {
       title: "الگوی پرداخت",
       headers: [
         {
-          text: "name",
+          text: "تاریخ",
+          filterType: "date",
+          value: (body) => {
+            return body.created_at;
+          },
+        },
+        {
+          text: "وضعیت",
+          filterType: "select",
+          items: this.$store.state.static.sms_template_status,
+          disableSort: true,
+          value: "status",
+        },
+        {
+          text: "نام فارسی",
+          filterable: true,
           value: (body) => {
             return body.fa_name;
+          },
+        },
+        {
+          text: "نام انگلیسی",
+          filterable: true,
+          value: (body) => {
+            return body.fa_name;
+          },
+        },
+        {
+          text: "محتوا",
+          filterable: true,
+          value: (body) => {
+            return body.content;
           },
         },
       ],

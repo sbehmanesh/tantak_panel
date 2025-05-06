@@ -72,6 +72,7 @@ export const state = () => ({
   ownership_type_agancy,
   agency_request_step,
   cooperation_req,
+  sms_template_status,
 });
 
 let status_type = [
@@ -278,7 +279,7 @@ let status_call = [
   { text: "بدون پاسخ", value: "NO ANSWER" },
   { text: "از دست رفته", value: "MISSED" },
   { text: "عدم موفقیت", value: "FAILED" },
-  { text: "پاسخ داده شده", value: "ANSWERED" }
+  { text: "پاسخ داده شده", value: "ANSWERED" },
 ];
 let sell_type = [
   { text: "فروش تکی", value: "sell" },
@@ -970,4 +971,8 @@ let cooperation_req = [
     text: " از مصاحبه  گر به کارشناس منابع انسانی",
     value: "interviewer_to_human_resources_expert",
   },
+];
+let sms_template_status = [
+  { text: "فعال", value: "active" },
+  { text: "غیر فعال", value: "inactive" },
 ];

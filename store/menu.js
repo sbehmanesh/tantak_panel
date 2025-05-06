@@ -100,6 +100,12 @@ let mnue_tree = [
     route: "/call-reports",
   },
   {
+    id: 49,
+    name: "الگوی پیامک های پرداخت",
+    access : "comment_questions/index",
+    route: "/sms-template",
+  },
+  {
     id: 50,
     name: "مرکز فروش تلفنی",
     children: [

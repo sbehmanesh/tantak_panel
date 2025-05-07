@@ -73,6 +73,7 @@ export const state = () => ({
   agency_request_step,
   cooperation_req,
   sms_template_status,
+  sms_template_kind_set,
 });
 
 let status_type = [
@@ -974,5 +975,43 @@ let cooperation_req = [
 ];
 let sms_template_status = [
   { text: "فعال", value: "active" },
-  { text: "غیر فعال", value: "inactive" },
+  { text: "غیر فعال", value: "in_active" },
+];
+let sms_template_kind_set = [
+  {
+    text: "درگاه بانکی",
+    value: "bank",
+  },
+  {
+    text: "دستی ",
+    value: "manual",
+  },
+  {
+    text: "کارت به کارت ",
+    value: "cardToCard",
+  },
+  {
+    text: "نقد",
+    value: "naghd",
+  },
+  {
+    text: "چک",
+    value: "check",
+  },
+  {
+    text: "کارتخوان",
+    value: "pos",
+  },
+  {
+    text: "لینک پرداخت",
+    value: "send_pay_link",
+  },
+  {
+    text: "پست",
+    value: "post",
+  },
+  {
+    text: "سفته",
+    value: "demand_note",
+  },
 ];

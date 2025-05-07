@@ -26,6 +26,7 @@ export default {
       {
         text: "تاریخ",
         filterType: "date",
+        filterCol : "created_at",
         value: (body) => {
           if (body.created_at) {
             return this.$toJalali(body.created_at);
@@ -43,6 +44,7 @@ export default {
       {
         text: "نام فارسی",
         filterable: true,
+        filterCol : "fa_name",
         value: (body) => {
           return body.fa_name;
         },
@@ -50,6 +52,7 @@ export default {
       {
         text: "نام انگلیسی",
         filterable: true,
+        filterCol : "en_name",
         value: (body) => {
           return body.en_name;
         },
@@ -57,6 +60,7 @@ export default {
       {
         text: "محتوا",
         filterable: true,
+        filterCol : "content",
         value: (body) => {
           return body.content;
         },

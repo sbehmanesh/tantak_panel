@@ -19,13 +19,19 @@
         </v-col>
         <v-col cols="12" md="2">
           <amp-input
+            dir="ltr"
             text="نام انگلیسی الگو"
             rules="require,en_chart"
             v-model="form.en_name"
           />
         </v-col>
         <v-col cols="12" md="2">
-          <amp-input text="محتوا" rules="require" v-model="form.content" />
+          <UserSelectForm
+            text="انتخابگر"
+            :multi="false"
+            :roleId="['791d1b02-3610-4177-9051-eb7ae6b72def']"
+            v-model="selecteduser"
+          />
         </v-col>
         <v-col cols="12" md="2">
           <amp-select
@@ -36,7 +42,11 @@
           />
         </v-col>
       </v-row>
-
+      <v-row dense>
+        <v-col cols="12">
+          <amp-textarea text="محتوا" rules="require" v-model="form.content" />
+        </v-col>
+      </v-row>
       <v-row dense>
         <v-col cols="12" md="12">
           <v-divider />
@@ -67,7 +77,9 @@
 </template>
 
 <script>
+import UserSelectForm from "../User/UserSelectForm.vue";
 export default {
+  components: { UserSelectForm },
   name: "add-template",
   props: {
     templateId: { default: null },
@@ -78,6 +90,8 @@ export default {
     return {
       loading: false,
       valid: false,
+      admin_id: [],
+      selecteduser: "",
       form: {
         user_id: "",
         status: "",
@@ -88,8 +102,16 @@ export default {
       },
     };
   },
+  watch: {
+    selecteduser(new_al) {
+      console.log(new_al)
+    },
+  },
   beforeMount() {
     this.loadData();
+    this.admin_id.push(this.$store.state.auth.role.admin_call_center_id);
+    console.log(this.$store.state.auth.role.admin_call_center_id);
+    console.log(this.admin_id);
   },
   methods: {
     loadData() {
@@ -114,7 +136,7 @@ export default {
       }
     },
     submit() {
-      console.log(this.form)
+      console.log(this.selecteduser);
       this.loading = true;
       const form = { ...this.form };
       form.user_id = this.$store.state.auth.user.id;
@@ -123,7 +145,7 @@ export default {
         .then((response) => {
           this.loading = false;
           this.$toast.success("اطلاعات ثبت شد");
-          this.redirectPage()
+          this.redirectPage();
         })
         .catch((e) => {
           console.log(e);

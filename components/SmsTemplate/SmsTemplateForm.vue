@@ -44,7 +44,7 @@
       </v-row>
       <v-row dense>
         <v-col cols="12">
-          <amp-textarea text="محتوا" rules="require" v-model="form.content" />
+          <amp-textarea text="محتوا" rules="max_200,require" v-model="form.content" />
         </v-col>
       </v-row>
       <v-row dense>
@@ -113,8 +113,7 @@ export default {
         this.$reqApi("sms-template/show", { id: this.templateId })
           .then((response) => {
             let data = response.model;
-            // console.log(data);
-            this.form.role_id = data.user_id;
+            this.form.user_id = data.id;
             this.form.fa_name = data.fa_name;
             this.form.en_name = data.en_name;
             this.form.status = data.status;
@@ -129,10 +128,10 @@ export default {
       }
     },
     submit() {
-      console.log(this.selecteduser);
+      console.log(this.selected_admin);
       this.loading = true;
       const form = { ...this.form };
-      form.user_id = this.selected_admin[0].id
+      form.user_id = this.selected_admin[0]?.id;
       let url = Boolean(this.templateId) ? this.updateUrl : this.createUrl;
       this.$reqApi(url, form)
         .then((response) => {

@@ -1,13 +1,13 @@
 <template>
-  <AddTemplate
+  <SmsTemplateForm
   createUrl="/sms-template/insert"
   />
 </template>
 
 <script>
-import AddTemplate from '~/components/SmsTemplate/AddTemplate.vue';
+import SmsTemplateForm from '~/components/SmsTemplate/SmsTemplateForm.vue';
 export default {
-  components : {AddTemplate},
+  components : {SmsTemplateForm},
   data() {
     return {
       title: "الگوی جدید",

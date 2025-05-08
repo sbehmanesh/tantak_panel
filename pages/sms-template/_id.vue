@@ -1,14 +1,14 @@
 <template>
-    <AddTemplate
+    <SmsTemplateForm
     update-url="/sms-template/update"
     :template-id="$route.params.id"
     />
   </template>
   
   <script>
-  import AddTemplate from '~/components/SmsTemplate/AddTemplate.vue';
+  import SmsTemplateForm from '~/components/SmsTemplate/SmsTemplateForm.vue';
   export default {
-    components : {AddTemplate},
+    components : {SmsTemplateForm},
     data() {
       return {
         title: "ویرایش الگو",

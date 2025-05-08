@@ -20,7 +20,6 @@ export default {
   },
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);
-    console.log("lllll", this.$store.state.static.sms_template_kind_set);
 
     this.headers = [
       {

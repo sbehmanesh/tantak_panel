@@ -27,6 +27,7 @@
         </v-col>
         <v-col cols="12" md="2">
           <UserSelectForm
+            text="انتخاب مدیر"
             rules="require"
             v-model="selected_admin"
             url="/user/searchByRole"
@@ -44,7 +45,11 @@
       </v-row>
       <v-row dense>
         <v-col cols="12">
-          <amp-textarea text="محتوا" rules="max_200,require" v-model="form.content" />
+          <amp-textarea
+            text="محتوا"
+            rules="max_200,require"
+            v-model="form.content"
+          />
         </v-col>
       </v-row>
       <v-row dense>
@@ -128,9 +133,10 @@ export default {
       }
     },
     submit() {
-      console.log(this.selected_admin);
       this.loading = true;
-      const form = { ...this.form };
+      const form = this.templateId
+        ? { ...this.form, id: this.templateId }
+        : { ...this.form };
       form.user_id = this.selected_admin[0]?.id;
       let url = Boolean(this.templateId) ? this.updateUrl : this.createUrl;
       this.$reqApi(url, form)

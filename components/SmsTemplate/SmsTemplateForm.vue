@@ -45,11 +45,30 @@
       </v-row>
       <v-row dense>
         <v-col cols="12">
-          <amp-textarea
-            text="محتوا"
-            rules="max_200,require"
-            v-model="form.content"
-          />
+          <amp-textarea text="محتوا" rules="require" v-model="form.content" />
+        </v-col>
+        <v-col cols="12">
+          <v-alert
+            type="info"
+            color="yellow"
+            border="left"
+            colored-border
+            elevation="2"
+          >
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>
+                  <h1>
+                    متن الگو پیام باید حاوی سه پارامتر
+                    <span dir="rtl">token%</span>,
+                    <span dir="ltr">%token2</span>,
+                    <span dir="ltr">%token3</span>
+                    باشد
+                  </h1>
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-alert>
         </v-col>
       </v-row>
       <v-row dense>
@@ -96,7 +115,7 @@ export default {
       loading: false,
       valid: false,
       role_id: [],
-      selected_admin: "",
+      selected_admin: [],
       form: {
         user_id: "",
         status: "",
@@ -108,29 +127,30 @@ export default {
     };
   },
   beforeMount() {
-    this.loadData();
-    this.role_id.push(this.$store.state.auth.role.admin_id);
+    if (this.templateId) {
+      this.loadData();
+    }
+    this.role_id.push(this.$store.state.auth.role.admin_call_center_id);
   },
   methods: {
     loadData() {
-      if (this.templateId) {
-        this.loading = true;
-        this.$reqApi("sms-template/show", { id: this.templateId })
-          .then((response) => {
-            let data = response.model;
-            this.form.user_id = data.id;
-            this.form.fa_name = data.fa_name;
-            this.form.en_name = data.en_name;
-            this.form.status = data.status;
-            this.form.content = data.content;
-            this.form.kind_set = data.kind_set;
-            this.loading = false;
-          })
-          .catch((e) => {
-            console.log(e);
-            this.loading = false;
-          });
-      }
+      this.loading = true;
+      this.$reqApi("sms-template/show", { id: this.templateId })
+        .then((response) => {
+          let data = response.model;
+          // this.selected_admin.push(data)
+          this.form.user_id = data.id;
+          this.form.fa_name = data.fa_name;
+          this.form.en_name = data.en_name;
+          this.form.status = data.status;
+          this.form.content = data.content;
+          this.form.kind_set = data.kind_set;
+          this.loading = false;
+        })
+        .catch((e) => {
+          console.log(e);
+          this.loading = false;
+        });
     },
     submit() {
       this.loading = true;

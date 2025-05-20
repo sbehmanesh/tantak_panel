@@ -56,12 +56,24 @@ export default {
           return body.en_name;
         },
       },
-      {
-        text: "محتوا",
-        filterable: true,
-        filterCol : "content",
+       {
+        text: "توضیحات",
+        filterCol: "content",
+        type: "tooltip",
+        function: (body) => {
+          if (body.content) {
+            return body.content;
+          }
+        },
         value: (body) => {
-          return body.content;
+          if (typeof body.content == "string") {
+            if (body.content.length < 25) {
+              return body.content;
+            }
+            return body.content.slice(0, 25) + "...";
+          } else {
+            return "-";
+          }
         },
       },
       {

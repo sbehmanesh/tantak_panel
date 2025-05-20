@@ -8,6 +8,7 @@
               text="دسته بندی"
               v-model="form.category_id"
               :items="category_items"
+              :disabled="Boolean($route.query.id)"
               rules="require"
             />
           </v-col>
@@ -134,6 +135,7 @@ export default {
   }),
   beforeMount() {
     this.loading = true;
+
     this.getCategouryes();
   },
   methods: {
@@ -185,6 +187,7 @@ export default {
             });
           }
           this.answers_items = items;
+    
           this.loading = false;
         })
         .catch((error) => {
@@ -214,6 +217,9 @@ export default {
             });
           }
           this.category_items = items;
+          if (Boolean(this.$route.query.id)) {
+            this.form.category_id = this.$route.query.id;
+          }
           if (this.modelId) {
             this.loadData();
           } else {
@@ -235,5 +241,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

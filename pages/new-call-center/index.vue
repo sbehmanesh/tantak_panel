@@ -1,7 +1,12 @@
 <template>
   <div>
     <v-row class="d-flex justify-center px-4">
-      <v-col col="12" md="10" class="mt-5" v-if="!$checkRole(this.$store.state.auth.role.admin_id)">
+      <v-col
+        col="12"
+        md="10"
+        class="mt-5"
+        v-if="!$checkRole(this.$store.state.auth.role.admin_id)"
+      >
         <v-expansion-panels variant="poput" v-model="panel" accordion>
           <v-expansion-panel class="class-bg">
             <v-expansion-panel-header dark expand-icon="published_with_changes">
@@ -120,6 +125,11 @@
           :dialog="refral_logs"
           v-if="refral_logs"
           @closeDialog="refral_logs = false"
+        />   
+             <CollaborationManagement
+          :dialog="management"
+          v-if="management"
+          @closeDialog="management = false"
         />
       </v-col>
     </v-row>
@@ -138,6 +148,7 @@ import BasketDialog from "@/components/NewCallCenter/BasketDialog.vue";
 import CallBackLogs from "@/components/CallCenter/CallBackLogs.vue";
 import MessageExcel from "@/components/NewCallCenter/MessageExcel.vue";
 import RefralLogExcel from "@/components/NewCallCenter/RefralLogExcel.vue";
+import CollaborationManagement from "@/components/NewCallCenter/CollaborationManagement.vue";
 
 export default {
   components: {
@@ -151,6 +162,7 @@ export default {
     CallBackLogs,
     MessageExcel,
     RefralLogExcel,
+    CollaborationManagement,
   },
   data: () => ({
     headers: [],
@@ -159,6 +171,7 @@ export default {
     calls_back: false,
     excel_message: false,
     refral_logs: false,
+    management: false,
     show_tabale: true,
     total_items: [],
     user: [],
@@ -200,8 +213,6 @@ export default {
     title: "لیست پیام ها",
   }),
   beforeMount() {
-
-
     this.now = jmoment().format("YYYY-MM-DD");
     if (this.$route.query.filter == "my_today_work") {
       this.tab_time = "my_today_work";
@@ -368,7 +379,6 @@ export default {
           }
         },
       },
-   
     ];
     if (!Boolean(this.$checkRole(this.$store.state.auth.role.oprator_id))) {
       this.extra_btn.push({
@@ -378,29 +388,42 @@ export default {
         fun: (body) => {
           this.excel_message = true;
         },
-      })
+      });
     }
 
-    if (Boolean(
-      this.$store.state.auth.action.indexOf("messages/insert") > -1
-
-    )) {
-      if (   Boolean(this.$checkRole(this.$store.state.auth.role.superviser_id)) ||
-      Boolean(
-          this.$checkRole(this.$store.state.auth.role.admin_call_center_id)
-        ) ||Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))
+    if (
+      Boolean(this.$store.state.auth.action.indexOf("messages/insert") > -1)
     ) {
-      this.extra_btn.push({
-        text: "گزارشات",
-        icon: "pending_actions",
-        color: "info ",
-        fun: () => {
-          this.refral_logs = true;
-        },
-      });
+      if (
+        Boolean(this.$checkRole(this.$store.state.auth.role.superviser_id)) ||
+        Boolean(
+          this.$checkRole(this.$store.state.auth.role.admin_call_center_id)
+        ) ||
+        Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))
+      ) {
+        this.extra_btn.push({
+          text: "گزارشات",
+          icon: "pending_actions",
+          color: "info ",
+          fun: () => {
+            this.refral_logs = true;
+          },
+        });
       }
     }
-
+    if (
+      this.$checkRole(this.$store.state.auth.role.admin_id) ||
+      this.$checkRole(this.$store.state.auth.role.admin_call_center_id)
+    ) {
+      this.extra_btn.push({
+        text: " مدیریت همکاری",
+        icon: "manage_accounts",
+        color: "primary ",
+        fun: () => {
+          this.management = true;
+        },
+      });
+    }
     this.$store.dispatch("setPageTitle", this.title);
   },
   watch: {

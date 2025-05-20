@@ -1,13 +1,13 @@
 <template>
   <div>
-    <CatgoryUsers
+    <!-- <CatgoryUsers
       @filterRole="filterRole($event)"
       :user-count="user_count"
       :user-list="user_list"
-    />
+    /> -->
 
     <BaseTable
-      url="/user/searchByRole"
+      url="/user"
       :headers="headers"
       autoDelete="/user/delete"
       autoUpdate="/user"
@@ -58,9 +58,9 @@ export default {
     title: "همه کاربران",
   }),
   beforeMount() {
-    this.role_id = {
-      role_id: [this.$store.state.auth.role.user_id],
-    };
+    // this.role_id = {
+    //   role_id: [this.$store.state.auth.role.user_id],
+    // };
 
     this.extraBtn = [
       {
@@ -116,6 +116,7 @@ export default {
         items: this.$store.state.static.status_work,
       },
       { text: "کد ملی", filterCol: "national_code", value: "national_code" },
+      { text: "داخلی", filterCol: "internal_port", value: "internal_port" },
       {
         text: "کد پرسنلی",
         filterCol: "personnel_code",

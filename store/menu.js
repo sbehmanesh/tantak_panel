@@ -48,6 +48,12 @@ let mnue_tree = [
         name: " مخاطبین",
         access: "contacts/index",
         route: "/user/contacts",
+      },  
+         {
+        id: 5565654854,
+        name: "فرم نظر سنجی",
+        access: "comment_categories/index",
+        route: "/user/comment-form",
       },
     ],
   },

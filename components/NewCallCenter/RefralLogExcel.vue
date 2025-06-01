@@ -14,12 +14,36 @@
                   v-model="form.type_report"
                 />
                 <UserSelectForm
-                  v-if="Boolean(check_show_list)"
+                  v-if="Boolean(check_show_list) && is_admin"
                   text="انتخاب کاربر"
                   v-model="user"
                   :url="url_list"
                   :rules="Boolean(form.type_report) ? 'require' : ''"
                   :role-id="filter_role"
+                />
+
+                <UserSelectForm
+                  v-if="form.type_report == 'supervisor' && !is_admin"
+                  text="انتخاب سرپرست"
+                  v-model="just_supervizor"
+                  url="user/list-employee"
+                  :rules="Boolean(form.type_report) ? 'require' : ''"
+                  :role-id="filter_role"
+                />
+                <UserSelectForm
+                  v-if="form.type_report == 'operator' && !is_admin && !loading"
+                  text="انتخاب سرپرست مربوطه"
+                  v-model="supervizor"
+                  url="user/list-employee"
+                />
+
+                <amp-select
+                  v-if="form.type_report == 'operator' && !is_admin"
+                  :disabled="Boolean(supervizor.length == 0)"
+                  text="انتخاب فروشنده"
+                  v-model="selected_operator"
+                  rules="require"
+                  :items="operator_list"
                 />
                 <amp-select
                   :disabled="!Boolean(form.type_report)"
@@ -87,10 +111,16 @@ export default {
       loading: false,
       disabled: false,
       valid: true,
+      is_admin: false,
       url_list: "user/searchByRole",
+      selected_operator: "",
       filter_role: [],
+      supervizor: [],
+      just_supervizor: [],
+      operator_list: [],
       user: [],
       roles: [],
+      step_items: [],
       form: {
         type_report: "",
         end_at: "",
@@ -129,6 +159,13 @@ export default {
   },
 
   beforeMount() {
+    if (this.$checkRole(this.$store.state.auth.role.admin_id)) {
+      this.is_admin = true;
+    }
+    if (this.$checkRole(this.$store.state.auth.role.admin_call_center_id)) {
+      console.log(true);
+      this.url_list = "user/list-employee";
+    }
     if (this.$checkRole(this.$store.state.auth.role.superviser_id)) {
       this.url_list = "user/list-employee";
       this.roles = [
@@ -146,11 +183,6 @@ export default {
     } else {
       this.roles = [
         {
-          text: "مدیر مرکز تماس",
-          value: "manager",
-          role_id: this.$store.state.auth.role.admin_call_center_id,
-        },
-        {
           text: "سرپرست",
           value: "supervisor",
           role_id: this.$store.state.auth.role.superviser_id,
@@ -161,12 +193,29 @@ export default {
           role_id: this.$store.state.auth.role.oprator_id,
         },
       ];
+      if (this.$checkRole(this.$store.state.auth.role.admin_id)) {
+        this.roles.unshift({
+          text: "مدیر مرکز تماس",
+          value: "manager",
+          role_id: this.$store.state.auth.role.admin_call_center_id,
+        });
+      }else{
+          this.roles.unshift({
+          text: "خودم",
+          value: "me",
+          role_id: this.$store.state.auth.role.admin_call_center_id,
+        });
+      }
     }
   },
   watch: {
     "form.type_report"() {
+      this.loading = true
       this.filter_role = [];
-      if (this.form.type_report == "manager") {
+      this.supervizor = [];
+   
+      if (this.form.type_report == "manager" || this.form.type_report == "me") {
+        this.url_list = "user/searchByRole";
         this.step_items = [
           {
             text: "مدیر مرکز تماس به سرپرست مرکز تماس",
@@ -201,6 +250,18 @@ export default {
       if (Boolean(find)) {
         this.filter_role.push(find.role_id);
       }
+      setTimeout(() => {
+        
+        this.loading = false
+      }, 150);
+    },
+    supervizor: {
+      deep: true,
+      handler() {
+        if (this.supervizor.length > 0) {
+          this.listOperator();
+        }
+      },
     },
   },
   computed: {
@@ -224,13 +285,23 @@ export default {
     getLogsRefral() {
       this.loading = true;
       let form = { ...this.form };
+      if (form.type_report == "me" && this.$checkRole(this.$store.state.auth.role.admin_call_center_id )) {
+                form.user_id = this.$store.state.auth.user.id;
+                form.type_report = 'manager';
+      }
       if (
         Boolean(this.$checkRole(this.$store.state.auth.role.superviser_id)) &&
-        form.type_report == "supervisor"
+        form.type_report == "supervisor" 
       ) {
         form.user_id = this.$store.state.auth.user.id;
-      } else {
+      } else if(this.user.length > 0) {
         form.user_id = this.user[0].id;
+      }
+      if (this.just_supervizor.length > 0) {
+          form.user_id = this.just_supervizor[0].id;
+      }  
+       if ( Boolean(this.selected_operator)) {
+          form.user_id = this.selected_operator;
       }
       this.$reqApi("message/refer/history-report", { ...form })
         .then((res) => {
@@ -246,6 +317,29 @@ export default {
         .catch((err) => {
           this.loading = false;
         });
+    },
+    listOperator() {
+      if (this.supervizor.length > 0) {
+        this.$reqApi("user/list-operator", {
+          supervisor_id: this.supervizor[0].id,
+        })
+          .then((res) => {
+            let sub_users = [];
+            for (let i = 0; i < res.length; i++) {
+              const x = res[i];
+              let name =
+                Boolean(x.first_name) && Boolean(x.last_name)
+                  ? `${x.first_name} ${x.last_name} | ${x.username}`
+                  : x.username;
+              sub_users.push({
+                text: name,
+                value: x.id,
+              });
+            }
+            this.operator_list = sub_users;
+          })
+          .catch((err) => {});
+      }
     },
     getExcelFile(data) {
       let excel_name = "";

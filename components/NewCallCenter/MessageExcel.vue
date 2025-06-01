@@ -300,7 +300,6 @@ export default {
       if (Boolean(this.end)) {
         return;
       }
-console.log("#" , [this.last_page , this.page_number]);
 
       if (this.last_page < this.page_number) {
         this.total_data.length = this.total_length;

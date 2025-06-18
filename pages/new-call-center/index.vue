@@ -126,8 +126,8 @@
           :dialog="refral_logs"
           v-if="refral_logs"
           @closeDialog="refral_logs = false"
-        />   
-             <CollaborationManagement
+        />
+        <CollaborationManagement
           :dialog="management"
           v-if="management"
           @closeDialog="management = false"
@@ -351,6 +351,19 @@ export default {
           this.dialog_basket.show = true;
           this.user_basket = body.user;
           this.factor_message_id = body.id;
+        },
+        show_fun: () => {
+          if (
+            Boolean(
+              this.$store.state.auth.action.indexOf(
+                "basket/show_btn_in_call_center"
+              ) > -1
+            )
+          ) {
+            return true;
+          } else {
+            return this.factor_message_id;
+          }
         },
       },
       {

@@ -640,6 +640,10 @@ export default {
       require: false,
       default: false,
     },
+    messageId: {
+      require: false,
+      default: false,
+    },
   },
   components: { AddProduct, CompleteInfo, FestivalInPersone },
   data: () => ({
@@ -828,6 +832,7 @@ export default {
         let form = {};
         let items = [];
         form["user_id"] = this.user_basket.id;
+        form["message_id"] = this.messageId;
         for (let index = 0; index < this.list_basket.items.length; index++) {
           const x = this.list_basket.items[index];
           items.push({

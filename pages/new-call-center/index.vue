@@ -95,6 +95,7 @@
           v-if="dialog_basket.show"
           :BasketDialog="dialog_basket"
           :user_basket="user_basket"
+          :message-id="factor_message_id"
         />
         <ChangeStatus
           v-if="dialog_change_status.show"
@@ -210,6 +211,7 @@ export default {
     update_url: "",
     delete_url: "",
     message_id: "",
+    factor_message_id: "",
     title: "لیست پیام ها",
   }),
   beforeMount() {
@@ -348,6 +350,7 @@ export default {
         fun: (body) => {
           this.dialog_basket.show = true;
           this.user_basket = body.user;
+          this.factor_message_id = body.id;
         },
       },
       {

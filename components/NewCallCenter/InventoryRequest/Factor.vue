@@ -256,8 +256,7 @@
             cols="12"
             v-if="
               this.$store.state.auth.action.indexOf(
-                'product_requests/amani_shopping'
-              ) > -1
+                'product_requests/amani_shopping') > -1
             "
           >
             <amp-select

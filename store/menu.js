@@ -108,7 +108,7 @@ let mnue_tree = [
   {
     id: 49,
     name: "الگوی پیامک های پرداخت",
-    access : "comment_questions/index",
+    access : "sms_templates/index",
     route: "/sms-template",
   },
   {

@@ -48,8 +48,8 @@ let mnue_tree = [
         name: " مخاطبین",
         access: "contacts/index",
         route: "/user/contacts",
-      },  
-         {
+      },
+      {
         id: 5565654854,
         name: "فرم نظر سنجی",
         access: "comment_categories/index",
@@ -106,9 +106,29 @@ let mnue_tree = [
     route: "/call-reports",
   },
   {
+    id: 4841567489478,
+    name: " متابیس",
+    children: [
+      {
+        id: 9948972654852,
+        name: "گزارشات متابیس",
+        access: "metabases/index",
+        route: "/metabases",
+      },    
+      
+      {
+        id: 9948972546058454852,
+        name: "گزارشات من",
+        access: "metabases/my_report",
+        route: "/metabases/my-report",
+      },
+    ],
+  },
+
+  {
     id: 49,
     name: "الگوی پیامک های پرداخت",
-    access : "sms_templates/index",
+    access: "sms_templates/index",
     route: "/sms-template",
   },
   {
@@ -639,8 +659,8 @@ let mnue_tree = [
         name: "محصولات غیر سیستمی",
         access: "setting/root",
         route: "/setting/not-system-products",
-      },  
-        {
+      },
+      {
         id: 992654852,
         name: "گزارشات متابیس",
         access: "setting/root",

@@ -74,6 +74,7 @@ export const state = () => ({
   cooperation_req,
   sms_template_status,
   sms_template_kind_set,
+  metabase_type,
 });
 
 let status_type = [
@@ -235,6 +236,10 @@ let message_status = [
 let bool_en = [
   { text: "بله", value: "yes" },
   { text: "خیر", value: "no" },
+];
+let metabase_type = [
+  { text: "سوال", value: "question" },
+  { text: "داشبور", value: "dashboard" },
 ];
 
 let gender = [

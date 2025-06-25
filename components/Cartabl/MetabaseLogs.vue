@@ -7,8 +7,7 @@
           نمایش اطلاعات تحلیلی و آماری از طریق سیستم متابیس
         </span>
       </div>
-
-      <template v-if="!error">
+      <template v-if="!error && !Boolean(urlMetabase) && !noSelect">
         <amp-select
           :disabled="Boolean(loading)"
           v-if="dashboards.length > 1"
@@ -18,10 +17,13 @@
         />
       </template>
     </v-col>
-    <v-col cols="12" v-if="Boolean(select_dashbord)">
+    <v-col cols="12" v-if="Boolean(select_dashbord) || Boolean(urlMetabase)">
       <v-card class="show-card pa-8">
+     
         <iframe
-          :src="current_dashboardUrl"
+          :src="
+            Boolean(this.urlMetabase) ? this.urlMetabase : current_dashboardUrl
+          "
           class="metabase-iframe"
           frameborder="0"
           @load="iframeLoaded"
@@ -64,6 +66,16 @@
 
 <script>
 export default {
+  props: {
+    urlMetabase: {
+      default: false,
+      require: false,
+    },
+    noSelect: {
+      default: false,
+      require: false,
+    },
+  },
   data() {
     return {
       dashboards: [],
@@ -88,7 +100,11 @@ export default {
   },
 
   mounted() {
-    this.initDashboard();
+    if (Boolean(this.urlMetabase)) {
+      this.newSetDashbord();
+    } else {
+      this.initDashboard();
+    }
   },
 
   methods: {
@@ -137,6 +153,10 @@ export default {
       );
       return result;
     },
+    // async newSetDashbord() {
+    //   const result = this.urlMetabase;
+    //   return result;
+    // },
     iframeLoaded() {
       this.$emit("loaded");
       this.$toast.success("اتصال به  متابیس  موفقیت آمیز بود");

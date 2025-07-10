@@ -125,7 +125,7 @@ let status_work = [
 ];
 let status = [
   { text: "فعال", value: "active" },
-  { text: "غیر فعال", value: "in_active" },
+  { text: "غیر فعال", value: "inactive" },
 ];
 let prepaid_type = [
   { text: "درصدی", value: "percent" },

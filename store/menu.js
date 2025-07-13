@@ -75,7 +75,7 @@ let mnue_tree = [
     children: [
       {
         id: 5632,
-        access: "complaint_categories/index",
+        access: "complaint_categories/root",
         name: "دسته بندی شکایات",
         route: "/new-call-center/complaint-categories",
       },

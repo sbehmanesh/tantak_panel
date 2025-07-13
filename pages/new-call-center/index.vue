@@ -236,12 +236,23 @@ export default {
     }
     this.headers = [
       {
-        text: "زمان ثبت",
+        text: "زمان ثبت پیام",
         filterType: "date",
         filterCol: "created_at",
         value: (body) => {
           if (body.created_at) {
             return this.$toJalali(body.created_at);
+          }
+          return "";
+        },
+      },
+      {
+        text: "آخرین تخصیص",
+        filterType: "date",
+        filterCol: "allocation_at",
+        value: (body) => {
+          if (body.allocation_at) {
+            return this.$toJalali(body.allocation_at);
           }
           return "";
         },

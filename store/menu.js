@@ -130,7 +130,8 @@ let mnue_tree = [
     name: "الگوی پیامک های پرداخت",
     access: "sms_templates/index",
     route: "/sms-template",
-  },
+  }, 
+ 
   {
     id: 50,
     name: "مرکز فروش تلفنی",
@@ -167,6 +168,12 @@ let mnue_tree = [
         route: "/product/tops/top-personal",
       },
     ],
+  },
+    {
+    id: 448747789927259,
+    name: "درخواست اعتبار",
+    access: "credit_requests/index",
+    route: "/new-call-center/credit-request",
   },
   {
     id: 7788521,
@@ -562,6 +569,12 @@ let mnue_tree = [
         name: "علل های کنسلی",
         access: "setting/root",
         route: "/setting/reason-cancel",
+      },  
+        {
+        id: 2954189741,
+        name: "درصد های اعتبار خرید امانی",
+        access: "setting/root",
+        route: "/setting/amani-setting",
       },
       {
         id: 22,

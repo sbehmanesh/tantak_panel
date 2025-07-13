@@ -76,6 +76,7 @@ export const state = () => ({
   sms_template_kind_set,
   metabase_type,
   send_user_phone,
+  step_credit_request,
 });
 
 let status_type = [
@@ -125,7 +126,7 @@ let status_work = [
 ];
 let status = [
   { text: "فعال", value: "active" },
-  { text: "غیر فعال", value: "in_active" },
+  { text: "غیر فعال", value: "inactive" },
 ];
 let prepaid_type = [
   { text: "درصدی", value: "percent" },
@@ -1024,5 +1025,43 @@ let sms_template_kind_set = [
   {
     text: "سفته",
     value: "demand_note",
+  },
+];
+let step_credit_request = [
+  {
+    text: "ثبت اولیه",
+    value: "init",
+  },
+  {
+    text: "لغو ",
+    value: "cancel",
+  },
+  {
+    text: " از مدیر امور نمایندگان به امور مالی",
+    value: "representative_affairs_manager_to_fiscal_manager",
+  },
+  {
+    text: "از مدیر مالی به مدیر امور نمایندگان",
+    value: "fiscal_manager_to_representative_affairs_manager",
+  },
+  {
+      text: "ارجاع از مدیر واحد مالی به سرپرست واحد مالی",
+    value: "fiscal_manager_to_supervisor",
+  },
+  {
+    text: "از سرپرست مالی به مدیر",
+    value: "fiscal_supervisor_to_manager",
+  },
+  {
+    text: "از سرپرست مالی به امور مالی",
+    value: "fiscal_supervisor_to_fiscal",
+  },
+  {
+    text: "از واحد مالی به سرپرست مالی",
+    value: "fiscal_to_fiscal_supervisor",
+  },
+  {
+    text: "پذیرش مالی (تایید)",
+    value: "accept_fiscal",
   },
 ];

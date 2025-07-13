@@ -447,7 +447,11 @@ export default {
       let filter = {};
       switch (this.tab_time) {
         case "all":
-          this.filter_time = {};
+          let filters = this.filters
+          if (filters.allocation_at) {
+            delete filters.allocation_at;
+          }
+          this.filters = {...filters}
           break;
         case "my_today_work":
           this.filter_time = {
@@ -456,6 +460,7 @@ export default {
               value: (this.now = jmoment().format("YYYY-MM-DD")),
             },
           };
+          this.filters = { ...this.filters, ...this.filter_time };
           break;
         case "my_late_work":
           this.filter_time = {
@@ -464,9 +469,9 @@ export default {
               value: jmoment(this.now).add(-1, "days").format("YYYY-MM-DD"),
             },
           };
+          this.filters = { ...this.filters, ...this.filter_time };
           break;
       }
-      this.filters = { ...this.filters, ...this.filter_time };
     },
   },
   methods: {

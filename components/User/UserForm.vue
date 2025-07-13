@@ -421,6 +421,7 @@ export default {
       this.$reqApi(this.showUrl, { id: this.modelId })
         .then(async (response) => {
           this.form.user_id = response.model.user_id;
+          this.form.status = response.model.status;
           this.form.role_id = response.model.role_id;
           this.form.id = this.modelId;
           this.form.user_status = response.model.status;

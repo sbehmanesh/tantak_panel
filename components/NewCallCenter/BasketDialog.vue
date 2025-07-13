@@ -9,7 +9,6 @@
       <v-card style="overflow: hidden">
         <v-toolbar class="white--text" color="primary">
           <span class="font_20"> ثبت فروش فروش تلفنی </span>
-
           <v-spacer></v-spacer>
           <v-icon @click="closeDialog" color="white" size="26"> close </v-icon>
         </v-toolbar>
@@ -502,6 +501,14 @@
                     <v-divider></v-divider>
 
                     <v-row>
+                      <v-col cols="12">
+                        <amp-autocomplete
+                          text=" انتخاب الگو پیامکی"
+                          v-model="sms_id"
+                          :items="sms_list"
+                          rules="require"
+                        />
+                      </v-col>
                       <v-col
                         cols="12"
                         md="12"
@@ -533,6 +540,7 @@
                           height="40"
                           @click="pay(false)"
                           color="info  "
+                          :disabled="!Boolean(sms_id)"
                           class="ma-1"
                           text="پرداخت "
                         />
@@ -665,6 +673,8 @@ export default {
     pckage_list_item: [],
     user: [],
     factor_data: [],
+    sms_list: [],
+    sms_id: "",
     products: [],
     list_basket: { items: [] },
     factor_list: {},
@@ -694,6 +704,7 @@ export default {
   }),
   beforeMount() {
     this.$store.dispatch("setPageTitle", this.title);
+    this.getSmsList();
   },
   computed: {
     next_step() {
@@ -927,6 +938,7 @@ export default {
       }
       form["kind_set"] = this.kind_set;
       form["only_price"] = pay;
+      form["sms_id"] = this.sms_id;
       this.$reqApi("basket/manual-pay", form)
         .then((response) => {
           if (pay) {
@@ -966,6 +978,18 @@ export default {
           this.loading = false;
         });
       this.loading = false;
+    },
+    getSmsList() {
+      const url = "sms-template/list-person";
+      this.$reqApi(url)
+        .then((res) => {
+          const data = res.model.data;
+          this.sms_list = data.map((x) => ({
+            text: x.fa_name,
+            value: x.id,
+          }));
+        })
+        .catch((err) => {});
     },
     closeDialog() {
       this.BasketDialog.show = false;

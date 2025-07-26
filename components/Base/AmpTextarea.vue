@@ -19,6 +19,8 @@
       :counter="counter"
       v-model="inp_value"
       :readonly="readonly"
+      :placeholder="placeholder"
+      :disabled="disabled"
       :maxlength="maxlength"
       :class="[disabled || readonly ? 'opacity_input' : '', classC, cClass]"
     ></v-textarea>
@@ -51,6 +53,9 @@ export default {
       default: '',
     },
     label: {
+      type: String,
+      default: '',
+    },    placeholder: {
       type: String,
       default: '',
     },

@@ -44,8 +44,21 @@
         </v-col>
       </v-row>
       <v-row dense>
-        <v-col cols="12">
-          <amp-textarea text="محتوا" rules="require" v-model="form.content" />
+        <v-col cols="6">
+          <amp-textarea
+            :rows="5"
+            :placeholder="placeholder"
+            text="نمونه پیام"
+            v-model="form.description"
+          />
+        </v-col>
+        <v-col cols="6">
+          <amp-textarea
+            :rows="5"
+            text="محتوا"
+            rules="require"
+            v-model="form.content"
+          />
         </v-col>
         <v-col cols="12">
           <v-alert
@@ -112,9 +125,13 @@ export default {
   },
   data() {
     return {
+      placeholder:
+        "نمونه پیامک ارسالی را وارد کنید تا در زمان انتخاب نمایش داده شود.",
+
       loading: false,
       valid: false,
       role_id: [],
+
       selected_admin: [],
       form: {
         user_id: "",
@@ -123,6 +140,7 @@ export default {
         fa_name: "",
         content: "",
         kind_set: "",
+        description: "",
       },
     };
   },
@@ -145,6 +163,7 @@ export default {
           this.form.status = data.status;
           this.form.content = data.content;
           this.form.kind_set = data.kind_set;
+          this.form.description = data.description;
           this.loading = false;
         })
         .catch((e) => {

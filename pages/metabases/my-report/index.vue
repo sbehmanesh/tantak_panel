@@ -132,7 +132,6 @@ export default {
         .catch((err) => {});
     },
     getLog(item) {
-      console.log("item ==> ", item);
       this.open_dialog = true;
       this.form["id"] = item.id;
       this.body = item.request_body;

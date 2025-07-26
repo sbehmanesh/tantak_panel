@@ -508,6 +508,7 @@
                           :items="sms_list"
                           rules="require"
                         />
+                     <amp-textarea v-if="Boolean(sms_description) "    :disabled="Boolean(sms_description)" :rows="5" text="نمونه پیامک ارسالی به این شکل میباشد" v-model="sms_description" />
                       </v-col>
                       <v-col
                         cols="12"
@@ -540,7 +541,7 @@
                           height="40"
                           @click="pay(false)"
                           color="info  "
-                          :disabled="!Boolean(sms_id)"
+                          :disabled="!Boolean(sms_id) || !Boolean(description)"
                           class="ma-1"
                           text="پرداخت "
                         />
@@ -675,6 +676,7 @@ export default {
     factor_data: [],
     sms_list: [],
     sms_id: "",
+    description: "",
     products: [],
     list_basket: { items: [] },
     factor_list: {},
@@ -689,6 +691,7 @@ export default {
     product_varcomb_id: "",
     length_item: "",
     basket_costumer_id: "",
+    sms_description: "",
     price_value: "",
     type_pay: [
       { text: "پرداخت به صورت کامل", value: "full" },
@@ -727,6 +730,14 @@ export default {
     },
   },
   watch: {
+    sms_id(){
+      if (Boolean(this.sms_id)) {
+       let find_sms = this.sms_list.find((x)=> x.value == this.sms_id)
+       if (Boolean(find_sms)) {
+         this.sms_description = find_sms.description
+       }
+      }
+    },
     "list_basket.items"() {
       let check = false;
       if (this.list_basket.items.length > 0) {
@@ -939,6 +950,7 @@ export default {
       form["kind_set"] = this.kind_set;
       form["only_price"] = pay;
       form["sms_id"] = this.sms_id;
+      form["description"] = this.description;
       this.$reqApi("basket/manual-pay", form)
         .then((response) => {
           if (pay) {
@@ -987,6 +999,7 @@ export default {
           this.sms_list = data.map((x) => ({
             text: x.fa_name,
             value: x.id,
+            description: x.description,
           }));
         })
         .catch((err) => {});

@@ -28,7 +28,7 @@
             <h1>ترکیب</h1>
           </v-col>
           <v-col cols="12" md="1" class="text-center">
-            <h1>قیمت به تومان</h1>
+            <h1>قیمت به ریال</h1>
           </v-col>
           <v-col cols="12" md="1" class="text-center">
             <h1>بارکد</h1>

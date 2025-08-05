@@ -23,7 +23,7 @@
 
     <v-row class="pa-2 mt-10">
       <v-col cols="12" md="2" class="text-center"> نوع محصول </v-col>
-      <v-col cols="12" md="1" class="text-center"> قیمت به تومان</v-col>
+      <v-col cols="12" md="1" class="text-center"> قیمت به ریال</v-col>
       <v-col cols="12" md="1" class="text-center"> بارکد </v-col>
       <v-col cols="12" md="1" class="text-center"> بارکد کامل </v-col>
 

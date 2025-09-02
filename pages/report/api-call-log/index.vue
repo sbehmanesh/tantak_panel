@@ -25,7 +25,7 @@ export default {
     FilterLogs,
   },
   data: () => ({
-    tilte: "خارج نگار",
+    title: "خارج نگار",
     headers: [],
     btn_actions: [],
     dialog_defect: { show: false, items: null },

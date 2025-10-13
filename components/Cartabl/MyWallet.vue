@@ -4,23 +4,33 @@
       <v-divider></v-divider>
     </v-col>
     <v-row class="justify-center">
-      <v-col cols="9">
+      <v-col cols="12" md="12">
         <div class="pa-5" v-if="!loading">
           <v-card class="elevation-0 card-style">
-            <v-card-title class="align-center justify-center elevation-0">
-              <v-icon size="70">account_balance_wallet</v-icon>
-              <div class="px-4">
-                <h1 style="font-size: 12px">
-                  کیف پول نقدی :
-                  {{ $price(user.cash_wallt) }}
-                  <small> (ریال)</small>
-                </h1>
-                <h1 style="font-size: 12px">
-                  کیف پول اعتباری:
-                  {{ $price(user.credit_wallt) }}
-                  <small> (ریال)</small>
-                </h1>
-              </div>
+            <v-card-title class="  d-flex align-center justify-center elevation-0">
+     
+          
+              <v-btn   dark color="primary darken-1" class="ma-3">
+                           کیف پول نقدی : <b>
+                {{ $price(user.cash_wallt) }} (ریال)
+                </b>
+              </v-btn>    
+                  <v-btn   outlined color="primary darken-1" class="ma-3">
+                    کیف پول اعتباری: <b>
+                 {{ $price(user.credit_wallt) }} (ریال)
+                </b>
+              </v-btn>   
+          
+              <v-btn v-if="user.reagent_code"  dark color="primary darken-1" class="ma-3">
+                کد معرف : <b>
+                  {{ user.reagent_code }}
+                </b>
+              </v-btn>    
+                 <v-btn v-if="user.personnel_code" outlined class="ma-3" color="primary darken-1">
+                کد پرسنلی : <b>
+                  {{ user.personnel_code }}
+                </b>
+              </v-btn>
             </v-card-title>
             <v-col cols="12" v-if="wallet_items.length > 0">
               <v-divider v-for="i in 5" :key="i"></v-divider>
@@ -29,12 +39,12 @@
               <v-row>
                 <v-col
                   cols="12"
-                  md="4"
+                  md="6"
                   v-for="(item, index) in wallet_items"
                   :key="index"
                 >
-                  <v-card class="pa-5 ma-1 card-style2">
-                    <div class="center-div py-1">
+                  <v-card class="pa-5 ma-1 card-style2 elevation-2"  >
+                    <div class="d-flex align-center py-1">
                       <h1 class="font_14">
                         {{ index + 1 }} - {{ item.pay_text }} (
                         {{
@@ -46,17 +56,11 @@
 
                         )
                       </h1>
+                      <v-divider class="mx-3" style="border: 1px dashed #bdbdbd;"></v-divider>
                     </div>
-                    <v-col
-                      cols="12"
-                      v-if="wallet_items.length > 0"
-                      class="ma-0 pa-0"
-                    >
-                      <v-divider v-for="i in 4" :key="i"></v-divider>
-                    </v-col>
+        
                     <v-card-text class="d-flex align-center">
-                      <v-icon size="25">history</v-icon>
-                      <div class="pr-2">
+                      <v-row class="align-center justify-space-between pa-3 ">
                         <h1 class="font_12">
                           تاریخ ثبت :‌
                           {{
@@ -90,7 +94,7 @@
                           مقدار :
                           {{ $price(item.amount) }} (ریال)
                         </h1>
-                      </div>
+                      </v-row>
                     </v-card-text>
                   </v-card>
                 </v-col>
@@ -172,10 +176,11 @@ export default {
           }
 
           this.loading = false;
-          this.loading = false;
         })
         .catch((err) => {
           this.loading = false;
+       
+          
         });
     },
   },
@@ -187,8 +192,7 @@ strong {
 }
 
 .card-style2 {
-  border: 1px solid #bdbdbd;
-  border-radius: 8px;
+  border: 1px solid #0000002f;
 }
 .see-all {
   border: 1px solid #bdbdbd;

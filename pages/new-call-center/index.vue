@@ -363,7 +363,6 @@ export default {
           this.factor_message_id = body.id;
           this.dialog_basket.show = true;
           this.user_basket = body.user;
-          
         },
         show_fun: () => {
           if (
@@ -402,6 +401,21 @@ export default {
             Boolean(this.$checkRole(this.$store.state.auth.role.admin_id)) ||
             Boolean(this.$checkRole(this.$store.state.auth.role.oprator_id))
           ) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
+      {
+        color: "green",
+        icon: "settings",
+        text: "مدیریت مالی",
+        fun: (body) => {
+    this.$router.push('/new-call-center/setting-fee')
+        },
+        show_fun: (body) => {
+          if (Boolean(this.$checkRole(this.$store.state.auth.role.admin_id))) {
             return true;
           } else {
             return false;
@@ -460,11 +474,11 @@ export default {
       let filter = {};
       switch (this.tab_time) {
         case "all":
-          let filters = this.filters
+          let filters = this.filters;
           if (filters.allocation_at) {
             delete filters.allocation_at;
           }
-          this.filters = {...filters}
+          this.filters = { ...filters };
           break;
         case "my_today_work":
           this.filter_time = {

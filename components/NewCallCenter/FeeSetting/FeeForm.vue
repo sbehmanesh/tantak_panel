@@ -33,6 +33,7 @@
                 </v-col>
                 <v-col cols="6" md="3" class="py-0">
                   <amp-autocomplete
+                    :disabled="manager.length == 0"
                     text="انتخاب محصول"
                     :items="items_product"
                     v-model="form.product_id"
@@ -173,9 +174,16 @@ export default {
       }
     },
   },
+  watch: {
+    manager: {
+      deep: true,
+      handler() {
+        if (this.manager.length > 0) this.loadProduct();
+      },
+    },
+  },
   beforeMount() {
-    this.role_id = [this.$store.state.auth.role.seal_manager];
-    this.loadProduct();
+    this.role_id = [this.$store.state.auth.role.admin_call_center_id];
     if (this.modelId) {
       this.loadData();
     }
@@ -203,12 +211,22 @@ export default {
     },
     loadProduct() {
       this.loading = true;
-      this.$reqApi("/product/low-search", { row_number: 30000 })
+      let filters = {
+        geter_id: {
+          op: "=",
+          value: this.manager[0].id,
+        },
+      };
+      this.$reqApi("/product-allocation", {
+        row_number: 30000,
+        filters: filters,
+        section_name:'Product'
+      })
         .then((res) => {
           res.model.data.map((x) => {
             this.items_product.push({
-              text: x.name,
-              value: x.id,
+              text: x.product.name,
+              value: x.product.id,
             });
             this.loading = false;
           });
@@ -222,12 +240,12 @@ export default {
       this.loading = true;
       this.$reqApi(this.showUrl, { id: this.modelId })
         .then(async (response) => {
-         const data  = response.model;
-         console.log("data ==> ", data);
-       for(let i in data){
-          this.form[i] = data [i]
-       }
-       this.manager.push(data.user)
+          const data = response.model;
+          console.log("data ==> ", data);
+          for (let i in data) {
+            this.form[i] = data[i];
+          }
+          this.manager.push(data.user);
           this.loading = false;
         })
         .catch((error) => {

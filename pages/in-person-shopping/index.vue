@@ -226,12 +226,12 @@ export default {
         text: "کاربر",
         filterCol: "body.user.username",
         value: (body) => {
-          let name = Boolean(body.user.first_name)
-            ? body.user.first_name + " " + body.user.last_name
+          let name = Boolean(body.user?.first_name)
+            ? body.user?.first_name + " " + body.user?.last_name
             : "";
           return `
       <h1 class="my-2">
-        ${body.user.username}
+        ${body.user?.username}
         <br>
           <small class="grey--text">
             ${name}
@@ -251,14 +251,14 @@ export default {
         text: "ثبت کننده",
         filterCol: "body.seller_sale_agnecy.username",
         value: (body) => {
-          let name = Boolean(body.seller_sale_agnecy.first_name)
-            ? body.seller_sale_agnecy.first_name +
+          let name = Boolean(body.seller_sale_agnecy?.first_name)
+            ? body.seller_sale_agnecy?.first_name +
               " " +
-              body.seller_sale_agnecy.last_name
+              body.seller_sale_agnecy?.last_name
             : "";
           return `
       <h1 class="my-2 blue-grey--text">
-        ${body.seller_sale_agnecy.username}
+        ${body.seller_sale_agnecy?.username}
         <br>
           <small class="grey--text">
             ${name}
@@ -311,8 +311,8 @@ export default {
         text: "کاربر",
         filterCol: "body.user.username",
         value: (body) => {
-          let name = Boolean(body.user.first_name)
-            ? body.user.first_name + " " + body.user.last_name
+          let name = Boolean(body.user?.first_name)
+            ? body.user?.first_name + " " + body.user?.last_name
             : "";
           return `
       <h1 class="my-2">

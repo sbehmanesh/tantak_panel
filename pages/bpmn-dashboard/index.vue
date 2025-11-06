@@ -52,45 +52,16 @@
           </v-card>
         </v-dialog>
 
-        <!-- Task Action Dialog -->
-        <v-dialog v-model="taskActionDialog" persistent max-width="600px">
-          <v-card>
-            <v-card-title>
-              <span class="headline">انجام وظیفه: {{ selectedTask?.name }}</span>
-            </v-card-title>
-            <v-card-text>
-              <v-form v-model="taskFormValid" ref="taskForm">
-                <v-container>
-                  <v-row>
-                    <v-col cols="12" v-for="(variable, index) in taskVariables" :key="index">
-                      <amp-input
-                        :text="variable.label || variable.name"
-                        :rules="variable.required ? 'require' : ''"
-                        v-model="taskFormData[variable.name]"
-                        :type="variable.config.type"
-                      />
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-form>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <amp-button
-                text="انصراف"
-                color="red"
-                @click="taskActionDialog = false"
-              />
-              <amp-button
-                text="تایید و ارسال"
-                color="primary"
-                :loading="processingTask"
-                :disabled="!taskFormValid || processingTask"
-                @click="confirmTaskAction"
-              />
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+        <TaskActionDialog
+          v-model="taskActionDialog"
+          :task="selectedTask"
+          :variables="taskVariables"
+          :form-data="taskFormData"
+          :loading="processingTask"
+          @cancel="onTaskDialogCancel"
+          @submit="confirmTaskAction"
+          @action="handleTaskFormAction"
+        />
       </v-col>
     </v-row>
   </div>
@@ -98,10 +69,12 @@
 
 <script>
 import ProcessList from '~/components/BPMN/ProcessList.vue'
+import TaskActionDialog from '~/components/BPMN/TaskActionDialog.vue'
 
 export default {
   components: {
-    ProcessList
+    ProcessList,
+    TaskActionDialog
   },
   data() {
     return {
@@ -114,7 +87,6 @@ export default {
       selectedTask: null,
       processListDialog: false,
       taskActionDialog: false,
-      taskFormValid: false,
       taskVariables: [],
       taskFormData: {},
       processSearch: '',
@@ -254,12 +226,23 @@ export default {
       try {
         // Get task variables and form
         const taskData = await this.$reqBpmn(`/tasks/${task.id}?include=screen,data`, 'get')
-        this.taskVariables = taskData.screen.config[0].items || []
+        const screenConfig = taskData?.screen?.config || []
+        const items = Array.isArray(screenConfig) && screenConfig.length > 0
+          ? screenConfig[0]?.items || []
+          : []
 
-        // Initialize form data
+        this.taskVariables = Array.isArray(items) ? items : []
+        const initialData = taskData?.data || {}
         this.taskFormData = {}
-        this.taskVariables.forEach(variable => {
-          this.taskFormData[variable.name] = taskData.data[variable.name] || ''
+
+        this.taskVariables.forEach((variable) => {
+          const name = variable?.config?.name
+          if (!name) {
+            return
+          }
+          const hasExistingValue = Object.prototype.hasOwnProperty.call(initialData, name)
+          const value = hasExistingValue ? initialData[name] : undefined
+          this.$set(this.taskFormData, name, this.normalizeFieldValue(value, variable))
         })
         
         this.taskActionDialog = true
@@ -297,18 +280,65 @@ export default {
       console.log('task',task)
       this.$toast.info(`جزئیات وظیفه: ${task.element_name}`)
     },
+    normalizeFieldValue(value, variable) {
+      const component = variable?.component
+      const config = variable?.config || {}
 
-    getInputType(variableType) {
-      const typeMap = {
-        'string': 'text',
-        'integer': 'number',
-        'float': 'number',
-        'boolean': 'checkbox',
-        'date': 'date',
-        'datetime': 'datetime-local',
-        'text': 'textarea'
+      if (component === 'FormCheckbox') {
+        if (value === undefined || value === null || value === '') {
+          return Boolean(config.initiallyChecked)
+        }
+        if (typeof value === 'string') {
+          return ['true', '1', 'on', 'yes'].includes(value.toLowerCase())
+        }
+        if (typeof value === 'number') {
+          return value === 1
+        }
+        return Boolean(value)
       }
-      return typeMap[variableType] || 'text'
+
+      if (component === 'FormSelectList') {
+        if (config.options?.allowMultiSelect) {
+          if (Array.isArray(value)) {
+            return value
+          }
+          if (value === undefined || value === null || value === '') {
+            return []
+          }
+          return [value]
+        }
+        if (value === undefined || value === null) {
+          return config.fieldValue ?? ''
+        }
+        return value
+      }
+
+      if (component === 'FileUpload') {
+        if (config.multipleUpload) {
+          if (Array.isArray(value)) {
+            return value
+          }
+          if (!value) {
+            return []
+          }
+          return [value]
+        }
+        if (value === undefined || value === null) {
+          return config.fieldValue ?? ''
+        }
+        return value
+      }
+
+      if (value === undefined || value === null) {
+        return config.fieldValue ?? ''
+      }
+      return value
+    },
+    onTaskDialogCancel() {
+      this.taskActionDialog = false
+    },
+    handleTaskFormAction(button) {
+      console.debug('Task form action triggered', button)
     },
 
     getTasksData(event) {

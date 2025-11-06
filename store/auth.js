@@ -175,7 +175,7 @@ export const actions = {
     await commit("set_user", null);
     await commit("set_token", { token: null });
     localStorage.clear("auth_token");
-    window.location.href = "/auth/login";
+    window.location.href = "/#/auth/login";
   },
   async setAction({ commit }, user) {
     let role_id = "";

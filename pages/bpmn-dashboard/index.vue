@@ -145,14 +145,30 @@ export default {
   
   computed: {
     filteredProcesses() {
-      if (!this.processSearch) return this.processes
+      let filteredProcessList = []
+      if (this.processSearch){
+        const search = this.processSearch.toLowerCase()
+        filteredProcessList = this.processes.filter(process => 
+          process.name?.toLowerCase().includes(search) ||
+          process.description?.toLowerCase().includes(search) ||
+          process.key?.toLowerCase().includes(search)
+        )
+      }else{
+        filteredProcessList = this.processes
+      }
       
-      const search = this.processSearch.toLowerCase()
-      return this.processes.filter(process => 
-        process.name?.toLowerCase().includes(search) ||
-        process.description?.toLowerCase().includes(search) ||
-        process.key?.toLowerCase().includes(search)
-      )
+      let finalProcessList = []
+      filteredProcessList.forEach(item => {
+        item.start_events.forEach(start_event => {
+          finalProcessList.push({
+              'process':item,
+              'start_event_id': start_event.id,
+              'start_event_name': start_event.name,
+          })
+        })
+      })
+      console.log('finalProcessList',finalProcessList)
+      return finalProcessList
     }
   },
   
@@ -166,7 +182,7 @@ export default {
       this.loadingProcesses = true
       try {
         // Get available processes
-        const response = await this.$reqBpmn('/processes', 'get', {
+        const response = await this.$reqBpmn('/start_processes', 'get', {
           perPage: 100,
           status: 'active'
         })
@@ -189,19 +205,18 @@ export default {
     },
 
     async startProcess(process) {
-      this.selectedProcess = process
+      this.selectedProcess = process.process
       this.processListDialog = false
-      let start_events = process.start_events
 
       try {
         // Start the process - ProcessMaker typically starts with default variables
         const startResponse = await this.$reqBpmn(
-          `/process_events/${process.id}?event=${start_events[0].id}`, 
+          `/process_events/${process.process.id}?event=${process.start_event_id}`, 
           'post', 
           {}
         )
         
-        this.$toast.success(`فرآیند "${process.name}" با موفقیت شروع شد`)
+        this.$toast.success(`فرآیند "${process.process.name}" با موفقیت شروع شد`)
         
         // Reload tasks to see if new task is assigned
         await this.loadTasks()

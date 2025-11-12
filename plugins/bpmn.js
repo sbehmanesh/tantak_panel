@@ -24,13 +24,13 @@ export default async ({ $axios, $toast, store }, inject) => {
                     }
                 }
                 
-                if (url === '/processes') {
+                if (url === '/start_processes') {
                     // Default parameters for processes
                     if (!data.status) {
                         requestData.data.status = 'active'
                     }
                     if (!data.perPage) {
-                        requestData.data.perPage = 100
+                        requestData.data.perPage = 1000
                     }
                 }
             }

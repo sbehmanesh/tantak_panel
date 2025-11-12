@@ -10,7 +10,7 @@
     <v-list v-else class="pa-2" two-line>
       <v-list-item
         v-for="process in processes"
-        :key="process.id"
+        :key="process.process.id"
         class="mb-2 elevation-1 process-list-item"
         @click="$emit('start-process', process)"
       >
@@ -20,7 +20,7 @@
         
         <v-list-item-content>
           <v-list-item-title class="font-weight-medium">
-            {{ process.name }}
+            {{ process.process.name }} <span v-if="process.start_event_name != 'Start Event'"> ({{ process.start_event_name }})</span>
           </v-list-item-title>
         </v-list-item-content>
         

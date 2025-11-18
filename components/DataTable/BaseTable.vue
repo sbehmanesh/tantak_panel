@@ -444,6 +444,7 @@ export default {
           iconCustomer: x.iconCustomer,
         };
       });
+      console.log('header_end',items)
       return [...items];
     },
     btn_actions() {
@@ -987,23 +988,42 @@ export default {
               form.filters[key] = this.filters[key];
             }
           }
+          let only_me = true
           for (const key in this.rootBody) {
             const element = this.rootBody[key];
+            if(key == 'only_me'){
+              only_me = element
+            }
             if (form[key]) {
               form[key] += "," + element;
             } else {
               form[key] = element;
             }
           }
-          this.$reqBpmn(this.bpmnUrl, 'get',form)
+          let requestUrl = this.bpmnUrl;
+          let queryParams = {};
+          if (requestUrl) {
+            const decodedUrl = decodeURIComponent(requestUrl);
+            const queryIndex = decodedUrl.indexOf("?");
+            if (queryIndex !== -1) {
+              const queryString = decodedUrl.slice(queryIndex + 1);
+              requestUrl = decodedUrl.slice(0, queryIndex);
+              const searchParams = new URLSearchParams(queryString);
+              searchParams.forEach((value, key) => {
+                queryParams[key] = value;
+              });
+            } else {
+              requestUrl = decodedUrl;
+            }
+          }
+          console.log('only_me',only_me)
+          this.$reqBpmn(requestUrl,'get',form,queryParams,only_me)
             .then((response) => {
-              console.log('this.response',response)
               {
                 this.desserts = response.data.map((x, x_index) => ({
                   ...x,
                   row_index: x_index + 1,
                 }));
-                console.log('this.desserts',this.desserts)
                 this.total_item = response.data.length;
               }
               let page_count = parseInt(

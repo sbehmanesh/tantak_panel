@@ -171,7 +171,6 @@ export default {
           }
         })
       })
-      console.log('finalProcessList',finalProcessList)
       return finalProcessList
     }
   },

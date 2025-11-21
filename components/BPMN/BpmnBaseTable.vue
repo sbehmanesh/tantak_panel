@@ -140,13 +140,11 @@ export default {
         return {
           text: header_text,
           value: this.resolveHeaderValue(column_item),
-          sortable: Boolean(column_item.meta?.sortable),
-          filterType:
-            column_item.meta?.filter_type || column_item.meta?.filterType,
+          sortable: false,
+          filterable: false,
           width: column_item.meta?.width,
         };
       });
-      console.log('headers',this.column_definitions,headers)
       return headers;
     },
     forwardedAttrs() {
@@ -289,6 +287,7 @@ export default {
       }
 
       return action_keys.map((action_key) => {
+        console.log('action_key',action_key)
         const palette_item =
           this.action_palette[action_key] ||
           DEFAULT_ACTION_PALETTE[action_key] ||
@@ -339,15 +338,33 @@ export default {
       if (!row_item || !column_path) {
         return null;
       }
-      return column_path
-        .split(".")
-        .reduce(
-          (current_value, segment) =>
-            current_value && Object.prototype.hasOwnProperty.call(current_value, segment)
-              ? current_value[segment]
-              : null,
-          row_item
-        );
+
+      return column_path.split(".").reduce((current_value, segment) => {
+        if (current_value === null || typeof current_value === "undefined") {
+          return null;
+        }
+
+        const is_array = Array.isArray(current_value);
+        const numeric_index = Number(segment);
+        const is_valid_index =
+          is_array &&
+          Number.isInteger(numeric_index) &&
+          numeric_index >= 0 &&
+          numeric_index < current_value.length;
+
+        if (is_valid_index) {
+          return current_value[numeric_index];
+        }
+
+        if (
+          current_value &&
+          Object.prototype.hasOwnProperty.call(current_value, segment)
+        ) {
+          return current_value[segment];
+        }
+
+        return null;
+      }, row_item);
     },
     formatColumnValue(value, column_meta = {}) {
       if (

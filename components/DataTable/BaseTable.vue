@@ -1016,7 +1016,6 @@ export default {
               requestUrl = decodedUrl;
             }
           }
-          console.log('only_me',only_me)
           this.$reqBpmn(requestUrl,'get',form,queryParams,only_me)
             .then((response) => {
               {

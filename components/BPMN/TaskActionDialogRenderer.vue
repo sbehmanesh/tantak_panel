@@ -18,7 +18,7 @@
         :basket_id="model" 
       />
       <BpmnUserSelect
-        v-if="fieldName.endsWith('user_id')"
+        v-else-if="fieldName.endsWith('user_id')"
         :rules="rules"
         v-model="model"
         url="user"

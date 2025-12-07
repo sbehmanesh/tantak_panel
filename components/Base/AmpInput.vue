@@ -174,6 +174,7 @@ export default {
   watch: {
     value() {
       let value = this.value
+      console.log('value',value)
       if (Boolean(value)) {
         if (this.isPrice || this.isNumber || this.isFloat) {
           value = this.$FarsiToEnglishNumber(value)
@@ -182,6 +183,7 @@ export default {
           value = this.$price(value)
         }
       }
+      console.log('formated-value',value)
       this.inp_value = value
     },
     inp_value() {

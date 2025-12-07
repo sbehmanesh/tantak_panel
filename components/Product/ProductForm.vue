@@ -264,6 +264,7 @@
               </v-col>
               <Gallery
                 :gallery_imgs="form.medias"
+                :edit="true"
                 v-model="gallery_dialog"
                 @insertGallery="insertGallery"
               />
@@ -341,7 +342,7 @@ export default {
     step_number: 1,
     valid: false,
     loading: false,
-    prepayment: "",
+    prepayment: '0',
     gallery_dialog: false,
     tab: 0,
     publish_status: [],
@@ -490,6 +491,9 @@ export default {
       if (this.modelId) {
         url = this.updateUrl;
         form["id"] = this.modelId;
+        if(form.medias.length > 0 && typeof form.medias[0] === "object"){
+          form.medias = []
+        }
       }
       this.$reqApi(url, form)
         .then((response) => {
@@ -535,7 +539,9 @@ export default {
             if (Boolean(response.phone_sale)) {
               items.push("phone_sale");
               this.preprepay_type = response.preprepay_type;
-              this.prepayment = response.prepay_amount;
+              this.prepayment = response.prepay_amount.toString();
+            }else{
+              this.prepayment = '0';
             }
             this.publish_status = items;
             this.form.slug = response.slug;
@@ -585,9 +591,11 @@ export default {
             this.form.whole_sell_variation_combinations =
               response.whole_sell_variation_combinations;
 
-            this.form.medias = [];
+            this.form.medias = response.product_images || [];
             this.form.sort = response.sort;
             this.loading = false;
+            console.log('response.prepay_amount',this.prepayment)
+
           } catch (error) {}
         })
         .catch((error) => {

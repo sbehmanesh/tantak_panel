@@ -23,9 +23,6 @@
               <amp-input text="لینک" v-model="form.slug" />
             </v-col>
             <v-col cols="12" md="4">
-              <amp-input text="بارکد" v-model="form.barcode" />
-            </v-col>
-            <v-col cols="12" md="4">
               <amp-select text="برند" v-model="form.brand_id" :items="brandItems" />
             </v-col>
             <v-col cols="12" md="4">
@@ -41,6 +38,19 @@
               <AmpUploadFileNew :label="false" title="تصویر اصلی" v-model="form.main_image" />
             </v-col>
             <v-col cols="12" md="4">
+              <AmpUploadFileNew
+                multiple
+                :label="false"
+                title="گالری تصاویر"
+                v-model="form.medias"
+              />
+              <div v-if="form.medias && form.medias.length" class="d-flex flex-wrap mt-2">
+                <v-avatar v-for="(media, index) in form.medias" :key="`media-${index}`" size="48" class="ma-1">
+                  <v-img :src="$getImage(media)" />
+                </v-avatar>
+              </div>
+            </v-col>
+            <v-col cols="12" md="4">
               <v-switch inset dense label="فروش آنلاین" v-model="form.online_sale" />
               <v-switch inset dense label="فروش تلفنی" v-model="form.phone_sale" />
               <v-switch inset dense label="فروش حضوری" v-model="form.person_sale" />
@@ -53,9 +63,6 @@
                 :text="form.prepay_type === 'percent' ? 'درصد پیش پرداخت' : 'مبلغ پیش پرداخت'"
                 v-model="form.prepay_amount"
               />
-            </v-col>
-            <v-col cols="12">
-              <amp-tags v-model="form.tags" text="برچسب‌ها" />
             </v-col>
           </v-row>
         </v-stepper-content>
@@ -93,16 +100,29 @@
                     :items="variationTypes"
                     placeholder="نوع ویژگی"
                     v-model="slot.variation_type_id"
-                    @chang="(value) => setVariationType({ slot: slot.slot, variation_type_id: value })"
+                    @change="(value) => setVariationType({ slot: slot.slot, variation_type_id: value })"
                   />
                 </div>
                 <v-text-field
+                  v-if="slot.mode !== 'color'"
                   dense
                   outlined
                   label="افزودن سریع"
+                  hint="برای بازه عددی از - یا , استفاده کنید"
+                  persistent-hint
                   v-model="slot.quickValue"
                   @keyup.enter="handleQuickAdd(slot)"
                 />
+                <v-btn
+                  v-else
+                  block
+                  color="primary"
+                  small
+                  class="mt-1"
+                  @click="handleQuickAdd(slot)"
+                >
+                  افزودن رنگ جدید
+                </v-btn>
                 <v-simple-table dense class="mt-2">
                   <tbody>
                     <tr v-for="item in slot.items" :key="item.client_temp_id">
@@ -135,60 +155,6 @@
           </v-row>
         </v-stepper-content>
         <v-stepper-content step="3">
-          <v-row class="mb-4">
-            <v-col cols="12" md="6">
-              <v-text-field
-                dense
-                outlined
-                label="جستجو"
-                v-model="comboFilters.search"
-                @input="updateComboFilters({ search: comboFilters.search })"
-              />
-            </v-col>
-            <v-col cols="12" md="3">
-              <v-switch
-                inset
-                label="بدون موجودی"
-                v-model="comboFilters.missingStock"
-                @change="updateComboFilters({ missingStock: comboFilters.missingStock })"
-              />
-            </v-col>
-            <v-col cols="12" md="3">
-              <v-switch
-                inset
-                label="دارای تخفیف"
-                v-model="comboFilters.hasDiscount"
-                @change="updateComboFilters({ hasDiscount: comboFilters.hasDiscount })"
-              />
-            </v-col>
-          </v-row>
-          <v-data-table
-            :items="filteredCombinations"
-            :headers="comboHeaders"
-            dense
-            disable-pagination
-            hide-default-footer
-          >
-            <template v-slot:item.label="{ item }">
-              {{ comboLabel(item) }}
-            </template>
-            <template v-slot:item.stock="{ item }">
-              <amp-input dense is-number :value="item.stock" @input="updateCombinationField({ client_temp_id: item.client_temp_id, field: 'stock', value: $event })" />
-            </template>
-            <template v-slot:item.price="{ item }">
-              <amp-input dense is-price :value="item.price" @input="updateCombinationField({ client_temp_id: item.client_temp_id, field: 'price', value: $event })" />
-            </template>
-            <template v-slot:item.discount="{ item }">
-              <amp-input dense :value="item.discount" @input="updateCombinationField({ client_temp_id: item.client_temp_id, field: 'discount', value: $event })" />
-            </template>
-            <template v-slot:item.actions="{ item }">
-              <v-btn icon small @click="removeCombinationRows([item.client_temp_id])">
-                <v-icon color="error" small>delete</v-icon>
-              </v-btn>
-            </template>
-          </v-data-table>
-        </v-stepper-content>
-        <v-stepper-content step="4">
           <v-card outlined class="pa-4">
             <h3 class="mb-4">مرور نهایی</h3>
             <v-list dense>
@@ -246,7 +212,6 @@ export default {
     steps: [
       { key: 'base', label: 'اطلاعات پایه' },
       { key: 'categories', label: 'دسته‌بندی و ویژگی' },
-      { key: 'combinations', label: 'ترکیب‌ها' },
       { key: 'review', label: 'مرور و ذخیره' },
     ],
     activeStep: 1,
@@ -267,6 +232,7 @@ export default {
       prepay_amount: null,
       wholesale_unit: null,
       main_image: '',
+      medias: [],
       tags: [],
     },
     selectedCategories: [],
@@ -278,18 +244,6 @@ export default {
       { slot: 3, title: 'تنوع ۳', variation_type_id: null, mode: 'text', items: [], quickValue: '' },
     ],
     combinations: [],
-    comboFilters: {
-      search: '',
-      missingStock: false,
-      hasDiscount: false,
-    },
-    comboHeaders: [
-      { text: 'ترکیب', value: 'label' },
-      { text: 'موجودی', value: 'stock' },
-      { text: 'قیمت', value: 'price' },
-      { text: 'تخفیف', value: 'discount' },
-      { text: '', value: 'actions', sortable: false },
-    ],
     comboTimer: null,
     summaryErrors: [],
     variationTypes: [],
@@ -297,37 +251,21 @@ export default {
     wholesaleUnits: [],
     brandItems: [],
     prepayTypes: [],
+    deletedVariations: [],
+    deletedCombinations: [],
+    variationDefaults: {
+      sort: 1,
+      category_id: null,
+    },
+    combinationDefaults: {
+      sell_type: 'single',
+      stock: 0,
+      price: null,
+      discount: null,
+      order_point_center: 0,
+      order_point_agency: 0,
+    },
   }),
-  computed: {
-    filteredCombinations() {
-      return this.combinations.filter((combo) => {
-        if (this.comboFilters.missingStock && Number(combo.stock || 0) > 0) {
-          return false
-        }
-        if (this.comboFilters.hasDiscount && !combo.discount) {
-          return false
-        }
-        if (this.comboFilters.search) {
-          return (
-            this.comboLabel(combo).toLowerCase().indexOf(this.comboFilters.search.toLowerCase()) > -1 ||
-            JSON.stringify(combo).indexOf(this.comboFilters.search) > -1
-          )
-        }
-        return true
-      })
-    },
-    variationLabels() {
-      const map = {}
-      this.variationSlots.forEach((slot) => {
-        map[slot.slot] = {}
-        slot.items.forEach((item) => {
-          const key = item.id || item.client_temp_id
-          map[slot.slot][key] = item.value
-        })
-      })
-      return map
-    },
-  },
   watch: {
     variationSlots: {
       deep: true,
@@ -362,10 +300,10 @@ export default {
     },
     async fetchMeta() {
       const [types, colors, units, brands] = await Promise.all([
-        this.$reqApi('/setting', { filters: { key: 'variation_type' }, paginate_num: 0 }),
-        this.$reqApi('/setting', { filters: { key: 'product_colors' }, paginate_num: 0 }),
-        this.$reqApi('/setting', { filters: { key: 'wholesale_unit' }, paginate_num: 0 }),
-        this.$reqApi('/brand', { paginate_num: 0 }),
+        this.$reqApi('/setting', { filters: { key: 'variation_type' }, row_number: 10 }),
+        this.$reqApi('/setting', { filters: { key: 'product_colors' }, row_number: 1000 }),
+        this.$reqApi('/setting', { filters: { key: 'wholesale_unit' }, row_number: 10 }),
+        this.$reqApi('/brand', { row_number: 100 }),
       ])
       this.variationTypes = (types?.model?.data || []).map((item) => ({
         text: item.value,
@@ -387,7 +325,7 @@ export default {
       this.prepayTypes = this.$store.state.static?.prepaid_type || []
     },
     async fetchCategories() {
-      const response = await this.$reqApi('/category', { paginate_num: 0 })
+      const response = await this.$reqApi('/category', { row_number: 1000 })
       const data = response?.model?.data || []
       this.categoryTree = this.buildTree(data)
       this.categoryOptions = data.map((item) => ({
@@ -399,6 +337,9 @@ export default {
       const idParam = this.$route.params.id
       if (!idParam || idParam === 'insert') {
         this.$store.dispatch('setPageTitle', 'افزودن سریع محصول')
+        this.deletedVariations = []
+        this.deletedCombinations = []
+        this.combinations = []
         return
       }
       const payload = await this.$reqApi('/product/show', { id: idParam })
@@ -409,6 +350,8 @@ export default {
         id: product.id,
         tags: (product.tags || []).map((tag) => (typeof tag === 'object' ? tag.name : tag)),
       }
+      const gallery = product.medias || product.product_images || []
+      this.form.medias = this.normalizeMedias(gallery)
       this.selectedCategories =
         product.category_ids || (product.categories || []).map((cat) => cat.id)
       if (product.variations) {
@@ -416,7 +359,10 @@ export default {
       }
       if (product.variation_combinations) {
         this.combinations = this.normalizeCombinations(product.variation_combinations)
+      } else {
+        this.combinations = []
       }
+      this.deletedCombinations = []
       this.$store.dispatch('setPageTitle', 'ویرایش سریع محصول')
     },
     loadVariations(payload) {
@@ -428,6 +374,7 @@ export default {
         items: [],
         quickValue: '',
       }))
+      this.deletedVariations = []
       const items = Array.isArray(payload.items || payload) ? payload.items || payload : payload.items
       ;(items || []).forEach((item) => {
         const slotIndex = item.variation_type?.sort || 1
@@ -437,10 +384,16 @@ export default {
         }
         slot.variation_type_id = item.variation_type_id
         slot.mode = item.variation_type?.value_2 === 'product_colors' ? 'color' : 'text'
+        const parsedValue = this.parseValue(item.value)
         slot.items.push({
           id: item.id,
           client_temp_id: item.client_temp_id || createTempId('var'),
-          value: this.parseValue(item.value),
+          value:
+            slot.mode === 'color'
+              ? Array.isArray(parsedValue)
+                ? [...parsedValue]
+                : []
+              : parsedValue,
           barcode: item.barcode || '',
           images: (item.product_images || []).map((img) => img.path || img),
         })
@@ -455,20 +408,42 @@ export default {
       }))
     },
     buildTree(list) {
-      const map = {}
-      list.forEach((item) => {
-        map[item.id] = { ...item, children: [] }
-      })
+      if (!Array.isArray(list)) {
+        return []
+      }
+      const nodes = list.map((item) => ({
+        ...item,
+        children: [],
+      }))
+      const map = nodes.reduce((acc, node) => {
+        acc[node.id] = node
+        return acc
+      }, {})
       const roots = []
-      list.forEach((item) => {
-        const parentId = item.parent_id || item.parent_category_id
+      nodes.forEach((node) => {
+        const parentId = node.parent_id || node.parent_category_id || null
         if (parentId && map[parentId]) {
-          map[parentId].children.push(map[item.id])
-        } else {
-          roots.push(map[item.id])
+          map[parentId].children.push(node)
+        } else if (!parentId || node.level === 1) {
+          roots.push(node)
         }
       })
-      return roots
+      const sortNodes = (items) => {
+        return items
+          .sort((a, b) => {
+            const aSort = typeof a.sort === 'number' ? a.sort : a.level || 0
+            const bSort = typeof b.sort === 'number' ? b.sort : b.level || 0
+            if (aSort === bSort) {
+              return (a.name || '').localeCompare(b.name || '')
+            }
+            return aSort - bSort
+          })
+          .map((item) => ({
+            ...item,
+            children: sortNodes(item.children || []),
+          }))
+      }
+      return sortNodes(roots)
     },
     parseValue(value) {
       if (typeof value === 'string' && value.trim().startsWith('[')) {
@@ -489,30 +464,60 @@ export default {
         return
       }
       const type = this.variationTypes.find((item) => item.value === variation_type_id)
+      const previousType = target.variation_type_id
       target.variation_type_id = variation_type_id
       target.mode = type && type.value_2 === 'product_colors' ? 'color' : 'text'
+      if (previousType && previousType !== variation_type_id) {
+        target.items = []
+      }
     },
     addVariationValue({ slot, value }) {
       const target = this.variationSlots.find((item) => item.slot === slot)
-      if (!target || value === undefined || value === null || value === '') {
+      if (!target) {
+        return
+      }
+      const normalizedValue =
+        target.mode === 'color'
+          ? Array.isArray(value)
+            ? [...value]
+            : []
+          : typeof value === 'number'
+          ? `${value}`
+          : (value || '').toString().trim()
+      if (target.mode !== 'color' && !normalizedValue) {
+        return
+      }
+      if (
+        target.mode !== 'color' &&
+        target.items.some((item) => (item.value || '').toString() === normalizedValue)
+      ) {
         return
       }
       target.items.push({
         client_temp_id: createTempId(`var${slot}`),
-        value,
+        value: normalizedValue,
         barcode: '',
         images: [],
       })
       this.variationSlots = [...this.variationSlots]
     },
     handleQuickAdd(slot) {
-      if (!slot.quickValue) {
+      if (slot.mode === 'color') {
+        this.addVariationValue({ slot: slot.slot, value: [] })
+        slot.quickValue = ''
         return
       }
-      this.addVariationValue({ slot: slot.slot, value: slot.quickValue })
+      const values = this.parseQuickValues(slot.quickValue)
+      if (!values.length) {
+        return
+      }
+      values.forEach((value) => {
+        this.addVariationValue({ slot: slot.slot, value })
+      })
       slot.quickValue = ''
     },
     updateVariationValue({ slot, id, patch }) {
+      console.log(slot,id,patch)
       const target = this.variationSlots.find((item) => item.slot === slot)
       if (!target) {
         return
@@ -536,10 +541,106 @@ export default {
       if (!target) {
         return
       }
-      target.items = target.items.filter(
-        (item) => item.client_temp_id !== id && item.id !== id
+      const removedItem = target.items.find(
+        (item) => item.client_temp_id === id || item.id === id
       )
+      if (removedItem && removedItem.id) {
+        this.markVariationForDeletion(removedItem.id)
+      }
+      target.items = target.items.filter((item) => item.client_temp_id !== id && item.id !== id)
       this.variationSlots = [...this.variationSlots]
+    },
+    parseQuickValues(input) {
+      if (typeof input !== 'string') {
+        return []
+      }
+      const raw = input.trim()
+      if (!raw) {
+        return []
+      }
+      const normalizedRaw = this.normalizeDigits(raw).replace(/،/g, ',')
+      const segments = normalizedRaw
+        .split(',')
+        .map((segment) => segment.trim())
+        .filter(Boolean)
+      const sources = segments.length ? segments : [normalizedRaw]
+      const values = []
+      sources.forEach((segment) => {
+        const rangeParts = segment.split('-').map((part) => part.trim())
+        const numericRange =
+          rangeParts.length === 2 && rangeParts.every((part) => this.isNumericToken(part))
+        if (numericRange) {
+          const start = parseInt(rangeParts[0], 10)
+          const end = parseInt(rangeParts[1], 10)
+          if (!Number.isNaN(start) && !Number.isNaN(end)) {
+            const step = start <= end ? 1 : -1
+            for (let current = start; step > 0 ? current <= end : current >= end; current += step) {
+              values.push(`${current}`)
+            }
+            return
+          }
+        }
+        values.push(segment)
+      })
+      return values
+    },
+    normalizeDigits(value) {
+      if (typeof value !== 'string') {
+        return value
+      }
+      const persian = '۰۱۲۳۴۵۶۷۸۹'
+      const arabic = '٠١٢٣٤٥٦٧٨٩'
+      return value
+        .replace(/[۰-۹]/g, (digit) => persian.indexOf(digit))
+        .replace(/[٠-٩]/g, (digit) => arabic.indexOf(digit))
+    },
+    isNumericToken(value) {
+      if (typeof value !== 'string' || !value) {
+        return false
+      }
+      return /^-?\d+$/.test(value)
+    },
+    markVariationForDeletion(id) {
+      if (!id || this.deletedVariations.some((item) => item.id === id)) {
+        return
+      }
+      this.deletedVariations.push({ id, delete: true })
+    },
+    normalizeVariationValue(slot, value) {
+      if (!slot) {
+        return value
+      }
+      if (slot.mode === 'color') {
+        if (!Array.isArray(value)) {
+          return []
+        }
+        return value
+          .filter((item) => item !== null && item !== undefined && item !== '')
+          .map((item) => {
+            const numeric = Number(item)
+            return Number.isNaN(numeric) ? item : numeric
+          })
+      }
+      if (value === null || typeof value === 'undefined') {
+        return ''
+      }
+      return value.toString().trim()
+    },
+    normalizeMedias(list = []) {
+      return (list || [])
+        .map((item) => {
+          if (!item) {
+            return ''
+          }
+          if (typeof item === 'string') {
+            return item
+          }
+          if (typeof item === 'object') {
+            return item.path || item.url || ''
+          }
+          return ''
+        })
+        .filter(Boolean)
     },
     scheduleComboRefresh() {
       clearTimeout(this.comboTimer)
@@ -548,85 +649,91 @@ export default {
       }, 300)
     },
     regenerateCombinations() {
-      const slots = this.variationSlots
+      const previous = [...this.combinations]
+      const activeSlots = this.variationSlots
         .filter((slot) => slot.variation_type_id && slot.items.length)
         .map((slot) => ({
           slot: slot.slot,
-          items: slot.items,
+          items: slot.items.map((item) => ({
+            id: item.id || null,
+            client_temp_id: item.id ? item.client_temp_id || null : item.client_temp_id,
+          })),
         }))
-      if (!slots.length) {
+        .sort((a, b) => a.slot - b.slot)
+      if (!activeSlots.length) {
+        this.trackDeletedCombinations(previous)
         this.combinations = []
         return
       }
-      const existingMap = {}
-      this.combinations.forEach((combo) => {
-        existingMap[this.comboKey(combo)] = combo
-      })
-      const lists = slots.map((slot) =>
-        slot.items.map((item) => ({
-          slot: slot.slot,
-          id: item.id,
-          client_temp_id: item.client_temp_id,
-        }))
-      )
-      const cartesian = lists.reduce(
-        (acc, list) => acc.flatMap((x) => list.map((y) => [...x, y])),
-        [[]]
-      )
-      this.combinations = cartesian.map((parts) => {
-        const combo = {
-          variation_1_id: null,
-          variation_2_id: null,
-          variation_3_id: null,
-          variation_1_temp_id: null,
-          variation_2_temp_id: null,
-          variation_3_temp_id: null,
-          stock: 0,
-          price: null,
-          discount: null,
-          client_temp_id: createTempId('combo'),
+      const existingMap = previous.reduce((acc, combo) => {
+        acc[this.comboKey(combo)] = combo
+        return acc
+      }, {})
+      const generated = []
+      const traverse = (depth, parts) => {
+        if (depth === activeSlots.length) {
+          const combo = this.composeComboFromParts(parts)
+          const key = this.comboKey(combo)
+          generated.push(existingMap[key] ? { ...existingMap[key] } : combo)
+          return
         }
-        parts.forEach((part) => {
-          const idKey = `variation_${part.slot}_id`
-          const tempKey = `variation_${part.slot}_temp_id`
-          if (part.id) {
-            combo[idKey] = part.id
-          } else {
-            combo[tempKey] = part.client_temp_id
+        const slot = activeSlots[depth]
+        slot.items.forEach((item) => {
+          const payload = {
+            slot: slot.slot,
+            id: item.id,
+            client_temp_id: item.id ? null : item.client_temp_id,
           }
+          traverse(depth + 1, [...parts, payload])
         })
+      }
+      traverse(0, [])
+      this.trackDeletedCombinations(previous, generated)
+      this.combinations = generated
+    },
+    composeComboFromParts(parts) {
+      const combo = {
+        variation_1_id: null,
+        variation_2_id: null,
+        variation_3_id: null,
+        variation_1_temp_id: null,
+        variation_2_temp_id: null,
+        variation_3_temp_id: null,
+        stock: this.combinationDefaults.stock,
+        price: this.combinationDefaults.price,
+        discount: this.combinationDefaults.discount,
+        order_point_center: this.combinationDefaults.order_point_center,
+        order_point_agency: this.combinationDefaults.order_point_agency,
+        client_temp_id: createTempId('combo'),
+      }
+      parts.forEach((part) => {
+        const idKey = `variation_${part.slot}_id`
+        const tempKey = `variation_${part.slot}_temp_id`
+        if (part.id) {
+          combo[idKey] = part.id
+          combo[tempKey] = null
+        } else if (part.client_temp_id) {
+          combo[tempKey] = part.client_temp_id
+          combo[idKey] = null
+        }
+      })
+      return combo
+    },
+    trackDeletedCombinations(previous = [], next = []) {
+      const nextKeys = new Set(next.map((combo) => this.comboKey(combo)))
+      previous.forEach((combo) => {
         const key = this.comboKey(combo)
-        return existingMap[key] ? { ...existingMap[key] } : combo
+        if (combo.id && !nextKeys.has(key)) {
+          if (!this.deletedCombinations.some((item) => item.id === combo.id)) {
+            this.deletedCombinations.push({ id: combo.id, delete: true })
+          }
+        }
       })
     },
     comboKey(combo) {
       return [1, 2, 3]
         .map((slot) => combo[`variation_${slot}_id`] || combo[`variation_${slot}_temp_id`] || 'null')
         .join('|')
-    },
-    comboLabel(combo) {
-      return [1, 2, 3]
-        .map((slot) => {
-          const map = this.variationLabels[slot] || {}
-          const key = combo[`variation_${slot}_id`] || combo[`variation_${slot}_temp_id`]
-          return key ? map[key] || `Slot ${slot}` : null
-        })
-        .filter(Boolean)
-        .join(' / ')
-    },
-    updateComboFilters(filters) {
-      this.comboFilters = { ...this.comboFilters, ...filters }
-    },
-    updateCombinationField({ client_temp_id, field, value }) {
-      const target = this.combinations.find((item) => item.client_temp_id === client_temp_id)
-      if (!target) {
-        return
-      }
-      target[field] = value
-      target.dirty = true
-    },
-    removeCombinationRows(ids) {
-      this.combinations = this.combinations.filter((item) => !ids.includes(item.client_temp_id))
     },
     prevStep() {
       if (this.activeStep > 1) {
@@ -649,8 +756,14 @@ export default {
       if (!this.variationSlots.some((slot) => slot.items.length)) {
         errors.push('حداقل یک مقدار برای ویژگی‌ها مشخص کنید')
       }
+      const incompleteColors = this.variationSlots.some(
+        (slot) => slot.mode === 'color' && slot.items.some((item) => !Array.isArray(item.value) || !item.value.length)
+      )
+      if (incompleteColors) {
+        errors.push('برای هر رنگ، حداقل یک مقدار از لیست را انتخاب کنید')
+      }
       if (!this.combinations.length) {
-        errors.push('ترکیب‌ها را تولید کنید')
+        errors.push('برای ساخت ترکیب خودکار، ویژگی‌ها را کامل کنید')
       }
       if (this.form.phone_sale && !this.form.prepay_amount) {
         errors.push('برای فروش تلفنی، پیش‌پرداخت لازم است')
@@ -681,9 +794,7 @@ export default {
           id: item.id,
           client_temp_id: item.client_temp_id,
           variation_type_id: slot.variation_type_id,
-          value: item.value,
-          barcode: item.barcode,
-          images: (item.images || []).map((path) => ({ path })),
+          value: this.normalizeVariationValue(slot, item.value),
         }))
       )
       const combos = this.combinations.map((item) => ({
@@ -698,16 +809,26 @@ export default {
         stock: item.stock,
         price: item.price,
         discount: item.discount,
+        order_point_center: item.order_point_center,
+        order_point_agency: item.order_point_agency,
         minimum: item.minimum,
         maximum: item.maximum,
         warranty: item.warranty,
         warranty_id: item.warranty_id,
       }))
+      const medias = this.normalizeMedias(this.form.medias)
       return {
         ...this.form,
+        medias,
         category_ids: this.selectedCategories,
-        variations: { items: variations },
-        variation_combinations: { items: combos },
+        variations: {
+          defaults: { ...this.variationDefaults },
+          items: [...variations, ...this.deletedVariations],
+        },
+        variation_combinations: {
+          defaults: { ...this.combinationDefaults },
+          items: [...combos, ...this.deletedCombinations],
+        },
       }
     },
     applyTempMaps(response) {
@@ -733,6 +854,8 @@ export default {
           item.id = comboLookup[item.client_temp_id]
         }
       })
+      this.deletedVariations = []
+      this.deletedCombinations = []
     },
   },
 }

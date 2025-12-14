@@ -367,11 +367,11 @@ export default {
       console.log('here1')
       this.setCategories(product.category_ids || (product.categories || []).map((cat) => cat.id))
       console.log('here2')
-      if (product.variations) {
-        this.loadVariations(product.variations)
+      if (product.product_variations) {
+        this.loadVariations(product.product_variations)
       }
-      if (product.variation_combinations) {
-        this.combinations = this.normalizeCombinations(product.variation_combinations)
+      if (product.product_variation_combinations) {
+        this.combinations = this.normalizeCombinations(product.product_variation_combinations)
       } else {
         this.combinations = []
       }
@@ -795,7 +795,7 @@ export default {
           ? await this.$reqApi('/product/easy-update', payload)
           : await this.$reqApi('/product/easy-insert', payload)
         this.$toast.success('ذخیره شد')
-        this.$router.push('product')
+        this.$router.push('/product')
       } finally {
         this.saving = false
       }

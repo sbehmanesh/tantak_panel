@@ -111,6 +111,33 @@
                   :loading="tipax_lists_loading"
                 />
               </v-col>
+              <v-col cols="12" md="4">
+                <amp-input
+                  text="ارتفاع بسته (سانتی متر)"
+                  v-model="tipax_form.height"
+                  rules="required"
+                  cClass="ltr-item"
+                  is-number
+                />
+              </v-col>
+              <v-col cols="12" md="4">
+                <amp-input
+                  text="عرض بسته (سانتی متر)"
+                  v-model="tipax_form.width"
+                  rules="required"
+                  cClass="ltr-item"
+                  is-number
+                />
+              </v-col>
+              <v-col cols="12" md="4">
+                <amp-input
+                  text="طول بسته (سانتی متر)"
+                  v-model="tipax_form.length"
+                  rules="required"
+                  cClass="ltr-item"
+                  is-number
+                />
+              </v-col>
               <v-col cols="12">
                 <amp-textarea
                   text="توضیحات اضافی"
@@ -428,6 +455,9 @@ const createTipaxForm = () => ({
   packing_id: null,
   package_content_id: null,
   description: "",
+  length: 20,
+  width: 20,
+  height: 20,
   origin: createAddressModel(),
   destination: createAddressModel(),
 });
@@ -811,6 +841,9 @@ export default {
         paymentType: this.tipax_form.payment_type,
         pickupType: this.tipax_form.pickup_type,
         distributionType: this.tipax_form.distribution_type,
+        length: this.tipax_form.length,
+        height: this.tipax_form.height,
+        width: this.tipax_form.width,
         packType: this.tipax_form.pack_type,
         packingId: this.tipax_form.packing_id,
         packageContentId: this.tipax_form.package_content_id,

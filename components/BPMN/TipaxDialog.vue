@@ -133,108 +133,133 @@
                   clearable
                 />
               </v-col>
-              <v-col cols="12" md="4">
-                <amp-autocomplete
-                  text="شهر مبدا"
-                  :items="tipax_lists.cities"
-                  v-model="tipax_form.origin.city_id"
-                  rules="require"
-                  :loading="tipax_lists_loading"
-                  :disabled="isOriginFieldDisabled('city_id')"
-                />
+              <v-col cols="12" v-if="!tipax_selected_center_stock">
+                <v-alert type="info" dense outlined class="mb-0">
+                  برای مشاهده و ویرایش اطلاعات مبدا، ابتدا انبار مرکزی را انتخاب کنید.
+                </v-alert>
               </v-col>
-              <v-col cols="12" md="12">
-                <amp-textarea
-                  text="آدرس کامل"
-                  v-model="tipax_form.origin.full_address"
-                  rows="2"
-                  rules="require"
-                  :disabled="isOriginFieldDisabled('full_address')"
-                />
-              </v-col>
-              <v-col cols="12" md="4">
-                <amp-input
-                  text="طبقه"
-                  v-model="tipax_form.origin.floor"
-                  is-number
-                  :disabled="isOriginFieldDisabled('floor')"
-                />
-              </v-col>
-              <v-col cols="12" md="4">
-                <amp-input
-                  text="واحد"
-                  v-model="tipax_form.origin.unit"
-                  is-number
-                  :disabled="isOriginFieldDisabled('unit')"
-                />
-              </v-col>
-              <v-col cols="12" md="4">
-                <amp-input
-                  text="کد پستی"
-                  v-model="tipax_form.origin.postal_code"
-                  rules="postCode"
-                  cClass="ltr-item"
-                  :disabled="isOriginFieldDisabled('postal_code')"
-                />
-              </v-col>
-              <v-col cols="12" md="4">
-                <amp-input
-                  text="پلاک"
-                  v-model="tipax_form.origin.no"
-                  :disabled="isOriginFieldDisabled('no')"
-                />
-              </v-col>
-              <v-col cols="12" md="8">
-                <amp-textarea
-                  text="توضیحات"
-                  v-model="tipax_form.origin.description"
-                  rows="2"
-                  :disabled="isOriginFieldDisabled('description')"
-                />
-              </v-col>
-              <v-col cols="12" md="4">
-                <amp-input
-                  text="نام و نام خانوادگی"
-                  v-model="tipax_form.origin.full_name"
-                  rules="require"
-                  :disabled="isOriginFieldDisabled('full_name')"
-                />
-              </v-col>
-              <v-col cols="12" md="4">
-                <amp-input
-                  text="تلفن ثابت"
-                  v-model="tipax_form.origin.phone"
-                  rules="phone_no_city"
-                  cClass="ltr-item"
-                  :disabled="isOriginFieldDisabled('phone')"
-                />
-              </v-col>
-              <v-col cols="12" md="4">
-                <amp-input
-                  text="موبایل"
-                  v-model="tipax_form.origin.mobile"
-                  rules="mobile"
-                  cClass="ltr-item"
-                  :disabled="isOriginFieldDisabled('mobile')"
-                />
-              </v-col>
-              <v-col cols="12" md="4">
-                <amp-input
-                  text="عرض جغرافیایی (lat)"
-                  v-model="tipax_form.origin.lat"
-                  cClass="ltr-item"
-                  is-number
-                  :disabled="isOriginFieldDisabled('lat')"
-                />
-              </v-col>
-              <v-col cols="12" md="4">
-                <amp-input
-                  text="طول جغرافیایی (long)"
-                  v-model="tipax_form.origin.long"
-                  cClass="ltr-item"
-                  is-number
-                  :disabled="isOriginFieldDisabled('long')"
-                />
+              <v-col cols="12" v-else>
+                <v-card outlined>
+                  <v-card-title
+                    class="py-2 px-3 d-flex align-center"
+                    @click="origin_box_open = !origin_box_open"
+                    style="cursor: pointer"
+                  >
+                    <v-icon small class="ml-2">
+                      {{ origin_box_open ? "expand_less" : "expand_more" }}
+                    </v-icon>
+                    <span>جزئیات مبدا</span>
+                  </v-card-title>
+                  <v-slide-y-transition>
+                    <div v-show="origin_box_open" class="px-3 pb-3">
+                      <v-row dense>
+                        <v-col cols="12" md="4">
+                          <amp-autocomplete
+                            text="شهر مبدا"
+                            :items="tipax_lists.cities"
+                            v-model="tipax_form.origin.city_id"
+                            rules="require"
+                            :loading="tipax_lists_loading"
+                            :disabled="isOriginFieldDisabled('city_id')"
+                          />
+                        </v-col>
+                        <v-col cols="12" md="12">
+                          <amp-textarea
+                            text="آدرس کامل"
+                            v-model="tipax_form.origin.full_address"
+                            rows="2"
+                            rules="require"
+                            :disabled="isOriginFieldDisabled('full_address')"
+                          />
+                        </v-col>
+                        <v-col cols="12" md="4">
+                          <amp-input
+                            text="طبقه"
+                            v-model="tipax_form.origin.floor"
+                            is-number
+                            :disabled="isOriginFieldDisabled('floor')"
+                          />
+                        </v-col>
+                        <v-col cols="12" md="4">
+                          <amp-input
+                            text="واحد"
+                            v-model="tipax_form.origin.unit"
+                            is-number
+                            :disabled="isOriginFieldDisabled('unit')"
+                          />
+                        </v-col>
+                        <v-col cols="12" md="4">
+                          <amp-input
+                            text="کد پستی"
+                            v-model="tipax_form.origin.postal_code"
+                            rules="postCode"
+                            cClass="ltr-item"
+                            :disabled="isOriginFieldDisabled('postal_code')"
+                          />
+                        </v-col>
+                        <v-col cols="12" md="4">
+                          <amp-input
+                            text="پلاک"
+                            v-model="tipax_form.origin.no"
+                            :disabled="isOriginFieldDisabled('no')"
+                          />
+                        </v-col>
+                        <v-col cols="12" md="8">
+                          <amp-textarea
+                            text="توضیحات"
+                            v-model="tipax_form.origin.description"
+                            rows="2"
+                            :disabled="isOriginFieldDisabled('description')"
+                          />
+                        </v-col>
+                        <v-col cols="12" md="4">
+                          <amp-input
+                            text="نام و نام خانوادگی"
+                            v-model="tipax_form.origin.full_name"
+                            rules="require"
+                            :disabled="isOriginFieldDisabled('full_name')"
+                          />
+                        </v-col>
+                        <v-col cols="12" md="4">
+                          <amp-input
+                            text="تلفن ثابت"
+                            v-model="tipax_form.origin.phone"
+                            rules="phone_no_city"
+                            cClass="ltr-item"
+                            :disabled="isOriginFieldDisabled('phone')"
+                          />
+                        </v-col>
+                        <v-col cols="12" md="4">
+                          <amp-input
+                            text="موبایل"
+                            v-model="tipax_form.origin.mobile"
+                            rules="mobile"
+                            cClass="ltr-item"
+                            :disabled="isOriginFieldDisabled('mobile')"
+                          />
+                        </v-col>
+                        <v-col cols="12" md="4">
+                          <amp-input
+                            text="عرض جغرافیایی (lat)"
+                            v-model="tipax_form.origin.lat"
+                            cClass="ltr-item"
+                            is-number
+                            :disabled="isOriginFieldDisabled('lat')"
+                          />
+                        </v-col>
+                        <v-col cols="12" md="4">
+                          <amp-input
+                            text="طول جغرافیایی (long)"
+                            v-model="tipax_form.origin.long"
+                            cClass="ltr-item"
+                            is-number
+                            :disabled="isOriginFieldDisabled('long')"
+                          />
+                        </v-col>
+                      </v-row>
+                    </div>
+                  </v-slide-y-transition>
+                </v-card>
               </v-col>
             </v-row>
 
@@ -422,6 +447,7 @@ export default {
     tipax_form: createTipaxForm(),
     tipax_selected_center_stock: null,
     tipax_origin_disabled_fields: {},
+    origin_box_open: false,
     destination_map_location: [],
     tipax_lists: {
       cities: [],
@@ -514,6 +540,7 @@ export default {
     },
     tipax_selected_center_stock(new_value) {
       this.applyCenterStockSelection(new_value);
+      this.origin_box_open = false;
     },
     destination_map_location(new_value) {
       if (Array.isArray(new_value) && new_value.length >= 2) {
@@ -533,6 +560,7 @@ export default {
       this.tipax_lists_error = null;
       this.tipax_selected_center_stock = null;
       this.tipax_origin_disabled_fields = {};
+      this.origin_box_open = false;
       this.destination_map_location = [];
       if (this.$refs.tipaxForm && typeof this.$refs.tipaxForm.resetValidation === "function") {
         this.$refs.tipaxForm.resetValidation();

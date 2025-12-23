@@ -177,6 +177,7 @@
                             text="طبقه"
                             v-model="tipax_form.origin.floor"
                             is-number
+                            rules="require"
                             :disabled="isOriginFieldDisabled('floor')"
                           />
                         </v-col>
@@ -185,6 +186,7 @@
                             text="واحد"
                             v-model="tipax_form.origin.unit"
                             is-number
+                            rules="require"
                             :disabled="isOriginFieldDisabled('unit')"
                           />
                         </v-col>
@@ -192,7 +194,7 @@
                           <amp-input
                             text="کد پستی"
                             v-model="tipax_form.origin.postal_code"
-                            rules="postCode"
+                            rules="require"
                             cClass="ltr-item"
                             :disabled="isOriginFieldDisabled('postal_code')"
                           />
@@ -200,6 +202,7 @@
                         <v-col cols="12" md="4">
                           <amp-input
                             text="پلاک"
+                            rules="require"
                             v-model="tipax_form.origin.no"
                             :disabled="isOriginFieldDisabled('no')"
                           />
@@ -241,19 +244,21 @@
                         <v-col cols="12" md="4">
                           <amp-input
                             text="عرض جغرافیایی (lat)"
-                            v-model="tipax_form.origin.lat"
+                            v-model="tipax_form.origin.latitude"
                             cClass="ltr-item"
+                            rules="required"
                             is-number
-                            :disabled="isOriginFieldDisabled('lat')"
+                            :disabled="isOriginFieldDisabled('latitude')"
                           />
                         </v-col>
                         <v-col cols="12" md="4">
                           <amp-input
                             text="طول جغرافیایی (long)"
-                            v-model="tipax_form.origin.long"
+                            v-model="tipax_form.origin.longitude"
                             cClass="ltr-item"
+                            rules="required"
                             is-number
-                            :disabled="isOriginFieldDisabled('long')"
+                            :disabled="isOriginFieldDisabled('longitude')"
                           />
                         </v-col>
                       </v-row>
@@ -287,6 +292,7 @@
               <v-col cols="12" md="4">
                 <amp-input
                   text="طبقه"
+                  rules="require"
                   v-model="tipax_form.destination.floor"
                   is-number
                 />
@@ -294,6 +300,7 @@
               <v-col cols="12" md="4">
                 <amp-input
                   text="واحد"
+                  rules="require"
                   v-model="tipax_form.destination.unit"
                   is-number
                 />
@@ -302,13 +309,14 @@
                 <amp-input
                   text="کد پستی"
                   v-model="tipax_form.destination.postal_code"
-                  rules="postCode"
+                  rules="require"
                   cClass="ltr-item"
                 />
               </v-col>
               <v-col cols="12" md="4">
                 <amp-input
                   text="پلاک"
+                  rules="require"
                   v-model="tipax_form.destination.no"
                 />
               </v-col>
@@ -345,15 +353,17 @@
               <v-col cols="12" md="4">
                 <amp-input
                   text="عرض جغرافیایی (lat)"
-                  v-model="tipax_form.destination.lat"
+                  v-model="tipax_form.destination.latitude"
                   cClass="ltr-item"
+                  rules="required"
                   is-number
                 />
               </v-col>
               <v-col cols="12" md="4">
                 <amp-input
                   text="طول جغرافیایی (long)"
-                  v-model="tipax_form.destination.long"
+                  v-model="tipax_form.destination.longitude"
+                  rules="required"
                   cClass="ltr-item"
                   is-number
                 />
@@ -404,8 +414,8 @@ const createAddressModel = () => ({
   phone: "",
   full_name: "",
   mobile: "",
-  lat: "",
-  long: "",
+  latitude: "",
+  longitude: "",
 });
 
 const createTipaxForm = () => ({
@@ -506,8 +516,8 @@ export default {
     },
     showDestinationMapSelector() {
       return (
-        !this.tipax_form.destination.lat ||
-        !this.tipax_form.destination.long
+        !this.tipax_form.destination.latitude ||
+        !this.tipax_form.destination.longitude
       );
     },
   },
@@ -544,8 +554,8 @@ export default {
     },
     destination_map_location(new_value) {
       if (Array.isArray(new_value) && new_value.length >= 2) {
-        this.tipax_form.destination.lat = new_value[0] || "";
-        this.tipax_form.destination.long = new_value[1] || "";
+        this.tipax_form.destination.latitude = new_value[0] || "";
+        this.tipax_form.destination.longitude = new_value[1] || "";
       }
     },
   },
@@ -686,8 +696,8 @@ export default {
           phone: "phone",
           full_name: "fullName",
           mobile: "mobile",
-          lat: "lat",
-          long: "long",
+          latitude: "lat",
+          longitude: "long",
         };
         Object.keys(mapping).forEach((targetKey) => {
           const sourceKey = mapping[targetKey];
@@ -757,8 +767,8 @@ export default {
         delivery.location?.long ||
         delivery.location?.lng ||
         delivery.location?.longitude;
-      destination.lat = basketLat || "";
-      destination.long = basketLong || "";
+      destination.latitude = basketLat || "";
+      destination.longitude = basketLong || "";
       if (basketLat && basketLong) {
         this.destination_map_location = [basketLat, basketLong];
       } else {
@@ -818,8 +828,8 @@ export default {
         phone: address.phone,
         fullName: address.full_name,
         mobile: address.mobile,
-        lat: address.lat,
-        long: address.long,
+        latitude: address.latitude,
+        longitude: address.longitude,
       };
     },
     saveUserTipaxPreferences() {

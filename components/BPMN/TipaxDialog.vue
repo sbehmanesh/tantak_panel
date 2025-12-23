@@ -157,7 +157,6 @@
                   text="طبقه"
                   v-model="tipax_form.origin.floor"
                   is-number
-                  rules="require"
                   :disabled="isOriginFieldDisabled('floor')"
                 />
               </v-col>
@@ -166,7 +165,6 @@
                   text="واحد"
                   v-model="tipax_form.origin.unit"
                   is-number
-                  rules="require"
                   :disabled="isOriginFieldDisabled('unit')"
                 />
               </v-col>
@@ -174,7 +172,7 @@
                 <amp-input
                   text="کد پستی"
                   v-model="tipax_form.origin.postal_code"
-                  :rules="['postCode','require']"
+                  rules="postCode"
                   cClass="ltr-item"
                   :disabled="isOriginFieldDisabled('postal_code')"
                 />
@@ -183,7 +181,6 @@
                 <amp-input
                   text="پلاک"
                   v-model="tipax_form.origin.no"
-                  rules="require"
                   :disabled="isOriginFieldDisabled('no')"
                 />
               </v-col>
@@ -219,6 +216,24 @@
                   rules="mobile"
                   cClass="ltr-item"
                   :disabled="isOriginFieldDisabled('mobile')"
+                />
+              </v-col>
+              <v-col cols="12" md="4">
+                <amp-input
+                  text="عرض جغرافیایی (lat)"
+                  v-model="tipax_form.origin.lat"
+                  cClass="ltr-item"
+                  is-number
+                  :disabled="isOriginFieldDisabled('lat')"
+                />
+              </v-col>
+              <v-col cols="12" md="4">
+                <amp-input
+                  text="طول جغرافیایی (long)"
+                  v-model="tipax_form.origin.long"
+                  cClass="ltr-item"
+                  is-number
+                  :disabled="isOriginFieldDisabled('long')"
                 />
               </v-col>
             </v-row>
@@ -302,6 +317,28 @@
                   cClass="ltr-item"
                 />
               </v-col>
+              <v-col cols="12" md="4">
+                <amp-input
+                  text="عرض جغرافیایی (lat)"
+                  v-model="tipax_form.destination.lat"
+                  cClass="ltr-item"
+                  is-number
+                />
+              </v-col>
+              <v-col cols="12" md="4">
+                <amp-input
+                  text="طول جغرافیایی (long)"
+                  v-model="tipax_form.destination.long"
+                  cClass="ltr-item"
+                  is-number
+                />
+              </v-col>
+              <v-col cols="12" md="4" v-if="showDestinationMapSelector">
+                <SelectLocationDialog
+                  v-model="destination_map_location"
+                  :disabled="false"
+                />
+              </v-col>
             </v-row>
           </v-form>
         </template>
@@ -342,6 +379,8 @@ const createAddressModel = () => ({
   phone: "",
   full_name: "",
   mobile: "",
+  lat: "",
+  long: "",
 });
 
 const createTipaxForm = () => ({
@@ -360,6 +399,10 @@ const createTipaxForm = () => ({
 
 export default {
   name: "TipaxDialog",
+  components: {
+    SelectLocationDialog: () =>
+      import("@/components/Base/SelectLocationDialog.vue"),
+  },
   props: {
     value: {
       type: Boolean,
@@ -379,6 +422,7 @@ export default {
     tipax_form: createTipaxForm(),
     tipax_selected_center_stock: null,
     tipax_origin_disabled_fields: {},
+    destination_map_location: [],
     tipax_lists: {
       cities: [],
       services: [],
@@ -434,6 +478,12 @@ export default {
         !this.tipax_data_loaded
       );
     },
+    showDestinationMapSelector() {
+      return (
+        !this.tipax_form.destination.lat ||
+        !this.tipax_form.destination.long
+      );
+    },
   },
   watch: {
     value(new_value) {
@@ -465,6 +515,12 @@ export default {
     tipax_selected_center_stock(new_value) {
       this.applyCenterStockSelection(new_value);
     },
+    destination_map_location(new_value) {
+      if (Array.isArray(new_value) && new_value.length >= 2) {
+        this.tipax_form.destination.lat = new_value[0] || "";
+        this.tipax_form.destination.long = new_value[1] || "";
+      }
+    },
   },
   methods: {
     closeDialog() {
@@ -477,6 +533,7 @@ export default {
       this.tipax_lists_error = null;
       this.tipax_selected_center_stock = null;
       this.tipax_origin_disabled_fields = {};
+      this.destination_map_location = [];
       if (this.$refs.tipaxForm && typeof this.$refs.tipaxForm.resetValidation === "function") {
         this.$refs.tipaxForm.resetValidation();
       }
@@ -601,13 +658,15 @@ export default {
           phone: "phone",
           full_name: "fullName",
           mobile: "mobile",
+          lat: "lat",
+          long: "long",
         };
         Object.keys(mapping).forEach((targetKey) => {
           const sourceKey = mapping[targetKey];
           const value =
             parsedConfig[sourceKey] !== undefined
               ? parsedConfig[sourceKey]
-              : parsedConfig[targetKey];
+              : parsedConfig[targetKey] ?? parsedConfig[sourceKey === "long" ? "lng" : targetKey];
           if (value !== undefined && value !== null && value !== "") {
             origin[targetKey] = value;
             disabledFields[targetKey] = true;
@@ -642,6 +701,7 @@ export default {
     populateDestinationFromBasket(basket_row) {
       if (!basket_row || !basket_row.data || !basket_row.data.delivery_info) {
         this.tipax_form.destination = createAddressModel();
+        this.destination_map_location = [];
         return;
       }
       const delivery = basket_row.data.delivery_info || {};
@@ -653,6 +713,29 @@ export default {
       destination.phone = delivery.phone_number || "";
       destination.mobile = delivery.phone_number || "";
       destination.description = delivery.delivery_time || "";
+      const basketLat =
+        delivery.lat ||
+        delivery.latitude ||
+        delivery.location_lat ||
+        delivery.locationLat ||
+        delivery.location?.lat ||
+        delivery.location?.latitude;
+      const basketLong =
+        delivery.long ||
+        delivery.lng ||
+        delivery.longitude ||
+        delivery.location_long ||
+        delivery.locationLong ||
+        delivery.location?.long ||
+        delivery.location?.lng ||
+        delivery.location?.longitude;
+      destination.lat = basketLat || "";
+      destination.long = basketLong || "";
+      if (basketLat && basketLong) {
+        this.destination_map_location = [basketLat, basketLong];
+      } else {
+        this.destination_map_location = [];
+      }
       this.tipax_form.destination = destination;
     },
     submitTipaxForm() {
@@ -707,6 +790,8 @@ export default {
         phone: address.phone,
         fullName: address.full_name,
         mobile: address.mobile,
+        lat: address.lat,
+        long: address.long,
       };
     },
     saveUserTipaxPreferences() {

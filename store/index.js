@@ -1,5 +1,5 @@
-let app_name = "پنل ادمین";
-let app_name_bimch = "پنل ادمین تن تاک";
+let app_name = "پنل بانیان";
+let app_name_bimch = "پنل ادمین  بانیان";
 let logo_bimche = "/image/logo.png";
 
 let time_interval = null;

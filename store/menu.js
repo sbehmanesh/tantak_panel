@@ -497,6 +497,11 @@ let mnue_tree = [
   name: "خارج نگار",
   access: "api_call_log/index",
   route: "/report/api-call-log",
+  },  {
+  id: 48602557,
+  name: "داستان ها",
+  access: "setting/root",
+  route: "/story",
   },
   {
     id: 18,

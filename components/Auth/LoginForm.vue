@@ -1,8 +1,15 @@
 <template>
   <v-form v-model="valid" @submit.prevent="submit()">
-    <div class="center-div mt-n5">
-      <span class="white--text">ورود با رمز عبور</span>
-    </div>
+    <v-col cols="12" class="text-center">
+
+      <v-avatar color="white">
+        <v-icon color="primary">
+      lock</v-icon>
+      </v-avatar>
+      <br>
+            <b class="white--text font_18">ورود با رمز عبور</b>
+    
+    </v-col>
     <amp-input
       is-number
       text="تلفن همراه"
@@ -27,16 +34,14 @@
       <amp-captcha v-model="captcha" ref="captchaLogin" />
     </div>
     <div class="px-3 mt-6 mb-4">
-      <amp-button
-        block
-        height="40"
-        text="ورود"
-        icon="login"
-        type="submit"
-        color="success"
-        :loading="loading"
-        :disabled="!valid || loading"
-      />
+    <v-btn block  height="40"  class="rounded-lg"  :disabled="!valid || loading"   :loading="loading"  type="submit" color="white">
+    <b class="primary--text" 
+       > ورود</b>
+       <v-icon color="primary" class="mr-2">
+       login
+       </v-icon>
+    </v-btn>
+ 
     </div>
   </v-form>
 </template>

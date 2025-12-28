@@ -1,7 +1,8 @@
 <template>
   <v-row dense>
-    <v-col class="center-div " v-if="Boolean(image)" cols="6">
+    <v-col class=" " v-if="Boolean(image)" cols="6">
       <img :src="image" class="parent-captcha captha-w-100" />
+    
     </v-col>
     <v-col class="center-div" v-else cols="6">
       <v-skeleton-loader height="60" width="100%" type="image" />

@@ -55,13 +55,13 @@ export default {
       dark: false,
       themes: {
         dark: {
-          primary: colors.orange,
+          primary: colors.blue,
           accent: colors.grey.darken3,
-          secondary: colors.orange.darken4,
-          light_purple: colors.orange.darken4,
+          secondary: colors.blue.darken4,
+          light_purple: colors.blue.darken4,
           info: colors.teal.lighten1,
           warning: colors.amber.base,
-          error: colors.deepOrange.accent4,
+          error: colors.deepblue.accent4,
           success: colors.green.accent3,
         },
         light: {
@@ -70,7 +70,7 @@ export default {
           accent: '#1A2238',
           success: '#169e1a',
           warning: '#ffbb00',
-          primary: '#fd5800',
+          primary: '#055ac2',
           darkpurple: '#2f1753',
           secondary: '#0649dc',
           background: '#EC407A',

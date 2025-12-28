@@ -66,7 +66,7 @@ export default {
       this.$reqApi("/auth/login", form)
         .then((response) => {
           this.$store.dispatch("auth/login", response).then((data) => {
-            this.$router.push("/panel");
+            this.$router.push("/bpmn-dashboard");
           });
         })
         .catch((error) => {

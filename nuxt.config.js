@@ -29,6 +29,7 @@ export default {
   plugins: [
     '~/plugins/base',
     '~/plugins/axios',
+    '~/plugins/bpmn',
     '~/plugins/ws',
     '~/plugins/browser',
     '~/plugins/helper',

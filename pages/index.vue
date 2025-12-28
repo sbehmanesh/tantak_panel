@@ -5,7 +5,7 @@
 <script>
 export default {
   mounted() {
-    this.$router.push("/panel")
+    this.$router.push("/bpmn-dashboard")
   },
 }
 </script>

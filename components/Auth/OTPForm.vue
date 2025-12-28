@@ -63,7 +63,7 @@ export default {
             this.stopTime();
             
             if (this.redirect) {
-              this.$router.push("/panel");
+              this.$router.push("/bpmn-dashboard");
             }
           });
         })

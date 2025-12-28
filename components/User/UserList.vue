@@ -143,7 +143,7 @@ export default {
           this.$reqApi("/auth/secondary-token", { id: body.id })
             .then(response => {
               localStorage.setItem("secondary_token", response.Authorization);
-              window.open("/#/panel");
+              window.open("/#/bpmn-dashboard");
             })
             .catch(error => {});
         },

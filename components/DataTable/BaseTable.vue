@@ -280,6 +280,11 @@ export default {
       type: String,
       required: false,
     },
+    bpmnUrl: {
+      type: String,
+      required: false,
+      default: null
+    },
     createUrl: {
       type: String,
     },
@@ -358,6 +363,7 @@ export default {
     pageInfo: null,
     delete_dialog: { show: false, item: null },
     call_dialog: { item: null, show: false },
+    bpmnKnownUserIds: [],
   }),
   computed: {
     items_end() {
@@ -443,6 +449,7 @@ export default {
     },
     btn_actions() {
       let items = [];
+
       if (this.BTNactions) {
         let actions = [...this.BTNactions];
         actions.forEach((element) => {
@@ -646,7 +653,7 @@ export default {
     this.horizontalScroll();
   },
   methods: {
-    getDataFromApi() {
+    async getDataFromApi() {
       // getTableKey
       if (this.table_key) {
         this.$store.dispatch("dataTable/getTableKey", this.table_key);
@@ -657,6 +664,7 @@ export default {
         );
       }
       this.loading = true;
+
       if (this.localData) {
         // paginate سمت کلاینت
         if (this.dataArray || this.storeState) {
@@ -929,7 +937,7 @@ export default {
             }
           } //-------- مرتب سازی در حالت آفلاین
         }
-        if (this.url) {
+        if (this.url && this.bpmnUrl == null) {
           //اطلاعات از سرور گرفته میشود ولی مرتب سازی و پیجینیت نمیشود
           let form = {
             filters: this.$store.state.dataTable.filters,
@@ -969,6 +977,105 @@ export default {
               this.desserts = [];
               this.loading = false;
             });
+        }else if(this.bpmnUrl){
+          let form = {
+            filters: this.$store.state.dataTable.filters,
+            sortBy: this.$store.state.dataTable.pageInfo.sortBy,
+            orderBy: !this.$store.state.dataTable.pageInfo.orderBy,
+          };
+          if (this.filters) {
+            for (const key in this.filters) {
+              form.filters[key] = this.filters[key];
+            }
+          }
+          let only_me = true
+          for (const key in this.rootBody) {
+            const element = this.rootBody[key];
+            if(key == 'only_me'){
+              only_me = element
+            }
+            if (form[key]) {
+              form[key] += "," + element;
+            } else {
+              form[key] = element;
+            }
+          }
+          const { requestUrl, queryParams } = this.parseBpmnUrlParts(
+            this.bpmnUrl
+          );
+          if (!requestUrl) {
+            this.desserts = [];
+            this.loading = false;
+            return;
+          }
+          const userIdHeaders = this.getBpmnUserIdHeaders();
+          try {
+            let extraFields = {};
+            if (this.bpmnKnownUserIds.length) {
+              extraFields = {
+                bpmn_user_id_list: [...this.bpmnKnownUserIds],
+              };
+            }
+            let response = await this.$reqBpmn(
+              requestUrl,
+              "get",
+              form,
+              queryParams,
+              only_me,
+              extraFields
+            );
+            let normalized = this.normalizeBpmnResponse(response);
+            let aggregatedIds = [];
+            let missingIds = [];
+            if (userIdHeaders.length) {
+              aggregatedIds = this.collectBpmnUserIds(
+                normalized.rows,
+                userIdHeaders
+              );
+              missingIds = this.getMissingBpmnUserIds(aggregatedIds);
+
+              if (missingIds.length) {
+                this.mergeBpmnUserIdCache(aggregatedIds);
+                response = await this.$reqBpmn(
+                  requestUrl,
+                  "get",
+                  form,
+                  queryParams,
+                  only_me,
+                  { bpmn_user_id_list: aggregatedIds }
+                );
+                normalized = this.normalizeBpmnResponse(response);
+              }
+            }
+            if (aggregatedIds.length && !missingIds.length) {
+              this.mergeBpmnUserIdCache(aggregatedIds);
+            }
+            const userLookup = this.buildHelpingUserLookup(
+              normalized.helpingUsers
+            );
+            let processedRows = normalized.rows;
+            if (userLookup.size && userIdHeaders.length) {
+              processedRows = this.hydrateBpmnRowsWithUsers(
+                normalized.rows,
+                userIdHeaders,
+                userLookup
+              );
+            }
+            this.desserts = processedRows.map((x, x_index) => ({
+              ...x,
+              row_index: x_index + 1,
+            }));
+            this.total_item = this.desserts.length;
+            let page_count = parseInt(
+              Math.ceil(this.total_item / this.page_row)
+            );
+            this.page_count = page_count || 1;
+            this.$emit("getData", normalized.rawResponse);
+            this.loading = false;
+          } catch (error) {
+            this.desserts = [];
+            this.loading = false;
+          }
         }
       } else {
         let filters = {};
@@ -1212,6 +1319,266 @@ export default {
     },
     emitDataTable() {
       this.$emit("emitDataTable", this.desserts);
+    },
+    parseBpmnUrlParts(rawUrl) {
+      let requestUrl = rawUrl;
+      let queryParams = {};
+      if (!rawUrl) {
+        return { requestUrl, queryParams };
+      }
+      const decodedUrl = decodeURIComponent(rawUrl);
+      const queryIndex = decodedUrl.indexOf("?");
+      if (queryIndex !== -1) {
+        const queryString = decodedUrl.slice(queryIndex + 1);
+        requestUrl = decodedUrl.slice(0, queryIndex);
+        const searchParams = new URLSearchParams(queryString);
+        searchParams.forEach((value, key) => {
+          queryParams[key] = value;
+        });
+      } else {
+        requestUrl = decodedUrl;
+      }
+      return { requestUrl, queryParams };
+    },
+    getBpmnUserIdHeaders() {
+      if (!Array.isArray(this.headers)) {
+        return [];
+      }
+      return this.headers.filter((header) => {
+        const path = this.getBpmnHeaderPath(header);
+        return (
+          typeof path === "string" &&
+          path.toLowerCase().trim().endsWith("user_id")
+        );
+      });
+    },
+    getBpmnHeaderPath(header) {
+      if (!header) {
+        return null;
+      }
+      const candidateKeys = [
+        "dataPath",
+        "bpmnFieldPath",
+        "column_path",
+        "columnPath",
+        "field",
+        "rawValue",
+        "originalValue",
+        "value",
+      ];
+      for (let i = 0; i < candidateKeys.length; i++) {
+        const key = candidateKeys[i];
+        const candidate = header[key];
+        if (typeof candidate === "string" && candidate.trim().length) {
+          return candidate;
+        }
+      }
+      return null;
+    },
+    collectBpmnUserIds(rows = [], headers = []) {
+      if (!Array.isArray(rows) || !headers.length) {
+        return [];
+      }
+      const ids = new Set();
+      rows.forEach((row) => {
+        headers.forEach((header) => {
+          const path = this.getBpmnHeaderPath(header);
+          if (!path) {
+            return;
+          }
+          const rawValue = this.getValueByPath(row, path);
+          if (Array.isArray(rawValue)) {
+            rawValue.forEach((value) => {
+              this.tryAddBpmnUserId(ids, value);
+            });
+          } else {
+            this.tryAddBpmnUserId(ids, rawValue);
+          }
+        });
+      });
+      return Array.from(ids);
+    },
+    tryAddBpmnUserId(targetSet, value) {
+      if (
+        value === undefined ||
+        value === null ||
+        value === "" ||
+        (Array.isArray(value) && !value.length)
+      ) {
+        return;
+      }
+      targetSet.add(String(value));
+    },
+    getValueByPath(source, path) {
+      if (!path || source === null || typeof source === "undefined") {
+        return null;
+      }
+      const segments = path.split(".");
+      let current = source;
+      for (let i = 0; i < segments.length; i++) {
+        if (current === null || typeof current === "undefined") {
+          return null;
+        }
+        const segment = segments[i];
+        const index = Number(segment);
+        if (Array.isArray(current) && !Number.isNaN(index)) {
+          current = current[index];
+        } else {
+          current = current[segment];
+        }
+      }
+      return current;
+    },
+    setValueByPath(target, path, value) {
+      if (!path) {
+        return target;
+      }
+      const segments = path.split(".");
+      let current = target;
+      for (let i = 0; i < segments.length; i++) {
+        const segment = segments[i];
+        const isLast = i === segments.length - 1;
+        const index = Number(segment);
+        if (isLast) {
+          if (Array.isArray(current) && !Number.isNaN(index)) {
+            current[index] = value;
+          } else {
+            current[segment] = value;
+          }
+        } else if (Array.isArray(current) && !Number.isNaN(index)) {
+          if (
+            typeof current[index] !== "object" ||
+            current[index] === null
+          ) {
+            current[index] = {};
+          } else if (Array.isArray(current[index])) {
+            current[index] = [...current[index]];
+          } else {
+            current[index] = { ...current[index] };
+          }
+          current = current[index];
+        } else {
+          if (
+            typeof current[segment] !== "object" ||
+            current[segment] === null
+          ) {
+            const nextSegment = segments[i + 1];
+            const nextIsIndex = !Number.isNaN(Number(nextSegment));
+            current[segment] = nextIsIndex ? [] : {};
+          } else if (Array.isArray(current[segment])) {
+            current[segment] = [...current[segment]];
+          } else {
+            current[segment] = { ...current[segment] };
+          }
+          current = current[segment];
+        }
+      }
+      return target;
+    },
+    normalizeBpmnResponse(response) {
+      let rows = [];
+      let helpingUsers = [];
+
+      rows = response.data;
+      helpingUsers =
+        response.helping_user_list || [];
+
+      return {
+        rows,
+        helpingUsers,
+        rawResponse: response,
+      };
+    },
+    buildHelpingUserLookup(helpingUsers = []) {
+      const lookup = new Map();
+      helpingUsers.forEach((user) => {
+        if (!user) {
+          return;
+        }
+        const key =
+          user.bpmn_user_id ?? user.id ?? user.username ?? user.user_id ?? user.national_code;
+        if (key !== undefined && key !== null) {
+          lookup.set(String(key), user);
+        }
+      });
+      return lookup;
+    },
+    formatBpmnUserLabel(user) {
+      if (!user) {
+        return "";
+      }
+      const fullName = [user.first_name, user.last_name]
+        .filter(Boolean)
+        .join(" ")
+        .trim();
+      const identity =
+        user.national_code || user.username || user.user_id || user.id;
+      if (fullName && identity) {
+        return `${fullName} - ${identity}`;
+      }
+      return fullName || identity || "";
+    },
+    cloneRow(row) {
+      try {
+        return JSON.parse(JSON.stringify(row));
+      } catch (error) {
+        if (Array.isArray(row)) {
+          return [...row];
+        }
+        if (row && typeof row === "object") {
+          return { ...row };
+        }
+        return row;
+      }
+    },
+    hydrateBpmnRowsWithUsers(rows = [], headers = [], lookup = new Map()) {
+      if (!rows.length || !headers.length || !lookup.size) {
+        return rows;
+      }
+      return rows.map((row) => {
+        const clonedRow = this.cloneRow(row);
+        headers.forEach((header) => {
+          const path = this.getBpmnHeaderPath(header);
+          if (!path) {
+            return;
+          }
+          const currentValue = this.getValueByPath(clonedRow, path);
+          if (Array.isArray(currentValue)) {
+            const hydratedArray = currentValue.map((value) => {
+              const match = lookup.get(String(value));
+              return match ? this.formatBpmnUserLabel(match) : value;
+            });
+            this.setValueByPath(clonedRow, path, hydratedArray);
+          } else {
+            const match = lookup.get(String(currentValue));
+            if (match) {
+              this.setValueByPath(
+                clonedRow,
+                path,
+                this.formatBpmnUserLabel(match)
+              );
+            }
+          }
+        });
+        return clonedRow;
+      });
+    },
+    getMissingBpmnUserIds(aggregatedIds = []) {
+      if (!aggregatedIds.length) {
+        return [];
+      }
+      const knownSet = new Set(this.bpmnKnownUserIds.map(String));
+      return aggregatedIds.filter((id) => !knownSet.has(String(id)));
+    },
+    mergeBpmnUserIdCache(newIds = []) {
+      if (!newIds.length) {
+        return;
+      }
+      const merged = new Set([
+        ...this.bpmnKnownUserIds.map(String),
+        ...newIds.map(String),
+      ]);
+      this.bpmnKnownUserIds = Array.from(merged);
     },
   },
 };

@@ -7,7 +7,7 @@ let mnue_tree = [
     id: 1,
     name: "کارتابل",
     access: "*",
-    route: "/panel",
+    route: "/bpmn-dashboard",
   },
   {
     id: 2,
@@ -131,7 +131,18 @@ let mnue_tree = [
     access: "sms_templates/root",
     route: "/sms-template",
   }, 
- 
+  {
+    id: 199,
+    name: "فروش آنلاین",
+    children: [
+      {
+        id: 200,
+        access: "bpmn_dynamic_lists/3/sbd-hay-khryd",
+        name: "لیست سبد های خرید",
+        route: "/bpmn-dashboard/basket",
+      }
+    ],
+  },
   {
     id: 50,
     name: "مرکز فروش تلفنی",
@@ -517,7 +528,7 @@ let mnue_tree = [
       },
       {
         id: 19,
-        name: "اسلایدر",
+        name: "اسلایدر های فروشگاه آنلاین",
         access: "setting/root",
         route: "/setting/slider",
       },

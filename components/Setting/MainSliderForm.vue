@@ -10,16 +10,24 @@
           <amp-input text="لینک" v-model="form.value.link" class="ltr-item" />
         </v-col>
         <v-col cols="12" md="2">
-          <amp-input text="آلت" v-model="form.value.title" />
+          <amp-input text="متن تصویر" v-model="form.value.title" />
         </v-col>
         <v-col cols="12" md="1">
           <amp-input text="ترتیب" v-model="form.value.sort" class="ltr-item" />
         </v-col>
       </v-row>
       <v-row>
+        <v-col cols="12">
+          <v-alert dense class="mt-10" type="info"
+            >نسبت دسکتاپ ۱۶:۷ با ارتفاع پیشنهادی بین ۴۸۰ تا ۷۰۰ پیکسل</v-alert
+          >
+        </v-col>
         <v-col cols="12" md="6">
-          <v-alert dense class="mt-10" type="info">سایز پیشنهادی 1520*685 پیکسل</v-alert>
-          <AmpUploadFile v-model="form.value.image" title="انتخاب تصویر" :reSize='true' /> 
+          <AmpUploadFile
+            v-model="form.value.images.desktop"
+            title="انتخاب تصویر دسکتاپ"
+            :reSize="true"
+          />
         </v-col>
         <v-col cols="12" md="6" class="center-div">
           <v-img
@@ -27,7 +35,55 @@
             contain
             width="350"
             height="220"
-            :src="$getImage(form.value.image)"
+            :src="$getImage(form.value.images.desktop)"
+          />
+        </v-col>
+      </v-row>
+
+      <v-row class="mt-2">
+        <v-col cols="12">
+          <v-alert dense class="mt-4" type="info"
+            >نسبت تبلت ۳:۲ با ارتفاع پیشنهادی بین ۴۲۰ تا ۷۸۰ پیکسل</v-alert
+          >
+        </v-col>
+        <v-col cols="12" md="6">
+          <AmpUploadFile
+            v-model="form.value.images.tablet"
+            title="انتخاب تصویر تبلت"
+            :reSize="true"
+          />
+        </v-col>
+        <v-col cols="12" md="6" class="center-div">
+          <v-img
+            class="rounded elevation-10"
+            contain
+            width="350"
+            height="220"
+            :src="$getImage(form.value.images.tablet)"
+          />
+        </v-col>
+      </v-row>
+
+      <v-row class="mt-2">
+        <v-col cols="12">
+          <v-alert dense class="mt-4" type="info"
+            >نسبت موبایل ۱:۱ با ارتفاع پیشنهادی بین ۳۴۰ تا ۶۴۰ پیکسل</v-alert
+          >
+        </v-col>
+        <v-col cols="12" md="6">
+          <AmpUploadFile
+            v-model="form.value.images.mobile"
+            title="انتخاب تصویر موبایل"
+            :reSize="true"
+          />
+        </v-col>
+        <v-col cols="12" md="6" class="center-div">
+          <v-img
+            class="rounded elevation-10"
+            contain
+            width="350"
+            height="220"
+            :src="$getImage(form.value.images.mobile)"
           />
         </v-col>
       </v-row>
@@ -82,7 +138,11 @@ export default {
       id: "",
       key: "main_slider",
       value: {
-        image: "",
+        images: {
+          desktop: "",
+          tablet: "",
+          mobile: ""
+        },
         title: "",
         link: "",
         sort: 1
@@ -109,14 +169,16 @@ export default {
   },
   methods: {
     submit() {
-      let form = { ...this.form };
-      if (!form.value.image) {
-        this.$toast.error("تصویر مورد نظر را انتخاب کنید");
+      this.normalizeImages();
+      const { desktop, tablet, mobile } = this.form.value.images || {};
+      if (!desktop || !tablet || !mobile) {
+        this.$toast.error("لطفاً هر سه تصویر را انتخاب کنید");
         return;
       }
       this.loading = true;
 
-      form.value = JSON.stringify(form.value);
+      const form = { ...this.form };
+      form.value = JSON.stringify(this.form.value);
       let url = this.createUrl;
       if (this.modelId) {
         url = this.updateUrl;
@@ -145,6 +207,7 @@ export default {
           this.form.key = response.key;
           this.form.sort = response.sort;
           this.form.value = JSON.parse(response.value);
+          this.normalizeImages();
           this.form.landing_page_needed = response.landing_page_needed;
           this.loading = false;
         })
@@ -152,6 +215,20 @@ export default {
           this.redirectPage();
           this.loading = false;
         });
+    },
+    normalizeImages() {
+      const value = this.form.value || {};
+      const existingImages = value.images || {};
+      const fallbackImage = value.image || "";
+      const normalized = {
+        desktop: existingImages.desktop || fallbackImage || "",
+        tablet: existingImages.tablet || fallbackImage || "",
+        mobile: existingImages.mobile || fallbackImage || ""
+      };
+      this.$set(this.form.value, "images", normalized);
+      if (this.form.value.image !== undefined) {
+        this.$delete(this.form.value, "image");
+      }
     },
     redirectPage() {
       if (window.history.length > 2) {

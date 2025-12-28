@@ -80,7 +80,7 @@ export default {
           this.$store.dispatch('auth/login', response).then((data) => {
             this.stopTime()
             if (this.redirect) {
-              this.$router.push('/panel')
+              this.$router.push('/bpmn-dashboard')
             }
           })
         })

@@ -20,7 +20,7 @@ export default {
     headers: [],
     btn_actions: [],
     filters: { key: 'main_slider' },
-    title: 'اسلایدر اصلی',
+    title: 'اسلایدر های فروشگاه آنلاین',
   }),
   beforeMount() {
     this.$store.dispatch('setPageTitle', this.title)
@@ -33,7 +33,7 @@ export default {
         sizs: 'small',
         value: (body) => {
            let val = JSON.parse(body.value)
-           return val.image
+           return val.image || val.images.mobile
         },
       },
     ]

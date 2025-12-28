@@ -11,6 +11,41 @@
     />
     <v-dialog v-model="dialog" width="800px">
       <v-card v-if="dialog" class="pa-3">
+        <v-row dense class="mb-3">
+          <v-col cols="12" md="8">
+            <amp-input
+              v-model="searchQuery"
+              :loading="searchLoading"
+              text="جستجو (فارسی)"
+              prepend-inner-icon="search"
+              hide-details
+              dense
+            />
+          </v-col>
+          <v-col cols="12" md="4" class="d-flex align-center">
+            <amp-button
+              block
+              text="جستجو روی نقشه"
+              color="primary"
+              :loading="searchLoading"
+              :disabled="!searchQuery || searchLoading || disabled"
+              @click="searchLocation"
+            />
+          </v-col>
+          <v-col cols="12" v-if="searchResults.length">
+            <v-autocomplete
+              v-model="selectedSearchResult"
+              :items="searchResults"
+              item-text="text"
+              item-value="value"
+              label="نتایج جستجو"
+              hide-details
+              dense
+              clearable
+              :disabled="disabled"
+            />
+          </v-col>
+        </v-row>
         <div>
           <div id="map-location"></div>
         </div>
@@ -70,6 +105,10 @@ export default {
     longitude: '',
     required: false,
     center: [35.68351380631503, 51.389574711981815],
+    searchQuery: '',
+    searchLoading: false,
+    searchResults: [],
+    selectedSearchResult: null,
   }),
   watch: {
     dialog(value) {
@@ -93,6 +132,13 @@ export default {
         this.longitude = value[1]
       }
     },
+    selectedSearchResult(newValue) {
+      if (newValue && newValue.lat && newValue.long) {
+        this.latitude = newValue.lat
+        this.longitude = newValue.long
+        this.focusMapOnPoint(newValue.lat, newValue.long)
+      }
+    },
   },
   mounted() {
     this.loadTileLayer()
@@ -107,6 +153,41 @@ export default {
     },
     openSelectLocation() {
       this.dialog = true
+    },
+    async searchLocation() {
+      if (!this.searchQuery || this.searchLoading) {
+        return
+      }
+      this.searchLoading = true
+      try {
+        const url = `https://nominatim.openstreetmap.org/search?format=json&accept-language=fa&limit=5&q=${encodeURIComponent(
+          this.searchQuery
+        )}`
+        const response = await fetch(url, {
+          headers: { 'Accept-Language': 'fa' },
+        })
+        const json = await response.json()
+        const results = Array.isArray(json) ? json : []
+        this.searchResults = results.map((item) => ({
+          text: item.display_name,
+          value: `${item.lat},${item.lon}`,
+          lat: parseFloat(item.lat),
+          long: parseFloat(item.lon),
+        }))
+        if (this.searchResults.length) {
+          const first = this.searchResults[0]
+          this.selectedSearchResult = first
+          this.latitude = first.lat
+          this.longitude = first.long
+          this.focusMapOnPoint(first.lat, first.long)
+        } else {
+          this.$toast.error('موردی یافت نشد')
+        }
+      } catch (error) {
+        this.$toast.error('خطا در جستجوی موقعیت')
+      } finally {
+        this.searchLoading = false
+      }
     },
     deleteItem() {
       this.latitude = ''
@@ -184,8 +265,14 @@ export default {
       this.longitude = point[1]
     },
     changeTileLayer(key) {
-      this.map.removeLayer(this.tileLayer.googleStreets)
-      this.map.removeLayer(this.tileLayer.googleHybrid)
+      if (!this.map || !this.tileLayer[key]) {
+        return
+      }
+      Object.values(this.tileLayer).forEach((layer) => {
+        if (layer && this.map.hasLayer(layer)) {
+          this.map.removeLayer(layer)
+        }
+      })
       this.map.addLayer(this.tileLayer[key])
     },
     loadTileLayer() {
@@ -206,6 +293,12 @@ export default {
             subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
           }
         ),
+      }
+    },
+    focusMapOnPoint(lat, long) {
+      if (this.map) {
+        this.map.setView([lat, long], 15)
+        this.addMarket()
       }
     },
   },

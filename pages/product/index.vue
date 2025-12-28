@@ -143,6 +143,15 @@ export default {
     this.extraBtn = [
       {
         id: 1,
+        text: "ثبت سریع",
+        color: "blue",
+        icon: "add",
+        fun: () => {
+          this.$router.push('/product/easy')
+        },
+      },
+      {
+        id: 1,
         text: "حذف موارد",
         color: "error",
         icon: "delete",
@@ -182,6 +191,13 @@ export default {
           } else {
             return false;
           }
+        },
+      },
+      {
+        color: "blue",
+        text: "ویرایش سریع",
+        fun: (body) => {
+          this.$router.push('/product/easy/'+body.id);
         },
       },
     ];

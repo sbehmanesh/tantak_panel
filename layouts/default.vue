@@ -5,7 +5,7 @@
       v-model="drawer"
       class="container_menu"
     />
-    <AppBarMobile v-else v-model="drawer" class="" />
+    <AppBarMobile v-else v-model="drawer"  />
     <MenuDrawer
       v-model="drawer"
       v-if="!$vuetify.breakpoint.mdAndUp"

@@ -105,6 +105,7 @@ export default {
       screenItems: [],
       formValues: {},
       fetchError: null,
+      task_ownswer_bpmn_id: null
     }
   },
   computed: {
@@ -117,7 +118,7 @@ export default {
       },
     },
     isTaskOwner() {
-      return false
+      return this.$store.state.auth.user.bpmn_user_id == this.task_ownswer_bpmn_id
     },
     formFields() {
       return this.screenItems.filter((item) => !this.isButton(item))
@@ -170,6 +171,7 @@ export default {
         )
         const items = this.extractScreenItems(taskData?.screen?.config)
         this.screenItems = Array.isArray(items) ? items : []
+        this.task_ownswer_bpmn_id = taskData.user_id
         const initialData = taskData?.data || {}
         this.screenItems.forEach((item) => {
           const name = item?.config?.name
@@ -180,6 +182,7 @@ export default {
           const value = hasExistingValue ? initialData[name] : undefined
           this.$set(this.formValues, name, this.normalizeFieldValue(value, item))
         })
+
       } catch (error) {
         this.fetchError = 'خطا در دریافت اطلاعات وظیفه'
         if (this.$toast && this.$toast.error) {
@@ -274,8 +277,6 @@ export default {
     },
     handleButtonClick(button) {
       if (this.isSubmitButton(button)) {
-        console.log('button',button)
-        return
         //this.$set(this.formValues, name, this.normalizeFieldValue(value, item))
         this.submit()
       } else {

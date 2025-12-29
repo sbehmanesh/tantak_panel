@@ -76,6 +76,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    useBpmnId: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
@@ -133,9 +137,14 @@ export default {
       handler(items) {
         const user = Array.isArray(items) && items.length > 0 ? items[0] : null
         const selectedId = user ? user.id : null
+        const selectedBpmnId = user ? user.bpmn_user_id : null
         this.inputValue = this.formatDisplay(user)
         if (!this.isSameValue(selectedId, this.value)) {
-          this.$emit('input', selectedId)
+          if(this.useBpmnId){
+            this.$emit('input', selectedBpmnId != null && selectedBpmnId !== '' && !isNaN(selectedBpmnId) ? parseInt(selectedBpmnId, 10) : null);
+          }else{
+            this.$emit('input', selectedId)
+          }
         }
       },
     },
@@ -189,15 +198,28 @@ export default {
       const requestKey = String(userId)
       this.lastRequestedId = requestKey
       try {
-        const response = await this.$reqApi(this.normalizedUrl, {
-          row_number: 1,
-          filters: {
+        let filters = {}
+        if(this.useBpmnId){
+          filters = {
+            bpmn_user_id: {
+              op: '=',
+              value: userId,
+            },
+          }
+        }else{
+          filters = {
             id: {
               op: '=',
               value: userId,
             },
-          },
-        })
+          }
+        }
+
+        const form = {
+          row_number: 1,
+          filters: filters
+        }
+        const response = await this.$reqApi(this.normalizedUrl, form)
         if (this.lastRequestedId !== requestKey) {
           return
         }
@@ -209,6 +231,35 @@ export default {
         this.selectionItems = []
       } finally {
         this.fetching = false
+      }
+    },
+    async fetchBpmnUserId(userId) {
+      try {
+        let filters = {}
+        if(this.useBpmnId){
+          filters = {
+            bpmn_user_id: {
+              op: '=',
+              value: userId,
+            },
+          }
+        }else{
+          return null
+        }
+
+        const form = {
+          row_number: 1,
+          filters: filters
+        }
+        const response = await this.$reqApi(this.normalizedUrl, form)
+        const bpmn_user_id = Array.isArray(response?.model?.data)
+          ? response.model.data[0]?.bpmn_user_id 
+          : null
+        return bpmn_user_id
+      } catch (error) {
+        return null
+      } finally {
+        return null
       }
     },
   },

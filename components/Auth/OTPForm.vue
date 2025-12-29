@@ -1,14 +1,18 @@
 <template>
   <v-form v-model="valid" @submit.prevent="submit()">
   
-        <v-col cols="12" class="text-center">
-
-      <v-avatar color="white">
+        <v-col cols="12" class=" d-flex text-center justify-center flex-column">
+<v-row class=" d-flex  justify-center  mb-2">
+   <v-avatar color="white">
         <v-icon color="primary">
       sms</v-icon>
       </v-avatar>
-      <br>
-                 <b class="white--text font_15">ورود با کد یکبار مصرف</b>
+</v-row>
+   
+      <b class="font_18 white--text">
+    ورود به {{ $store.state.app_name }}
+      </b>
+                 <small class="white--text ">ورود با کد یکبار مصرف</small>
     
     </v-col>
     <amp-input text="تلفن همراه" color="white--text" rules="require,phone" v-model="form.username"

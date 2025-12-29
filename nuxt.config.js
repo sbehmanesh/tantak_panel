@@ -61,7 +61,6 @@ export default {
           light_purple: colors.blue.darken4,
           info: colors.teal.lighten1,
           warning: colors.amber.base,
-          error: colors.deepblue.accent4,
           success: colors.green.accent3,
         },
         light: {

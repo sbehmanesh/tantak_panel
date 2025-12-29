@@ -93,7 +93,7 @@ export default {
 
 <style scoped>
 .v-app-bar {
-  background-image: radial-gradient(circle at 0 0, #0a4082, #0a4082 100%);
+  background-image: radial-gradient(circle at 0 0, #0a4082, #407fcd 100%);
 }
 .log_mobile {
   position: absolute;
@@ -101,6 +101,6 @@ export default {
 }
 .bg_image {
   border-radius: 20px;
-  background-image: radial-gradient(circle at 0 0, #055ac2, #000000b5 100%);
+  background-image: radial-gradient(circle at 0 0, #186ed7, #000000b5 100%);
 }
 </style>

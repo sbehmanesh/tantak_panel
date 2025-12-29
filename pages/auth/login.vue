@@ -9,7 +9,7 @@
               height="auto"
               class="mt-1"
             />
-          <h3>  <span class="font_18 primary--text">ورود به {{ page_title }}</span></h3>
+      
       </v-col>
       <v-col cols="12" md="4" class="mt-1">
       <v-window v-model="activeWindow" >

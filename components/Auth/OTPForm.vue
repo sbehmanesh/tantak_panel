@@ -1,8 +1,20 @@
 <template>
   <v-form v-model="valid" @submit.prevent="submit()">
-    <div class="center-div mt-n5">
-      <span class="white--text">ورود با کد یکبار مصرف</span>
-    </div>
+  
+        <v-col cols="12" class=" d-flex text-center justify-center flex-column">
+<v-row class=" d-flex  justify-center  mb-2">
+   <v-avatar color="white">
+        <v-icon color="primary">
+      sms</v-icon>
+      </v-avatar>
+</v-row>
+   
+      <b class="font_18 white--text">
+    ورود به {{ $store.state.app_name }}
+      </b>
+                 <small class="white--text ">ورود با کد یکبار مصرف</small>
+    
+    </v-col>
     <amp-input text="تلفن همراه" color="white--text" rules="require,phone" v-model="form.username"
       background-color="#fff" prepend-inner-icon="person" cClass="ltr-item small-input" />
     <div class="px-3">
@@ -14,9 +26,9 @@
       <amp-captcha v-model="captcha" ref="captchaLogin" />
     </div>
     <div class="px-3 mt-4 mb-4">
-      <amp-button block height="40" text="ورود" icon="login" type="submit" color="success" :loading="loading"
+      <amp-button block height="40" text="ورود" icon="login" type="submit" color="primary " :loading="loading"
         v-if="activeLogin" :disabled="!valid || loading" />
-      <amp-button block v-else icon="sms" height="40" type="submit" color="success" text="ارسال کد" :loading="loading"
+      <amp-button block v-else icon="sms" height="40" type="submit" color="primary " text="ارسال کد" :loading="loading"
         @click="sendCode()" :disabled="!valid || loading" />
     </div>
   </v-form>

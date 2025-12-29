@@ -1,6 +1,6 @@
 <template>
-  <v-app-bar app :height="is_mobile ? 100 : 150" color="light_purple">
-    <v-container fluid class="ma-0">
+  <v-app-bar app :height="is_mobile ? 100 : 180" color="light_purple">
+    <v-container fluid class="ma-0 ">
       <v-row dense class="h-max">
         <v-col cols="12" class="mb-1">
           <v-row class="d-flex justify-space-between align-center">
@@ -10,7 +10,7 @@
                 <img
                   :src="$store.state.logo"
                   width="auto"
-                  height="60"
+                  height="80"
                   class="bg_image"
                 />
               </div>
@@ -93,7 +93,7 @@ export default {
 
 <style scoped>
 .v-app-bar {
-  background-image: radial-gradient(circle at 0 0, #fd5800, #ffae00 100%);
+  background-image: radial-gradient(circle at 0 0, #0a4082, #407fcd 100%);
 }
 .log_mobile {
   position: absolute;
@@ -101,6 +101,6 @@ export default {
 }
 .bg_image {
   border-radius: 20px;
-  background-image: radial-gradient(circle at 0 0, #ff5900, #000000b5 100%);
+  background-image: radial-gradient(circle at 0 0, #186ed7, #000000b5 100%);
 }
 </style>

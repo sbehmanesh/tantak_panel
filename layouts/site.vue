@@ -36,7 +36,5 @@ export default {
 .main_contact {
   margin: 0;
   padding: 0;
-  background: #d4e2ff;
-  background-image: radial-gradient(circle at 0 0, #fd5800, #ffa300 100%);
 }
 </style>

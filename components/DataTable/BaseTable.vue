@@ -4,14 +4,14 @@
       <amp-button
         icon="add"
         text="جدید"
-        color="#ff9e00"
+        color="primary"
         v-if="createUrl"
         @click="$router.push(createUrl)"
       />
       <amp-button
         icon="add"
         text="جدید"
-        color="#ff9e00"
+        color="primary"
         v-if="createShowFun"
         @click="createFun()"
       />
@@ -1665,6 +1665,6 @@ tfoot > tr > th {
   border-bottom: #c1c1c1 solid 1px !important;
 }
 .header_bg {
-  background-color: #fd5800;
+  background-color: #0a4082;
 }
 </style>

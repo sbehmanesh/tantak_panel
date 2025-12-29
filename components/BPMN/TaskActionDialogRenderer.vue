@@ -6,38 +6,53 @@
       v-html="item.config?.content"
     />
 
-    <template
-      v-else-if="item.component === 'FormInput'"
-    >
+    <template v-else-if="item.component === 'FormInput'">
+      <TransactionOverview
+        v-if="isTransactionsField"
+        :label="inputLabel"
+        :transactions="model"
+      />
 
-      <label v-if="fieldName.endsWith('basket_id')" class="mr-3">
-        {{ inputLabel }}
-      </label>
-      <basket-items 
-        v-if="fieldName.endsWith('basket_id')"
-        :basket_id="model" 
-      />
-      <BpmnUserSelect
-        v-else-if="fieldName.endsWith('user_id')"
-        :rules="rules"
-        v-model="model"
-        url="user"
-        :readonly="Boolean(item.config?.readonly)"
-        :text="inputLabel"
-        :role-id="[]"
-      />
-      <amp-input
-        v-else
-        v-model="model"
-        :text="inputLabel"
-        :rules="rules"
-        :type="item.config?.type || 'text'"
-        :placeholder="item.config?.placeholder || ''"
-        :readonly="Boolean(item.config?.readonly)"
-        :help-text="item.config?.helper || ''"
-        :is-number="isNumberFormat"
-        :is-float="isFloatFormat"
-      />
+      <template v-else>
+        <label v-if="fieldName.endsWith('basket_id')" class="mr-3">
+          {{ inputLabel }}
+        </label>
+        <basket-items 
+          v-if="fieldName.endsWith('basket_id')"
+          :basket_id="model" 
+        />
+        <BpmnUserSelect
+          v-else-if="fieldName.endsWith('user_id')"
+          :rules="rules"
+          v-model="model"
+          url="user"
+          :readonly="Boolean(item.config?.readonly)"
+          :text="inputLabel"
+          :role-id="[]"
+        />
+        <BpmnUserSelect
+          v-else-if="fieldName.endsWith('user_bpmn_id')"
+          :rules="rules"
+          v-model="model"
+          url="user"
+          use-bpmn-id
+          :readonly="Boolean(item.config?.readonly)"
+          :text="inputLabel"
+          :role-id="[]"
+        />
+        <amp-input
+          v-else
+          v-model="model"
+          :text="inputLabel"
+          :rules="rules"
+          :type="item.config?.type || 'text'"
+          :placeholder="item.config?.placeholder || ''"
+          :readonly="Boolean(item.config?.readonly)"
+          :help-text="item.config?.helper || ''"
+          :is-number="isNumberFormat"
+          :is-float="isFloatFormat"
+        />
+      </template>
     </template>
 
     <amp-select
@@ -100,12 +115,14 @@
 <script>
 import BpmnUserSelect from './BpmnUserSelect.vue'
 import BasketItems from './BasketItems.vue'
+import TransactionOverview from './TransactionOverview.vue'
 
 export default {
   name: 'TaskActionDialogRenderer',
   components: {
     BasketItems,
     BpmnUserSelect,
+    TransactionOverview,
   },
   props: {
     item: {
@@ -182,6 +199,9 @@ export default {
         console.warn('Invalid options jsonData', error)
       }
       return []
+    },
+    isTransactionsField() {
+      return this.fieldName.endsWith('transactions')
     },
   },
 }

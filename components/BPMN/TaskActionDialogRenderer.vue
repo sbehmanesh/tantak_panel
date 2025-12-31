@@ -40,6 +40,16 @@
           :text="inputLabel"
           :role-id="[]"
         />
+        <CountryDivisionCityAutocomplete
+          v-else-if="isCountryDivisionField"
+          v-model="model"
+          :text="inputLabel"
+          :rules="rules"
+          :placeholder="item.config?.placeholder || ''"
+          :help_text="item.config?.helper || ''"
+          :readonly="Boolean(item.config?.readonly)"
+          :disabled="Boolean(item.config?.disabled || item.config?.readonly)"
+        />
         <amp-input
           v-else
           v-model="model"
@@ -116,6 +126,7 @@
 import BpmnUserSelect from './BpmnUserSelect.vue'
 import BasketItems from './BasketItems.vue'
 import TransactionOverview from './TransactionOverview.vue'
+import CountryDivisionCityAutocomplete from './CountryDivisionCityAutocomplete.vue'
 
 export default {
   name: 'TaskActionDialogRenderer',
@@ -123,6 +134,7 @@ export default {
     BasketItems,
     BpmnUserSelect,
     TransactionOverview,
+    CountryDivisionCityAutocomplete,
   },
   props: {
     item: {
@@ -199,6 +211,12 @@ export default {
         console.warn('Invalid options jsonData', error)
       }
       return []
+    },
+    isCountryDivisionField() {
+      return (
+        this.item.component === 'FormInput' &&
+        this.fieldName.endsWith('country_division_id')
+      )
     },
     isTransactionsField() {
       return this.fieldName.endsWith('transactions')

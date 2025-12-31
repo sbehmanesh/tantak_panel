@@ -174,7 +174,6 @@ export default {
   watch: {
     value() {
       let value = this.value
-      console.log('value',value)
       if (Boolean(value)) {
         if (this.isPrice || this.isNumber || this.isFloat) {
           value = this.$FarsiToEnglishNumber(value)

@@ -48,12 +48,15 @@ export default {
       cityItems: [],
       loading: false,
       fetchedSource: null,
-      internalValue: this.modelValue,
+      internalValue: this.value,
     }
   },
   computed: {
+    sourceValue() {
+      return this.value
+    },
     apiType() {
-      const value = this.modelValue
+      const value = this.sourceValue
       const numericString =
         typeof value === 'string' && /^\d+$/.test(value)
       if (
@@ -66,13 +69,14 @@ export default {
     },
   },
   watch: {
-    modelValue: {
+    sourceValue: {
       handler(value) {
         this.internalValue = value
       },
       immediate: true,
     },
     internalValue(value) {
+      this.$emit('input', value)
       this.$emit('update:modelValue', value)
     },
     apiType: {
@@ -99,6 +103,7 @@ export default {
         if (source === 'tipax') {
           const cities = await this.$reqApi('shop/tipax/get-cities', {})
           this.cityItems = this.mapTipaxCities(cities)
+          console.log('this.cityItems',this.cityItems)
         } else {
           const response = await this.$reqApi('shop/country-division', {
             row_number: 1000,
@@ -116,8 +121,8 @@ export default {
     mapTipaxCities(list) {
       const cities = Array.isArray(list) ? list : []
       return cities.map((city) => ({
-        text: city.title || city.name || city.id || '',
-        value: city.id ?? city.value ?? null,
+        text: city.title,
+        value: city.id,
       }))
     },
     mapCountryDivisionCities(response) {
@@ -142,11 +147,11 @@ export default {
             : city.name || city.title || city.id
           return {
             text: label,
-            value: city.id ?? city.value ?? null,
+            value: city.id,
           }
         })
         .sort((a, b) => a.text.localeCompare(b.text))
     },
-  },
+  }
 }
 </script>

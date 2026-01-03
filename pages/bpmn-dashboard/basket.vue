@@ -70,7 +70,6 @@ export default {
     openTipaxDialog(row_item) {
       this.selected_basket_row = row_item || null
       this.tipax_dialog = true
-      console.log('selected_basket_row',this.selected_basket_row)
     },
   },
   computed: {

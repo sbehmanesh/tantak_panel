@@ -73,6 +73,9 @@ const DEFAULT_ACTION_PALETTE = {
     text: "انجام",
     color: "primary",
     icon: "play_arrow",
+    show_fun: (item) => {
+      return item.status != "COMPLETED"
+    }
   },
   history: {
     text: "تاریخچه",
@@ -163,7 +166,6 @@ export default {
       if (Object.prototype.hasOwnProperty.call(this.$attrs, "bpmn-url")) {
         return this.$attrs["bpmn-url"];
       }
-      console.log('bpmn_url here',this.bpmn_url)
       return this.bpmn_url;
     },
     shouldUseLocalData() {

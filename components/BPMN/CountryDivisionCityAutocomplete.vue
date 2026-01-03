@@ -46,7 +46,7 @@ export default {
   data() {
     return {
       cityItems: [],
-      loading: false,
+      loading: true,
       fetchedSource: null,
       internalValue: this.value,
     }
@@ -78,13 +78,10 @@ export default {
     internalValue(value) {
       this.$emit('input', value)
       this.$emit('update:modelValue', value)
-    },
-    apiType: {
-      handler(newSource) {
-        this.loadItems(newSource)
-      },
-      immediate: true,
-    },
+    }
+  },
+  mounted(){
+    this.loadItems(this.apiType)
   },
   methods: {
     async loadItems(source) {
@@ -103,7 +100,6 @@ export default {
         if (source === 'tipax') {
           const cities = await this.$reqApi('shop/tipax/get-cities', {})
           this.cityItems = this.mapTipaxCities(cities)
-          console.log('this.cityItems',this.cityItems)
         } else {
           const response = await this.$reqApi('shop/country-division', {
             row_number: 1000,

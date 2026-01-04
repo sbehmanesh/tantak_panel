@@ -36,6 +36,7 @@
                     <component-renderer
                       :item="item"
                       :form-data="formValues"
+                      :all-request-data="allRequestData"
                       :rules="mapValidationRules(item.config?.validation)"
                     />
                   </v-col>
@@ -104,8 +105,9 @@ export default {
       submitting: false,
       screenItems: [],
       formValues: {},
+      allRequestData: {},
       fetchError: null,
-      task_ownswer_bpmn_id: null
+      task_ownswer_bpmn_id: null,
     }
   },
   computed: {
@@ -173,6 +175,7 @@ export default {
         this.screenItems = Array.isArray(items) ? items : []
         this.task_ownswer_bpmn_id = taskData.user_id
         const initialData = taskData?.data || {}
+        this.allRequestData = initialData
         this.screenItems.forEach((item) => {
           const name = item?.config?.name
           if (!name) {

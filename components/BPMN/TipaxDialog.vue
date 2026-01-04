@@ -9,10 +9,6 @@
       />
       <v-card-title class="d-flex align-center">
         <span>ثبت در تیپاکس</span>
-        <v-spacer />
-        <span v-if="basketRow" class="grey--text text--darken-1 text-subtitle-2">
-          سبد شماره {{ basketRow.id }}
-        </span>
       </v-card-title>
       <v-card-text>
         <v-alert v-if="!tipax_has_permission" type="error" dense outlined>
@@ -142,7 +138,7 @@
                 <amp-textarea
                   text="توضیحات اضافی"
                   v-model="tipax_form.description"
-                  rows="2"
+                  rows=2
                 />
               </v-col>
             </v-row>
@@ -194,7 +190,7 @@
                           <amp-textarea
                             text="آدرس کامل"
                             v-model="tipax_form.origin.full_address"
-                            rows="2"
+                            rows=2
                             rules="require"
                             :disabled="isOriginFieldDisabled('full_address')"
                           />
@@ -238,7 +234,7 @@
                           <amp-textarea
                             text="توضیحات"
                             v-model="tipax_form.origin.description"
-                            rows="2"
+                            rows=2
                             :disabled="isOriginFieldDisabled('description')"
                           />
                         </v-col>
@@ -312,7 +308,7 @@
                 <amp-textarea
                   text="آدرس کامل"
                   v-model="tipax_form.destination.full_address"
-                  rows="2"
+                  rows=2
                   rules="require"
                 />
               </v-col>
@@ -351,7 +347,7 @@
                 <amp-textarea
                   text="توضیحات"
                   v-model="tipax_form.destination.description"
-                  rows="2"
+                  rows=2
                 />
               </v-col>
               <v-col cols="12" md="4">
@@ -799,6 +795,12 @@ export default {
         delivery.location?.longitude;
       destination.latitude = basketLat || "";
       destination.longitude = basketLong || "";
+      
+      destination.city_id = delivery.country_division_id || "";
+      destination.floor = delivery.floor || "";
+      destination.unit = delivery.unit || "";
+      destination.no = delivery.no || "";
+
       if (basketLat && basketLong) {
         this.destination_map_location = [basketLat, basketLong];
       } else {
@@ -826,6 +828,7 @@ export default {
           this.$toast.success("درخواست با موفقیت ثبت شد");
           this.saveUserTipaxPreferences();
           this.closeDialog();
+          this.$emit('submited',true)
         })
         .finally(() => {
           this.tipax_submit_loading = false;

@@ -1,15 +1,5 @@
 <template>
   <v-card class="bpmn-base-table elevation-2">
-    <div class="bpmn-base-table__header">
-      <div>
-        <div class="bpmn-base-table__title">
-          {{ tableTitle }}
-        </div>
-      </div>
-    </div>
-
-    <v-divider class="my-2" />
-
     <div class="bpmn-base-table__content">
       <v-alert
         v-if="!report_slug && !is_loading"
@@ -258,6 +248,9 @@ export default {
         }
       },
     },
+    tableTitle(newTitle) {
+      this.$store.dispatch('setPageTitle', newTitle)
+    },
     column_definitions() {
       this.requestTableDataIfReady();
     },
@@ -472,7 +465,6 @@ export default {
 
 <style scoped>
 .bpmn-base-table {
-  padding: 24px;
   border-radius: 12px;
   background-color: #ffffff;
 }

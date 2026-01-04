@@ -14,13 +14,29 @@
       />
 
       <template v-else>
-        <label v-if="fieldName.endsWith('basket_id')" class="mr-3">
-          {{ inputLabel }}
-        </label>
-        <basket-items 
-          v-if="fieldName.endsWith('basket_id')"
-          :basket_id="model" 
-        />
+        <template v-if="fieldName.endsWith('basket_id')">
+          <label class="mr-3">
+            {{ inputLabel }}
+          </label>
+          <BasketItems 
+            :basket_id="model" 
+          />
+        </template>
+
+        <template v-else-if="fieldName.endsWith('tipax_register')">
+          <TipaxDialog
+            v-model="tipax_dialog"
+            @submited="model = true"
+            :basket-row="basket_model"
+          />
+          <amp-button
+            text="ثبت در تیپاکس"
+            color="green"
+            :disabled="model == true"
+            @click="openCloseTipaxDialog"
+          />
+        </template>
+
         <BpmnUserSelect
           v-else-if="fieldName.endsWith('user_id')"
           :rules="rules"
@@ -123,14 +139,16 @@
 </template>
 
 <script>
-import BpmnUserSelect from './BpmnUserSelect.vue'
 import BasketItems from './BasketItems.vue'
+import BpmnUserSelect from './BpmnUserSelect.vue'
 import TransactionOverview from './TransactionOverview.vue'
+import TipaxDialog from "~/components/BPMN/TipaxDialog.vue";
 import CountryDivisionCityAutocomplete from './CountryDivisionCityAutocomplete.vue'
 
 export default {
   name: 'TaskActionDialogRenderer',
   components: {
+    TipaxDialog,
     BasketItems,
     BpmnUserSelect,
     TransactionOverview,
@@ -145,11 +163,38 @@ export default {
       type: Object,
       required: true,
     },
+    allRequestData: {
+      type: Object,
+      required: true,
+    },
     rules: {
       type: String,
       default: '',
     },
   },
+  data: () => ({
+    basket_model: {
+      data: {
+        delivery_info: {
+          id: null,
+          address: null,
+          postal_code: null,
+          first_name: null,
+          last_name: null,
+          phone_number: null,
+          phone_number: null,
+          delivery_time: null,
+          lat: null,
+          long: null,
+          country_division_id: null,
+          floor: null,
+          unit: null,
+          no: null
+        }
+      }
+    },
+    tipax_dialog: false
+  }),
   computed: {
     fieldName() {
       return this.item?.config?.name || ''
@@ -222,5 +267,39 @@ export default {
       return this.fieldName.endsWith('transactions')
     },
   },
+  methods: {
+    openCloseTipaxDialog() {
+      this.tipax_dialog = !this.tipax_dialog
+    }
+  },
+  mounted() {
+    if(this.fieldName.endsWith('tipax_register')){
+      this.$reqApi("user/limited-show", {id: this.allRequestData.customer_user_id})
+      .then((response) => {
+          const user = response.model
+          this.basket_model = 
+          {
+            id: this.allRequestData.basket_id,
+            data: {
+              delivery_info: {
+                lat: null,
+                long: null,
+                no: this.allRequestData.block,
+                unit: this.allRequestData.unit,
+                last_name: user.last_name,
+                floor: this.allRequestData.floor,
+                first_name: user.first_name,
+                address: this.allRequestData.address,
+                postal_code: this.allRequestData.postal_code,
+                phone_number: this.allRequestData.phone_number,
+                delivery_time: this.allRequestData.delivery_time,
+                country_division_id: this.allRequestData.country_division_id,
+              }
+            }
+          }
+        }
+      )
+    }
+  }
 }
 </script>

@@ -99,6 +99,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    extra_column_headers: {
+      type: Array,
+      default: () => [],
+    },
     action_palette: {
       type: Object,
       default: () => ({}),
@@ -142,7 +146,36 @@ export default {
         };
       });
       headers.sort(function(a,b){ return a.sort > b.sort })
-      return headers;
+      return [...headers, ...this.resolvedExtraHeaders];
+    },
+    resolvedExtraHeaders() {
+      if (!Array.isArray(this.extra_column_headers)) {
+        return [];
+      }
+      return this.extra_column_headers
+        .filter((header_item) => Boolean(header_item))
+        .map((header_item, index) => {
+          const text =
+            header_item.text ||
+            header_item.label ||
+            `ستون اضافی ${index + 1}`;
+          const value_fun =
+            typeof header_item.value === "function"
+              ? header_item.value
+              : null;
+          const resolvedValue = value_fun
+            ? (row_item) => value_fun(row_item)
+            : header_item.value;
+
+          return {
+            ...header_item,
+            text,
+            value: resolvedValue,
+            sortable: Boolean(header_item.sortable),
+            filterable: Boolean(header_item.filterable),
+            width: header_item.width,
+          };
+        });
     },
     forwardedAttrs() {
       const attrs = { ...this.$attrs };

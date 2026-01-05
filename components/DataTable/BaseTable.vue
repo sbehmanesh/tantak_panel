@@ -1348,7 +1348,10 @@ export default {
         const path = this.getBpmnHeaderPath(header);
         return (
           typeof path === "string" &&
-          path.toLowerCase().trim().endsWith("user_id")
+          (
+            path.toLowerCase().trim().endsWith("user_id") || 
+            path.toLowerCase().trim().endsWith("user_bpmn_id")
+          )
         );
       });
     },

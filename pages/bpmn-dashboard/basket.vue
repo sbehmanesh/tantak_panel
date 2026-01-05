@@ -4,6 +4,7 @@
       report_slug="sbd-hay-khryd" 
       :only_me="false"
       :extra_row_actions="tipaxRowActions"
+      :extra_column_headers="extraColumns"
       @action="action"
     />
 
@@ -35,6 +36,36 @@ export default {
     taskActionDialog: false,
     tipax_dialog: false,
     selected_basket_row: null,
+    extraColumns: [
+      {
+        label: 'نوع سبد',
+        value: (row) => {
+          if(row.data['basket_type'] == "online"){
+            return "آنلاین"
+          }else if(row.data['not_confirmed'] == "callcenter"){
+            return "کال سنتر"
+          }
+
+          return "نامشخص"
+        },
+        sortable: false,
+        filterable: false
+      },
+      {
+        label: 'تایید مالی',
+        value: (row) => {
+          if(row.data['confirmed'] == "clicked"){
+            return "تایید مالی"
+          }else if(row.data['not_confirmed'] == "clicked"){
+            return "عدم تایید مالی"
+          }
+
+          return "بررسی نشده"
+        },
+        sortable: false,
+        filterable: false
+      }
+    ]
   }),
   components: {
     BpmnBaseTable,
